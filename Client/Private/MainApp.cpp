@@ -32,14 +32,17 @@ void CMainApp::Tick(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pGameInstance, );
 
 	m_pGameInstance->Tick_Engine(dTimeDelta);
+	m_pGameInstance->ImGui_NewFrame(dTimeDelta);
 }
 
 HRESULT CMainApp::Render()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	m_pGameInstance->GetInstance()->Clear_Graphic_Device(&_float4(0.3f, 0.3f, 0.3f, 1.f));
-	m_pGameInstance->GetInstance()->Present();
+	m_pGameInstance->ImGui_EndFrame();
+	m_pGameInstance->Clear_Graphic_Device(&_float4(0.3f, 0.3f, 0.3f, 1.f));
+	m_pGameInstance->ImGui_Render();
+	m_pGameInstance->Present();
 	return S_OK;
 }
 
