@@ -33,8 +33,11 @@ HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & tGraphicDesc, ID3D
 void CGameInstance::Tick_Engine(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pInputDev, );
+	NULL_CHECK_RETURN(m_pImGuiMgr, );
 
 	m_pInputDev->Invalidate_Input_Device();
+
+	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
 }
 
 HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
@@ -54,32 +57,18 @@ HRESULT CGameInstance::Present()
 	return m_pGraphicDev->Present();
 }
 
-HRESULT CGameInstance::Ready_ImGui(HWND hWnd, ID3D11Device * pGraphicDev, ID3D11DeviceContext * pDeviceContext)
-{
-	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
-
-	return m_pImGuiMgr->Ready_ImGui(hWnd, pGraphicDev, pDeviceContext);
-}
-
-void CGameInstance::ImGui_NewFrame(_double dTimeDelta)
-{
-	NULL_CHECK_RETURN(m_pImGuiMgr, );
-
-	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
-}
-
-void CGameInstance::ImGui_EndFrame()
-{
-	NULL_CHECK_RETURN(m_pImGuiMgr, );
-
-	m_pImGuiMgr->ImGui_EndFrame();
-}
-
 void CGameInstance::ImGui_Render()
 {
 	NULL_CHECK_RETURN(m_pImGuiMgr, );
 
 	m_pImGuiMgr->ImGui_Render();
+}
+
+HRESULT CGameInstance::Add_Tool(CTool * pTool)
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
+
+	return m_pImGuiMgr->Add_Tool(pTool);
 }
 
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)

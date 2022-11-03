@@ -1534,11 +1534,11 @@ namespace IGFD
 		}
 
 	public:
-		FileDialog();												// ImGuiFileDialog Constructor. can be used for have many dialog at same tiem (not possible with singleton)
-		virtual ~FileDialog();										// ImGuiFileDialog Destructor
+		_declspec(dllexport) FileDialog();												// ImGuiFileDialog Constructor. can be used for have many dialog at same tiem (not possible with singleton)
+		_declspec(dllexport) virtual ~FileDialog();										// ImGuiFileDialog Destructor
 
 		// standard dialog
-		void OpenDialog(											// open simple dialog (path and fileName can be specified)
+		_declspec(dllexport) void OpenDialog(											// open simple dialog (path and fileName can be specified)
 			const std::string& vKey,								// key dialog
 			const std::string& vTitle,								// title
 			const char* vFilters,									// filters
@@ -1548,7 +1548,7 @@ namespace IGFD
 			UserDatas vUserDatas = nullptr,							// user datas (can be retrieved in pane)
 			ImGuiFileDialogFlags vFlags = 0);						// ImGuiFileDialogFlags 
 
-		void OpenDialog(											// open simple dialog (path and filename are obtained from filePathName)
+		_declspec(dllexport) void OpenDialog(											// open simple dialog (path and filename are obtained from filePathName)
 			const std::string& vKey,								// key dialog
 			const std::string& vTitle,								// title
 			const char* vFilters,									// filters
@@ -1582,27 +1582,27 @@ namespace IGFD
 			ImGuiFileDialogFlags vFlags = 0);						// ImGuiFileDialogFlags 
 
 		// Display / Close dialog form
-		bool Display(												// Display the dialog. return true if a result was obtained (Ok or not)
+		_declspec(dllexport) bool Display(												// Display the dialog. return true if a result was obtained (Ok or not)
 			const std::string& vKey,								// key dialog to display (if not the same key as defined by OpenDialog => no opening)
 			ImGuiWindowFlags vFlags = ImGuiWindowFlags_NoCollapse,	// ImGuiWindowFlags
 			ImVec2 vMinSize = ImVec2(0, 0),							// mininmal size contraint for the ImGuiWindow
 			ImVec2 vMaxSize = ImVec2(FLT_MAX, FLT_MAX));			// maximal size contraint for the ImGuiWindow
-		void Close();												// close dialog
+		_declspec(dllexport) void Close();												// close dialog
 
 		// queries
-		bool WasOpenedThisFrame(const std::string& vKey) const;		// say if the dialog key was already opened this frame
-		bool WasOpenedThisFrame() const;							// say if the dialog was already opened this frame
-		bool IsOpened(const std::string& vKey) const;				// say if the key is opened
-		bool IsOpened() const;										// say if the dialog is opened somewhere
+		_declspec(dllexport) bool WasOpenedThisFrame(const std::string& vKey) const;		// say if the dialog key was already opened this frame
+		_declspec(dllexport) bool WasOpenedThisFrame() const;							// say if the dialog was already opened this frame
+		_declspec(dllexport) bool IsOpened(const std::string& vKey) const;				// say if the key is opened
+		_declspec(dllexport) bool IsOpened() const;										// say if the dialog is opened somewhere
 		std::string GetOpenedKey() const;							// return the dialog key who is opened, return nothing if not opened
 
 		// get result
-		bool IsOk() const;											// true => Dialog Closed with Ok result / false : Dialog closed with cancel result
-		std::map<std::string, std::string> GetSelection();			// Open File behavior : will return selection via a map<FileName, FilePathName>
-		std::string GetFilePathName();								// Save File behavior : will always return the content of the field with current filter extention and current path
-		std::string GetCurrentFileName();							// Save File behavior : will always return the content of the field with current filter extention
-		std::string GetCurrentPath();								// will return current path
-		std::string GetCurrentFilter();								// will return selected filter
+		_declspec(dllexport) bool IsOk() const;											// true => Dialog Closed with Ok result / false : Dialog closed with cancel result
+		_declspec(dllexport) std::map<std::string, std::string> GetSelection();			// Open File behavior : will return selection via a map<FileName, FilePathName>
+		_declspec(dllexport) std::string GetFilePathName();								// Save File behavior : will always return the content of the field with current filter extention and current path
+		_declspec(dllexport) std::string GetCurrentFileName();							// Save File behavior : will always return the content of the field with current filter extention
+		_declspec(dllexport) std::string GetCurrentPath();								// will return current path
+		_declspec(dllexport) std::string GetCurrentFilter();								// will return selected filter
 		UserDatas GetUserDatas() const;								// will return user datas send with Open Dialog
 
 		// file style by extentions

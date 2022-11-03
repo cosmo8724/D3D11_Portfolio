@@ -10,6 +10,12 @@
     <Filter Include="00. MainApp">
       <UniqueIdentifier>{b27cc0d4-a8ec-4454-aac4-8a49284efc6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Tool">
+      <UniqueIdentifier>{e012c15a-5802-456a-9dfe-09c513405754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\99. TestTool">
+      <UniqueIdentifier>{b9986e19-4e20-40a0-ba51-135e662dd05a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -30,6 +36,9 @@
     <ClInclude Include="..\Public\Client_Define.h">
       <Filter>98. Define</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TestTool.h">
+      <Filter>97. Tool\99. TestTool</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -40,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MainApp.cpp">
       <Filter>00. MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TestTool.cpp">
+      <Filter>97. Tool\99. TestTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

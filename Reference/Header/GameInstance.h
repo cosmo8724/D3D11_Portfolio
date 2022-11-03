@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Input_Device.h"
+#include "Tool.h"
 
 BEGIN(Engine)
 
@@ -21,10 +22,8 @@ public:		/* For GraphicDevice */
 	HRESULT	Present();
 
 public:		/* For ImGui */
-	HRESULT	Ready_ImGui(HWND hWnd, ID3D11Device* pGraphicDev, ID3D11DeviceContext* pDeviceContext);
-	void		ImGui_NewFrame(_double dTimeDelta);
-	void		ImGui_EndFrame();
 	void		ImGui_Render();
+	HRESULT	Add_Tool(CTool* pTool);
 
 public:		/* For InputDevice */
 	_byte		Get_DIKeyState(_ubyte byKeyID);

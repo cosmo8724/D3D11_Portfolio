@@ -2,15 +2,14 @@ rmdir /s /q "ipch"
 rmdir /s /q "Debug"
 rmdir /s /q "Release"
 
-rmdir /s /q .\Client\Include\Debug
-rmdir /s /q .\Client\Include\ipch
-rmdir /s /q .\Client\Include\Release
-rmdir /s /q .\Client\Include\x64
+rmdir /s /q .\Client\Bin\Debug
+rmdir /s /q .\Client\Bin\ipch
+rmdir /s /q .\Client\Bin\Release
+rmdir /s /q .\Client\Bin\x64
 
-rmdir /s /q .\Engine\System\Include\Debug
-rmdir /s /q .\Engine\Utility\Include\Debug
+rmdir /s /q .\Engine\Bin
 
 del /f /q .\Client\Bin\Client.exe
 del /f /q .\Client\Bin\Client.ilk
 del /f /q .\Client\Bin\Client.pdb
-del /f /q Frame131C.VC.db
+del /f /q MyD3D.VC.db

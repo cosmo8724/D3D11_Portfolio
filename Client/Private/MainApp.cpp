@@ -2,7 +2,6 @@
 #include "..\Public\MainApp.h"
 #include "GameInstance.h"
 
-
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
 {
@@ -24,6 +23,8 @@ HRESULT CMainApp::Initialize()
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize_Engine(tGraphicDesc, &m_pGraphicDev, &m_pDeviceContext), E_FAIL);
 	
+	pTool = CTestTool::Create();
+
 	return S_OK;
 }
 
@@ -32,14 +33,12 @@ void CMainApp::Tick(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pGameInstance, );
 
 	m_pGameInstance->Tick_Engine(dTimeDelta);
-	m_pGameInstance->ImGui_NewFrame(dTimeDelta);
 }
 
 HRESULT CMainApp::Render()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	m_pGameInstance->ImGui_EndFrame();
 	m_pGameInstance->Clear_Graphic_Device(&_float4(0.3f, 0.3f, 0.3f, 1.f));
 	m_pGameInstance->ImGui_Render();
 	m_pGameInstance->Present();

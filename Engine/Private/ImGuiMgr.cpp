@@ -40,13 +40,8 @@ void CImGuiMgr::ImGui_NewFrame(_double dTimeDelta)
 
 	m_dTimeDelta = dTimeDelta;
 
-	ImGui::Begin("ImGui Test");
-
-	ImGui::End();
-}
-
-void CImGuiMgr::ImGui_EndFrame()
-{
+	for (size_t i = 0; i < m_vecTool.size(); ++i)
+		m_vecTool[i]->Update_Tool(dTimeDelta);
 }
 
 void CImGuiMgr::ImGui_Render()
@@ -61,8 +56,24 @@ void CImGuiMgr::ImGui_Render()
 	}
 }
 
+HRESULT CImGuiMgr::Add_Tool(CTool * pTool)
+{
+	NULL_CHECK_RETURN(pTool, E_FAIL);
+
+	m_vecTool.push_back(pTool);
+
+	return S_OK;
+}
+
 void CImGuiMgr::Free()
 {
+	if (m_vecTool.size())
+	{
+		for (size_t i = 0; i < m_vecTool.size(); ++i)
+			Safe_Release(m_vecTool[i]);
+		m_vecTool.clear();
+	}
+
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();
 	ImGui::DestroyContext();

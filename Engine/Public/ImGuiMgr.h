@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "Tool.h"
 
 BEGIN(Engine)
 
@@ -14,14 +15,17 @@ private:
 public:
 	HRESULT	Ready_ImGui(HWND hWnd, ID3D11Device* pGraphicDev, ID3D11DeviceContext* pDeviceContext);
 	void		ImGui_NewFrame(_double dTimeDelta);
-	void		ImGui_EndFrame();
 	void		ImGui_Render();
+	
+public:
+	HRESULT	Add_Tool(CTool* pTool);
 
 public:
 	virtual		void	Free() override;
 
 private:
 	_double					m_dTimeDelta;
+	std::vector<CTool*>		m_vecTool;
 };
 
 END
