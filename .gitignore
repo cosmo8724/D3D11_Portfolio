@@ -43,6 +43,5 @@ ipch/
 
 Client/Bin/*
 !Client/Bin/Resource
-!Client/Bin/ShaderFiles
-Engine/System/Default/Debug
-Engine/Utility/Default/Debug
+Engine/Default/Debug
+Engine/Default/Debug
