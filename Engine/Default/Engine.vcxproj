@@ -77,6 +77,7 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>..\Bin\</OutDir>
     <IntDir>..\Bin\</IntDir>
+    <IncludePath>..\ImGui;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -87,6 +88,7 @@
     <LinkIncremental>false</LinkIncremental>
     <OutDir>..\Bin\</OutDir>
     <IntDir>..\Bin\</IntDir>
+    <IncludePath>..\ImGui;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -157,6 +159,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\ImGui\dirent.h" />
+    <ClInclude Include="..\ImGui\GraphEditor.h" />
+    <ClInclude Include="..\ImGui\imconfig.h" />
+    <ClInclude Include="..\ImGui\ImCurveEdit.h" />
+    <ClInclude Include="..\ImGui\ImGradient.h" />
+    <ClInclude Include="..\ImGui\imgui.h" />
+    <ClInclude Include="..\ImGui\ImGuiFileDialog.h" />
+    <ClInclude Include="..\ImGui\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="..\ImGui\ImGuizmo.h" />
+    <ClInclude Include="..\ImGui\imgui_impl_dx11.h" />
+    <ClInclude Include="..\ImGui\imgui_impl_win32.h" />
+    <ClInclude Include="..\ImGui\imgui_internal.h" />
+    <ClInclude Include="..\ImGui\ImSequencer.h" />
+    <ClInclude Include="..\ImGui\imstb_rectpack.h" />
+    <ClInclude Include="..\ImGui\imstb_textedit.h" />
+    <ClInclude Include="..\ImGui\imstb_truetype.h" />
+    <ClInclude Include="..\ImGui\ImZoomSlider.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Engine_Define.h" />
     <ClInclude Include="..\Public\Engine_Function.h" />
@@ -165,12 +184,66 @@
     <ClInclude Include="..\Public\Engine_Typedef.h" />
     <ClInclude Include="..\Public\GameInstance.h" />
     <ClInclude Include="..\Public\Graphic_Device.h" />
+    <ClInclude Include="..\Public\ImGuiMgr.h" />
     <ClInclude Include="..\Public\Input_Device.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\ImGui\GraphEditor.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\ImCurveEdit.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\ImGradient.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\ImGuiFileDialog.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\ImGuizmo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_demo.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_draw.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_impl_dx11.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_impl_win32.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_tables.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\imgui_widgets.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\ImGui\ImSequencer.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="..\Private\Base.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\Graphic_Device.cpp" />
+    <ClCompile Include="..\Private\ImGuiMgr.cpp" />
     <ClCompile Include="..\Private\Input_Device.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

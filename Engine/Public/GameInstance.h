@@ -20,6 +20,12 @@ public:		/* For GraphicDevice */
 	HRESULT	Clear_Graphic_Device(const _float4* pColor);
 	HRESULT	Present();
 
+public:		/* For ImGui */
+	HRESULT	Ready_ImGui(HWND hWnd, ID3D11Device* pGraphicDev, ID3D11DeviceContext* pDeviceContext);
+	void		ImGui_NewFrame(_double dTimeDelta);
+	void		ImGui_EndFrame();
+	void		ImGui_Render();
+
 public:		/* For InputDevice */
 	_byte		Get_DIKeyState(_ubyte byKeyID);
 	_byte		Get_DIMouseState(CInput_Device::MOUSEKEYSTATE byMouseID);
@@ -27,6 +33,7 @@ public:		/* For InputDevice */
 
 private:
 	class CGraphic_Device*		m_pGraphicDev = nullptr;
+	class CImGuiMgr*			m_pImGuiMgr = nullptr;
 	class CInput_Device*		m_pInputDev = nullptr;
 
 public:

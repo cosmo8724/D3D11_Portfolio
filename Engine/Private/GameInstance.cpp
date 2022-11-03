@@ -1,13 +1,16 @@
 #include "..\Public\GameInstance.h"
 #include "Graphic_Device.h"
+#include "ImGuiMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
 	: m_pGraphicDev(CGraphic_Device::GetInstance())
+	, m_pImGuiMgr(CImGuiMgr::GetInstance())
 	, m_pInputDev(CInput_Device::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
+	Safe_AddRef(m_pImGuiMgr);
 	Safe_AddRef(m_pInputDev);
 }
 
@@ -17,6 +20,9 @@ HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & tGraphicDesc, ID3D
 
 	/* Initialize Graphic Device */
 	FAILED_CHECK_RETURN(m_pGraphicDev->Ready_Graphic_Device(tGraphicDesc.hWnd, tGraphicDesc.eWindowMode, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY, ppDeviceOut, ppContextOut), E_FAIL);
+
+	/* Initialize InGui */
+	FAILED_CHECK_RETURN(m_pImGuiMgr->Ready_ImGui(tGraphicDesc.hWnd, *ppDeviceOut, *ppContextOut), E_FAIL);
 
 	/* Initialize Input Device */
 	FAILED_CHECK_RETURN(m_pInputDev->Ready_Input_Device(tGraphicDesc.hInst, tGraphicDesc.hWnd), E_FAIL);
@@ -48,6 +54,34 @@ HRESULT CGameInstance::Present()
 	return m_pGraphicDev->Present();
 }
 
+HRESULT CGameInstance::Ready_ImGui(HWND hWnd, ID3D11Device * pGraphicDev, ID3D11DeviceContext * pDeviceContext)
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
+
+	return m_pImGuiMgr->Ready_ImGui(hWnd, pGraphicDev, pDeviceContext);
+}
+
+void CGameInstance::ImGui_NewFrame(_double dTimeDelta)
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, );
+
+	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
+}
+
+void CGameInstance::ImGui_EndFrame()
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, );
+
+	m_pImGuiMgr->ImGui_EndFrame();
+}
+
+void CGameInstance::ImGui_Render()
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, );
+
+	m_pImGuiMgr->ImGui_Render();
+}
+
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
 {
 	NULL_CHECK_RETURN(m_pInputDev, 0);
@@ -73,11 +107,13 @@ void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
+	CImGuiMgr::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
 {
 	Safe_Release(m_pInputDev);
+	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pGraphicDev);
 }
