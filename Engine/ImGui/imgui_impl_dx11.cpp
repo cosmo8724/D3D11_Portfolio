@@ -493,6 +493,7 @@ bool    ImGui_ImplDX11_CreateDeviceObjects()
         desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
         desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
         bd->pd3dDevice->CreateBlendState(&desc, &bd->pBlendState);
+		bd->pBlendState->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CImgui_impl_dx11::ID3D11DeviceBlendState") - 1, "CGraphicDevice::ID3D11DeviceBlendState");
     }
 
     // Create the rasterizer state

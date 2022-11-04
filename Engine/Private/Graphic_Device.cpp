@@ -49,6 +49,9 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 	*ppDeviceOut = m_pDevice;
 	*ppDeviceContextOut = m_pDeviceContext;
 
+	m_pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CGraphicDevice::ID3D11Device") - 1, "CGraphicDevice::ID3D11Device");
+	m_pDeviceContext->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CGraphicDevice::ID3D11DeviceContext") - 1, "CGraphicDevice::ID3D11DeviceContext");
+
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
 

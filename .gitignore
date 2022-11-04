@@ -48,3 +48,8 @@ Engine/Default/Debug
 Engine/Default/Debug
 MyD3D.VC.db
 .vs/MyD3D/v14/.suo
+Client/Default/imgui.ini
+Engine/Bin/Engine.ilk
+Engine/Bin/Engine.pdb
+Engine/Bin/vc140.idb
+Engine/Bin/vc140.pdb
