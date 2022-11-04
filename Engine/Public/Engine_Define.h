@@ -1,8 +1,13 @@
 #pragma once
 
+#pragma warning (disable : 4005)
+
 #include <vector>
 #include <list>
 #include <map>
+#include <unordered_map>
+#include <algorithm>
+using namespace std;
 
 #include <d3d11.h>
 #include <DirectXMath.h>
@@ -20,5 +25,20 @@ using namespace DirectX;
 #include "imgui_impl_win32.h"
 #include "ImGuizmo.h"
 #include "ImGuiFileDialog.h"
+
+#ifdef _DEBUG
+
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
+
+#ifndef DBG_NEW 
+
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
+#define new DBG_NEW 
+
+#endif
+
+#endif // _DEBUG
 
 using namespace Engine;

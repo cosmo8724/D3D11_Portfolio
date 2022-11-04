@@ -850,7 +850,7 @@ ImGuiFontStudio is using also ImGuiFileDialog.
 */
 
 #ifndef IMGUIFILEDIALOG_H
-#define IMGUIFILEDIALOG_H
+#define IMGUIFILEDIALOG_H	IMGUI_API
 
 // compatible with 1.88 WIP
 #define IMGUIFILEDIALOG_VERSION "v0.6.5"
@@ -1534,11 +1534,11 @@ namespace IGFD
 		}
 
 	public:
-		_declspec(dllexport) FileDialog();												// ImGuiFileDialog Constructor. can be used for have many dialog at same tiem (not possible with singleton)
-		_declspec(dllexport) virtual ~FileDialog();										// ImGuiFileDialog Destructor
+		IMGUI_API FileDialog();												// ImGuiFileDialog Constructor. can be used for have many dialog at same tiem (not possible with singleton)
+		IMGUI_API virtual ~FileDialog();										// ImGuiFileDialog Destructor
 
 		// standard dialog
-		_declspec(dllexport) void OpenDialog(											// open simple dialog (path and fileName can be specified)
+		IMGUI_API void OpenDialog(											// open simple dialog (path and fileName can be specified)
 			const std::string& vKey,								// key dialog
 			const std::string& vTitle,								// title
 			const char* vFilters,									// filters
@@ -1548,7 +1548,7 @@ namespace IGFD
 			UserDatas vUserDatas = nullptr,							// user datas (can be retrieved in pane)
 			ImGuiFileDialogFlags vFlags = 0);						// ImGuiFileDialogFlags 
 
-		_declspec(dllexport) void OpenDialog(											// open simple dialog (path and filename are obtained from filePathName)
+		IMGUI_API void OpenDialog(											// open simple dialog (path and filename are obtained from filePathName)
 			const std::string& vKey,								// key dialog
 			const std::string& vTitle,								// title
 			const char* vFilters,									// filters
@@ -1582,27 +1582,27 @@ namespace IGFD
 			ImGuiFileDialogFlags vFlags = 0);						// ImGuiFileDialogFlags 
 
 		// Display / Close dialog form
-		_declspec(dllexport) bool Display(												// Display the dialog. return true if a result was obtained (Ok or not)
+		IMGUI_API bool Display(												// Display the dialog. return true if a result was obtained (Ok or not)
 			const std::string& vKey,								// key dialog to display (if not the same key as defined by OpenDialog => no opening)
 			ImGuiWindowFlags vFlags = ImGuiWindowFlags_NoCollapse,	// ImGuiWindowFlags
 			ImVec2 vMinSize = ImVec2(0, 0),							// mininmal size contraint for the ImGuiWindow
 			ImVec2 vMaxSize = ImVec2(FLT_MAX, FLT_MAX));			// maximal size contraint for the ImGuiWindow
-		_declspec(dllexport) void Close();												// close dialog
+		IMGUI_API void Close();												// close dialog
 
 		// queries
-		_declspec(dllexport) bool WasOpenedThisFrame(const std::string& vKey) const;		// say if the dialog key was already opened this frame
-		_declspec(dllexport) bool WasOpenedThisFrame() const;							// say if the dialog was already opened this frame
-		_declspec(dllexport) bool IsOpened(const std::string& vKey) const;				// say if the key is opened
-		_declspec(dllexport) bool IsOpened() const;										// say if the dialog is opened somewhere
+		IMGUI_API bool WasOpenedThisFrame(const std::string& vKey) const;		// say if the dialog key was already opened this frame
+		IMGUI_API bool WasOpenedThisFrame() const;							// say if the dialog was already opened this frame
+		IMGUI_API bool IsOpened(const std::string& vKey) const;				// say if the key is opened
+		IMGUI_API bool IsOpened() const;										// say if the dialog is opened somewhere
 		std::string GetOpenedKey() const;							// return the dialog key who is opened, return nothing if not opened
 
 		// get result
-		_declspec(dllexport) bool IsOk() const;											// true => Dialog Closed with Ok result / false : Dialog closed with cancel result
-		_declspec(dllexport) std::map<std::string, std::string> GetSelection();			// Open File behavior : will return selection via a map<FileName, FilePathName>
-		_declspec(dllexport) std::string GetFilePathName();								// Save File behavior : will always return the content of the field with current filter extention and current path
-		_declspec(dllexport) std::string GetCurrentFileName();							// Save File behavior : will always return the content of the field with current filter extention
-		_declspec(dllexport) std::string GetCurrentPath();								// will return current path
-		_declspec(dllexport) std::string GetCurrentFilter();								// will return selected filter
+		IMGUI_API bool IsOk() const;											// true => Dialog Closed with Ok result / false : Dialog closed with cancel result
+		IMGUI_API std::map<std::string, std::string> GetSelection();			// Open File behavior : will return selection via a map<FileName, FilePathName>
+		IMGUI_API std::string GetFilePathName();								// Save File behavior : will always return the content of the field with current filter extention and current path
+		IMGUI_API std::string GetCurrentFileName();							// Save File behavior : will always return the content of the field with current filter extention
+		IMGUI_API std::string GetCurrentPath();								// will return current path
+		IMGUI_API std::string GetCurrentFilter();								// will return selected filter
 		UserDatas GetUserDatas() const;								// will return user datas send with Open Dialog
 
 		// file style by extentions
@@ -1694,7 +1694,7 @@ typedef struct IGFD_Selection IGFD_Selection;
 #ifdef IMGUIFILEDIALOG_NO_EXPORT
 #define API
 #else // IMGUIFILEDIALOG_NO_EXPORT
-#define API __declspec(dllexport)
+#define API IMGUI_API
 #endif // IMGUIFILEDIALOG_NO_EXPORT
 #else // defined _WIN32 || defined __CYGWIN__
 #ifdef __GNUC__
