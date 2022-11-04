@@ -27,13 +27,24 @@ public:		/* For ImGui */
 
 public:		/* For InputDevice */
 	_byte		Get_DIKeyState(_ubyte byKeyID);
-	_byte		Get_DIMouseState(CInput_Device::MOUSEKEYSTATE byMouseID);
-	_long		Get_DIMouseMove(CInput_Device::MOUSEMOVESTATE eMoveState);
+	_byte		Get_DIMouseState(MOUSEKEYSTATE byMouseID);
+	_long		Get_DIMouseMove(MOUSEMOVESTATE eMoveState);
+	_bool		Mouse_Down(MOUSEKEYSTATE MouseButton);
+	_bool		Mouse_Up(MOUSEKEYSTATE MouseButton);
+	_bool		Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
+	_bool		Key_Down(_ubyte byKeyID);
+	_bool		Key_Up(_ubyte byKeyID);
+	void		Reset_EveryKey();
+
+public:		/* For Level Manager */
+	HRESULT	Open_Level(class CLevel* pNewLevel);
+	HRESULT	Render_Level();
 
 private:
 	class CGraphic_Device*		m_pGraphicDev = nullptr;
 	class CImGuiMgr*			m_pImGuiMgr = nullptr;
 	class CInput_Device*		m_pInputDev = nullptr;
+	class CLevelMgr*				m_pLevelMgr = nullptr;
 
 public:
 	static void	Release_Engine();

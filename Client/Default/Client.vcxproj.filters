@@ -16,6 +16,21 @@
     <Filter Include="97. Tool\99. TestTool">
       <UniqueIdentifier>{b9986e19-4e20-40a0-ba51-135e662dd05a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Level">
+      <UniqueIdentifier>{2407785c-938c-4f7c-b9d5-50fa80ca4778}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\00. Loading">
+      <UniqueIdentifier>{3117d178-6010-45b4-ae41-4156ac4c7c95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\01. Logo">
+      <UniqueIdentifier>{70ca98e7-914c-4cbe-99a1-cc09de39808b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\99. TestStage">
+      <UniqueIdentifier>{a979feb7-5958-4471-936e-842dd19240b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Level\00. Loading\Loader">
+      <UniqueIdentifier>{d3ece6d2-6cb8-455c-875a-6b417e52a7dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -39,6 +54,18 @@
     <ClInclude Include="..\Public\TestTool.h">
       <Filter>97. Tool\99. TestTool</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Loading.h">
+      <Filter>01. Level\00. Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>01. Level\00. Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo.h">
+      <Filter>01. Level\01. Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_TestStage.h">
+      <Filter>01. Level\99. TestStage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -52,6 +79,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\TestTool.cpp">
       <Filter>97. Tool\99. TestTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Loading.cpp">
+      <Filter>01. Level\00. Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>01. Level\00. Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Logo.cpp">
+      <Filter>01. Level\01. Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_TestStage.cpp">
+      <Filter>01. Level\99. TestStage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,10 +8,6 @@ class CInput_Device :	public CBase
 {
 	DECLARE_SINGLETON(CInput_Device)
 
-public:
-	enum MOUSEKEYSTATE { DIM_LB, DIM_RB, DIM_MB, DIM_END };
-	enum MOUSEMOVESTATE { DIMS_X, DIMS_Y, DIMS_Z, DIMS_END };
-
 private:
 	CInput_Device();
 	virtual ~CInput_Device() = default;
@@ -28,17 +24,29 @@ public:
 	}
 
 public:
-	HRESULT			Ready_Input_Device(HINSTANCE hInst, HWND hWnd);
-	void			Invalidate_Input_Device(void);
+	_bool		Mouse_Down(MOUSEKEYSTATE MouseButton);
+	_bool		Mouse_Up(MOUSEKEYSTATE MouseButton);
+	_bool		Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
+	_bool		Key_Down(_ubyte byKeyID);
+	_bool		Key_Up(_ubyte byKeyID);
+	void		Reset_EveryKey();
+
+public:
+	HRESULT	Ready_Input_Device(HINSTANCE hInst, HWND hWnd);
+	void		Invalidate_Input_Device(void);
 
 private:
-	_byte			m_byKeyState[256];
-	DIMOUSESTATE	m_MouseState;
-
 	LPDIRECTINPUTDEVICE8		m_pKeyBoard;
 	LPDIRECTINPUTDEVICE8		m_pMouse;
-
 	LPDIRECTINPUT8				m_pInputSDK;
+
+private:
+	_byte							m_byKeyState[256];
+	DIMOUSESTATE				m_MouseState;
+	_bool							m_bKeyState[256];
+	_bool							m_bMouseState[3];
+
+	_int							m_iClickedCnt = 0;
 
 public:
 	virtual void		Free(void);

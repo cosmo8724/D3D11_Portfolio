@@ -30,6 +30,9 @@ private:
 	// For TestTool
 	CTestTool*	pTool = nullptr;
 
+private:
+	HRESULT	Start_Level(LEVEL eLevel);
+
 public:
 	static CMainApp*	Create();
 	virtual void Free() override;

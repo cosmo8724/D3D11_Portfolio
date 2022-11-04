@@ -25,4 +25,7 @@ namespace Engine
 	typedef		XMFLOAT3				_float3;
 	typedef		XMFLOAT4				_float4;
 	typedef		XMFLOAT4X4				_float4x4;
+
+	typedef		ID3D11Device*				DEVICE;
+	typedef		ID3D11DeviceContext*	DEVICE_CONTEXT;
 }

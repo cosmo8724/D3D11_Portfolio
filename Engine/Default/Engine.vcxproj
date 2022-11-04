@@ -178,6 +178,7 @@
     <ClInclude Include="..\ImGui\ImZoomSlider.h" />
     <ClInclude Include="..\Public\Base.h" />
     <ClInclude Include="..\Public\Engine_Define.h" />
+    <ClInclude Include="..\Public\Engine_Enum.h" />
     <ClInclude Include="..\Public\Engine_Function.h" />
     <ClInclude Include="..\Public\Engine_Macro.h" />
     <ClInclude Include="..\Public\Engine_Struct.h" />
@@ -186,6 +187,8 @@
     <ClInclude Include="..\Public\Graphic_Device.h" />
     <ClInclude Include="..\Public\ImGuiMgr.h" />
     <ClInclude Include="..\Public\Input_Device.h" />
+    <ClInclude Include="..\Public\Level.h" />
+    <ClInclude Include="..\Public\LevelMgr.h" />
     <ClInclude Include="..\Public\Tool.h" />
   </ItemGroup>
   <ItemGroup>
@@ -246,6 +249,8 @@
     <ClCompile Include="..\Private\Graphic_Device.cpp" />
     <ClCompile Include="..\Private\ImGuiMgr.cpp" />
     <ClCompile Include="..\Private\Input_Device.cpp" />
+    <ClCompile Include="..\Private\Level.cpp" />
+    <ClCompile Include="..\Private\LevelMgr.cpp" />
     <ClCompile Include="..\Private\Tool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
