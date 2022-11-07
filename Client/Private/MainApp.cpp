@@ -42,10 +42,37 @@ HRESULT CMainApp::Render()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
+	m_pGameInstance->ImGui_Render();
 	m_pGameInstance->Clear_Graphic_Device(&_float4(0.3f, 0.3f, 0.3f, 1.f));
 	m_pGameInstance->Render_Level();
-	m_pGameInstance->ImGui_Render();
+	m_pGameInstance->ImGui_Render_Update();
 	m_pGameInstance->Present();
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Resize_BackBuffer()
+{
+	GRAPHIC_DESC	tGraphicDesc;
+	ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
+
+	D3D11_VIEWPORT	pViewPort;
+	ZeroMemory(&pViewPort, sizeof(D3D11_VIEWPORT));
+
+	UINT					pNumViewPort = 1;
+	m_pDeviceContext->RSGetViewports(&pNumViewPort, &pViewPort);
+
+	static	RECT rt;
+	GetClientRect(g_hWnd, &rt);
+
+	//tGraphicDesc.hInst = g_hInst;
+	tGraphicDesc.hWnd = g_hWnd;
+	tGraphicDesc.iViewportSizeX = rt.right - rt.left;;
+	tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
+	tGraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_END;
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY), E_FAIL);
+
 	return S_OK;
 }
 
@@ -54,7 +81,7 @@ HRESULT CMainApp::Start_Level(LEVEL eLevel)
 	if (LEVEL_LOADING == eLevel || nullptr == m_pGameInstance)
 		return E_FAIL;
 	
-	FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(CLevel_Loading::Create(m_pGraphicDev, m_pDeviceContext, eLevel)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphicDev, m_pDeviceContext, eLevel)), E_FAIL);
 
 	return S_OK;
 }

@@ -61,6 +61,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (WM_QUIT == msg.message)
 				break;
 
+			if (30000 == msg.message)
+				pMainApp->Resize_BackBuffer();
+
 			if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
 			{
 				TranslateMessage(&msg);
@@ -182,6 +185,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             EndPaint(hWnd, &ps);
         }
         break;
+	case WM_SIZE:
+	{
+		/*static RECT	rt;
+		GetClientRect(hWnd, &rt);
+		InvalidateRect(hWnd, nullptr, true);
+		SendMessage(hWnd, 30000, (WPARAM)&rt, NULL);*/
+		break;
+	}
     case WM_DESTROY:
         PostQuitMessage(0);
         break;

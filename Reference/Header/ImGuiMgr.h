@@ -16,6 +16,7 @@ public:
 	HRESULT	Ready_ImGui(HWND hWnd, ID3D11Device* pGraphicDev, ID3D11DeviceContext* pDeviceContext);
 	void		ImGui_NewFrame(_double dTimeDelta);
 	void		ImGui_Render();
+	void		ImGui_Render_Update();
 	
 public:
 	HRESULT	Add_Tool(CTool* pTool);
@@ -25,7 +26,7 @@ public:
 
 private:
 	_double					m_dTimeDelta;
-	std::vector<CTool*>		m_vecTool;
+	vector<CTool*>		m_vecTool;
 };
 
 END

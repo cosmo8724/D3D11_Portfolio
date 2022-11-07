@@ -14,10 +14,14 @@
 // Read online: https://github.com/ocornut/imgui/tree/master/docs
 
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "imgui_impl_win32.h"
+#include "imgui_impl_dx11.h"
 #ifndef WIN32_LEAN_AND_MEAN
 #define WIN32_LEAN_AND_MEAN
 #endif
+#include "Engine_Define.h"
+#include "GameInstance.h"
 #include <windows.h>
 #include <windowsx.h> // GET_X_LPARAM(), GET_Y_LPARAM()
 #include <tchar.h>
@@ -31,6 +35,10 @@
 #include <xinput.h>
 typedef DWORD (WINAPI *PFN_XInputGetCapabilities)(DWORD, DWORD, XINPUT_CAPABILITIES*);
 typedef DWORD (WINAPI *PFN_XInputGetState)(DWORD, XINPUT_STATE*);
+#endif
+
+#ifndef GImGui
+extern IMGUI_API ImGuiContext* GImGui;  // Current implicit context pointer
 #endif
 
 // CHANGELOG
@@ -574,14 +582,63 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 #endif
 IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-    if (ImGui::GetCurrentContext() == NULL)
-        return 0;
+	if (ImGui::GetCurrentContext() == nullptr)
+		return 0;
 
     ImGuiIO& io = ImGui::GetIO();
+	ImVec2 LastWindowSize = io.DisplaySize;
     ImGui_ImplWin32_Data* bd = ImGui_ImplWin32_GetBackendData();
 
     switch (msg)
     {
+	case WM_SIZE:
+	{
+		//if (ImGui::GetCurrentContext()->CurrentViewport == nullptr)
+		//	break;
+
+		ImGui_ImplDX11_Data* bd = ImGui_ImplDX11_GetBackendData();
+
+		GRAPHIC_DESC	tGraphicDesc;
+		ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
+
+		D3D11_VIEWPORT	pViewPort;
+		ZeroMemory(&pViewPort, sizeof(D3D11_VIEWPORT));
+
+		//UINT					pNumViewPort = 1;
+		//m_pDeviceContext->RSGetViewports(&pNumViewPort, &pViewPort);
+
+		RECT rt;
+		GetClientRect(hwnd, &rt);
+
+		//ImVec2 WindowSize = ImGui::GetCurrentContext()->CurrentViewport->Size;
+
+		//tGraphicDesc.hInst = g_hInst;
+		tGraphicDesc.hWnd = hwnd;
+		tGraphicDesc.iViewportSizeX = rt.right - rt.left;;
+		tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
+		tGraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_END;
+
+		FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY), E_FAIL);
+		
+		//ImGuiContext& g = *GImGui;
+		//ImGui::SetWindowSize(ImVec2((float)tGraphicDesc.iViewportSizeX, (float)tGraphicDesc.iViewportSizeY));
+		
+		//g.CurrentViewport->Size = ImVec2{ (float)tGraphicDesc.iViewportSizeX, (float)tGraphicDesc.iViewportSizeY };
+
+		float Relative_scale = static_cast<float>(tGraphicDesc.iViewportSizeX) / LastWindowSize.x;
+		for (const auto &viewport : ImGui::GetCurrentContext()->Viewports)
+		{
+			if (ImGui::GetMainViewport() != viewport)
+				continue;
+			ImGui::ScaleWindowsInViewport(viewport, 1.f);
+		}
+		//ImGui::GetStyle().ScaleAllSizes(Relative_scale);
+		//io.FontGlobalScale = Relative_scale;
+
+		io.DisplaySize = ImVec2{ (float)tGraphicDesc.iViewportSizeX, (float)tGraphicDesc.iViewportSizeY };
+
+		break;
+	}
     case WM_MOUSEMOVE:
     {
         // We need to call TrackMouseEvent in order to receive WM_MOUSELEAVE events

@@ -46,6 +46,15 @@
     <Filter Include="01. Utility\01. Level\Manager">
       <UniqueIdentifier>{9a691681-9f1d-4fc0-bb27-0af930310630}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\02. GameObject">
+      <UniqueIdentifier>{58371287-38fe-4671-948a-e94344169347}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\02. GameObject\Manager">
+      <UniqueIdentifier>{a2482851-32b0-4405-ac8e-64b526d95ada}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\02. GameObject\Manager\Layer">
+      <UniqueIdentifier>{2c1e5e8d-b6a7-4278-8d5b-3c92b66c079b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -110,6 +119,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\LevelMgr.cpp">
       <Filter>01. Utility\01. Level\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameObject.cpp">
+      <Filter>01. Utility\02. GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Layer.cpp">
+      <Filter>01. Utility\02. GameObject\Manager\Layer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ObjectMgr.cpp">
+      <Filter>01. Utility\02. GameObject\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +223,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Engine_Enum.h">
       <Filter>99. Define</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameObject.h">
+      <Filter>01. Utility\02. GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Layer.h">
+      <Filter>01. Utility\02. GameObject\Manager\Layer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ObjectMgr.h">
+      <Filter>01. Utility\02. GameObject\Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

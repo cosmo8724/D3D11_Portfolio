@@ -32,8 +32,7 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 		return E_FAIL;
 
 	/* ÀåÄ¡¿¡ ¹ÙÀÎµåÇØ³õÀ» ·»´õÅ¸°Ùµé°ú µª½º½ºÅÙ½Çºä¸¦ ¼ÂÆÃÇÑ´Ù. */
-	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, 
-		m_pDepthStencilView);		
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
 	
 	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
@@ -87,7 +86,25 @@ HRESULT CGraphic_Device::Present()
 	if (nullptr == m_pSwapChain)
 		return E_FAIL;
 
-	return m_pSwapChain->Present(0, 0);	
+	static _bool	bStandByMode = false;
+	HRESULT		hr;
+
+	if (bStandByMode)
+	{
+		hr = m_pSwapChain->Present(0, DXGI_PRESENT_TEST);
+
+		if (hr == DXGI_STATUS_OCCLUDED)
+			return DXGI_STATUS_OCCLUDED;
+
+		bStandByMode = false;
+	}
+	
+	hr = m_pSwapChain->Present(0, 0);
+
+	if (hr == DXGI_STATUS_OCCLUDED)
+		bStandByMode = true;
+
+	return hr;	
 }
 
 
@@ -113,6 +130,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMo
 	SwapChain.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	SwapChain.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
+	SwapChain.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 	SwapChain.SampleDesc.Quality = 0;
 	SwapChain.SampleDesc.Count = 1;
 	SwapChain.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -141,6 +159,9 @@ HRESULT CGraphic_Device::Ready_BackBufferRenderTargetView()
 
 	if (FAILED(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture)))
 		return E_FAIL;
+
+	if (m_pBackBufferRTV)
+		Safe_Release(m_pBackBufferRTV);
 
 	if (FAILED(m_pDevice->CreateRenderTargetView(pBackBufferTexture, nullptr, &m_pBackBufferRTV)))
 		return E_FAIL;	
@@ -181,10 +202,60 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 	/* ShaderResource */
 	/* DepthStencil */
 
+	if (m_pDepthStencilView)
+		Safe_Release(m_pDepthStencilView);
+
 	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDepthStencilView)))
 		return E_FAIL;	
 
 	Safe_Release(pDepthStencilTexture);
+
+	return S_OK;
+}
+
+HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
+{
+	//m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+
+	////Safe_Release(m_pBackBufferRTV);
+	////Safe_Release(m_pDepthStencilView);
+
+	//DXGI_MODE_DESC		SwapChain;
+	//ZeroMemory(&SwapChain, sizeof(DXGI_MODE_DESC));
+
+	//SwapChain.Width = iWinCX;
+	//SwapChain.Height = iWinCY;
+	//SwapChain.RefreshRate.Numerator = 60;
+	//SwapChain.RefreshRate.Denominator = 1;
+	//SwapChain.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	//SwapChain.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	//SwapChain.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+
+	//BOOL		bIsFullScreen;
+	//m_pSwapChain->GetFullscreenState(&bIsFullScreen, nullptr);
+
+	//m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
+	//m_pSwapChain->ResizeTarget(&SwapChain);
+	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_UNKNOWN, 0);
+
+	if (FAILED(Ready_BackBufferRenderTargetView()))
+		return E_FAIL;
+
+	if (FAILED(Ready_DepthStencilRenderTargetView(iWinCX, iWinCY)))
+		return E_FAIL;
+
+	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
+
+	D3D11_VIEWPORT			ViewPortDesc;
+	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
+	ViewPortDesc.TopLeftX = 0;
+	ViewPortDesc.TopLeftY = 0;
+	ViewPortDesc.Width = (float)iWinCX;
+	ViewPortDesc.Height = (float)iWinCY;
+	ViewPortDesc.MinDepth = 0.f;
+	ViewPortDesc.MaxDepth = 1.f;
+
+	m_pDeviceContext->RSSetViewports(1, &ViewPortDesc);
 
 	return S_OK;
 }

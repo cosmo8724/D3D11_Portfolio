@@ -47,6 +47,10 @@ void CImGuiMgr::ImGui_NewFrame(_double dTimeDelta)
 void CImGuiMgr::ImGui_Render()
 {
 	ImGui::Render();
+}
+
+void CImGuiMgr::ImGui_Render_Update()
+{
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)

@@ -16,6 +16,9 @@ public:
 	virtual void			Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT		Render() override;
 
+private:
+	HRESULT				Ready_Layer_BackGround(const wstring& wstrLayerTag);
+
 public:
 	static CLevel_Logo*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	virtual void			Free() override;
