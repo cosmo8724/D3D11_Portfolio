@@ -11,9 +11,10 @@ private:
 	virtual ~CLoader() = default;
 
 public:
-	const LEVEL&		Get_NextLevel() const		{ return m_eNextLevel; }
-	const wstring&	Get_LoadingText() const	{ return m_wstrLoadingText; }
-	const _bool&		IsFinished() const			{ return m_bIsFinished; }
+	const LEVEL&			Get_NextLevel() const		{ return m_eNextLevel; }
+	const wstring&		Get_LoadingText() const	{ return m_wstrLoadingText; }
+	CRITICAL_SECTION	Get_CriticalSection() const { return m_CriticalSection; }
+	const _bool&			IsFinished() const			{ return m_bIsFinished; }
 
 public:
 	HRESULT			Initialize(LEVEL eNextLevel);
@@ -23,6 +24,7 @@ public:
 private:
 	DEVICE				m_pDevice = nullptr;
 	DEVICE_CONTEXT	m_pContext = nullptr;
+	CRITICAL_SECTION	m_CriticalSection;
 
 private:
 	LEVEL					m_eNextLevel = LEVEL_END;

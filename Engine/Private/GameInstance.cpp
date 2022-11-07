@@ -2,6 +2,7 @@
 #include "Graphic_Device.h"
 #include "ImGuiMgr.h"
 #include "LevelMgr.h"
+#include "ObjectMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -10,14 +11,16 @@ CGameInstance::CGameInstance()
 	, m_pImGuiMgr(CImGuiMgr::GetInstance())
 	, m_pInputDev(CInput_Device::GetInstance())
 	, m_pLevelMgr(CLevelMgr::GetInstance())
+	, m_pObjectMgr(CObjectMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
 	Safe_AddRef(m_pInputDev);
 	Safe_AddRef(m_pLevelMgr);
+	Safe_AddRef(m_pObjectMgr);
 }
 
-HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & tGraphicDesc, ID3D11Device ** ppDeviceOut, ID3D11DeviceContext ** ppContextOut)
+HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
 {
 	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
 
@@ -48,6 +51,13 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
 }
 
+void CGameInstance::Clear_Level(_uint iLevelIndex)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, );
+
+	m_pObjectMgr->Clear(iLevelIndex);
+}
+
 HRESULT CGameInstance::Clear_Graphic_Device(const _float4 * pColor)
 {
 	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
@@ -65,11 +75,25 @@ HRESULT CGameInstance::Present()
 	return m_pGraphicDev->Present();
 }
 
+HRESULT CGameInstance::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
+{
+	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
+
+	return m_pGraphicDev->Update_SwapChain(hWnd, iWinCX, iWinCY);
+}
+
 void CGameInstance::ImGui_Render()
 {
 	NULL_CHECK_RETURN(m_pImGuiMgr, );
 
 	m_pImGuiMgr->ImGui_Render();
+}
+
+void CGameInstance::ImGui_Render_Update()
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, );
+
+	m_pImGuiMgr->ImGui_Render_Update();
 }
 
 HRESULT CGameInstance::Add_Tool(CTool * pTool)
@@ -142,11 +166,11 @@ void CGameInstance::Reset_EveryKey()
 	m_pInputDev->Reset_EveryKey();
 }
 
-HRESULT CGameInstance::Open_Level(CLevel * pNewLevel)
+HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
 {
 	NULL_CHECK_RETURN(m_pLevelMgr, E_FAIL);
 
-	return m_pLevelMgr->Open_Level(pNewLevel);
+	return m_pLevelMgr->Open_Level(iLevelIndex, pNewLevel);
 }
 
 HRESULT CGameInstance::Render_Level()
@@ -156,9 +180,24 @@ HRESULT CGameInstance::Render_Level()
 	return m_pLevelMgr->Render();
 }
 
+HRESULT CGameInstance::Add_Prototype(const wstring & wstrPrototypeTag, CGameObject * pPrototype)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
+
+	return m_pObjectMgr->Add_Prototype(wstrPrototypeTag, pPrototype);
+}
+
+HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLayerTag, const wstring & wstrPrototypeTag, void * pArg)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
+
+	return m_pObjectMgr->Clone_GameObject(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
+	CObjectMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CImGuiMgr::GetInstance()->DestroyInstance();
@@ -167,6 +206,7 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pObjectMgr);
 	Safe_Release(m_pLevelMgr);
 	Safe_Release(m_pInputDev);
 	Safe_Release(m_pImGuiMgr);

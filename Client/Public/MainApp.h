@@ -22,6 +22,9 @@ public:
 	void		Tick(_double dTimeDelta);
 	HRESULT	Render();
 
+public:
+	HRESULT	Resize_BackBuffer();
+
 private:
 	CGameInstance*		m_pGameInstance = nullptr;
 	ID3D11Device*			m_pGraphicDev = nullptr;

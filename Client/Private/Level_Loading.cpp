@@ -25,6 +25,11 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 void CLevel_Loading::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+}
+
+void CLevel_Loading::Late_Tick(_double dTimeDelta)
+{
+	__super::Late_Tick(dTimeDelta);
 
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -45,16 +50,15 @@ void CLevel_Loading::Tick(_double dTimeDelta)
 				pLevel = CLevel_TestStage::Create(m_pDevice, m_pContext);
 				break;
 			}
-			NULL_CHECK_RETURN(pLevel, );
-			FAILED_CHECK_RETURN(pGameInstance->Open_Level(pLevel), );
+
+			if (FAILED(pLevel == nullptr || pGameInstance->Open_Level(m_eNextLevel, pLevel)))
+			{
+				Safe_Release(pGameInstance);
+				return;
+			}
 		}
 	}
 	Safe_Release(pGameInstance);
-}
-
-void CLevel_Loading::Late_Tick(_double dTimeDelta)
-{
-	__super::Late_Tick(dTimeDelta);
 }
 
 HRESULT CLevel_Loading::Render()

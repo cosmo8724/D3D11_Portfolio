@@ -6,7 +6,7 @@ BEGIN(Engine)
 class ENGINE_DLL CLevel abstract : public CBase
 {
 protected:
-	CLevel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CLevel(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	virtual ~CLevel() = default;
 
 public:
