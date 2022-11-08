@@ -1,4 +1,8 @@
 #include "..\public\Graphic_Device.h"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
 
 IMPLEMENT_SINGLETON(CGraphic_Device)
 
@@ -86,7 +90,7 @@ HRESULT CGraphic_Device::Present()
 	if (nullptr == m_pSwapChain)
 		return E_FAIL;
 
-	static _bool	bStandByMode = false;
+	/*static _bool	bStandByMode = false;
 	HRESULT		hr;
 
 	if (bStandByMode)
@@ -104,7 +108,12 @@ HRESULT CGraphic_Device::Present()
 	if (hr == DXGI_STATUS_OCCLUDED)
 		bStandByMode = true;
 
-	return hr;	
+	return hr;	*/
+
+	int a = ImGui::GetCurrentContext()->Viewports.Size;
+	a = ImGui::GetCurrentContext()->PlatformIO.Viewports.Size;
+
+	return m_pSwapChain->Present(0, 0);
 }
 
 
@@ -124,7 +133,7 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMo
 			
 	SwapChain.BufferDesc.Width = iWinCX;
 	SwapChain.BufferDesc.Height = iWinCY;
-	SwapChain.BufferDesc.RefreshRate.Numerator = 60;
+	SwapChain.BufferDesc.RefreshRate.Numerator = 0;
 	SwapChain.BufferDesc.RefreshRate.Denominator = 1;
 	SwapChain.BufferDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
 	SwapChain.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
@@ -159,9 +168,6 @@ HRESULT CGraphic_Device::Ready_BackBufferRenderTargetView()
 
 	if (FAILED(m_pSwapChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&pBackBufferTexture)))
 		return E_FAIL;
-
-	if (m_pBackBufferRTV)
-		Safe_Release(m_pBackBufferRTV);
 
 	if (FAILED(m_pDevice->CreateRenderTargetView(pBackBufferTexture, nullptr, &m_pBackBufferRTV)))
 		return E_FAIL;	
@@ -202,9 +208,6 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 	/* ShaderResource */
 	/* DepthStencil */
 
-	if (m_pDepthStencilView)
-		Safe_Release(m_pDepthStencilView);
-
 	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDepthStencilView)))
 		return E_FAIL;	
 
@@ -215,27 +218,107 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 
 HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 {
-	//m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
+	/*m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
-	////Safe_Release(m_pBackBufferRTV);
-	////Safe_Release(m_pDepthStencilView);
+	//Safe_Release(m_pBackBufferRTV);
+	//Safe_Release(m_pDepthStencilView);
 
-	//DXGI_MODE_DESC		SwapChain;
-	//ZeroMemory(&SwapChain, sizeof(DXGI_MODE_DESC));
+	DXGI_MODE_DESC		SwapChain;
+	ZeroMemory(&SwapChain, sizeof(DXGI_MODE_DESC));
 
-	//SwapChain.Width = iWinCX;
-	//SwapChain.Height = iWinCY;
-	//SwapChain.RefreshRate.Numerator = 60;
-	//SwapChain.RefreshRate.Denominator = 1;
-	//SwapChain.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	//SwapChain.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	//SwapChain.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+	SwapChain.Width = iWinCX;
+	SwapChain.Height = iWinCY;
+	SwapChain.RefreshRate.Numerator = 60;
+	SwapChain.RefreshRate.Denominator = 1;
+	SwapChain.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+	SwapChain.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+	SwapChain.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
 
-	//BOOL		bIsFullScreen;
-	//m_pSwapChain->GetFullscreenState(&bIsFullScreen, nullptr);
+	BOOL		bIsFullScreen;
+	m_pSwapChain->GetFullscreenState(&bIsFullScreen, nullptr);
 
-	//m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
-	//m_pSwapChain->ResizeTarget(&SwapChain);
+	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
+	m_pSwapChain->ResizeTarget(&SwapChain);*/
+
+	BOOL	bIsFullScreen = false;
+	m_pSwapChain->GetFullscreenState(&bIsFullScreen, nullptr);
+
+	if (bIsFullScreen)
+	{
+		ImGuiContext*	CurContext = ImGui::GetCurrentContext();
+		ImGuiViewportP*	ToolWindowViewport = nullptr;
+		
+		ImVector<ImGuiWindow*>*		Windows = &ImGui::GetCurrentContext()->Windows;
+		ImVector<ImGuiViewportP*>*	Viewports = &ImGui::GetCurrentContext()->Viewports;
+		for (auto Window : *Windows)
+		{
+			if (fabs(Window->SizeFull.x - ImGui::GetMainViewport()->Size.x < 0.00001f) && fabs(Window->SizeFull.y - ImGui::GetMainViewport()->Size.y < 0.00001f))
+				ToolWindowViewport = Window->Viewport;
+
+			if (Window->ViewportOwned)
+			{
+				if (Window->Viewport == ImGui::GetCurrentContext()->MouseLastHoveredViewport)
+					ImGui::GetCurrentContext()->MouseLastHoveredViewport = nullptr;
+
+				//ImGui::DestroyPlatformWindow(Window->Viewport);
+				//IM_ASSERT(ImGui::GetCurrentContext()->PlatformIO.Viewports.contains(Window->Viewport) == false);
+				//IM_ASSERT(ImGui::GetCurrentContext()->Viewports[Window->Viewport->Idx] == Window->Viewport);
+				//ImGui::GetCurrentContext()->Viewports.erase(ImGui::GetCurrentContext()->Viewports.Data + Window->Viewport->Idx);
+				//IM_DELETE(Window->Viewport);
+
+				//Window->Viewport = ToolWindowViewport;
+				//Window->ViewportOwned = false;
+				//ImGui::GetCurrentContext()->FrameCountPlatformEnded--;
+				//ImGui::UpdatePlatformWindows();
+				
+				Window->ViewportOwned = false;
+
+				/*for (auto Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.begin(); Viewport != ImGui::GetCurrentContext()->PlatformIO.Viewports.end();)
+				{
+					if ((*Viewport)->ID == Window->Viewport->ID)
+					{
+						Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.erase(Viewport);
+						ImGui::GetCurrentContext()->PlatformIO.Viewports.Size--;
+						continue;
+					}
+					Viewport++;
+				}*/
+
+				/*Window->Viewport = ToolWindowViewport;
+				Window->ViewportId = ToolWindowViewport->ID;
+				Window->ViewportPos = ToolWindowViewport->Pos;
+				Window->ViewportOwned = false;
+				Window->BeginOrderWithinContext = 2;*/
+			}
+		}
+
+		iWinCX = GetSystemMetrics(SM_CXSCREEN);
+		iWinCY = GetSystemMetrics(SM_CYSCREEN);
+
+		/*for (auto Viewport : CurContext->Viewports)
+		{
+			if (Viewport->ID != ImGui::GetMainViewport()->ID
+				&& ToolWindowViewport)
+			{
+				ImGuiViewportP*	LastViewport = Viewport;
+
+				Viewport = ToolWindowViewport;
+				Viewport->Size;
+			}
+		}*/
+
+		//ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
+	}
+	else
+	{
+		//ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	}
+
+	if (m_pBackBufferRTV)
+		Safe_Release(m_pBackBufferRTV);
+	if (m_pDepthStencilView)
+		Safe_Release(m_pDepthStencilView);
+
 	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_UNKNOWN, 0);
 
 	if (FAILED(Ready_BackBufferRenderTargetView()))

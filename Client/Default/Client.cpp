@@ -61,9 +61,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 			if (WM_QUIT == msg.message)
 				break;
 
-			if (30000 == msg.message)
-				pMainApp->Resize_BackBuffer();
-
 			if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
 			{
 				TranslateMessage(&msg);
@@ -72,6 +69,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
+			pMainApp->Resize_BackBuffer();
 			pMainApp->Tick(0.0);
 			pMainApp->Render();
 		}

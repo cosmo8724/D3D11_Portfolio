@@ -56,16 +56,9 @@ HRESULT CMainApp::Resize_BackBuffer()
 	GRAPHIC_DESC	tGraphicDesc;
 	ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
 
-	D3D11_VIEWPORT	pViewPort;
-	ZeroMemory(&pViewPort, sizeof(D3D11_VIEWPORT));
-
-	UINT					pNumViewPort = 1;
-	m_pDeviceContext->RSGetViewports(&pNumViewPort, &pViewPort);
-
 	static	RECT rt;
 	GetClientRect(g_hWnd, &rt);
 
-	//tGraphicDesc.hInst = g_hInst;
 	tGraphicDesc.hWnd = g_hWnd;
 	tGraphicDesc.iViewportSizeX = rt.right - rt.left;;
 	tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
