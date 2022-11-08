@@ -591,28 +591,17 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARA
 
     switch (msg)
     {
-	case WM_SIZE:
+	/*case WM_SIZE:
 	{
-		//if (ImGui::GetCurrentContext()->CurrentViewport == nullptr)
-		//	break;
-
-		ImGui_ImplDX11_Data* bd = ImGui_ImplDX11_GetBackendData();
-
 		GRAPHIC_DESC	tGraphicDesc;
 		ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
 
 		D3D11_VIEWPORT	pViewPort;
 		ZeroMemory(&pViewPort, sizeof(D3D11_VIEWPORT));
 
-		//UINT					pNumViewPort = 1;
-		//m_pDeviceContext->RSGetViewports(&pNumViewPort, &pViewPort);
-
 		RECT rt;
 		GetClientRect(hwnd, &rt);
 
-		//ImVec2 WindowSize = ImGui::GetCurrentContext()->CurrentViewport->Size;
-
-		//tGraphicDesc.hInst = g_hInst;
 		tGraphicDesc.hWnd = hwnd;
 		tGraphicDesc.iViewportSizeX = rt.right - rt.left;;
 		tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
@@ -620,25 +609,22 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARA
 
 		FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY), E_FAIL);
 		
-		//ImGuiContext& g = *GImGui;
-		//ImGui::SetWindowSize(ImVec2((float)tGraphicDesc.iViewportSizeX, (float)tGraphicDesc.iViewportSizeY));
-		
-		//g.CurrentViewport->Size = ImVec2{ (float)tGraphicDesc.iViewportSizeX, (float)tGraphicDesc.iViewportSizeY };
+		static _bool	bLastFrameFullScreen = false;
+		_bool	bIsFullScreen = false;
+		int iWidth = GetSystemMetrics(SM_CXSCREEN);
+		int iHeight = GetSystemMetrics(SM_CYSCREEN);
 
-		float Relative_scale = static_cast<float>(tGraphicDesc.iViewportSizeX) / LastWindowSize.x;
-		for (const auto &viewport : ImGui::GetCurrentContext()->Viewports)
+		if (fabs(ImGui::GetMainViewport()->Size.x - iWidth) < 0.00001f && fabs(ImGui::GetMainViewport()->Size.y - iHeight) < 0.00001f)
+			bIsFullScreen = true;
+
+		if (bLastFrameFullScreen != bIsFullScreen)
 		{
-			if (ImGui::GetMainViewport() != viewport)
-				continue;
-			ImGui::ScaleWindowsInViewport(viewport, 1.f);
+			if (!bIsFullScreen)
+				ImGui::UpdatePlatformWindows();
+			bLastFrameFullScreen = bIsFullScreen;
 		}
-		//ImGui::GetStyle().ScaleAllSizes(Relative_scale);
-		//io.FontGlobalScale = Relative_scale;
-
-		io.DisplaySize = ImVec2{ (float)tGraphicDesc.iViewportSizeX, (float)tGraphicDesc.iViewportSizeY };
-
 		break;
-	}
+	}*/
     case WM_MOUSEMOVE:
     {
         // We need to call TrackMouseEvent in order to receive WM_MOUSELEAVE events
