@@ -266,12 +266,13 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 				//ImGui::GetCurrentContext()->Viewports.erase(ImGui::GetCurrentContext()->Viewports.Data + Window->Viewport->Idx);
 				//IM_DELETE(Window->Viewport);
 
-				//Window->Viewport = ToolWindowViewport;
+				Window->Viewport = ToolWindowViewport;
 				//Window->ViewportOwned = false;
 				//ImGui::GetCurrentContext()->FrameCountPlatformEnded--;
 				//ImGui::UpdatePlatformWindows();
 				
 				Window->ViewportOwned = false;
+				Window->SetWindowPosPivot = ImVec2{ 0.2f, 0.2f };
 
 				/*for (auto Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.begin(); Viewport != ImGui::GetCurrentContext()->PlatformIO.Viewports.end();)
 				{
