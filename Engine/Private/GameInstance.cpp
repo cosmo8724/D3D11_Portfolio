@@ -86,11 +86,11 @@ HRESULT CGameInstance::Present()
 	return m_pGraphicDev->Present();
 }
 
-HRESULT CGameInstance::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen)
+HRESULT CGameInstance::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate)
 {
 	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
 
-	return m_pGraphicDev->Update_SwapChain(hWnd, iWinCX, iWinCY, bIsFullScreen);
+	return m_pGraphicDev->Update_SwapChain(hWnd, iWinCX, iWinCY, bIsFullScreen, bNeedUpdate);
 }
 
 void CGameInstance::ImGui_Render()

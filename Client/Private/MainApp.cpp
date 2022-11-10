@@ -60,15 +60,24 @@ HRESULT CMainApp::Resize_BackBuffer()
 	GRAPHIC_DESC	tGraphicDesc;
 	ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
 
-	static	RECT rt;
-	GetClientRect(g_hWnd, &rt);
+	
 
 	tGraphicDesc.hWnd = g_hWnd;
-	tGraphicDesc.iViewportSizeX = rt.right - rt.left;;
-	tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
-	tGraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_END;
+	if (!g_bFullScreen)
+	{
+		RECT	rt;
+		GetClientRect(g_hWnd, &rt);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY, g_bFullScreen), E_FAIL);
+		tGraphicDesc.iViewportSizeX = rt.right - rt.left;
+		tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
+	}
+	else
+	{
+		tGraphicDesc.iViewportSizeX = GetSystemMetrics(SM_CXSCREEN);
+		tGraphicDesc.iViewportSizeY = GetSystemMetrics(SM_CYSCREEN);
+	}
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY, g_bFullScreen, g_bNeedResizeSwapChain), E_FAIL);
 
 	return S_OK;
 }

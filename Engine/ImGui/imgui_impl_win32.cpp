@@ -585,46 +585,11 @@ IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARA
 	if (ImGui::GetCurrentContext() == nullptr)
 		return 0;
 
-    ImGuiIO& io = ImGui::GetIO();
-	ImVec2 LastWindowSize = io.DisplaySize;
+	ImGuiIO& io = ImGui::GetIO();
     ImGui_ImplWin32_Data* bd = ImGui_ImplWin32_GetBackendData();
 
     switch (msg)
     {
-	/*case WM_SIZE:
-	{
-		GRAPHIC_DESC	tGraphicDesc;
-		ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
-
-		D3D11_VIEWPORT	pViewPort;
-		ZeroMemory(&pViewPort, sizeof(D3D11_VIEWPORT));
-
-		RECT rt;
-		GetClientRect(hwnd, &rt);
-
-		tGraphicDesc.hWnd = hwnd;
-		tGraphicDesc.iViewportSizeX = rt.right - rt.left;;
-		tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
-		tGraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_END;
-
-		FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY), E_FAIL);
-		
-		static _bool	bLastFrameFullScreen = false;
-		_bool	bIsFullScreen = false;
-		int iWidth = GetSystemMetrics(SM_CXSCREEN);
-		int iHeight = GetSystemMetrics(SM_CYSCREEN);
-
-		if (fabs(ImGui::GetMainViewport()->Size.x - iWidth) < 0.00001f && fabs(ImGui::GetMainViewport()->Size.y - iHeight) < 0.00001f)
-			bIsFullScreen = true;
-
-		if (bLastFrameFullScreen != bIsFullScreen)
-		{
-			if (!bIsFullScreen)
-				ImGui::UpdatePlatformWindows();
-			bLastFrameFullScreen = bIsFullScreen;
-		}
-		break;
-	}*/
     case WM_MOUSEMOVE:
     {
         // We need to call TrackMouseEvent in order to receive WM_MOUSELEAVE events
