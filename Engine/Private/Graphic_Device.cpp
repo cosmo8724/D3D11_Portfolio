@@ -69,9 +69,6 @@ HRESULT CGraphic_Device::Clear_BackBuffer_View(_float4 vClearColor)
 	/* 백버퍼를 초기화한다.  */
 	m_pDeviceContext->ClearRenderTargetView(m_pBackBufferRTV, (_float*)&vClearColor);
 
-	
-
-
  	return S_OK;
 }
 
@@ -90,7 +87,7 @@ HRESULT CGraphic_Device::Present()
 	if (nullptr == m_pSwapChain)
 		return E_FAIL;
 
-	/*static _bool	bStandByMode = false;
+	static _bool	bStandByMode = false;
 	HRESULT		hr;
 
 	if (bStandByMode)
@@ -108,12 +105,7 @@ HRESULT CGraphic_Device::Present()
 	if (hr == DXGI_STATUS_OCCLUDED)
 		bStandByMode = true;
 
-	return hr;	*/
-
-	int a = ImGui::GetCurrentContext()->Viewports.Size;
-	a = ImGui::GetCurrentContext()->PlatformIO.Viewports.Size;
-
-	return m_pSwapChain->Present(0, 0);
+	return hr;	
 }
 
 
@@ -148,10 +140,10 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMo
 	SwapChain.Windowed = eWinMode;
 	SwapChain.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
-	FAILED_CHECK_RETURN(pFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER), E_FAIL);
-
 	if (FAILED(pFactory->CreateSwapChain(m_pDevice, &SwapChain, &m_pSwapChain)))
 		return E_FAIL;
+
+	FAILED_CHECK_RETURN(pFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER), E_FAIL);
 
 	Safe_Release(pFactory);
 	Safe_Release(pAdapter);
@@ -218,31 +210,8 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 	return S_OK;
 }
 
-HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen)
+HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate)
 {
-	m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-	/*m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
-
-	//Safe_Release(m_pBackBufferRTV);
-	//Safe_Release(m_pDepthStencilView);
-
-	DXGI_MODE_DESC		SwapChain;
-	ZeroMemory(&SwapChain, sizeof(DXGI_MODE_DESC));
-
-	SwapChain.Width = iWinCX;
-	SwapChain.Height = iWinCY;
-	SwapChain.RefreshRate.Numerator = 60;
-	SwapChain.RefreshRate.Denominator = 1;
-	SwapChain.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
-	SwapChain.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	SwapChain.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-
-	BOOL		bIsFullScreen;
-	m_pSwapChain->GetFullscreenState(&bIsFullScreen, nullptr);
-
-	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
-	m_pSwapChain->ResizeTarget(&SwapChain);*/
-
 	//if (bIsFullScreen)
 	//{
 	//	ImGuiContext*	CurContext = ImGui::GetCurrentContext();
@@ -266,13 +235,10 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY,
 	//			//ImGui::GetCurrentContext()->Viewports.erase(ImGui::GetCurrentContext()->Viewports.Data + Window->Viewport->Idx);
 	//			//IM_DELETE(Window->Viewport);
 
-	//			//Window->Pos = Window->Viewport->Pos;
-	//			//Window->Viewport = ToolWindowViewport;
-	//			//Window->ViewportId = ToolWindowViewport->ID;
-	//			//Window->ViewportPos = ImGui::GetMainViewport()->WorkPos;
-	//			//Window->ViewportOwned = false;
-	//			//Window->ViewportOwned = false;
-	//			//ImGui::GetCurrentContext()->FrameCountPlatformEnded--;
+	//			Window->Pos = Window->Viewport->Pos;
+	//			Window->Viewport = ToolWindowViewport;
+	//			Window->ViewportId = ToolWindowViewport->ID;
+	//			Window->ViewportOwned = false;
 	//			
 
 	//			/*for (auto Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.begin(); Viewport != ImGui::GetCurrentContext()->PlatformIO.Viewports.end();)
@@ -285,47 +251,20 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY,
 	//				}
 	//				Viewport++;
 	//			}*/
-
-	//			/*Window->Viewport = ToolWindowViewport;
-	//			Window->ViewportId = ToolWindowViewport->ID;
-	//			Window->ViewportPos = ToolWindowViewport->Pos;
-	//			Window->ViewportOwned = false;
-	//			Window->BeginOrderWithinContext = 2;*/
 	//		}
 	//	}
-
-	//	//iWinCX = GetSystemMetrics(SM_CXSCREEN);
-	//	//iWinCY = GetSystemMetrics(SM_CYSCREEN);
-
-	//	/*for (auto Viewport : CurContext->Viewports)
-	//	{
-	//		if (Viewport->ID != ImGui::GetMainViewport()->ID
-	//			&& ToolWindowViewport)
-	//		{
-	//			ImGuiViewportP*	LastViewport = Viewport;
-
-	//			Viewport = ToolWindowViewport;
-	//			Viewport->Size;
-	//		}
-	//	}*/
-
-	//	//ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
 	//}
-	//else
-	//{
-	//	//ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	//}
+	if (!bNeedUpdate)
+	{
+		m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
 
+		return S_OK;
+	}
+	
 	if (m_pBackBufferRTV)
 		Safe_Release(m_pBackBufferRTV);
 	if (m_pDepthStencilView)
 		Safe_Release(m_pDepthStencilView);
-	
-	if (bIsFullScreen)
-	{
-		iWinCX = GetSystemMetrics(SM_CXSCREEN);
-		iWinCY = GetSystemMetrics(SM_CYSCREEN);
-	}
 
 	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
 
@@ -337,8 +276,6 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY,
 
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
 
-	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
-
 	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
 	ViewPortDesc.TopLeftX = 0;
@@ -349,6 +286,33 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY,
 	ViewPortDesc.MaxDepth = 1.f;
 
 	m_pDeviceContext->RSSetViewports(1, &ViewPortDesc);
+
+	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
+
+	//if (m_pBackBufferRTV)
+	//	Safe_Release(m_pBackBufferRTV);
+	//if (m_pDepthStencilView)
+	//	Safe_Release(m_pDepthStencilView);
+	//
+	//if (bIsFullScreen)
+	//{
+	//	iWinCX = GetSystemMetrics(SM_CXSCREEN);
+	//	iWinCY = GetSystemMetrics(SM_CYSCREEN);
+	//}
+
+	//m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	//
+	//if (FAILED(Ready_BackBufferRenderTargetView()))
+	//	return E_FAIL;
+
+	//if (FAILED(Ready_DepthStencilRenderTargetView(iWinCX, iWinCY)))
+	//	return E_FAIL;
+
+	////m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
+	//
+	//m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
+
+	
 
 	return S_OK;
 }

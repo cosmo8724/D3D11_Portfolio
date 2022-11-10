@@ -71,13 +71,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
-			if (g_bNeedResizeSwapChain)
-			{
-				g_bNeedResizeSwapChain = false;
+			//if (g_bNeedResizeSwapChain)
+			//{
+			//	g_bNeedResizeSwapChain = false;
 				pMainApp->Resize_BackBuffer();
-			}
+			//}
 			pMainApp->Tick(0.0);
 			pMainApp->Render();
+			g_bNeedResizeSwapChain = false;
 		}
 	}
 
@@ -191,16 +192,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 	case WM_SIZE:
 	{
-		/*static RECT	rt;
+		if (g_bFullScreen)
+			return 0;
+		RECT	rt;
 		GetClientRect(hWnd, &rt);
-		InvalidateRect(hWnd, nullptr, true);
-		SendMessage(hWnd, 30000, (WPARAM)&rt, NULL);*/
+		g_iWinSizeX = rt.right - rt.left;
+		g_iWinSizeY = rt.bottom - rt.top;
+		g_bNeedResizeSwapChain = true;
 		break;
 	}
 	case WM_SYSKEYDOWN:
 	{
 		if (wParam == VK_RETURN && GetAsyncKeyState(VK_MENU))
 		{
+			if (!g_bFullScreen)
+			{
+				RECT	rt;
+				GetClientRect(hWnd, &rt);
+				g_iWinSizeX = rt.right - rt.left;
+				g_iWinSizeY = rt.bottom - rt.top;
+			}
 			g_bFullScreen = !g_bFullScreen;
 			g_bNeedResizeSwapChain = true;
 			return 0;
