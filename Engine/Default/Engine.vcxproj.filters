@@ -55,6 +55,24 @@
     <Filter Include="01. Utility\02. GameObject\Manager\Layer">
       <UniqueIdentifier>{2c1e5e8d-b6a7-4278-8d5b-3c92b66c079b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component">
+      <UniqueIdentifier>{c0469c77-3948-4160-adb9-272b4c44f73e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\00. Manager">
+      <UniqueIdentifier>{47e5053c-5269-4f85-80e3-12b13615bde8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\01. Renderer">
+      <UniqueIdentifier>{95b9e38d-c7a3-4186-8c78-44b63107b6da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\02. VIBuffer">
+      <UniqueIdentifier>{0bac1a79-7983-4899-b5df-1d1aae8bacd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\02. VIBuffer\Rect">
+      <UniqueIdentifier>{a9a64d08-f14b-49fe-86f2-85269db09e1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\03. Shader">
+      <UniqueIdentifier>{55c50a01-e1b9-44ba-8fd8-8e2005cff55a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -128,6 +146,24 @@
     </ClCompile>
     <ClCompile Include="..\Private\ObjectMgr.cpp">
       <Filter>01. Utility\02. GameObject\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Component.cpp">
+      <Filter>01. Utility\03. Component</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Renderer.cpp">
+      <Filter>01. Utility\03. Component\01. Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ComponentMgr.cpp">
+      <Filter>01. Utility\03. Component\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer.cpp">
+      <Filter>01. Utility\03. Component\02. VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Rect.cpp">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shader.cpp">
+      <Filter>01. Utility\03. Component\03. Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -232,6 +268,24 @@
     </ClInclude>
     <ClInclude Include="..\Public\ObjectMgr.h">
       <Filter>01. Utility\02. GameObject\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Component.h">
+      <Filter>01. Utility\03. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Renderer.h">
+      <Filter>01. Utility\03. Component\01. Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ComponentMgr.h">
+      <Filter>01. Utility\03. Component\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer.h">
+      <Filter>01. Utility\03. Component\02. VIBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Rect.h">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shader.h">
+      <Filter>01. Utility\03. Component\03. Shader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

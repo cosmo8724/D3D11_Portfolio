@@ -148,6 +148,8 @@ HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMo
 	SwapChain.Windowed = eWinMode;
 	SwapChain.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 
+	FAILED_CHECK_RETURN(pFactory->MakeWindowAssociation(hWnd, DXGI_MWA_NO_ALT_ENTER), E_FAIL);
+
 	if (FAILED(pFactory->CreateSwapChain(m_pDevice, &SwapChain, &m_pSwapChain)))
 		return E_FAIL;
 
@@ -216,8 +218,9 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 	return S_OK;
 }
 
-HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
+HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen)
 {
+	m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 	/*m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
 	//Safe_Release(m_pBackBufferRTV);
@@ -240,87 +243,91 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
 	m_pSwapChain->ResizeTarget(&SwapChain);*/
 
-	BOOL	bIsFullScreen = false;
-	m_pSwapChain->GetFullscreenState(&bIsFullScreen, nullptr);
+	//if (bIsFullScreen)
+	//{
+	//	ImGuiContext*	CurContext = ImGui::GetCurrentContext();
+	//	ImGuiViewportP*	ToolWindowViewport = nullptr;
+	//	
+	//	ImVector<ImGuiWindow*>*		Windows = &ImGui::GetCurrentContext()->Windows;
+	//	ImVector<ImGuiViewportP*>*	Viewports = &ImGui::GetCurrentContext()->Viewports;
+	//	for (auto Window : *Windows)
+	//	{
+	//		if (Window->Viewport->ID == ImGui::GetMainViewport()->ID)
+	//			ToolWindowViewport = Window->Viewport;
 
-	if (bIsFullScreen)
-	{
-		ImGuiContext*	CurContext = ImGui::GetCurrentContext();
-		ImGuiViewportP*	ToolWindowViewport = nullptr;
-		
-		ImVector<ImGuiWindow*>*		Windows = &ImGui::GetCurrentContext()->Windows;
-		ImVector<ImGuiViewportP*>*	Viewports = &ImGui::GetCurrentContext()->Viewports;
-		for (auto Window : *Windows)
-		{
-			if (fabs(Window->SizeFull.x - ImGui::GetMainViewport()->Size.x < 0.00001f) && fabs(Window->SizeFull.y - ImGui::GetMainViewport()->Size.y < 0.00001f))
-				ToolWindowViewport = Window->Viewport;
+	//		if (Window->ViewportOwned && ToolWindowViewport)
+	//		{
+	//			if (Window->Viewport == ImGui::GetCurrentContext()->MouseLastHoveredViewport)
+	//				ImGui::GetCurrentContext()->MouseLastHoveredViewport = nullptr;
 
-			if (Window->ViewportOwned)
-			{
-				if (Window->Viewport == ImGui::GetCurrentContext()->MouseLastHoveredViewport)
-					ImGui::GetCurrentContext()->MouseLastHoveredViewport = nullptr;
+	//			//ImGui::DestroyPlatformWindow(Window->Viewport);
+	//			//IM_ASSERT(ImGui::GetCurrentContext()->PlatformIO.Viewports.contains(Window->Viewport) == false);
+	//			//IM_ASSERT(ImGui::GetCurrentContext()->Viewports[Window->Viewport->Idx] == Window->Viewport);
+	//			//ImGui::GetCurrentContext()->Viewports.erase(ImGui::GetCurrentContext()->Viewports.Data + Window->Viewport->Idx);
+	//			//IM_DELETE(Window->Viewport);
 
-				//ImGui::DestroyPlatformWindow(Window->Viewport);
-				//IM_ASSERT(ImGui::GetCurrentContext()->PlatformIO.Viewports.contains(Window->Viewport) == false);
-				//IM_ASSERT(ImGui::GetCurrentContext()->Viewports[Window->Viewport->Idx] == Window->Viewport);
-				//ImGui::GetCurrentContext()->Viewports.erase(ImGui::GetCurrentContext()->Viewports.Data + Window->Viewport->Idx);
-				//IM_DELETE(Window->Viewport);
+	//			//Window->Pos = Window->Viewport->Pos;
+	//			//Window->Viewport = ToolWindowViewport;
+	//			//Window->ViewportId = ToolWindowViewport->ID;
+	//			//Window->ViewportPos = ImGui::GetMainViewport()->WorkPos;
+	//			//Window->ViewportOwned = false;
+	//			//Window->ViewportOwned = false;
+	//			//ImGui::GetCurrentContext()->FrameCountPlatformEnded--;
+	//			
 
-				Window->Viewport = ToolWindowViewport;
-				//Window->ViewportOwned = false;
-				//ImGui::GetCurrentContext()->FrameCountPlatformEnded--;
-				//ImGui::UpdatePlatformWindows();
-				
-				Window->ViewportOwned = false;
-				Window->SetWindowPosPivot = ImVec2{ 0.2f, 0.2f };
+	//			/*for (auto Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.begin(); Viewport != ImGui::GetCurrentContext()->PlatformIO.Viewports.end();)
+	//			{
+	//				if ((*Viewport)->ID == Window->Viewport->ID)
+	//				{
+	//					Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.erase(Viewport);
+	//					ImGui::GetCurrentContext()->PlatformIO.Viewports.Size--;
+	//					continue;
+	//				}
+	//				Viewport++;
+	//			}*/
 
-				/*for (auto Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.begin(); Viewport != ImGui::GetCurrentContext()->PlatformIO.Viewports.end();)
-				{
-					if ((*Viewport)->ID == Window->Viewport->ID)
-					{
-						Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.erase(Viewport);
-						ImGui::GetCurrentContext()->PlatformIO.Viewports.Size--;
-						continue;
-					}
-					Viewport++;
-				}*/
+	//			/*Window->Viewport = ToolWindowViewport;
+	//			Window->ViewportId = ToolWindowViewport->ID;
+	//			Window->ViewportPos = ToolWindowViewport->Pos;
+	//			Window->ViewportOwned = false;
+	//			Window->BeginOrderWithinContext = 2;*/
+	//		}
+	//	}
 
-				/*Window->Viewport = ToolWindowViewport;
-				Window->ViewportId = ToolWindowViewport->ID;
-				Window->ViewportPos = ToolWindowViewport->Pos;
-				Window->ViewportOwned = false;
-				Window->BeginOrderWithinContext = 2;*/
-			}
-		}
+	//	//iWinCX = GetSystemMetrics(SM_CXSCREEN);
+	//	//iWinCY = GetSystemMetrics(SM_CYSCREEN);
 
-		iWinCX = GetSystemMetrics(SM_CXSCREEN);
-		iWinCY = GetSystemMetrics(SM_CYSCREEN);
+	//	/*for (auto Viewport : CurContext->Viewports)
+	//	{
+	//		if (Viewport->ID != ImGui::GetMainViewport()->ID
+	//			&& ToolWindowViewport)
+	//		{
+	//			ImGuiViewportP*	LastViewport = Viewport;
 
-		/*for (auto Viewport : CurContext->Viewports)
-		{
-			if (Viewport->ID != ImGui::GetMainViewport()->ID
-				&& ToolWindowViewport)
-			{
-				ImGuiViewportP*	LastViewport = Viewport;
+	//			Viewport = ToolWindowViewport;
+	//			Viewport->Size;
+	//		}
+	//	}*/
 
-				Viewport = ToolWindowViewport;
-				Viewport->Size;
-			}
-		}*/
-
-		//ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
-	}
-	else
-	{
-		//ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
-	}
+	//	//ImGui::GetIO().ConfigFlags &= ~ImGuiConfigFlags_ViewportsEnable;
+	//}
+	//else
+	//{
+	//	//ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	//}
 
 	if (m_pBackBufferRTV)
 		Safe_Release(m_pBackBufferRTV);
 	if (m_pDepthStencilView)
 		Safe_Release(m_pDepthStencilView);
+	
+	if (bIsFullScreen)
+	{
+		iWinCX = GetSystemMetrics(SM_CXSCREEN);
+		iWinCY = GetSystemMetrics(SM_CYSCREEN);
+	}
 
-	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_UNKNOWN, 0);
+	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
 
 	if (FAILED(Ready_BackBufferRenderTargetView()))
 		return E_FAIL;
@@ -329,6 +336,8 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 		return E_FAIL;
 
 	m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
+
+	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
 
 	D3D11_VIEWPORT			ViewPortDesc;
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));

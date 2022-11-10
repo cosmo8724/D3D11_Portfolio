@@ -12,7 +12,7 @@ public:
 	virtual ~CObjectMgr() = default;
 
 public:
-	HRESULT	Reverse_Manager(_uint iNumLevels);
+	HRESULT	Reserve_Manager(_uint iNumLevels);
 	HRESULT	Clear(_uint iLevelIndex);
 
 public:
@@ -28,7 +28,7 @@ private:	/* For Prototype Objects */
 
 private:	/* For Cloned Objects */
 	map<const wstring, class CLayer*>*						m_pLayers = nullptr;
-	typedef map<const wstring, class CLayer*>			LAYERS;
+	typedef map<const wstring, class CLayer*>				LAYERS;
 	_uint															m_iNumLevels = 0;
 
 private:

@@ -12,17 +12,23 @@ CGameInstance::CGameInstance()
 	, m_pInputDev(CInput_Device::GetInstance())
 	, m_pLevelMgr(CLevelMgr::GetInstance())
 	, m_pObjectMgr(CObjectMgr::GetInstance())
+	, m_pComponentMgr(CComponentMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
 	Safe_AddRef(m_pInputDev);
 	Safe_AddRef(m_pLevelMgr);
 	Safe_AddRef(m_pObjectMgr);
+	Safe_AddRef(m_pComponentMgr);
 }
 
-HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
+HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
 {
 	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
+	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
+	NULL_CHECK_RETURN(m_pInputDev, E_FAIL);
+	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
+	NULL_CHECK_RETURN(m_pComponentMgr, E_FAIL);
 
 	/* Initialize Graphic Device */
 	FAILED_CHECK_RETURN(m_pGraphicDev->Ready_Graphic_Device(tGraphicDesc.hWnd, tGraphicDesc.eWindowMode, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY, ppDeviceOut, ppContextOut), E_FAIL);
@@ -32,6 +38,10 @@ HRESULT CGameInstance::Initialize_Engine(const GRAPHIC_DESC & tGraphicDesc, DEVI
 
 	/* Initialize Input Device */
 	FAILED_CHECK_RETURN(m_pInputDev->Ready_Input_Device(tGraphicDesc.hInst, tGraphicDesc.hWnd), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pObjectMgr->Reserve_Manager(iNumLevels), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pComponentMgr->Reserve_Manager(iNumLevels), E_FAIL);
 	
 	return S_OK;
 }
@@ -41,6 +51,7 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pLevelMgr, );
 	NULL_CHECK_RETURN(m_pInputDev, );
 	NULL_CHECK_RETURN(m_pImGuiMgr, );
+	NULL_CHECK_RETURN(m_pObjectMgr, );
 
 	m_pInputDev->Invalidate_Input_Device();
 
@@ -75,11 +86,11 @@ HRESULT CGameInstance::Present()
 	return m_pGraphicDev->Present();
 }
 
-HRESULT CGameInstance::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
+HRESULT CGameInstance::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen)
 {
 	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
 
-	return m_pGraphicDev->Update_SwapChain(hWnd, iWinCX, iWinCY);
+	return m_pGraphicDev->Update_SwapChain(hWnd, iWinCX, iWinCY, bIsFullScreen);
 }
 
 void CGameInstance::ImGui_Render()
@@ -194,10 +205,25 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring & wstrL
 	return m_pObjectMgr->Clone_GameObject(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
 }
 
+HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & wstrPrototypeTag, CComponent * pPrototype)
+{
+	NULL_CHECK_RETURN(m_pComponentMgr, E_FAIL);
+
+	return m_pComponentMgr->Add_Prototype(iLevelIndex, wstrPrototypeTag, pPrototype);
+}
+
+CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, void * pArg)
+{
+	NULL_CHECK_RETURN(m_pComponentMgr, nullptr);
+	
+	return m_pComponentMgr->Clone_Component(iLevelIndex, wstrPrototypeTag, pArg);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->DestroyInstance();
 	CObjectMgr::GetInstance()->DestroyInstance();
+	CComponentMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CImGuiMgr::GetInstance()->DestroyInstance();
@@ -207,6 +233,7 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	Safe_Release(m_pObjectMgr);
+	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);
 	Safe_Release(m_pInputDev);
 	Safe_Release(m_pImGuiMgr);

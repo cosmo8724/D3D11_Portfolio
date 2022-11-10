@@ -6,6 +6,7 @@
 BEGIN(Engine)
 
 class CGameInstance;
+class CRenderer;
 
 END
 
@@ -27,6 +28,8 @@ public:
 
 private:
 	CGameInstance*		m_pGameInstance = nullptr;
+	CRenderer*			m_pRenderer = nullptr;
+
 	ID3D11Device*			m_pGraphicDev = nullptr;
 	ID3D11DeviceContext* m_pDeviceContext = nullptr;
 
@@ -35,6 +38,8 @@ private:
 
 private:
 	HRESULT	Start_Level(LEVEL eLevel);
+	HRESULT	Ready_Prototype_Component();
+	HRESULT	Ready_Prototype_GameObject();
 
 public:
 	static CMainApp*	Create();

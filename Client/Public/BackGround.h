@@ -2,6 +2,12 @@
 #include "Client_Define.h"
 #include "GameObject.h"
 
+BEGIN(Engine)
+
+class CRenderer;
+
+END
+
 BEGIN(Client)
 
 class CBackGround final : public CGameObject
@@ -12,11 +18,17 @@ private:
 	virtual ~CBackGround() = default;
 
 public:
-	virtual HRESULT	Initialize_Prototype() override;
-	virtual HRESULT	Initialize(void* pArg) override;
-	virtual void		Tick(_double dTimeDelta) override;
-	virtual void		Late_Tick(_double dTimeDelta) override;
-	virtual HRESULT Render() override;
+	virtual HRESULT			Initialize_Prototype() override;
+	virtual HRESULT			Initialize(void* pArg) override;
+	virtual void				Tick(_double dTimeDelta) override;
+	virtual void				Late_Tick(_double dTimeDelta) override;
+	virtual HRESULT			Render() override;
+
+private:
+	class CRenderer*	m_pRendererCom = nullptr;
+
+private:
+	HRESULT					SetUp_Component();
 
 public:
 	static CBackGround*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);
