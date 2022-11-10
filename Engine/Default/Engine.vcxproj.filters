@@ -64,6 +64,15 @@
     <Filter Include="01. Utility\03. Component\01. Renderer">
       <UniqueIdentifier>{95b9e38d-c7a3-4186-8c78-44b63107b6da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\02. VIBuffer">
+      <UniqueIdentifier>{0bac1a79-7983-4899-b5df-1d1aae8bacd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\02. VIBuffer\Rect">
+      <UniqueIdentifier>{a9a64d08-f14b-49fe-86f2-85269db09e1c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\03. Shader">
+      <UniqueIdentifier>{55c50a01-e1b9-44ba-8fd8-8e2005cff55a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -146,6 +155,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\ComponentMgr.cpp">
       <Filter>01. Utility\03. Component\00. Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer.cpp">
+      <Filter>01. Utility\03. Component\02. VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Rect.cpp">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shader.cpp">
+      <Filter>01. Utility\03. Component\03. Shader</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -259,6 +277,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\ComponentMgr.h">
       <Filter>01. Utility\03. Component\00. Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer.h">
+      <Filter>01. Utility\03. Component\02. VIBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Rect.h">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shader.h">
+      <Filter>01. Utility\03. Component\03. Shader</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -37,6 +37,9 @@
     <Filter Include="02. GameObject\BackGround">
       <UniqueIdentifier>{5898afbb-0f15-4859-ae28-753d39e03231}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96. Shader">
+      <UniqueIdentifier>{77454f45-9767-4dfe-83b3-6fb42735eea9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -117,5 +120,10 @@
     <ResourceCompile Include="Client.rc">
       <Filter>99. Default</Filter>
     </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\Shader\Shader_VtxTex.hlsl">
+      <Filter>96. Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
