@@ -68,7 +68,7 @@ HRESULT CMainApp::Resize_BackBuffer()
 	tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
 	tGraphicDesc.eWindowMode = GRAPHIC_DESC::WINMODE_END;
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Update_SwapChain(tGraphicDesc.hWnd, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY, g_bFullScreen), E_FAIL);
 
 	return S_OK;
 }

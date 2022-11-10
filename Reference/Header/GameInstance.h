@@ -22,7 +22,7 @@ public:		/* For GameInstance */
 public:		/* For GraphicDevice */
 	HRESULT	Clear_Graphic_Device(const _float4* pColor);
 	HRESULT	Present();
-	HRESULT	Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY);
+	HRESULT	Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen);
 
 public:		/* For ImGui */
 	void		ImGui_Render();

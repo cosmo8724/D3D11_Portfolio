@@ -1,7 +1,14 @@
-#pragma once
+﻿#pragma once
 
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4251)
+
+#include <d3d11.h>
+//#include <Effects11/d3dx11effect.h>
+#include <DirectXMath.h>
+#define DIRECTINPUT_VERSION 0x0800
+#include <dinput.h>
+using namespace DirectX;
 
 #include <vector>
 #include <list>
@@ -9,12 +16,6 @@
 #include <unordered_map>
 #include <algorithm>
 using namespace std;
-
-#include <d3d11.h>
-#include <DirectXMath.h>
-#define DIRECTINPUT_VERSION 0x0800
-#include <dinput.h>
-using namespace DirectX;
 
 #include "Engine_Typedef.h"
 #include "Engine_Enum.h"
