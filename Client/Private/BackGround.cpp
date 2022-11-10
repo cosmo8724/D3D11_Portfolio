@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\BackGround.h"
-
+#include "GameInstance.h"
 
 CBackGround::CBackGround(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -23,6 +23,8 @@ HRESULT CBackGround::Initialize(void * pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
 
+	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
+
 	return S_OK;
 }
 
@@ -34,11 +36,21 @@ void CBackGround::Tick(_double dTimeDelta)
 void CBackGround::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	if (nullptr != m_pRendererCom)
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
 }
 
 HRESULT CBackGround::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CBackGround::SetUp_Component()
+{
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, m_pRendererCom), E_FAIL);
 
 	return S_OK;
 }
@@ -72,4 +84,6 @@ CGameObject * CBackGround::Clone(void * pArg)
 void CBackGround::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pRendererCom);
 }

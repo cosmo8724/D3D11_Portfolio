@@ -8,9 +8,10 @@ CObjectMgr::CObjectMgr()
 {
 }
 
-HRESULT CObjectMgr::Reverse_Manager(_uint iNumLevels)
+HRESULT CObjectMgr::Reserve_Manager(_uint iNumLevels)
 {
-	NULL_CHECK_RETURN(m_pLayers, E_FAIL);
+	if (nullptr != m_pLayers)
+		return E_FAIL;
 
 	m_pLayers = new LAYERS[iNumLevels];
 

@@ -218,6 +218,7 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 
 HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 {
+	m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 	/*m_pDeviceContext->OMSetRenderTargets(0, nullptr, nullptr);
 
 	//Safe_Release(m_pBackBufferRTV);
@@ -252,10 +253,10 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 		ImVector<ImGuiViewportP*>*	Viewports = &ImGui::GetCurrentContext()->Viewports;
 		for (auto Window : *Windows)
 		{
-			if (fabs(Window->SizeFull.x - ImGui::GetMainViewport()->Size.x < 0.00001f) && fabs(Window->SizeFull.y - ImGui::GetMainViewport()->Size.y < 0.00001f))
+			if (Window->Viewport->ID == ImGui::GetMainViewport()->ID)
 				ToolWindowViewport = Window->Viewport;
 
-			if (Window->ViewportOwned)
+			if (Window->ViewportOwned && ToolWindowViewport)
 			{
 				if (Window->Viewport == ImGui::GetCurrentContext()->MouseLastHoveredViewport)
 					ImGui::GetCurrentContext()->MouseLastHoveredViewport = nullptr;
@@ -266,13 +267,14 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 				//ImGui::GetCurrentContext()->Viewports.erase(ImGui::GetCurrentContext()->Viewports.Data + Window->Viewport->Idx);
 				//IM_DELETE(Window->Viewport);
 
-				Window->Viewport = ToolWindowViewport;
+				//Window->Pos = Window->Viewport->Pos;
+				//Window->Viewport = ToolWindowViewport;
+				//Window->ViewportId = ToolWindowViewport->ID;
+				//Window->ViewportPos = ImGui::GetMainViewport()->WorkPos;
+				//Window->ViewportOwned = false;
 				//Window->ViewportOwned = false;
 				//ImGui::GetCurrentContext()->FrameCountPlatformEnded--;
-				//ImGui::UpdatePlatformWindows();
 				
-				Window->ViewportOwned = false;
-				Window->SetWindowPosPivot = ImVec2{ 0.2f, 0.2f };
 
 				/*for (auto Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.begin(); Viewport != ImGui::GetCurrentContext()->PlatformIO.Viewports.end();)
 				{
@@ -293,8 +295,8 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 			}
 		}
 
-		iWinCX = GetSystemMetrics(SM_CXSCREEN);
-		iWinCY = GetSystemMetrics(SM_CYSCREEN);
+		//iWinCX = GetSystemMetrics(SM_CXSCREEN);
+		//iWinCY = GetSystemMetrics(SM_CYSCREEN);
 
 		/*for (auto Viewport : CurContext->Viewports)
 		{
@@ -320,7 +322,7 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY)
 	if (m_pDepthStencilView)
 		Safe_Release(m_pDepthStencilView);
 
-	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_UNKNOWN, 0);
+	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_B8G8R8A8_UNORM, 0);
 
 	if (FAILED(Ready_BackBufferRenderTargetView()))
 		return E_FAIL;
