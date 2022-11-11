@@ -12,6 +12,8 @@ HRESULT CLevel_Logo::Initialize()
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
+
 	return S_OK;
 }
 

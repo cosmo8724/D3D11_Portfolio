@@ -55,8 +55,12 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 
 	m_pInputDev->Invalidate_Input_Device();
 
+	m_pObjectMgr->Tick(dTimeDelta);
 	m_pLevelMgr->Tick(dTimeDelta);
+
+	m_pObjectMgr->Late_Tick(dTimeDelta);
 	m_pLevelMgr->Late_Tick(dTimeDelta);
+
 	m_pInputDev->Reset_EveryKey();
 
 	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);

@@ -5,6 +5,8 @@
 BEGIN(Engine)
 
 class CRenderer;
+class CShader;
+class CVIBuffer_Rect;
 
 END
 
@@ -25,7 +27,9 @@ public:
 	virtual HRESULT			Render() override;
 
 private:
-	class CRenderer*	m_pRendererCom = nullptr;
+	CRenderer*			m_pRendererCom = nullptr;
+	CShader*				m_pShaderCom = nullptr;
+	CVIBuffer_Rect*		m_pVIBufferCom = nullptr;
 
 private:
 	HRESULT					SetUp_Component();

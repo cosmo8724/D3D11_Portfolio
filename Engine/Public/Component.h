@@ -12,7 +12,7 @@ protected:
 
 public:
 	virtual HRESULT			Initialize_Prototype();
-	virtual HRESULT			Initialize(void* pArg = nullptr);
+	virtual HRESULT			Initialize(void* pArg);
 
 protected:
 	DEVICE					m_pDevice = nullptr;

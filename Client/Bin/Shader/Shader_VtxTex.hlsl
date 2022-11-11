@@ -18,10 +18,11 @@ VS_OUT	VS_MAIN(VS_IN In)
 
 	matrix		matWV, matWVP;
 
-	matWV = mul(g_matWorld, g_matView);
-	matWVP = mul(matWV, g_matProj);
+	//matWV = mul(g_matWorld, g_matView);
+	//matWVP = mul(matWV, g_matProj);
 
-	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	//Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vPosition = float4(In.vPosition, 1.f);
 	Out.vTexUV = In.vTexUV;
 
 	return Out;

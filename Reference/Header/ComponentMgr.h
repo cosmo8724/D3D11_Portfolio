@@ -1,5 +1,7 @@
 #pragma once
 #include "Renderer.h"
+#include "Shader.h"
+#include "VIBuffer_Rect.h"
 
 BEGIN(Engine)
 

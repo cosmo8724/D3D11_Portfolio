@@ -45,13 +45,21 @@ HRESULT CBackGround::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
+	m_pShaderCom->Begin(0);
+
+	m_pVIBufferCom->Render();
+
 	return S_OK;
 }
 
 HRESULT CBackGround::SetUp_Component()
 {
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, m_pRendererCom), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom), E_FAIL);
 
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_Shader_VtxTex", L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom), E_FAIL);
+	
 	return S_OK;
 }
 
@@ -86,4 +94,6 @@ void CBackGround::Free()
 	__super::Free();
 
 	Safe_Release(m_pRendererCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pVIBufferCom);
 }

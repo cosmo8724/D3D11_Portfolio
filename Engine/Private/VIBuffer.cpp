@@ -51,8 +51,6 @@ HRESULT CVIBuffer::Render()
 
 	m_pContext->IASetPrimitiveTopology(m_eTopology);
 
-	//m_pContext->IASetInputLayout();
-
 	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
 
 	return S_OK;
