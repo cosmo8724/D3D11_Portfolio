@@ -266,7 +266,7 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY,
 	if (m_pDepthStencilView)
 		Safe_Release(m_pDepthStencilView);
 
-	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
+	m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_UNKNOWN, 0);
 
 	if (FAILED(Ready_BackBufferRenderTargetView()))
 		return E_FAIL;
@@ -288,6 +288,7 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY,
 	m_pDeviceContext->RSSetViewports(1, &ViewPortDesc);
 
 	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
+	
 
 	//if (m_pBackBufferRTV)
 	//	Safe_Release(m_pBackBufferRTV);

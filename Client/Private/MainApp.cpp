@@ -47,7 +47,7 @@ HRESULT CMainApp::Render()
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
 	m_pGameInstance->ImGui_Render();
-	m_pGameInstance->Clear_Graphic_Device(&_float4(0.3f, 0.3f, 0.3f, 1.f));
+	m_pGameInstance->Clear_Graphic_Device(&_float4(0.f, 0.f, 0.8f, 1.f));
 	m_pGameInstance->Render_Level();
 	m_pGameInstance->ImGui_Render_Update();
 	m_pGameInstance->Present();
@@ -60,16 +60,11 @@ HRESULT CMainApp::Resize_BackBuffer()
 	GRAPHIC_DESC	tGraphicDesc;
 	ZeroMemory(&tGraphicDesc, sizeof(GRAPHIC_DESC));
 
-	
-
 	tGraphicDesc.hWnd = g_hWnd;
 	if (!g_bFullScreen)
 	{
-		RECT	rt;
-		GetClientRect(g_hWnd, &rt);
-
-		tGraphicDesc.iViewportSizeX = rt.right - rt.left;
-		tGraphicDesc.iViewportSizeY = rt.bottom - rt.top;
+		tGraphicDesc.iViewportSizeX = g_iWinSizeX;
+		tGraphicDesc.iViewportSizeY = g_iWinSizeY;
 	}
 	else
 	{
