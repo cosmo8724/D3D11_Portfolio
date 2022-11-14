@@ -90,6 +90,26 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	return S_OK;
 }
 
+HRESULT CShader::Set_RawValue(const char * pConstantName, const void * pData, _uint iLength)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	ID3DX11EffectVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName);
+	NULL_CHECK_RETURN(pVariable, E_FAIL);
+
+	return pVariable->SetRawValue(pData, 0, iLength);
+}
+
+HRESULT CShader::Set_Matrix(const char * pConstantName, const _float4x4 * pMatrix)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName)->AsMatrix();
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	return pVariable->SetMatrix((_float*)pMatrix);
+}
+
 CShader * CShader::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrShaderFilPath, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);

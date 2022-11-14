@@ -25,6 +25,23 @@ HRESULT CBackGround::Initialize(void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
+	m_fSizeX = (_float)g_iWinSizeX;
+	m_fSizeY = (_float)g_iWinSizeY;
+
+	m_fX = m_fSizeX * 0.5f;
+	m_fY = m_fSizeY * 0.5f;
+
+	XMStoreFloat4x4(&m_matWorld, XMMatrixIdentity());
+
+	m_matWorld._11 = m_fSizeX;
+	m_matWorld._22 = m_fSizeY;
+
+	m_matWorld._41 = m_fX - g_iWinSizeX * 0.5f;
+	m_matWorld._42 = -m_fY + g_iWinSizeY * 0.5f;
+
+	XMStoreFloat4x4(&m_matView, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_matProj, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
+
 	return S_OK;
 }
 
@@ -45,6 +62,8 @@ HRESULT CBackGround::Render()
 {
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
+	FAILED_CHECK_RETURN(SetUp_ShaderResources(), E_FAIL);
+
 	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Render();
@@ -60,6 +79,17 @@ HRESULT CBackGround::SetUp_Component()
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom), E_FAIL);
 	
+	return S_OK;
+}
+
+HRESULT CBackGround::SetUp_ShaderResources()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	m_pShaderCom->Set_Matrix("g_matWorld", &m_matWorld);
+	m_pShaderCom->Set_Matrix("g_matView", &m_matView);
+	m_pShaderCom->Set_Matrix("g_matProj", &m_matProj);
+
 	return S_OK;
 }
 
