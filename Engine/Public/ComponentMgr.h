@@ -1,13 +1,11 @@
 #pragma once
 #include "Renderer.h"
 #include "Shader.h"
+#include "Texture.h"
+#include "Transform.h"
 #include "VIBuffer_Rect.h"
-<<<<<<< HEAD
 #include "VIBuffer_Sphere.h"
 #include "VIBuffer_Terrain.h"
-=======
-#include "Transform.h"
->>>>>>> parent of 72a95805 (Review 22.11.15)
 
 BEGIN(Engine)
 
@@ -35,6 +33,6 @@ private:
 
 public:
 	virtual void				Free() override;
-}; 
+};
 
 END

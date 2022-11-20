@@ -1,4 +1,5 @@
 #include "..\Public\Shader.h"
+#include "GameUtility.h"
 
 CShader::CShader(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
@@ -90,24 +91,43 @@ HRESULT CShader::Begin(_uint iPassIndex)
 	return S_OK;
 }
 
-HRESULT CShader::Set_RawValue(const char * pConstantName, const void * pData, _uint iLength)
+HRESULT CShader::Set_RawValue(const wstring & wstrConstantName, const void * pData, _uint iLength)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
-	ID3DX11EffectVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName);
+	char	szConstantName[MAX_PATH];
+	CGameUtility::wctc(wstrConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectVariable*	pVariable = m_pEffect->GetVariableByName(szConstantName);
 	NULL_CHECK_RETURN(pVariable, E_FAIL);
 
 	return pVariable->SetRawValue(pData, 0, iLength);
 }
 
-HRESULT CShader::Set_Matrix(const char * pConstantName, const _float4x4 * pMatrix)
+HRESULT CShader::Set_Matrix(const wstring & wstrConstantName, const _float4x4 * pMatrix)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
-	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(pConstantName)->AsMatrix();
+	char	szConstantName[MAX_PATH];
+	CGameUtility::wctc(wstrConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(szConstantName)->AsMatrix();
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
 
 	return pVariable->SetMatrix((_float*)pMatrix);
+}
+
+HRESULT CShader::Set_ShaderResourceView(const wstring & wstrConstantName, ID3D11ShaderResourceView * pSRV)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	char	szConstantName[MAX_PATH];
+	CGameUtility::wctc(wstrConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectShaderResourceVariable*	pVariable = m_pEffect->GetVariableByName(szConstantName)->AsShaderResource();
+	NULL_CHECK_RETURN(pVariable, E_FAIL);
+
+	return pVariable->SetResource(pSRV);
 }
 
 CShader * CShader::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrShaderFilPath, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements)

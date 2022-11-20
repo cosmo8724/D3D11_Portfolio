@@ -27,18 +27,20 @@ public:
 			XMVectorGetX(XMVector3Length(Get_State(STATE_UP))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_LOOK))));
 	}
+	void				Set_Scale(STATE eState, _float fScale);
+	void				Set_Scale(_float3 vScale);
+	void				Scaling(STATE eState, _float fScale);
 	void				Set_State(STATE eState, _fvector _vState) {
 		_float4	vState;
 		XMStoreFloat4(&vState, _vState);
 		memcpy(&m_matWorld.m[eState], &vState, sizeof(vState));
 	}
-	void				Scaling(STATE eState, _float fScale);
-	void				Set_Scale(STATE eState, _float fScale);
-	void				Set_Scale(_float3 vScale);
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
+
+	HRESULT			Bind_ShaderResource(class CShader * pShaderCom, const wstring wstrConstantName);
 
 public:
 	void				Go_Straight(_double dTimeDelta);
@@ -50,11 +52,9 @@ public:
 
 	void				Turn(_fvector vAxis, _double dTimeDelta);
 	void				Rotation(_fvector vAxis, _float fRadian);
-	void				LookAt(_fvector vTargetPos);
-	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit = 0.1f);
 
-public:
-	HRESULT			Bind_ShaderResource(class CShader* pShaderCom, const wstring wstrConstantName);
+	void				LookAt(_fvector vTargetPos);
+	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit);
 
 private:
 	_float4x4				m_matWorld;

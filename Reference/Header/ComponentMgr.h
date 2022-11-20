@@ -1,8 +1,8 @@
 #pragma once
 #include "Renderer.h"
-#include "Transform.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Transform.h"
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Sphere.h"
 #include "VIBuffer_Terrain.h"
@@ -33,6 +33,6 @@ private:
 
 public:
 	virtual void				Free() override;
-}; 
+};
 
 END

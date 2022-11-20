@@ -37,20 +37,11 @@ HRESULT CBackGround::Initialize(void * pArg)
 	m_fX = m_fSizeX * 0.5f;
 	m_fY = m_fSizeY * 0.5f;
 
-	XMStoreFloat4x4(&m_matWorld, XMMatrixIdentity());
-
-	m_matWorld._11 = m_fSizeX;
-	m_matWorld._22 = m_fSizeY;
-
-	m_matWorld._41 = m_fX - g_iWinSizeX * 0.5f;
-	m_matWorld._42 = -m_fY + g_iWinSizeY * 0.5f;
+	m_pTransformCom->Set_Scale(_float3(m_fSizeX, m_fSizeY, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - m_fSizeX * 0.5f, -m_fY + m_fSizeY * 0.5f, 0.f, 1.f));
 
 	XMStoreFloat4x4(&m_matView, XMMatrixIdentity());
-<<<<<<< HEAD
 	XMStoreFloat4x4(&m_matProj, XMMatrixOrthographicLH(m_fSizeX, m_fSizeY, 0.f, 1.f));
-=======
-	XMStoreFloat4x4(&m_matProj, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
->>>>>>> parent of 72a95805 (Review 22.11.15)
 
 	return S_OK;
 }
@@ -83,7 +74,6 @@ HRESULT CBackGround::Render()
 
 HRESULT CBackGround::SetUp_Component()
 {
-<<<<<<< HEAD
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom), E_FAIL);
 	
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
@@ -92,14 +82,6 @@ HRESULT CBackGround::SetUp_Component()
 
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom), E_FAIL);
 
-=======
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom), E_FAIL);
-
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_Shader_VtxTex", L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
-
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_PUBLIC, L"Prototype_Component_VIBuffer_Rect", L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom), E_FAIL);
-	
->>>>>>> parent of 72a95805 (Review 22.11.15)
 	return S_OK;
 }
 
@@ -107,7 +89,6 @@ HRESULT CBackGround::SetUp_ShaderResources()
 {
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 
-<<<<<<< HEAD
 	m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld");
 
 	//m_matView = CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW);
@@ -116,11 +97,6 @@ HRESULT CBackGround::SetUp_ShaderResources()
 	m_pShaderCom->Set_Matrix(L"g_matView", &m_matView);
 	m_pShaderCom->Set_Matrix(L"g_matProj", &m_matProj);
 	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
-=======
-	m_pShaderCom->Set_Matrix("g_matWorld", &m_matWorld);
-	m_pShaderCom->Set_Matrix("g_matView", &m_matView);
-	m_pShaderCom->Set_Matrix("g_matProj", &m_matProj);
->>>>>>> parent of 72a95805 (Review 22.11.15)
 
 	return S_OK;
 }
@@ -157,5 +133,6 @@ void CBackGround::Free()
 
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pTextureCom);
 	Safe_Release(m_pVIBufferCom);
 }

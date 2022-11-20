@@ -2,13 +2,9 @@
 #include "..\Public\Loader.h"
 #include "GameInstance.h"
 #include "BackGround.h"
-<<<<<<< HEAD
 #include "Texture.h"
 #include "Terrain.h"
 #include "MySphere.h"
-=======
->>>>>>> parent of 72a95805 (Review 22.11.15)
-
 
 CLoader::CLoader(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: m_pDevice(pDevice)
@@ -59,6 +55,8 @@ HRESULT CLoader::Loading_ForLogo()
 	Safe_AddRef(pGameInstance);
 
 	m_wstrLoadingText = L"Loading Textures...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Game/Visual/Game_UI/Logo_1K.png")), E_FAIL);
+
 	m_wstrLoadingText = L"Loading Buffer...";
 	m_wstrLoadingText = L"Loading Models...";
 	m_wstrLoadingText = L"Loading Shader...";
