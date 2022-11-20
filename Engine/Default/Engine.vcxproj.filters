@@ -76,6 +76,7 @@
     <Filter Include="01. Utility\03. Component\04. Transform">
       <UniqueIdentifier>{9f0733a9-0332-4395-8ae2-62ca52d6cd68}</UniqueIdentifier>
     </Filter>
+<<<<<<< HEAD
     <Filter Include="98. Utils">
       <UniqueIdentifier>{7097a319-a7ca-4e5e-993d-fad66b8ace0c}</UniqueIdentifier>
     </Filter>
@@ -100,6 +101,8 @@
     <Filter Include="01. Utility\03. Component\02. VIBuffer\Shpere">
       <UniqueIdentifier>{ff86b4af-ba7c-448e-bae7-a14c4c2e6fc2}</UniqueIdentifier>
     </Filter>
+=======
+>>>>>>> parent of 72a95805 (Review 22.11.15)
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -195,6 +198,7 @@
     <ClCompile Include="..\Public\Engine_Struct.cpp">
       <Filter>99. Define</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="..\Private\Transform.cpp">
       <Filter>01. Utility\03. Component\04. Transform</Filter>
     </ClCompile>
@@ -222,6 +226,9 @@
     <ClCompile Include="..\Private\VIBuffer_Sphere.cpp">
       <Filter>01. Utility\03. Component\02. VIBuffer\Shpere</Filter>
     </ClCompile>
+=======
+    <ClCompile Include="..\Private\Transform.cpp" />
+>>>>>>> parent of 72a95805 (Review 22.11.15)
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\GameInstance.h">
@@ -344,6 +351,7 @@
     <ClInclude Include="..\Public\Shader.h">
       <Filter>01. Utility\03. Component\03. Shader</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="..\Public\Transform.h">
       <Filter>01. Utility\03. Component\04. Transform</Filter>
     </ClInclude>
@@ -371,5 +379,8 @@
     <ClInclude Include="..\Public\VIBuffer_Sphere.h">
       <Filter>01. Utility\03. Component\02. VIBuffer\Shpere</Filter>
     </ClInclude>
+=======
+    <ClInclude Include="..\Public\Transform.h" />
+>>>>>>> parent of 72a95805 (Review 22.11.15)
   </ItemGroup>
 </Project>
