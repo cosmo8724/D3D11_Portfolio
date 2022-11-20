@@ -2,6 +2,9 @@
 #include "..\Public\Loader.h"
 #include "GameInstance.h"
 #include "BackGround.h"
+#include "Texture.h"
+#include "Terrain.h"
+#include "MySphere.h"
 
 
 CLoader::CLoader(DEVICE pDevice, DEVICE_CONTEXT pContext)
@@ -53,6 +56,9 @@ HRESULT CLoader::Loading_ForLogo()
 	Safe_AddRef(pGameInstance);
 
 	m_wstrLoadingText = L"Loading Textures...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Logo",
+		CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Game/Visual/Game_UI/MainMenu/Logo_1K.png")), E_FAIL);
+
 	m_wstrLoadingText = L"Loading Buffer...";
 	m_wstrLoadingText = L"Loading Models...";
 	m_wstrLoadingText = L"Loading Shader...";
@@ -73,10 +79,20 @@ HRESULT CLoader::Loading_ForGamePlay()
 	Safe_AddRef(pGameInstance);
 
 	m_wstrLoadingText = L"Loading Textures...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Terrain", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Game/Visual/T_NoiseNormal_48.png")), E_FAIL);
+
 	m_wstrLoadingText = L"Loading Buffer...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_VIBuffer_Terrain", CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resource/Game/Visual/T_NoiseNormal_48.bmp")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_VIBuffer_Sphere", CVIBuffer_Sphere::Create(m_pDevice, m_pContext)), E_FAIL);
+
 	m_wstrLoadingText = L"Loading Models...";
 	m_wstrLoadingText = L"Loading Shader...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Shader_Terrain", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_VtxNorTex.hlsl", VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements)), E_FAIL);
+
 	m_wstrLoadingText = L"Create Prototype Objects...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Terrain", CTerrain::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sphere", CMySphere::Create(m_pDevice, m_pContext)), E_FAIL);
+
 	m_wstrLoadingText = L"Complete Loading!";
 
 	m_bIsFinished = true;

@@ -10,8 +10,8 @@ public:
 
 	typedef struct tagTransformDesc
 	{
-		_float		fSpeedPerSec;
-		_float		fRotationPerSec;
+		_double	dSpeedPerSec;
+		_double	dRotationPerSec;
 	} TRANSFORMDESC;
 
 private:
@@ -20,12 +20,21 @@ private:
 	virtual ~CTransform() = default;
 
 public:
+	const _matrix	Get_WorldMatrix_Inverse() { return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matWorld)); }
 	const _vector&	Get_State(STATE eState) const { return XMLoadFloat4x4(&m_matWorld).r[eState]; }
+	const _float3		Get_Scale() const {
+		return _float3(XMVectorGetX(XMVector3Length(Get_State(STATE_RIGHT))),
+			XMVectorGetX(XMVector3Length(Get_State(STATE_UP))),
+			XMVectorGetX(XMVector3Length(Get_State(STATE_LOOK))));
+	}
 	void				Set_State(STATE eState, _fvector _vState) {
 		_float4	vState;
 		XMStoreFloat4(&vState, _vState);
 		memcpy(&m_matWorld.m[eState], &vState, sizeof(vState));
 	}
+	void				Scaling(STATE eState, _float fScale);
+	void				Set_Scale(STATE eState, _float fScale);
+	void				Set_Scale(_float3 vScale);
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;
@@ -36,9 +45,16 @@ public:
 	void				Go_BackWard(_double dTimeDelta);
 	void				Go_Left(_double dTimeDelta);
 	void				Go_Right(_double dTimeDelta);
+	void				Go_Up(_double dTimeDelta);
+	void				Go_Down(_double dTimeDelta);
 
 	void				Turn(_fvector vAxis, _double dTimeDelta);
 	void				Rotation(_fvector vAxis, _float fRadian);
+	void				LookAt(_fvector vTargetPos);
+	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit = 0.1f);
+
+public:
+	HRESULT			Bind_ShaderResource(class CShader* pShaderCom, const wstring wstrConstantName);
 
 private:
 	_float4x4				m_matWorld;

@@ -29,9 +29,22 @@ namespace Engine
 		unsigned long		_0, _1, _2;
 	} FACEINDICES32;
 
+	typedef struct tagVertexPositionNormalTexture
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+	} VTXNORTEX;
+
 	typedef struct ENGINE_DLL tagVertexPositionTexture_Declaration
 	{
 		static const unsigned int				iNumElements = 2;
 		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
 	} VTXTEX_DECLARATION;
+
+	typedef struct ENGINE_DLL tagVertexpositionNormalTexture_Declaration
+	{
+		static const unsigned int				iNumElements = 3;
+		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	} VTXNORTEX_DECLARATION;
 }

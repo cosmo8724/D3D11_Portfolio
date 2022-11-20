@@ -1,9 +1,21 @@
 #include "stdafx.h"
 #include "..\Public\TestTool.h"
 #include "GameInstance.h"
+#include "ImCurveEdit.h"
+#include "Camera.h"
+#include "MySequencer.h"
+#include "ImSequencer.h"
 
 CTestTool::CTestTool()
 {
+	m_pSequencer = new CMySequencer;
+	m_pSequencer->m_iFrameMax = 1000;
+	m_pSequencer->m_iFrameMin = -100;
+	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 0, 10, 30, false });
+	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 1, 20, 30, true });
+	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 2, 12, 60, false });
+	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 3, 61, 90, false });
+	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 4, 90, 99, false });
 }
 
 HRESULT CTestTool::Ready_Tool()
@@ -17,11 +29,6 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 {
 	static _bool	bTest = false;
 	ImGui::Begin("Test Tool");
-
-	// Test ImGuizmo Code
-	//ImGuizmo::BeginFrame();
-	static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
-
 	ImGui::Text("This is Test Tool.");
 	ImGui::SameLine();
 	ImGui::Checkbox("Test CheckBox", &bTest);
@@ -36,10 +43,12 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 			ImGuiFileDialog::Instance()->Close();
 		}
 	}
-
+	
 	ImGui::End();
 
 	ImGui::Begin("Temp");
+	static _float&		fAlpha = ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w;
+	ImGui::SliderFloat("Alpha", &fAlpha, 0.f, 1.f);
 	ImGui::End();
 
 	static bool show_demo_window = true;
@@ -78,6 +87,34 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 		ImGui::End();
 	}
 
+
+	/* Sequencer */
+	/* TODO : ImGui를 동적할당해서 그런지 누수가 개쩜. 누수 잡기. */
+	ImGui::Begin("Sequencer");
+
+	static _int		iSelectedEntry = -1;
+	static _int		iFristFrame = 0;
+	static _bool		bExpanded = true;
+	static _int		iCurrentFrame = 100;
+
+	ImGui::PushItemWidth(130);
+	ImGui::InputInt("Frame Min", &m_pSequencer->m_iFrameMin);
+	ImGui::SameLine();
+	ImGui::InputInt("Frame", &iCurrentFrame);
+	ImGui::SameLine();
+	ImGui::InputInt("Frame Max", &m_pSequencer->m_iFrameMax);
+
+	ImGui::PopItemWidth();
+	Sequencer(m_pSequencer, &iCurrentFrame, &bExpanded, &iSelectedEntry, &iFristFrame, ImSequencer::SEQUENCER_EDIT_STARTEND | ImSequencer::SEQUENCER_ADD | ImSequencer::SEQUENCER_DEL | ImSequencer::SEQUENCER_COPYPASTE | ImSequencer::SEQUENCER_CHANGE_FRAME);
+
+	if (iSelectedEntry != -1)
+	{
+		const CMySequencer::ITEM&	Item = m_pSequencer->m_vecItems[iSelectedEntry];
+		ImGui::Text("I am a %s, Please Edit me.", SequencerItemTypeNames[Item.m_iType]);
+	}
+
+	ImGui::End();
+
 	return S_OK;
 }
 
@@ -96,4 +133,5 @@ CTestTool * CTestTool::Create()
 
 void CTestTool::Free()
 {
+	Safe_Release(m_pSequencer);
 }

@@ -24,14 +24,14 @@
 // SOFTWARE.
 //
 #pragma once
-
+#include "imgui.h"
 #include <cstddef>
 
 struct ImDrawList;
 struct ImRect;
 namespace ImSequencer
 {
-   enum SEQUENCER_OPTIONS
+   enum IMGUI_API SEQUENCER_OPTIONS
    {
       SEQUENCER_EDIT_NONE = 0,
       SEQUENCER_EDIT_STARTEND = 1 << 1,
@@ -42,7 +42,7 @@ namespace ImSequencer
       SEQUENCER_EDIT_ALL = SEQUENCER_EDIT_STARTEND | SEQUENCER_CHANGE_FRAME
    };
 
-   struct SequenceInterface
+   struct IMGUI_API SequenceInterface
    {
       bool focused = false;
       virtual int GetFrameMin() const = 0;
@@ -72,6 +72,6 @@ namespace ImSequencer
 
 
    // return true if selection is made
-   bool Sequencer(SequenceInterface* sequence, int* currentFrame, bool* expanded, int* selectedEntry, int* firstFrame, int sequenceOptions);
+   IMGUI_API bool Sequencer(SequenceInterface* sequence, int* currentFrame, bool* expanded, int* selectedEntry, int* firstFrame, int sequenceOptions);
 
 }

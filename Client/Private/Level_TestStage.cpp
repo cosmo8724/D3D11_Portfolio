@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\Level_TestStage.h"
+#include "GameInstance.h"
 
 CLevel_TestStage::CLevel_TestStage(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -9,6 +10,12 @@ CLevel_TestStage::CLevel_TestStage(DEVICE pDevice, DEVICE_CONTEXT pContext)
 HRESULT CLevel_TestStage::Initialize()
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
+	
+	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Sphere(L"Layer_Sphere"), E_FAIL);
 
 	return S_OK;
 }
@@ -28,6 +35,42 @@ HRESULT CLevel_TestStage::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	SetWindowText(g_hWnd, L"Level : Test Stage");
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Layer_BackGround(const wstring wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Terrain"), E_FAIL);
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Layer_Camera(const wstring wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Dynamic"), E_FAIL);
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Layer_Sphere(const wstring wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Sphere"), E_FAIL);
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

@@ -1,8 +1,11 @@
 #pragma once
 #include "Renderer.h"
-#include "Shader.h"
-#include "VIBuffer_Rect.h"
 #include "Transform.h"
+#include "Shader.h"
+#include "Texture.h"
+#include "VIBuffer_Rect.h"
+#include "VIBuffer_Sphere.h"
+#include "VIBuffer_Terrain.h"
 
 BEGIN(Engine)
 

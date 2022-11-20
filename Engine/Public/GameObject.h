@@ -1,14 +1,23 @@
 #pragma once
-#include "Base.h"
+#include "Transform.h"
 
 BEGIN(Engine)
 
 class ENGINE_DLL CGameObject abstract : public CBase
 {
+public:
+	typedef struct tagGameObjectDesc
+	{
+		CTransform::TRANSFORMDESC		TransformDesc;
+	} GAMEOBJECTDESC;
+
 protected:
 	CGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	CGameObject(const CGameObject& rhs);
 	virtual ~CGameObject() = default;
+
+public:
+	static const wstring		m_wstrTransformComTag;
 
 public:
 	virtual HRESULT			Initialize_Prototype();
@@ -22,6 +31,8 @@ protected:
 	DEVICE_CONTEXT		m_pContext = nullptr;
 
 	map<const wstring, class CComponent*>		m_mapComponent;
+
+	CTransform*				m_pTransformCom = nullptr;
 
 protected:
 	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppComponentOut, void* pArg = nullptr);

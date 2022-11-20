@@ -43,7 +43,6 @@ ipch/
 *.suo
 
 Client/Bin/*
-!Client/Bin/Resource
 !Client/Bin/Shader
 Engine/Default/Debug
 Engine/Default/Debug

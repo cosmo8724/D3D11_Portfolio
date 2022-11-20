@@ -40,6 +40,21 @@
     <Filter Include="96. Shader">
       <UniqueIdentifier>{77454f45-9767-4dfe-83b3-6fb42735eea9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Terrain">
+      <UniqueIdentifier>{90dd5091-c489-4b07-8489-dbc0c7b27eef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Camera">
+      <UniqueIdentifier>{b4099f5e-2fc6-494a-b6c8-a505fa834ac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Sphere">
+      <UniqueIdentifier>{7bd46246-18af-478b-9c77-da0c017e6878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\00. Sequencer">
+      <UniqueIdentifier>{349b572d-7818-4792-96ed-65301dd31861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\00. Sequencer\00. CurveEditor">
+      <UniqueIdentifier>{138424c2-46ab-45d1-9063-fc5d17f8daf3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -78,6 +93,21 @@
     <ClInclude Include="..\Public\BackGround.h">
       <Filter>02. GameObject\BackGround</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Terrain.h">
+      <Filter>02. GameObject\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Dynamic_Camera.h">
+      <Filter>02. GameObject\Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CurveEditor.h">
+      <Filter>97. Tool\00. Sequencer\00. CurveEditor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MySphere.h">
+      <Filter>02. GameObject\Sphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MySequencer.h">
+      <Filter>97. Tool\00. Sequencer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -107,6 +137,21 @@
     <ClCompile Include="..\Private\BackGround.cpp">
       <Filter>02. GameObject\BackGround</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Terrain.cpp">
+      <Filter>02. GameObject\Terrain</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Dynamic_Camera.cpp">
+      <Filter>02. GameObject\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CurveEditor.cpp">
+      <Filter>97. Tool\00. Sequencer\00. CurveEditor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MySphere.cpp">
+      <Filter>02. GameObject\Sphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MySequencer.cpp">
+      <Filter>97. Tool\00. Sequencer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -123,6 +168,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\Shader\Shader_VtxTex.hlsl">
+      <Filter>96. Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex.hlsl">
       <Filter>96. Shader</Filter>
     </FxCompile>
   </ItemGroup>

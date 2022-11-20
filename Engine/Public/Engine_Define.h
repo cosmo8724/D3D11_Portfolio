@@ -1,10 +1,13 @@
 ﻿#pragma once
 
 #pragma warning (disable : 4005)
+#pragma warning (disable : 4099)
 #pragma warning (disable : 4251)
 
 #include <d3d11.h>
 #include <Effects11//d3dx11effect.h>
+#include <DirectXTK/DDSTextureLoader.h>
+#include <DirectXTK/WICTextureLoader.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #define DIRECTINPUT_VERSION 0x0800
@@ -24,6 +27,7 @@ using namespace std;
 #include "Engine_Function.h"
 #include "Engine_Struct.h"
 
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"

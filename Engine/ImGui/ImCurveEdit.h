@@ -40,7 +40,7 @@ namespace ImCurveEdit
       CurveBezier,
    };
 
-   struct EditPoint
+   struct  IMGUI_API EditPoint
    {
       int curveIndex;
       int pointIndex;
@@ -57,7 +57,7 @@ namespace ImCurveEdit
       }
    };
 
-   struct Delegate
+   struct IMGUI_API Delegate
    {
       bool focused = false;
       virtual size_t GetCurveCount() = 0;
@@ -76,5 +76,5 @@ namespace ImCurveEdit
       virtual void EndEdit() {}
    };
 
-   int Edit(Delegate& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect = NULL, ImVector<EditPoint>* selectedPoints = NULL);
+   IMGUI_API int Edit(Delegate& delegate, const ImVec2& size, unsigned int id, const ImRect* clippingRect = NULL, ImVector<EditPoint>* selectedPoints = NULL);
 }

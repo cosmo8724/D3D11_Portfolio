@@ -2,6 +2,7 @@
 #include "Base.h"
 #include "Input_Device.h"
 #include "ComponentMgr.h"
+#include "PipeLine.h"
 #include "Tool.h"
 
 BEGIN(Engine)
@@ -13,6 +14,12 @@ class ENGINE_DLL CGameInstance final : public CBase
 private:
 	CGameInstance();
 	virtual ~CGameInstance() = default;
+
+public:
+	static _uint	Get_StaticLevelIndex() { return m_iStaticLevelIndex; }
+
+public:
+	static const wstring			m_wstrPrototypeTransformTag;
 
 public:		/* For GameInstance */
 	HRESULT	Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC& tGraphicDesc, DEVICE* ppDeviceOut, DEVICE_CONTEXT* ppContextOut);
@@ -52,6 +59,20 @@ public:		/* For Component Manager */
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, class CComponent* pPrototype);
 	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 
+public:		/* For PipeLine */
+	_matrix	Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState);
+	_matrix	Get_TransformMatrix_Inverse(CPipeLine::TRANSFORMSTATE eState);
+	_float4x4	Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eState);
+	void		Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
+
+public:		/* For Timer Manager */
+	const _double		Get_TimeDelta(const wstring wstrTimerTag);
+	HRESULT			Ready_Timer(const wstring wstrTimerTag);
+	void				Update_Timer(const wstring wstrTimerTag);
+
+private:
+	static _uint					m_iStaticLevelIndex;
+
 private:
 	class CGraphic_Device*		m_pGraphicDev = nullptr;
 	class CImGuiMgr*			m_pImGuiMgr = nullptr;
@@ -59,6 +80,8 @@ private:
 	class CLevelMgr*				m_pLevelMgr = nullptr;
 	class CObjectMgr*			m_pObjectMgr = nullptr;
 	class CComponentMgr*		m_pComponentMgr = nullptr;
+	class CPipeLine*				m_pPipeLine = nullptr;
+	class CTimerMgr*			m_pTimerMgr = nullptr;
 
 public:
 	static void	Release_Engine();
