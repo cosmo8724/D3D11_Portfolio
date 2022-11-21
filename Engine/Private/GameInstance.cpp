@@ -4,6 +4,7 @@
 #include "LevelMgr.h"
 #include "ObjectMgr.h"
 #include "TimerMgr.h"
+#include "LightMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -19,6 +20,7 @@ CGameInstance::CGameInstance()
 	, m_pComponentMgr(CComponentMgr::GetInstance())
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pTimerMgr(CTimerMgr::GetInstance())
+	, m_pLightMgr(CLightMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
@@ -28,6 +30,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pComponentMgr);
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pTimerMgr);
+	Safe_AddRef(m_pLightMgr);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
@@ -266,6 +269,13 @@ void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix Tra
 	m_pPipeLine->Set_Transform(eState, TransformMatrix);
 }
 
+_float4 CGameInstance::Get_CameraPosition() const
+{
+	NULL_CHECK_RETURN(m_pPipeLine, _float4());
+
+	return m_pPipeLine->Get_CameraPosition();
+}
+
 const _double CGameInstance::Get_TimeDelta(const wstring wstrTimerTag)
 {
 	NULL_CHECK_RETURN(m_pTimerMgr, 0.0);
@@ -287,6 +297,20 @@ void CGameInstance::Update_Timer(const wstring wstrTimerTag)
 	m_pTimerMgr->Update_Timer(wstrTimerTag);
 }
 
+const LIGHTDESC * CGameInstance::Get_LightDesc(_uint iIndex)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, nullptr);
+
+	return m_pLightMgr->Get_LightDesc(iIndex);
+}
+
+HRESULT CGameInstance::Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC & LightDesc)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, E_FAIL);
+
+	return m_pLightMgr->Add_Light(pDevice, pContext, LightDesc);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CTimerMgr::GetInstance()->DestroyInstance();
@@ -296,6 +320,7 @@ void CGameInstance::Release_Engine()
 	CComponentMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
+	CLightMgr::GetInstance()->DestroyInstance();
 	CImGuiMgr::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
@@ -308,6 +333,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);
 	Safe_Release(m_pInputDev);
+	Safe_Release(m_pLightMgr);
 	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pGraphicDev);
 }

@@ -15,7 +15,7 @@ CTerrain::CTerrain(const CTerrain& rhs)
 HRESULT CTerrain::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
-
+	
 	return S_OK;
 }
 
@@ -82,7 +82,16 @@ HRESULT CTerrain::SetUp_ShaderResource()
 
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
-	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture");
+
+	const LIGHTDESC*	pLightDesc = pGameInstance->Get_LightDesc(0);
+	NULL_CHECK_RETURN(pLightDesc, E_FAIL);
+
+	m_pShaderCom->Set_RawValue(L"g_vLightDir", &pLightDesc->vDirection, sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vCamPosition", &pGameInstance->Get_CameraPosition(), sizeof(_float4));
 
 	Safe_Release(pGameInstance);
 

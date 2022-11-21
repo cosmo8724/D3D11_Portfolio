@@ -10,8 +10,8 @@ CTestTool::CTestTool()
 {
 	m_pSequencer = new CMySequencer;
 	m_pSequencer->m_iFrameMax = 1000;
-	m_pSequencer->m_iFrameMin = -100;
-	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 0, 10, 30, false });
+	m_pSequencer->m_iFrameMin = 0;
+	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 0, 10, 30, true });
 	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 1, 20, 30, true });
 	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 2, 12, 60, false });
 	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 3, 61, 90, false });
@@ -91,16 +91,17 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 	/* Sequencer */
 	/* TODO : ImGui를 동적할당해서 그런지 누수가 개쩜. 누수 잡기. */
 	ImGui::Begin("Sequencer");
-
+	
 	static _int		iSelectedEntry = -1;
 	static _int		iFristFrame = 0;
 	static _bool		bExpanded = true;
-	static _int		iCurrentFrame = 100;
-
+	static _int		iCurrentFrame = 0;
+	
 	ImGui::PushItemWidth(130);
-	ImGui::InputInt("Frame Min", &m_pSequencer->m_iFrameMin);
+	ImGui::InputInt("Current Frame", &iCurrentFrame);
+	iCurrentFrame++;
 	ImGui::SameLine();
-	ImGui::InputInt("Frame", &iCurrentFrame);
+	ImGui::InputInt("Frame Min", &m_pSequencer->m_iFrameMin);
 	ImGui::SameLine();
 	ImGui::InputInt("Frame Max", &m_pSequencer->m_iFrameMax);
 

@@ -197,6 +197,8 @@
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\LevelMgr.h" />
+    <ClInclude Include="..\Public\Light.h" />
+    <ClInclude Include="..\Public\LightMgr.h" />
     <ClInclude Include="..\Public\ObjectMgr.h" />
     <ClInclude Include="..\Public\PipeLine.h" />
     <ClInclude Include="..\Public\Renderer.h" />
@@ -277,6 +279,8 @@
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\LevelMgr.cpp" />
+    <ClCompile Include="..\Private\Light.cpp" />
+    <ClCompile Include="..\Private\LightMgr.cpp" />
     <ClCompile Include="..\Private\ObjectMgr.cpp" />
     <ClCompile Include="..\Private\PipeLine.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />

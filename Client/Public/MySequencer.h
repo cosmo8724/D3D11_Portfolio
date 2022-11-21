@@ -5,7 +5,7 @@
 
 BEGIN(Client)
 
-static const char* SequencerItemTypeNames[] = { "Camera","Music", "ScreenEffect", "FadeIn", "Animation" };
+static const char* SequencerItemTypeNames[] = { "Camera", "Music", "ScreenEffect", "FadeIn", "Animation" };
 static const char* labels[] = { "Translation", "Rotation" , "Scale" };
 
 class CMySequencer : public ImSequencer::SequenceInterface, public CBase
@@ -13,9 +13,10 @@ class CMySequencer : public ImSequencer::SequenceInterface, public CBase
 public:
 	typedef struct MySequenceItem
 	{
-		_int	m_iType;
-		_int	m_iFrameStart, m_iFrameEnd;
-		_bool	m_bExpended;
+		_int	m_iType;			// One of SuquencerItemTypeNames
+		_int	m_iFrameStart;
+		_int	m_iFrameEnd;
+		_bool	m_bExpended;		// Use CurveEditor
 	} ITEM;
 
 public:

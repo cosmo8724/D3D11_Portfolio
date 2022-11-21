@@ -100,6 +100,12 @@
     <Filter Include="01. Utility\03. Component\02. VIBuffer\Shpere">
       <UniqueIdentifier>{ff86b4af-ba7c-448e-bae7-a14c4c2e6fc2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\06. Light">
+      <UniqueIdentifier>{d89bcdad-c176-4d38-b290-9e4b806bfb7d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\06. Light\Manager">
+      <UniqueIdentifier>{ca9576f9-b882-4bd7-bd8b-73571a477c08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -221,6 +227,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\GameUtility.cpp">
       <Filter>98. Utils</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Light.cpp">
+      <Filter>01. Utility\06. Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LightMgr.cpp">
+      <Filter>01. Utility\06. Light\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,6 +382,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\GameUtility.h">
       <Filter>98. Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Light.h">
+      <Filter>01. Utility\06. Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LightMgr.h">
+      <Filter>01. Utility\06. Light\Manager</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

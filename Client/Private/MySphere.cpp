@@ -80,7 +80,15 @@ HRESULT CMySphere::SetUp_ShaderResource()
 
 	FAILED_CHECK_RETURN(m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ)), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture"), E_FAIL);
+
+	const LIGHTDESC*	pLightDesc = pGameInstance->Get_LightDesc(0);
+	NULL_CHECK_RETURN(pLightDesc, E_FAIL);
+
+	m_pShaderCom->Set_RawValue(L"g_vLightDir", &pLightDesc->vDirection, sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4));
 
 	Safe_Release(pGameInstance);
 	

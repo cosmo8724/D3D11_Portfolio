@@ -11,6 +11,8 @@ HRESULT CLevel_TestStage::Initialize()
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
 	
+	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
+
 	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
@@ -35,6 +37,28 @@ HRESULT CLevel_TestStage::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	SetWindowText(g_hWnd, L"Level : Test Stage");
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Light()
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	LIGHTDESC			LightDesc;
+	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+
+	LightDesc.eType = LIGHTDESC::LIGHT_DIRECTIONAL;
+	LightDesc.bIsLightOn = true;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

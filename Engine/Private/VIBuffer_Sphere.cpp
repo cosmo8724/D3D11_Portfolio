@@ -28,14 +28,6 @@ HRESULT CVIBuffer_Sphere::Initialize_Prototype()
 	m_iNumIndices = m_iSlices * m_iSegments * 3 * 2;
 
 	/* Initialize Vertex Buffer */
-	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_tBufferDesc.StructureByteStride = m_iStride;
-	m_tBufferDesc.CPUAccessFlags = 0;
-	m_tBufferDesc.MiscFlags = 0;
-	
 	VTXNORTEX*		pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX));
 
@@ -52,32 +44,17 @@ HRESULT CVIBuffer_Sphere::Initialize_Prototype()
 			_float		fAngle2 = (_float)Segment / (_float)m_iSegments * XM_2PI;
 
 			pVertices[iIndex].vPosition = _float3(r * cosf(fAngle2), r * sinf(fAngle2), z);
-			pVertices[iIndex].vNormal = pVertices[iIndex].vPosition;
+			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);//pVertices[iIndex].vPosition;
 			pVertices[iIndex].vTexUV = _float2((1.f - z) / 2.f, (_float)Segment / (_float)m_iSegments);
 		}
 	}
-
-	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	m_tSubResourceData.pSysMem = pVertices;
-
-	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
-
-	Safe_Delete_Array(pVertices);
 	
 	/* Initialize Index Buffer */
-	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
-	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_tBufferDesc.StructureByteStride = 0;
-	m_tBufferDesc.CPUAccessFlags = 0;
-	m_tBufferDesc.MiscFlags = 0;
-
 	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	iIndex = 0;
+	_vector	vSour, vDest, vNormal;
 
 	for (_uint Slice = 0; Slice < m_iSlices; ++Slice)
 	{
@@ -91,6 +68,15 @@ HRESULT CVIBuffer_Sphere::Initialize_Prototype()
 				pIndices[iIndex]._0 = Segment + p1;
 				pIndices[iIndex]._1 = Segment + p2;
 				pIndices[iIndex]._2 = Segment + p2 + 1;
+
+				vSour = XMLoadFloat3(&pVertices[pIndices[iIndex]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iIndex]._0].vPosition);
+				vDest = XMLoadFloat3(&pVertices[pIndices[iIndex]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iIndex]._1].vPosition);
+				vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+				XMStoreFloat3(&pVertices[pIndices[iIndex]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iIndex]._0].vNormal) + vNormal));
+				XMStoreFloat3(&pVertices[pIndices[iIndex]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iIndex]._1].vNormal) + vNormal));
+				XMStoreFloat3(&pVertices[pIndices[iIndex]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iIndex]._2].vNormal) + vNormal));
+
 				++iIndex;
 			}
 			if (Slice > 0)
@@ -98,16 +84,51 @@ HRESULT CVIBuffer_Sphere::Initialize_Prototype()
 				pIndices[iIndex]._0 = Segment + p1;
 				pIndices[iIndex]._1 = Segment + p2 + 1;
 				pIndices[iIndex]._2 = Segment + p1 + 1;
+
+				vSour = XMLoadFloat3(&pVertices[pIndices[iIndex]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iIndex]._0].vPosition);
+				vDest = XMLoadFloat3(&pVertices[pIndices[iIndex]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iIndex]._1].vPosition);
+				vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+				XMStoreFloat3(&pVertices[pIndices[iIndex]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iIndex]._0].vNormal) + vNormal));
+				XMStoreFloat3(&pVertices[pIndices[iIndex]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iIndex]._1].vNormal) + vNormal));
+				XMStoreFloat3(&pVertices[pIndices[iIndex]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iIndex]._2].vNormal) + vNormal));
+
 				++iIndex;
 			}
 		}
 	}
+
+	/* Create Vertex Buffer */
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iStride;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
+
+	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+	m_tSubResourceData.pSysMem = pVertices;
+
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
+
+	/* Create Index Buffer */
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = 0;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 
 	m_tSubResourceData.pSysMem = pIndices;
 
 	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
+
+	Safe_Delete_Array(pVertices);
 
 	Safe_Delete_Array(pIndices);
 

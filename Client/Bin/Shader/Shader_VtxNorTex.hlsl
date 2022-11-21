@@ -1,5 +1,16 @@
 matrix			g_matWorld, g_matView, g_matProj;
-texture2D		g_Texture;
+vector			g_vCamPosition;
+
+/* Light Info */
+vector			g_vLightDir;
+vector			g_vLightDiffuse;
+vector			g_vLightAmbient;
+vector			g_vLightSpecular;
+
+/* Material Info */
+texture2D		g_DiffuseTexture;
+vector			g_vMaterialAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
+vector			g_vMaterialSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 sampler	LinearSampler = sampler_state
 {
@@ -25,6 +36,8 @@ struct VS_IN
 struct VS_OUT
 {
 	float4		vPosition		: SV_POSITION;
+	float		fShade			: COLORD0;
+	float		fSpecular		: COLORD1;
 	float2		vTexUV		: TEXCOORD0;
 };
 
@@ -40,13 +53,25 @@ VS_OUT	VS_MAIN(VS_IN In)
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
+	vector		vWorldPosition = mul(float4(In.vPosition, 1.f), g_matWorld);
+	vector		vWorldNormal = mul(float4(In.vNormal, 0.f), g_matWorld);
+
+	Out.fShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vWorldNormal)));
+
+	vector		vReflect = reflect(normalize(g_vLightDir), normalize(vWorldNormal));
+	vector		vLook = vWorldPosition - g_vCamPosition;
+
+	Out.fSpecular = saturate(dot(normalize(vReflect) * -1.f, normalize(vLook)));
+
 	return Out;
 }
 
 struct PS_IN
 {
-	float4		vPosition	: SV_POSITION;
-	float2		vTexUV	: TEXCOORD0;
+	float4		vPosition		: SV_POSITION;
+	float		fShade			: COLORD0;
+	float		fSpecular		: COLORD1;
+	float2		vTexUV		: TEXCOORD0;
 };
 
 struct PS_OUT
@@ -58,7 +83,12 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+	vector		vMaterialDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f);
+
+	vector		vDiffuse = g_vLightDiffuse * vMaterialDiffuse;
+
+	Out.vColor = vDiffuse * saturate(In.fShade + (g_vLightAmbient * g_vMaterialAmbient)) + In.fSpecular * (g_vLightSpecular * g_vMaterialSpecular);
+	//Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
 	return Out;
 }
@@ -67,9 +97,9 @@ RasterizerState rsWireFrame { FillMode = WireFrame; };
 
 technique11 DefaultTechnique
 {
-	pass Rect
+	pass Terrain
 	{
-		SetRasterizerState(rsWireFrame);
+		//SetRasterizerState(rsWireFrame);
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;

@@ -53,6 +53,7 @@ void CMySequencer::CustomDrawCompact(_int Index, ImDrawList * Draw_List, const I
 
 	Draw_List->PushClipRect(ClippingRect.Min, ClippingRect.Max, true);
 
+	/* 2 == Curve Count */
 	for (_int i = 0; i < 2; ++i)
 	{
 		for (_int j = 0; j < m_pCurveEditor->m_iNodeCount[i]; ++j)
@@ -68,7 +69,7 @@ void CMySequencer::CustomDrawCompact(_int Index, ImDrawList * Draw_List, const I
 			Draw_List->AddLine(ImVec2(x, rc.Min.y + 6), ImVec2(x, rc.Max.y - 4), 0xAA000000, 4.f);
 		}
 	}
-
+	
 	Draw_List->PopClipRect();
 }
 

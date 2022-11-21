@@ -51,14 +51,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitive;
 
 	/* Initialize Vertex Buffer */
-	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_tBufferDesc.StructureByteStride = m_iStride;
-	m_tBufferDesc.CPUAccessFlags = 0;
-	m_tBufferDesc.MiscFlags = 0;
+	
 
 	VTXNORTEX*		pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX));
@@ -74,30 +67,16 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 			pVertices[iIndex].vTexUV = _float2(x / (m_iNumVerticesX - 1.f), z / (m_iNumVerticesZ - 1.f));
 		}
 	}
-
-	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	
-	m_tSubResourceData.pSysMem = pVertices;
-
-	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
-
-	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pPixel);
 	
 	/* Initialize Index Buffer */
-	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
-
-	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
-	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_tBufferDesc.StructureByteStride = 0;
-	m_tBufferDesc.CPUAccessFlags = 0;
-	m_tBufferDesc.MiscFlags = 0;
+	
 
 	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	_uint		iNumFaces = 0;
+	_vector	vSour, vDest, vNormal;
 
 	for (_uint z = 0; z < m_iNumVerticesZ - 1; ++z)
 	{
@@ -115,14 +94,56 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 			pIndices[iNumFaces]._0 = iIndices[0];
 			pIndices[iNumFaces]._1 = iIndices[1];
 			pIndices[iNumFaces]._2 = iIndices[2];
+
+			vSour = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vPosition);
+			vDest = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition);
+			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal));
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal));
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal));
 			++iNumFaces;
 
 			pIndices[iNumFaces]._0 = iIndices[0];
 			pIndices[iNumFaces]._1 = iIndices[2];
 			pIndices[iNumFaces]._2 = iIndices[3];
+			
+			vSour = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vPosition);
+			vDest = XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vPosition) - XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vPosition);
+			vNormal = XMVector3Normalize(XMVector3Cross(vSour, vDest));
+
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._0].vNormal) + vNormal));
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._1].vNormal) + vNormal));
+			XMStoreFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal, XMVector3Normalize(XMLoadFloat3(&pVertices[pIndices[iNumFaces]._2].vNormal) + vNormal));
 			++iNumFaces;
 		}
 	}
+
+	/* Create Vertex Buffer */
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iStride;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
+
+	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+
+	m_tSubResourceData.pSysMem = pVertices;
+
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
+
+	/* Create Index Buffer */
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+
+	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = 0;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 
@@ -130,6 +151,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 
 	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
+	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
 
 	return S_OK;
