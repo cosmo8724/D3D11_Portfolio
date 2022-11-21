@@ -344,11 +344,11 @@ HRESULT CGameInstance::CreateSimulation()
 	return m_pPhysX->CreateSimulation();
 }
 
-HRESULT CGameInstance::RunSimulation()
+HRESULT CGameInstance::RunSimulation(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
 
-	return m_pPhysX->RunSimulation();
+	return m_pPhysX->RunSimulation(dTimeDelta);
 }
 
 void CGameInstance::DeleteScene()

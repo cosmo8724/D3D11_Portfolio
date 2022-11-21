@@ -80,7 +80,7 @@ public:		/* For PhysX */
 	PxMaterial*			Get_Material() const;
 	HRESULT				CreateScene(const PxVec3& vGravity);	
 	HRESULT				CreateSimulation();
-	HRESULT				RunSimulation();
+	HRESULT				RunSimulation(_double dTimeDelta);
 	void					DeleteScene();
 
 private:
