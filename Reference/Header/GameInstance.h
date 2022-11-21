@@ -75,6 +75,14 @@ public:		/* For Light Manager */
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
 	HRESULT				Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC& LightDesc);
 
+public:		/* For PhysX */
+	PxScene*				Get_PxScene() const;
+	PxMaterial*			Get_Material() const;
+	HRESULT				CreateScene(const PxVec3& vGravity);	
+	HRESULT				CreateSimulation();
+	HRESULT				RunSimulation();
+	void					DeleteScene();
+
 private:
 	static _uint					m_iStaticLevelIndex;
 
@@ -88,6 +96,8 @@ private:
 	class CPipeLine*				m_pPipeLine = nullptr;
 	class CTimerMgr*			m_pTimerMgr = nullptr;
 	class CLightMgr*				m_pLightMgr = nullptr;
+
+	class CPhysX*				m_pPhysX = nullptr;
 
 public:
 	static void	Release_Engine();

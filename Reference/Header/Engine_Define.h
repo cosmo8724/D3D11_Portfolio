@@ -14,6 +14,9 @@
 #include <dinput.h>
 using namespace DirectX;
 
+#include <PhysX/PxPhysicsAPI.h>
+using namespace physx;
+
 #include <vector>
 #include <list>
 #include <map>
@@ -33,6 +36,8 @@ using namespace std;
 #include "imgui_impl_win32.h"
 #include "ImGuizmo.h"
 #include "ImGuiFileDialog.h"
+#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
+#define HZ_CORE_IMGUI_COMPONENT_VAR(func, label, code) ImGui::TextUnformatted(label); ImGui::NextColumn(); ImGui::SetNextItemWidth(-1); if(func) { code } ImGui::NextColumn();
 
 #ifdef _DEBUG
 

@@ -5,6 +5,7 @@
 #include "ObjectMgr.h"
 #include "TimerMgr.h"
 #include "LightMgr.h"
+#include "PhysX.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -21,6 +22,7 @@ CGameInstance::CGameInstance()
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pTimerMgr(CTimerMgr::GetInstance())
 	, m_pLightMgr(CLightMgr::GetInstance())
+	, m_pPhysX(CPhysX::Create())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
@@ -31,6 +33,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pTimerMgr);
 	Safe_AddRef(m_pLightMgr);
+	Safe_AddRef(m_pPhysX);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
@@ -60,6 +63,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 	/* Create Prototype Transform Component */
 	FAILED_CHECK_RETURN(m_pComponentMgr->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
 	
+	//FAILED_CHECK_RETURN(m_pPhysX->Initialize(), E_FAIL);
+
 	return S_OK;
 }
 
@@ -311,6 +316,48 @@ HRESULT CGameInstance::Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const 
 	return m_pLightMgr->Add_Light(pDevice, pContext, LightDesc);
 }
 
+PxScene * CGameInstance::Get_PxScene() const
+{
+	NULL_CHECK_RETURN(m_pPhysX, nullptr);
+
+	return m_pPhysX->Get_PxScene();
+}
+
+PxMaterial * CGameInstance::Get_Material() const
+{
+	NULL_CHECK_RETURN(m_pPhysX, nullptr);
+
+	return m_pPhysX->Get_Material();
+}
+
+HRESULT CGameInstance::CreateScene(const PxVec3 & vGravity)
+{
+	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
+
+	return m_pPhysX->CreateScene(vGravity);
+}
+
+HRESULT CGameInstance::CreateSimulation()
+{
+	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
+
+	return m_pPhysX->CreateSimulation();
+}
+
+HRESULT CGameInstance::RunSimulation()
+{
+	NULL_CHECK_RETURN(m_pPhysX, E_FAIL);
+
+	return m_pPhysX->RunSimulation();
+}
+
+void CGameInstance::DeleteScene()
+{
+	NULL_CHECK_RETURN(m_pPhysX, );
+
+	m_pPhysX->DeleteScene();
+}
+
 void CGameInstance::Release_Engine()
 {
 	CTimerMgr::GetInstance()->DestroyInstance();
@@ -332,6 +379,8 @@ void CGameInstance::Free()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);
+	Safe_Release(m_pPhysX);
+	Safe_Release(m_pPhysX);
 	Safe_Release(m_pInputDev);
 	Safe_Release(m_pLightMgr);
 	Safe_Release(m_pImGuiMgr);
