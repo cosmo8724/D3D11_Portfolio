@@ -9,12 +9,7 @@ CLevel_TestStage::CLevel_TestStage(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 HRESULT CLevel_TestStage::Initialize()
 {
-	CGameInstance*		pInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pInstance);
-
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
-
-	FAILED_CHECK_RETURN(pInstance->CreateScene(PxVec3(1.f, 1.f, 1.f)), E_FAIL);
 	
 	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
 
@@ -24,26 +19,11 @@ HRESULT CLevel_TestStage::Initialize()
 
 	FAILED_CHECK_RETURN(Ready_Layer_Sphere(L"Layer_Sphere"), E_FAIL);
 
-	Safe_Release(pInstance);
-
 	return S_OK;
 }
 
 void CLevel_TestStage::Tick(_double dTimeDelta)
 {
-	CGameInstance*		pInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pInstance);
-	
-	if (m_pPshycisScene == nullptr)
-	{
-		m_pPshycisScene = pInstance->Get_PxScene();
-		pInstance->CreateSimulation();
-	}
-
-	pInstance->RunSimulation();
-
-	Safe_Release(pInstance);
-
 	__super::Tick(dTimeDelta);
 }
 

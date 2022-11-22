@@ -17,10 +17,6 @@ public:
 	virtual HRESULT				Render() override;
 
 private:
-	PxScene*						m_pPshycisScene = nullptr;
-	PxMaterial*					m_pPshycisMaterial = nullptr;
-
-private:
 	HRESULT						Ready_Light();
 	HRESULT						Ready_Layer_BackGround(const wstring wstrLayerTag);
 	HRESULT						Ready_Layer_Camera(const wstring wstrLayerTag);

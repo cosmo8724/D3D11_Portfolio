@@ -48,7 +48,7 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 
 	ImGui::Begin("Temp");
 	static _float&		fAlpha = ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w;
-	IMGUI_LEFT_LABEL(ImGui::SliderFloat, "Alpha", &fAlpha, 0.f, 1.f);
+	ImGui::SliderFloat("Alpha", &fAlpha, 0.f, 1.f);
 	ImGui::End();
 
 	static bool show_demo_window = true;
