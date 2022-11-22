@@ -15,6 +15,7 @@ BEGIN(Client)
 
 class CTerrain final : public CGameObject
 {
+	enum TEXTURETYPE { TEXTURE_DIFFUSE, TEXTURE_BRUSH, TEXTURETYPE_END };
 private:
 	CTerrain(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	CTerrain(const CTerrain& rhs);
@@ -29,7 +30,7 @@ public:
 private:
 	CRenderer*			m_pRendererCom = nullptr;
 	CShader*				m_pShaderCom = nullptr;
-	CTexture*				m_pTextureCom = nullptr;
+	CTexture*				m_pTextureCom[TEXTURETYPE_END] = { nullptr };
 	CVIBuffer_Terrain*	m_pVIBufferCom = nullptr;
 
 private:
