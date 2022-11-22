@@ -207,6 +207,7 @@
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\TimerMgr.h" />
     <ClInclude Include="..\Public\Tool.h" />
+    <ClInclude Include="..\Public\Tool_Property.h" />
     <ClInclude Include="..\Public\Transform.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect.h" />
@@ -289,6 +290,7 @@
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\TimerMgr.cpp" />
     <ClCompile Include="..\Private\Tool.cpp" />
+    <ClCompile Include="..\Private\Tool_Property.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect.cpp" />

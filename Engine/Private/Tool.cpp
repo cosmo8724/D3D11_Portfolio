@@ -1,6 +1,6 @@
 #include "..\Public\Tool.h"
 
-CTool::CTool()
-	: m_dTimeDelta(0.0)
+HRESULT CTool::Initialize(void * pArg)
 {
+	return S_OK;
 }

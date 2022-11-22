@@ -18,14 +18,16 @@ CTestTool::CTestTool()
 	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 4, 90, 99, false });
 }
 
-HRESULT CTestTool::Ready_Tool()
+HRESULT CTestTool::Initialize(void * pArg)
 {
-	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Add_Tool(this), E_FAIL);
+	m_szWIndowName = "Test Tool";
+
+	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Add_ImGuiWindowObejct(this), E_FAIL);
 
 	return S_OK;
 }
 
-HRESULT CTestTool::Update_Tool(_double dTimeDelta)
+void CTestTool::ImGui_RenderWindow()
 {
 	static _bool	bTest = false;
 	ImGui::Begin("Test Tool");
@@ -43,7 +45,7 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 			ImGuiFileDialog::Instance()->Close();
 		}
 	}
-	
+
 	ImGui::End();
 
 	ImGui::Begin("Temp");
@@ -91,12 +93,12 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 	/* Sequencer */
 	/* TODO : ImGui를 동적할당해서 그런지 누수가 개쩜. 누수 잡기. */
 	ImGui::Begin("Sequencer");
-	
+
 	static _int		iSelectedEntry = -1;
 	static _int		iFristFrame = 0;
 	static _bool		bExpanded = true;
 	static _int		iCurrentFrame = 0;
-	
+
 	ImGui::PushItemWidth(130);
 	ImGui::InputInt("Current Frame", &iCurrentFrame);
 	iCurrentFrame++;
@@ -116,14 +118,14 @@ HRESULT CTestTool::Update_Tool(_double dTimeDelta)
 
 	ImGui::End();
 
-	return S_OK;
+	return;
 }
 
-CTestTool * CTestTool::Create()
+CTestTool * CTestTool::Create(void * pArg)
 {
 	CTestTool*		pInstance = new CTestTool();
 
-	if (FAILED(pInstance->Ready_Tool()))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		MSG_BOX("Failed to Created : CTestTool");
 		Safe_Release(pInstance);

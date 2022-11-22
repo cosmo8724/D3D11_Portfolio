@@ -106,6 +106,9 @@
     <Filter Include="01. Utility\06. Light\Manager">
       <UniqueIdentifier>{ca9576f9-b882-4bd7-bd8b-73571a477c08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\90. ImGui\02. PropertyTool">
+      <UniqueIdentifier>{e52b35dc-b6f4-4609-8386-ba0bdd08d098}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -233,6 +236,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\LightMgr.cpp">
       <Filter>01. Utility\06. Light\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Property.cpp">
+      <Filter>00. System\90. ImGui\02. PropertyTool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -388,6 +394,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\LightMgr.h">
       <Filter>01. Utility\06. Light\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Property.h">
+      <Filter>00. System\90. ImGui\02. PropertyTool</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

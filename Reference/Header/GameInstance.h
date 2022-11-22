@@ -34,7 +34,9 @@ public:		/* For GraphicDevice */
 public:		/* For ImGui */
 	void					ImGui_Render();
 	void					ImGui_Render_Update();
-	HRESULT				Add_Tool(CTool* pTool);
+	HRESULT				Add_ImGuiTabObject(class CTool* pTool);
+	HRESULT				Add_ImGuiWindowObejct(class CTool* pTool);
+	void					Clear_ImGuiObject();
 
 public:		/* For InputDevice */
 	_byte					Get_DIKeyState(_ubyte byKeyID);

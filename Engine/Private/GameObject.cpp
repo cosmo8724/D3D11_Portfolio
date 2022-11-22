@@ -1,5 +1,6 @@
 #include "..\Public\GameObject.h"
 #include "GameInstance.h"
+#include "GameUtility.h"
 
 const wstring CGameObject::m_wstrTransformComTag = L"Com_Transform";
 
@@ -48,6 +49,19 @@ void CGameObject::Late_Tick(_double dTimeDelta)
 HRESULT CGameObject::Render()
 {
 	return S_OK;
+}
+
+void CGameObject::ImGui_RenderComponentProperties()
+{
+	for (const auto& Pair : m_mapComponent)
+	{
+		ImGui::Separator();
+		char szName[MAX_PATH];
+		CGameUtility::wctc(Pair.first.c_str(), szName);
+
+		ImGui::Text("%s", szName);
+		Pair.second->ImGui_RenderProperty();
+	}
 }
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, const wstring & wstrComponentTag, CComponent ** ppComponentOut, void * pArg)

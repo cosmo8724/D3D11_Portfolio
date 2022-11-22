@@ -129,11 +129,25 @@ void CGameInstance::ImGui_Render_Update()
 	m_pImGuiMgr->ImGui_Render_Update();
 }
 
-HRESULT CGameInstance::Add_Tool(CTool * pTool)
+HRESULT CGameInstance::Add_ImGuiTabObject(CTool * pTool)
 {
 	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
 
-	return m_pImGuiMgr->Add_Tool(pTool);
+	return m_pImGuiMgr->Add_ImGuiTabObject(pTool);
+}
+
+HRESULT CGameInstance::Add_ImGuiWindowObejct(CTool * pTool)
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
+
+	return m_pImGuiMgr->Add_ImGuiWindowObejct(pTool);
+}
+
+void CGameInstance::Clear_ImGuiObject()
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, );
+
+	m_pImGuiMgr->Clear_ImGuiObject();
 }
 
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)

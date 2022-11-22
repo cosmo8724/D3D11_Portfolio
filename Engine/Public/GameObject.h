@@ -26,6 +26,10 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta);
 	virtual HRESULT			Render();
 
+public:
+	void						ImGui_RenderComponentProperties();
+	virtual void				ImGui_RenderProperty() {}
+
 protected:
 	DEVICE					m_pDevice = nullptr;
 	DEVICE_CONTEXT		m_pContext = nullptr;

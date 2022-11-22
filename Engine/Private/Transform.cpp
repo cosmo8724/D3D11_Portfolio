@@ -59,6 +59,10 @@ HRESULT CTransform::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CTransform::ImGui_RenderProperty()
+{
+}
+
 void CTransform::Go_Straight(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);

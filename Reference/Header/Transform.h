@@ -39,6 +39,7 @@ public:
 public:
 	virtual HRESULT	Initialize_Prototype() override;
 	virtual HRESULT	Initialize(void* pArg) override;
+	virtual void		ImGui_RenderProperty() override;
 
 	HRESULT			Bind_ShaderResource(class CShader * pShaderCom, const wstring wstrConstantName);
 

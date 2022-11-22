@@ -10,6 +10,9 @@ private:
 	virtual ~CLayer() = default;
 
 public:
+	list<class CGameObject*>&		GetGameObjects() { return m_GameObjectList; }
+
+public:
 	HRESULT			Add_GameObject(class CGameObject* pGameObject);
 	HRESULT			Initialize();
 	void				Tick(_double dTimeDelta);
