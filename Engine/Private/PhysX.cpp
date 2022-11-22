@@ -64,9 +64,9 @@ HRESULT CPhysX::CreateSimulation()
 	return S_OK;
 }
 
-HRESULT CPhysX::RunSimulation(_double dTimeDelta)
+HRESULT CPhysX::RunSimulation()
 {
-	m_pScene->simulate((PxReal)dTimeDelta);
+	m_pScene->simulate(1.f / 165.f);
 	m_pScene->fetchResults(true);
 
 	return S_OK;

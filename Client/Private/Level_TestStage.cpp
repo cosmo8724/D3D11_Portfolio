@@ -40,7 +40,7 @@ void CLevel_TestStage::Tick(_double dTimeDelta)
 		pInstance->CreateSimulation();
 	}
 
-	pInstance->RunSimulation(dTimeDelta);
+	pInstance->RunSimulation();
 
 	Safe_Release(pInstance);
 

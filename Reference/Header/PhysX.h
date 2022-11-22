@@ -20,7 +20,7 @@ public:
 public:
 	HRESULT				CreateScene(const PxVec3& vGravity);
 	HRESULT				CreateSimulation();
-	HRESULT				RunSimulation(_double dTimeDelta);
+	HRESULT				RunSimulation();
 	void					DeleteScene();
 
 private:
