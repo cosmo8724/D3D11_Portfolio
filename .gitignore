@@ -43,6 +43,8 @@ ipch/
 *.suo
 
 Client/Bin/*
+!Client/Bin/Debug/assimp-vc140-mtd.dll
+!Client/Bin/Release/assimp-vc140-mt.dll
 !Client/Bin/Shader
 Engine/Default/Debug
 Engine/Default/Debug
