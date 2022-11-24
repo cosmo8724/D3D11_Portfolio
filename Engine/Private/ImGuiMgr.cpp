@@ -43,6 +43,7 @@ void CImGuiMgr::ImGui_NewFrame(_double dTimeDelta)
 
 void CImGuiMgr::ImGui_Render()
 {
+	ImGui_DockSpace();
 	ImGui_RenderTab();
 	ImGui_RenderWindow();
 
@@ -118,6 +119,42 @@ void CImGuiMgr::ImGui_RenderWindow()
 		ImWinObj->ImGui_RenderWindow();
 		ImGui::End();
 	}
+}
+
+void CImGuiMgr::ImGui_DockSpace()
+{
+	static ImGuiDockNodeFlags	DockSpaceFlag = ImGuiDockNodeFlags_None;
+	ImGuiWindowFlags			WindowFlag = ImGuiWindowFlags_NoDocking;
+
+	const ImGuiViewport*	Viewport = ImGui::GetMainViewport();
+	ImGui::SetNextWindowPos(Viewport->WorkPos);
+	ImGui::SetNextWindowSize(Viewport->WorkSize);
+	ImGui::SetNextWindowViewport(Viewport->ID);
+	ImGui::SetNextWindowBgAlpha(0.f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.f);
+	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.f, 0.f));
+
+	WindowFlag |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+	WindowFlag |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+	WindowFlag |= ImGuiDockNodeFlags_PassthruCentralNode;
+	WindowFlag |= ImGuiWindowFlags_NoBackground;
+
+	_bool	bIsShow = true;
+
+	ImGui::Begin("DockSpace", &bIsShow, WindowFlag);
+	ImGui::PopStyleVar(1);
+	ImGui::PopStyleVar(2);
+
+	ImGuiIO&	io = ImGui::GetIO();
+	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
+	{
+		ImGuiID	DockSpaceID = ImGui::GetID("MyDockspace");
+		ImGuiDockNodeFlags Flag = ImGuiDockNodeFlags_PassthruCentralNode;
+		ImGui::DockSpace(DockSpaceID, ImVec2(0.f, 0.f), Flag);
+	}
+
+	ImGui::End();
 }
 
 void CImGuiMgr::Free()

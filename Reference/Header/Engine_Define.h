@@ -33,6 +33,7 @@ using namespace std;
 #include "Engine_Function.h"
 #include "Engine_Struct.h"
 
+#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_impl_dx11.h"

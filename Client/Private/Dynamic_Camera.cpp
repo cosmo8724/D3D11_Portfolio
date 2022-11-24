@@ -63,13 +63,15 @@ void CDynamic_Camera::Tick(_double dTimeDelta)
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	_long				MouseMove = 0;
+	if (pGameInstance->Get_DIMouseState(DIM_RB) & 0x80)
+	{
+		_long				MouseMove = 0;
 
-	if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_X))
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
-	if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_Y))
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
-
+		if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_X))
+			m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
+		if (MouseMove = pGameInstance->Get_DIMouseMove(DIMS_Y))
+			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
+	}
 	Safe_Release(pGameInstance);
 
 	__super::Tick(dTimeDelta);

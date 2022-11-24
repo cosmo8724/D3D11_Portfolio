@@ -25,6 +25,7 @@ public:
 private:
 	void		ImGui_RenderTab();
 	void		ImGui_RenderWindow();
+	void		ImGui_DockSpace();
 
 private:
 	_double					m_dTimeDelta;
