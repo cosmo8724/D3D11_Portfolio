@@ -5,13 +5,22 @@
 HRESULT CTool_Debugger::Initialize(void * pArg)
 {
 	m_szWIndowName = "Debugger";
+	m_fFrameRate = &ImGui::GetIO().Framerate;
+	m_TextColor = { 0.f, 0.f, 0.f, 1.f };
 
 	return S_OK;
 }
 
 void CTool_Debugger::ImGui_RenderWindow()
 {
-	ImGui::Text("FPS : %.1f", ImGui::GetIO().Framerate);
+	if (*m_fFrameRate >= 60.f)
+		m_TextColor = { 0.f, 1.f, 0.f, 1.f };
+	else if (*m_fFrameRate >= 30.f && *m_fFrameRate < 60.f)
+		m_TextColor = { 1.f, 0.7f, 0.f, 1.f };
+	else
+		m_TextColor = { 1.f, 0.f, 0.f, 1.f };
+
+	ImGui::TextColored(m_TextColor, "FPS : %.1f", ImGui::GetIO().Framerate);
 }
 
 CTool_Debugger * CTool_Debugger::Create(void * pArg)

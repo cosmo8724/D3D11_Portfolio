@@ -29,6 +29,7 @@ private:
 
 private:
 	_double					m_dTimeDelta;
+	_bool						m_bDrawImGui = true;
 
 	vector<class CTool*>			m_vecTab;
 	vector<class CTool*>			m_vecWindow;
