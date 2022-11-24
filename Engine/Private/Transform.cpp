@@ -108,7 +108,7 @@ void CTransform::Go_Right(_double dTimeDelta)
 void CTransform::Go_Up(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
-	_vector	vUp = Get_State(CTransform::STATE_UP);
+	_vector	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
 	vPos += XMVector3Normalize(vUp) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
@@ -118,7 +118,7 @@ void CTransform::Go_Up(_double dTimeDelta)
 void CTransform::Go_Down(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
-	_vector	vUp = Get_State(CTransform::STATE_UP);
+	_vector	vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
 	vPos -= XMVector3Normalize(vUp) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 

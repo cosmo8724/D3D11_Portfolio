@@ -185,6 +185,8 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TestTool.h" />
+    <ClInclude Include="..\Public\Tool_Debugger.h" />
+    <ClInclude Include="..\Public\Tool_Settings.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -204,6 +206,8 @@
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TestTool.cpp" />
+    <ClCompile Include="..\Private\Tool_Debugger.cpp" />
+    <ClCompile Include="..\Private\Tool_Settings.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

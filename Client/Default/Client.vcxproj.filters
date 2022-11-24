@@ -49,14 +49,20 @@
     <Filter Include="02. GameObject\Sphere">
       <UniqueIdentifier>{7bd46246-18af-478b-9c77-da0c017e6878}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. Tool\00. Sequencer">
-      <UniqueIdentifier>{349b572d-7818-4792-96ed-65301dd31861}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97. Tool\00. Sequencer\00. CurveEditor">
-      <UniqueIdentifier>{138424c2-46ab-45d1-9063-fc5d17f8daf3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\Player">
       <UniqueIdentifier>{01d8bbd8-af76-4f46-8990-d1a8278bf3bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\00. ImGui_Settings">
+      <UniqueIdentifier>{07085bc3-a443-45aa-ae98-ddf903c9f032}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\99. Sequencer">
+      <UniqueIdentifier>{349b572d-7818-4792-96ed-65301dd31861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\99. Sequencer\00. CurveEditor">
+      <UniqueIdentifier>{138424c2-46ab-45d1-9063-fc5d17f8daf3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\01. Debugger">
+      <UniqueIdentifier>{48c0ed84-6087-4749-8f82-e138d1e7d058}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -103,15 +109,23 @@
       <Filter>02. GameObject\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CurveEditor.h">
-      <Filter>97. Tool\00. Sequencer\00. CurveEditor</Filter>
+      <Filter>97. Tool\99. Sequencer\00. CurveEditor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MySphere.h">
       <Filter>02. GameObject\Sphere</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MySequencer.h">
-      <Filter>97. Tool\00. Sequencer</Filter>
+      <Filter>97. Tool\99. Sequencer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Player.h" />
+    <ClInclude Include="..\Public\Tool_Debugger.h">
+      <Filter>97. Tool\01. Debugger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>02. GameObject\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Settings.h">
+      <Filter>97. Tool\00. ImGui_Settings</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -148,15 +162,23 @@
       <Filter>02. GameObject\Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CurveEditor.cpp">
-      <Filter>97. Tool\00. Sequencer\00. CurveEditor</Filter>
+      <Filter>97. Tool\99. Sequencer\00. CurveEditor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MySphere.cpp">
       <Filter>02. GameObject\Sphere</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MySequencer.cpp">
-      <Filter>97. Tool\00. Sequencer</Filter>
+      <Filter>97. Tool\99. Sequencer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\Private\Tool_Debugger.cpp">
+      <Filter>97. Tool\01. Debugger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02. GameObject\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Settings.cpp">
+      <Filter>97. Tool\00. ImGui_Settings</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "Level_Loading.h"
 #include "Tool_Property.h"
+#include "Tool_Settings.h"
+#include "Tool_Debugger.h"
 
 CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -17,6 +19,8 @@ HRESULT CLevel_Logo::Initialize()
 
 	//CGameInstance::GetInstance()->Clear_ImGuiObject();
 	CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
+	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Settings::Create());
+	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Debugger::Create());
 
 	return S_OK;
 }

@@ -31,22 +31,9 @@ void CTestTool::ImGui_RenderWindow()
 {
 	ImGui::Text("This?");
 
-	ImGui::Begin("ImGui Options");
-	static _float&	fAlpha = ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w;
-	IMGUI_LEFT_LABEL(ImGui::SliderFloat, "Alpha", &fAlpha, 0.f, 1.f);
-	ImGui::Text("(CTRL+Click to Input Directly)");
-	//ImGuiSliderFlags_
-	ImGui::End();
-
 	ImGui::ShowDemoWindow();
 
-	ImGui::Begin("Debugger");
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
-
 	/* Sequencer */
-	ImGui::Begin("Sequencer");
-
 	static _int		iSelectedEntry = -1;
 	static _int		iFristFrame = 0;
 	static _bool		bExpanded = true;
@@ -68,8 +55,6 @@ void CTestTool::ImGui_RenderWindow()
 		const CMySequencer::ITEM&	Item = m_pSequencer->m_vecItems[iSelectedEntry];
 		ImGui::Text("I am a %s, Please Edit me.", SequencerItemTypeNames[Item.m_iType]);
 	}
-
-	ImGui::End();
 
 	return;
 }
