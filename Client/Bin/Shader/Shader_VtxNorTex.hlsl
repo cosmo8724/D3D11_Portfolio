@@ -10,7 +10,7 @@ vector			g_vLightAmbient;
 vector			g_vLightSpecular;
 
 /* Material Info */
-texture2D		g_DiffuseTexture;
+texture2D		g_DiffuseTexture[2];
 vector			g_vMaterialAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
 vector			g_vMaterialSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
@@ -18,6 +18,7 @@ vector			g_vMaterialSpecular = vector(1.f, 1.f, 1.f, 1.f);
 texture2D		g_BrushTexture;
 vector			g_vBrushPos;
 float			g_fBrushRange = 5.f;
+texture2D		g_FilterTexture;
 
 sampler	LinearSampler = sampler_state
 {
@@ -83,7 +84,9 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	vector		vMaterialDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f);
+	vector		vSourDiffuse = g_DiffuseTexture[0].Sample(LinearSampler, In.vTexUV* 30.f);
+	vector		vDestDiffuse = g_DiffuseTexture[1].Sample(LinearSampler, In.vTexUV * 30.f);
+	vector		vFilter = g_FilterTexture.Sample(LinearSampler, In.vTexUV);
 
 	vector		vBrush = (vector)0.f;
 
@@ -98,7 +101,9 @@ PS_OUT	PS_MAIN(PS_IN In)
 		vBrush = g_BrushTexture.Sample(LinearSampler, vUV);
 	}
 
-	vector		vDiffuse = (g_vLightDiffuse * vMaterialDiffuse) + vBrush;
+	vector		vMaterialDiffuse = vSourDiffuse * (1.f - vFilter.r) + vDestDiffuse * vFilter.r + vBrush;
+
+	vector		vDiffuse = g_vLightDiffuse * vMaterialDiffuse;
 
 	float		fShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(In.vNormal)));
 

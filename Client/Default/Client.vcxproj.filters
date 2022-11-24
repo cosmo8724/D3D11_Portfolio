@@ -55,6 +55,9 @@
     <Filter Include="97. Tool\00. Sequencer\00. CurveEditor">
       <UniqueIdentifier>{138424c2-46ab-45d1-9063-fc5d17f8daf3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Player">
+      <UniqueIdentifier>{01d8bbd8-af76-4f46-8990-d1a8278bf3bb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -108,6 +111,7 @@
     <ClInclude Include="..\Public\MySequencer.h">
       <Filter>97. Tool\00. Sequencer</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -152,6 +156,7 @@
     <ClCompile Include="..\Private\MySequencer.cpp">
       <Filter>97. Tool\00. Sequencer</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

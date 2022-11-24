@@ -16,11 +16,11 @@ public:
 
 public:
 	HRESULT					Bind_ShaderResource(class CShader* pShaderCom, const wstring wstrConstantName, _uint iTextureIndex = 0);
+	HRESULT					Bind_ShaderResources(class CShader* pShaderCom, const wstring wstrConstantName);
 
 private:
 	_uint												m_iNumTexture = 0;
-	vector<ID3D11ShaderResourceView*>			m_vecTexture;
-	typedef vector<ID3D11ShaderResourceView*>	TEXTURES;
+	ID3D11ShaderResourceView**					m_pTextures;
 
 public:
 	static CTexture*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrTextureFilePath, _uint iNumTexture = 1);

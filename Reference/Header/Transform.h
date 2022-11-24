@@ -50,6 +50,7 @@ public:
 	void				Go_Right(_double dTimeDelta);
 	void				Go_Up(_double dTimeDelta);
 	void				Go_Down(_double dTimeDelta);
+	void				Speed_Up(_bool bKeyState);
 
 	void				Turn(_fvector vAxis, _double dTimeDelta);
 	void				Rotation(_fvector vAxis, _float fRadian);
@@ -60,6 +61,7 @@ public:
 private:
 	_float4x4				m_matWorld;
 	TRANSFORMDESC	m_TransformDesc;
+	_double				m_dInitSpeed = 0.0;
 
 public:
 	static CTransform*		Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

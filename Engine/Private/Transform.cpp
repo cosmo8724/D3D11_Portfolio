@@ -56,6 +56,8 @@ HRESULT CTransform::Initialize(void * pArg)
 	if (nullptr != pArg)
 		memcpy(&m_TransformDesc, pArg, sizeof(TRANSFORMDESC));
 
+	m_dInitSpeed = m_TransformDesc.dSpeedPerSec;
+
 	return S_OK;
 }
 
@@ -121,6 +123,14 @@ void CTransform::Go_Down(_double dTimeDelta)
 	vPos -= XMVector3Normalize(vUp) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
 	Set_State(CTransform::STATE_TRANS, vPos);
+}
+
+void CTransform::Speed_Up(_bool bKeyState)
+{
+	if (bKeyState)
+		m_TransformDesc.dSpeedPerSec = m_dInitSpeed * 5.0;
+	else
+		m_TransformDesc.dSpeedPerSec = m_dInitSpeed;
 }
 
 void CTransform::Turn(_fvector vAxis, _double dTimeDelta)

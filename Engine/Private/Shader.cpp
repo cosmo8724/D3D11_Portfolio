@@ -130,6 +130,19 @@ HRESULT CShader::Set_ShaderResourceView(const wstring & wstrConstantName, ID3D11
 	return pVariable->SetResource(pSRV);
 }
 
+HRESULT CShader::Set_ShaderResourceViewArray(const wstring & wstrConstantName, ID3D11ShaderResourceView ** ppSRV, _uint iNumTextures)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	char	szConstantName[MAX_PATH];
+	CGameUtility::wctc(wstrConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectShaderResourceVariable*	pVariable = m_pEffect->GetVariableByName(szConstantName)->AsShaderResource();
+	NULL_CHECK_RETURN(pVariable, E_FAIL);
+	
+	return pVariable->SetResourceArray(ppSRV, 0, iNumTextures);
+}
+
 CShader * CShader::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrShaderFilPath, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);

@@ -65,6 +65,9 @@ HRESULT CTerrain::SetUp_Component()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Terrain", L"Com_Texture_Terrain", (CComponent**)&m_pTextureCom[TEXTURE_DIFFUSE]), E_FAIL);
 	
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Brush", L"Com_Texture_Brush", (CComponent**)&m_pTextureCom[TEXTURE_BRUSH]), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Filter", L"Com_Texture_Filter", (CComponent**)&m_pTextureCom[TEXTURE_FILTER]), E_FAIL);
+
 	return S_OK;
 }
 
@@ -83,8 +86,9 @@ HRESULT CTerrain::SetUp_ShaderResource()
 
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
-	m_pTextureCom[TEXTURE_DIFFUSE]->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture");
+	m_pTextureCom[TEXTURE_DIFFUSE]->Bind_ShaderResources(m_pShaderCom, L"g_DiffuseTexture");
 	m_pTextureCom[TEXTURE_BRUSH]->Bind_ShaderResource(m_pShaderCom, L"g_BrushTexture");
+	m_pTextureCom[TEXTURE_FILTER]->Bind_ShaderResource(m_pShaderCom, L"g_FilterTexture");
 	m_pShaderCom->Set_RawValue(L"g_vBrushPos", &_float4(15.f, 0.f, 15.f, 1.f), sizeof(_float4));
 
 	const LIGHTDESC*	pLightDesc = pGameInstance->Get_LightDesc(0);

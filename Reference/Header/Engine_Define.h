@@ -8,11 +8,17 @@
 #include <Effects11//d3dx11effect.h>
 #include <DirectXTK/DDSTextureLoader.h>
 #include <DirectXTK/WICTextureLoader.h>
+#include <DirectXTK/ScreenGrab.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 using namespace DirectX;
+
+#include <Assimp/scene.h>
+#include <Assimp/Importer.hpp>
+#include <Assimp/postprocess.h>
+using namespace Assimp;
 
 #include <vector>
 #include <list>

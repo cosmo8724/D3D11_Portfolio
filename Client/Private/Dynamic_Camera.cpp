@@ -57,6 +57,8 @@ void CDynamic_Camera::Tick(_double dTimeDelta)
 		m_pTransformCom->Go_Up(dTimeDelta);
 	if (GetKeyState(VK_LCONTROL) & 0x8000)
 		m_pTransformCom->Go_Down(dTimeDelta);
+
+	m_pTransformCom->Speed_Up(GetKeyState(VK_LSHIFT) & 0x8000);
 	
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);

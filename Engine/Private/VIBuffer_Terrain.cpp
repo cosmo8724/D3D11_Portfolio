@@ -51,8 +51,6 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitive;
 
 	/* Initialize Vertex Buffer */
-	
-
 	VTXNORTEX*		pVertices = new VTXNORTEX[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX));
 
@@ -70,8 +68,6 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	Safe_Delete_Array(pPixel);
 	
 	/* Initialize Index Buffer */
-	
-
 	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 

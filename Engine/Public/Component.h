@@ -21,6 +21,8 @@ protected:
 	DEVICE					m_pDevice = nullptr;
 	DEVICE_CONTEXT		m_pContext = nullptr;
 
+	_bool						m_bIsCloned = false;
+
 public:
 	virtual CComponent*	Clone(void* pArg = nullptr) PURE;
 	virtual void				Free() override;

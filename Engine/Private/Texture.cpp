@@ -10,22 +10,20 @@ CTexture::CTexture(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CTexture::CTexture(const CTexture& rhs)
 	: CComponent(rhs)
 	, m_iNumTexture(rhs.m_iNumTexture)
-	, m_vecTexture(rhs.m_vecTexture)
+	, m_pTextures(rhs.m_pTextures)
 {
-	for (auto& pTexture : m_vecTexture)
-		Safe_AddRef(pTexture);
+	for (_uint i = 0; i < m_iNumTexture; ++i)
+		Safe_AddRef(m_pTextures[i]);
 }
 
 HRESULT CTexture::Initialize_Prototype(const wstring wstrTextureFilePath, _uint iNumTexture)
 {
-	m_vecTexture.reserve(iNumTexture);
+	m_pTextures = new ID3D11ShaderResourceView*[iNumTexture];
 
 	m_iNumTexture = iNumTexture;
 
 	for (_uint i = 0; i < m_iNumTexture; ++i)
 	{
-		ID3D11ShaderResourceView*		pSRV = nullptr;
-
 		_tchar		szTexturePath[MAX_PATH] = L"";
 
 		wsprintf(szTexturePath, wstrTextureFilePath.c_str(), i);
@@ -38,13 +36,11 @@ HRESULT CTexture::Initialize_Prototype(const wstring wstrTextureFilePath, _uint 
 		if (!lstrcmp(szExt, L".tga"))
 			hr = E_FAIL;
 		else if (!lstrcmp(szExt, L".dds"))
-			hr = DirectX::CreateDDSTextureFromFile(m_pDevice, szTexturePath, nullptr, &pSRV);
+			hr = DirectX::CreateDDSTextureFromFile(m_pDevice, szTexturePath, nullptr, &m_pTextures[i]);
 		else
-			hr = DirectX::CreateWICTextureFromFile(m_pDevice, szTexturePath, nullptr, &pSRV);
+			hr = DirectX::CreateWICTextureFromFile(m_pDevice, szTexturePath, nullptr, &m_pTextures[i]);
 		
 		FAILED_CHECK_RETURN(hr, E_FAIL);
-
-		m_vecTexture.push_back(pSRV);
 	}
 
 	return S_OK;
@@ -60,7 +56,14 @@ HRESULT CTexture::Bind_ShaderResource(CShader * pShaderCom, const wstring wstrCo
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 	assert(iTextureIndex < m_iNumTexture);
 
-	return pShaderCom->Set_ShaderResourceView(wstrConstantName, m_vecTexture[iTextureIndex]);
+	return pShaderCom->Set_ShaderResourceView(wstrConstantName, m_pTextures[iTextureIndex]);
+}
+
+HRESULT CTexture::Bind_ShaderResources(CShader * pShaderCom, const wstring wstrConstantName)
+{
+	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
+
+	return pShaderCom->Set_ShaderResourceViewArray(wstrConstantName, m_pTextures, m_iNumTexture);
 }
 
 CTexture * CTexture::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrTextureFilePath, _uint iNumTexture)
@@ -93,8 +96,9 @@ void CTexture::Free()
 {
 	__super::Free();
 
-	for (auto& pTexture : m_vecTexture)
-		Safe_Release(pTexture);
+	for (_uint i = 0; i < m_iNumTexture; ++i)
+		Safe_Release(m_pTextures[i]);
 
-	m_vecTexture.clear();
+	if (m_bIsCloned == false)
+		Safe_Delete_Array(m_pTextures);
 }
