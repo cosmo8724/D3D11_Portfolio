@@ -80,10 +80,6 @@ HRESULT CTerrain::SetUp_ShaderResource()
 
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 
-	_float4x4		matView, matProj;
-	matView = pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW);
-	matProj = pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ);
-
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
 	m_pTextureCom[TEXTURE_DIFFUSE]->Bind_ShaderResources(m_pShaderCom, L"g_DiffuseTexture");

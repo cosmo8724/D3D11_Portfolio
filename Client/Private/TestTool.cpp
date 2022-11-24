@@ -8,14 +8,14 @@
 
 CTestTool::CTestTool()
 {
-	m_pSequencer = new CMySequencer;
-	m_pSequencer->m_iFrameMax = 1000;
-	m_pSequencer->m_iFrameMin = 0;
-	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 0, 10, 30, true });
-	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 1, 20, 30, true });
-	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 2, 12, 60, false });
-	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 3, 61, 90, false });
-	m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 4, 90, 99, false });
+	//m_pSequencer = new CMySequencer;
+	//m_pSequencer->m_iFrameMax = 1000;
+	//m_pSequencer->m_iFrameMin = 0;
+	//m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 0, 10, 30, true });
+	//m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 1, 20, 30, true });
+	//m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 2, 12, 60, false });
+	//m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 3, 61, 90, false });
+	//m_pSequencer->m_vecItems.push_back(CMySequencer::ITEM{ 4, 90, 99, false });
 }
 
 HRESULT CTestTool::Initialize(void * pArg)
@@ -31,10 +31,10 @@ void CTestTool::ImGui_RenderWindow()
 {
 	ImGui::Text("This?");
 
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 
 	/* Sequencer */
-	static _int		iSelectedEntry = -1;
+	/*static _int		iSelectedEntry = -1;
 	static _int		iFristFrame = 0;
 	static _bool		bExpanded = true;
 	static _int		iCurrentFrame = 0;
@@ -54,7 +54,7 @@ void CTestTool::ImGui_RenderWindow()
 	{
 		const CMySequencer::ITEM&	Item = m_pSequencer->m_vecItems[iSelectedEntry];
 		ImGui::Text("I am a %s, Please Edit me.", SequencerItemTypeNames[Item.m_iType]);
-	}
+	}*/
 
 	return;
 }
