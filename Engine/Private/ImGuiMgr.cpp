@@ -136,7 +136,6 @@ void CImGuiMgr::ImGui_RenderWindow()
 
 void CImGuiMgr::ImGui_DockSpace()
 {
-	static ImGuiDockNodeFlags	DockSpaceFlag = ImGuiDockNodeFlags_None;
 	ImGuiWindowFlags			WindowFlag = ImGuiWindowFlags_NoDocking;
 
 	const ImGuiViewport*	Viewport = ImGui::GetMainViewport();
