@@ -1,6 +1,5 @@
 #pragma once
 #include "Base.h"
-#include "Tool.h"
 
 BEGIN(Engine)
 
@@ -19,14 +18,23 @@ public:
 	void		ImGui_Render_Update();
 	
 public:
-	HRESULT	Add_Tool(CTool* pTool);
+	HRESULT	Add_ImGuiTabObject(class CTool* pTool);
+	HRESULT	Add_ImGuiWindowObejct(class CTool* pTool);
+	void		Clear_ImGuiObject();
 
-public:
-	virtual		void	Free() override;
+private:
+	void		ImGui_RenderTab();
+	void		ImGui_RenderWindow();
+	void		ImGui_DockSpace();
 
 private:
 	_double					m_dTimeDelta;
-	vector<CTool*>		m_vecTool;
+
+	vector<class CTool*>			m_vecTab;
+	vector<class CTool*>			m_vecWindow;
+
+public:
+	virtual		void	Free() override;
 };
 
 END

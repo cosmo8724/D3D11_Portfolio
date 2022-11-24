@@ -1,4 +1,19 @@
-matrix		g_matWorld, g_matView, g_matProj;
+matrix			g_matWorld, g_matView, g_matProj;
+texture2D		g_Texture;
+
+sampler	LinearSampler = sampler_state
+{
+	filter = min_mag_mip_Linear;
+	AddressU = wrap;
+	AddressV = wrap;
+};
+
+sampler	PointSampler = sampler_state
+{
+	filter = min_mag_mip_Point;
+	AddressU = wrap;
+	AddressV = wrap;
+};
 
 struct VS_IN
 {
@@ -42,7 +57,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT	Out = (PS_OUT)0;
 
-	Out.vColor = vector(1.f, 0.f, 0.f, 1.f);
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
 	return Out;
 }

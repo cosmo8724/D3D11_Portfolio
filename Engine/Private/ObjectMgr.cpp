@@ -1,6 +1,7 @@
 #include "..\Public\ObjectMgr.h"
 #include "Layer.h"
 #include "GameObject.h"
+#include "GameUtility.h"
 
 IMPLEMENT_SINGLETON(CObjectMgr)
 
@@ -89,6 +90,56 @@ void CObjectMgr::Late_Tick(_double dTimeDelta)
 				Pair.second->Late_Tick(dTimeDelta);
 		}
 	}
+}
+
+void CObjectMgr::ImGui_ProtoViewer(const wstring & wstrSelectedProto)
+{
+	return;
+}
+
+void CObjectMgr::ImGui_ObjectViewer(_uint iLevel, CGameObject *& pSelectedObejct)
+{
+	if (m_iNumLevels <= iLevel)
+		return;
+
+	_bool	bFound = false;
+
+	const LAYERS&	targetLevel = m_pLayers[iLevel];
+
+	if (ImGui::TreeNode("Object Viewer"))
+	{
+		for (auto& Pair : targetLevel)
+		{
+			char szLayerTag[MAX_PATH];
+			CGameUtility::wctc(Pair.first.c_str(), szLayerTag);
+			if (ImGui::TreeNode(szLayerTag))
+			{
+				if (ImGui::BeginListBox("##"))
+				{
+					for (auto& Obj : Pair.second->GetGameObjects())
+					{
+						const _bool bSelected = pSelectedObejct == Obj;
+						if (bSelected)
+						{
+							ImGui::SetItemDefaultFocus();
+							bFound = true;
+						}
+						if (ImGui::Selectable(typeid(*Obj).name(), bSelected))
+						{
+							pSelectedObejct = Obj;
+							bFound = true;
+						}
+					}
+					ImGui::EndListBox();
+				}
+				ImGui::TreePop();
+			}
+		}
+		ImGui::TreePop();
+	}
+
+	if (bFound == false)
+		pSelectedObejct = nullptr;
 }
 
 CGameObject * CObjectMgr::Find_Prototype(const wstring & wstrPrototypeTag)

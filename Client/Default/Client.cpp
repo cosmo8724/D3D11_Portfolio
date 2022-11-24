@@ -4,6 +4,7 @@
 #include "stdafx.h"
 #include "Client.h"
 #include "MainApp.h"
+#include "GameInstance.h"
 
 #define MAX_LOADSTRING 100
 
@@ -57,6 +58,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CMainApp*		pMainApp = CMainApp::Create();
 	NULL_CHECK_RETURN(pMainApp, FALSE);
 
+	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Ready_Timer(L"Timer_Default"), FALSE);
+	FAILED_CHECK_RETURN(pGameInstance->Ready_Timer(L"Timer_165"), FALSE);
+
+	_double			dTimerAcc = 0.0;
+
     // 기본 메시지 루프입니다.
 	while (true)
 	{
@@ -73,13 +82,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		}
 		else
 		{
-			pMainApp->Tick(0.0);
-			pMainApp->Render();
-			pMainApp->Resize_BackBuffer();
-			g_bNeedResizeSwapChain = false;
+			pGameInstance->Update_Timer(L"Timer_Default");
+
+			dTimerAcc += pGameInstance->Get_TimeDelta(L"Timer_Default");	
+
+			//if (dTimerAcc > 1.0 / 165.0)
+			{
+				pGameInstance->Update_Timer(L"Timer_165");
+
+				pMainApp->Tick(0.1);//(pGameInstance->Get_TimeDelta(L"Timer_165"));
+				pMainApp->Render();
+				pMainApp->Resize_BackBuffer();
+				g_bNeedResizeSwapChain = false;
+
+				dTimerAcc = 0.0;
+			}
+
+			
 		}
 	}
 
+	Safe_Release(pGameInstance);
 	Safe_Release(pMainApp);
 
     return (int) msg.wParam;
@@ -127,7 +150,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
-   RECT	rcWindow = { 0, 0, g_iWinSizeX, g_iWinSizeY };
+   RECT	rcWindow = { 0, 0, (LONG)g_iWinSizeX, (LONG)g_iWinSizeY };
    AdjustWindowRect(&rcWindow, WS_OVERLAPPEDWINDOW, FALSE);
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,

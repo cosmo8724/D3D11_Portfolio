@@ -452,6 +452,9 @@ namespace ImCurveEdit
          for (auto& point : selection)
             (*selectedPoints)[index++] = point;
       }
+
+	  _freea(curvesIndex);
+
       return ret;
    }
 }

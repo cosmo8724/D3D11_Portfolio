@@ -1,14 +1,24 @@
 ﻿#pragma once
 
 #pragma warning (disable : 4005)
+#pragma warning (disable : 4099)
 #pragma warning (disable : 4251)
 
 #include <d3d11.h>
 #include <Effects11//d3dx11effect.h>
+#include <DirectXTK/DDSTextureLoader.h>
+#include <DirectXTK/WICTextureLoader.h>
+#include <DirectXTK/ScreenGrab.h>
+#include <d3dcompiler.h>
 #include <DirectXMath.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 using namespace DirectX;
+
+#include <Assimp/scene.h>
+#include <Assimp/Importer.hpp>
+#include <Assimp/postprocess.h>
+using namespace Assimp;
 
 #include <vector>
 #include <list>
@@ -23,6 +33,8 @@ using namespace std;
 #include "Engine_Function.h"
 #include "Engine_Struct.h"
 
+#define IMGUI_LEFT_LABEL(func, label, ...) (ImGui::TextUnformatted(label), ImGui::SameLine(), func("##" label, __VA_ARGS__))
+#define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"

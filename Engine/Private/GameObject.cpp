@@ -1,5 +1,8 @@
 #include "..\Public\GameObject.h"
 #include "GameInstance.h"
+#include "GameUtility.h"
+
+const wstring CGameObject::m_wstrTransformComTag = L"Com_Transform";
 
 CGameObject::CGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: m_pDevice(pDevice)
@@ -24,6 +27,14 @@ HRESULT CGameObject::Initialize_Prototype()
 
 HRESULT CGameObject::Initialize(void * pArg)
 {
+	GAMEOBJECTDESC	GameObjectDesc;
+	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
+
+	if (nullptr != pArg)
+		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
+
+	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(), CGameInstance::m_wstrPrototypeTransformTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -38,6 +49,19 @@ void CGameObject::Late_Tick(_double dTimeDelta)
 HRESULT CGameObject::Render()
 {
 	return S_OK;
+}
+
+void CGameObject::ImGui_RenderComponentProperties()
+{
+	for (const auto& Pair : m_mapComponent)
+	{
+		ImGui::Separator();
+		char szName[MAX_PATH];
+		CGameUtility::wctc(Pair.first.c_str(), szName);
+
+		ImGui::Text("%s", szName);
+		Pair.second->ImGui_RenderProperty();
+	}
 }
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, const wstring & wstrComponentTag, CComponent ** ppComponentOut, void * pArg)
@@ -73,6 +97,8 @@ CComponent * CGameObject::Find_Component(const wstring & wstrComponentTag)
 
 void CGameObject::Free()
 {
+	Safe_Release(m_pTransformCom);
+
 	for (auto& Pair : m_mapComponent)
 		Safe_Release(Pair.second);
 	m_mapComponent.clear();

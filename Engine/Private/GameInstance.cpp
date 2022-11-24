@@ -3,8 +3,13 @@
 #include "ImGuiMgr.h"
 #include "LevelMgr.h"
 #include "ObjectMgr.h"
+#include "TimerMgr.h"
+#include "LightMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
+
+_uint				CGameInstance::m_iStaticLevelIndex = 0;
+const wstring		CGameInstance::m_wstrPrototypeTransformTag = L"Prototype_Component_Transform";
 
 CGameInstance::CGameInstance()
 	: m_pGraphicDev(CGraphic_Device::GetInstance())
@@ -13,6 +18,9 @@ CGameInstance::CGameInstance()
 	, m_pLevelMgr(CLevelMgr::GetInstance())
 	, m_pObjectMgr(CObjectMgr::GetInstance())
 	, m_pComponentMgr(CComponentMgr::GetInstance())
+	, m_pPipeLine(CPipeLine::GetInstance())
+	, m_pTimerMgr(CTimerMgr::GetInstance())
+	, m_pLightMgr(CLightMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
@@ -20,6 +28,9 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLevelMgr);
 	Safe_AddRef(m_pObjectMgr);
 	Safe_AddRef(m_pComponentMgr);
+	Safe_AddRef(m_pPipeLine);
+	Safe_AddRef(m_pTimerMgr);
+	Safe_AddRef(m_pLightMgr);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
@@ -30,8 +41,11 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
 	NULL_CHECK_RETURN(m_pComponentMgr, E_FAIL);
 
+	m_iStaticLevelIndex = iNumLevels;
+
 	/* Initialize Graphic Device */
 	FAILED_CHECK_RETURN(m_pGraphicDev->Ready_Graphic_Device(tGraphicDesc.hWnd, tGraphicDesc.eWindowMode, tGraphicDesc.iViewportSizeX, tGraphicDesc.iViewportSizeY, ppDeviceOut, ppContextOut), E_FAIL);
+	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
 	/* Initialize InGui */
 	FAILED_CHECK_RETURN(m_pImGuiMgr->Ready_ImGui(tGraphicDesc.hWnd, *ppDeviceOut, *ppContextOut), E_FAIL);
@@ -39,9 +53,12 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 	/* Initialize Input Device */
 	FAILED_CHECK_RETURN(m_pInputDev->Ready_Input_Device(tGraphicDesc.hInst, tGraphicDesc.hWnd), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pObjectMgr->Reserve_Manager(iNumLevels), E_FAIL);
+	FAILED_CHECK_RETURN(m_pObjectMgr->Reserve_Manager(iNumLevels + 1), E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pComponentMgr->Reserve_Manager(iNumLevels), E_FAIL);
+	FAILED_CHECK_RETURN(m_pComponentMgr->Reserve_Manager(iNumLevels + 1), E_FAIL);
+
+	/* Create Prototype Transform Component */
+	FAILED_CHECK_RETURN(m_pComponentMgr->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
 	
 	return S_OK;
 }
@@ -55,8 +72,13 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 
 	m_pInputDev->Invalidate_Input_Device();
 
+	m_pObjectMgr->Tick(dTimeDelta);
 	m_pLevelMgr->Tick(dTimeDelta);
+	m_pPipeLine->Tick();
+
+	m_pObjectMgr->Late_Tick(dTimeDelta);
 	m_pLevelMgr->Late_Tick(dTimeDelta);
+
 	m_pInputDev->Reset_EveryKey();
 
 	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
@@ -107,11 +129,25 @@ void CGameInstance::ImGui_Render_Update()
 	m_pImGuiMgr->ImGui_Render_Update();
 }
 
-HRESULT CGameInstance::Add_Tool(CTool * pTool)
+HRESULT CGameInstance::Add_ImGuiTabObject(CTool * pTool)
 {
 	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
 
-	return m_pImGuiMgr->Add_Tool(pTool);
+	return m_pImGuiMgr->Add_ImGuiTabObject(pTool);
+}
+
+HRESULT CGameInstance::Add_ImGuiWindowObejct(CTool * pTool)
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
+
+	return m_pImGuiMgr->Add_ImGuiWindowObejct(pTool);
+}
+
+void CGameInstance::Clear_ImGuiObject()
+{
+	NULL_CHECK_RETURN(m_pImGuiMgr, );
+
+	m_pImGuiMgr->Clear_ImGuiObject();
 }
 
 _byte CGameInstance::Get_DIKeyState(_ubyte byKeyID)
@@ -219,23 +255,99 @@ CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring & w
 	return m_pComponentMgr->Clone_Component(iLevelIndex, wstrPrototypeTag, pArg);
 }
 
+_matrix CGameInstance::Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState)
+{
+	NULL_CHECK_RETURN(m_pPipeLine, XMMatrixIdentity());
+
+	return m_pPipeLine->Get_TransformMatrix(eState);
+}
+
+_matrix CGameInstance::Get_TransformMatrix_Inverse(CPipeLine::TRANSFORMSTATE eState)
+{
+	NULL_CHECK_RETURN(m_pPipeLine, XMMatrixIdentity());
+
+	return m_pPipeLine->Get_TransformMatrix_Inverse(eState);
+}
+
+_float4x4 CGameInstance::Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eState)
+{
+	NULL_CHECK_RETURN(m_pPipeLine, _float4x4());
+
+	return m_pPipeLine->Get_TransformFloat4x4(eState);
+}
+
+void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix)
+{
+	NULL_CHECK_RETURN(m_pPipeLine, );
+
+	m_pPipeLine->Set_Transform(eState, TransformMatrix);
+}
+
+_float4 CGameInstance::Get_CameraPosition() const
+{
+	NULL_CHECK_RETURN(m_pPipeLine, _float4());
+
+	return m_pPipeLine->Get_CameraPosition();
+}
+
+const _double CGameInstance::Get_TimeDelta(const wstring wstrTimerTag)
+{
+	NULL_CHECK_RETURN(m_pTimerMgr, 0.0);
+
+	return m_pTimerMgr->Get_TimeDelta(wstrTimerTag);
+}
+
+HRESULT CGameInstance::Ready_Timer(const wstring wstrTimerTag)
+{
+	NULL_CHECK_RETURN(m_pTimerMgr, E_FAIL);
+	
+	return m_pTimerMgr->Ready_Timer(wstrTimerTag);
+}
+
+void CGameInstance::Update_Timer(const wstring wstrTimerTag)
+{
+	NULL_CHECK_RETURN(m_pTimerMgr, );
+
+	m_pTimerMgr->Update_Timer(wstrTimerTag);
+}
+
+const LIGHTDESC * CGameInstance::Get_LightDesc(_uint iIndex)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, nullptr);
+
+	return m_pLightMgr->Get_LightDesc(iIndex);
+}
+
+HRESULT CGameInstance::Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC & LightDesc)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, E_FAIL);
+
+	return m_pLightMgr->Add_Light(pDevice, pContext, LightDesc);
+}
+
 void CGameInstance::Release_Engine()
 {
+	CTimerMgr::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
 	CObjectMgr::GetInstance()->DestroyInstance();
+	CPipeLine::GetInstance()->DestroyInstance();
 	CComponentMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
+	CLightMgr::GetInstance()->DestroyInstance();
 	CImGuiMgr::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pTimerMgr);
 	Safe_Release(m_pObjectMgr);
+	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);
 	Safe_Release(m_pInputDev);
+	Safe_Release(m_pLightMgr);
 	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pGraphicDev);
 }

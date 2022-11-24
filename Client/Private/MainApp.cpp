@@ -2,6 +2,8 @@
 #include "..\Public\MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Transform.h"
+#include "Dynamic_Camera.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -45,11 +47,13 @@ void CMainApp::Tick(_double dTimeDelta)
 HRESULT CMainApp::Render()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
+	NULL_CHECK_RETURN(m_pRenderer, E_FAIL);
 
 	m_pGameInstance->ImGui_Render();
 	m_pGameInstance->Clear_Graphic_Device(&_float4(0.f, 0.f, 0.8f, 1.f));
-	m_pGameInstance->Render_Level();
+	m_pRenderer->Draw_RenderGroup();
 	m_pGameInstance->ImGui_Render_Update();
+	m_pGameInstance->Render_Level();
 	m_pGameInstance->Present();
 
 	return S_OK;
@@ -91,14 +95,22 @@ HRESULT CMainApp::Ready_Prototype_Component()
 {
 	NULL_CHECK_RETURN(m_pGameInstance, E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(LEVEL_PUBLIC, L"Prototype_Component_Renderer", m_pRenderer = CRenderer::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", m_pRenderer = CRenderer::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
 	Safe_AddRef(m_pRenderer);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Shader_VtxTex", CShader::Create(m_pGraphicDev, m_pDeviceContext, L"../Bin/Shader/Shader_VtxTex.hlsl", VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", CVIBuffer_Rect::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
+	
 	return S_OK;
 }
 
 HRESULT CMainApp::Ready_Prototype_GameObject()
 {
+	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Dynamic", CDynamic_Camera::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
+
 	return S_OK;
 }
 

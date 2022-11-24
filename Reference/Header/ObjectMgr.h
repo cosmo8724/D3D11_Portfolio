@@ -21,6 +21,9 @@ public:
 	void		Tick(_double dTimeDelta);
 	void		Late_Tick(_double dTimeDelta);
 
+public:
+	void		ImGui_ProtoViewer(const wstring& wstrSelectedProto);
+	void		ImGui_ObjectViewer(_uint iLevel, CGameObject*& pSelectedObejct);
 
 private:	/* For Prototype Objects */
 	map<const wstring, class CGameObject*>				m_mapProtypes;

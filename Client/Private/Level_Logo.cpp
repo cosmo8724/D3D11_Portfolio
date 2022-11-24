@@ -2,6 +2,9 @@
 #include "..\Public\Level_Logo.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "Tool_Property.h"
+#include "Tool_Settings.h"
+#include "Tool_Debugger.h"
 
 CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -11,6 +14,13 @@ CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 HRESULT CLevel_Logo::Initialize()
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
+
+	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
+
+	//CGameInstance::GetInstance()->Clear_ImGuiObject();
+	CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
+	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Settings::Create());
+	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Debugger::Create());
 
 	return S_OK;
 }

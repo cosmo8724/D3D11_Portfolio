@@ -6,15 +6,23 @@ BEGIN(Engine)
 class ENGINE_DLL CTool abstract : public CBase
 {
 protected:
-	CTool();
+	CTool() = default;
 	virtual ~CTool() = default;
 
 public:
-	virtual HRESULT	Ready_Tool() PURE;
-	virtual	HRESULT	Update_Tool(_double dTimeDelta) PURE;
+	const char*		Get_TabName() const { return m_szTabName; }
+	const char*		Get_WindowName() const { return m_szWIndowName; }
+
+public:
+	virtual HRESULT	Initialize(void* pArg);
+
+	virtual void		ImGui_RenderTap() {}
+	virtual void		ImGui_RenderWindow() {}
 
 protected:
-	_double	m_dTimeDelta = 0.0;
+	_double			m_dTimeDelta = 0.0;
+	const char*		m_szTabName = "";
+	const char*		m_szWIndowName = "";
 
 public:
 	virtual void		Free() PURE;

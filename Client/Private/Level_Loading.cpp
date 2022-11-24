@@ -36,7 +36,7 @@ void CLevel_Loading::Late_Tick(_double dTimeDelta)
 
 	if (true == m_pLoader->IsFinished())
 	{
-		if (pGameInstance->Mouse_Down(DIM_LB))
+		if (pGameInstance->Mouse_Down(DIM_RB))
 		{
 			CLevel*	pLevel = nullptr;
 

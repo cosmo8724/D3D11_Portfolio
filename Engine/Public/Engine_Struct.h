@@ -28,4 +28,42 @@ namespace Engine
 	{
 		unsigned long		_0, _1, _2;
 	} FACEINDICES32;
+
+	typedef struct tagVertexPositionNormalTexture
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+	} VTXNORTEX;
+
+	typedef struct tagLightDesc
+	{
+		enum LIGHTTYPE { LIGHT_DIRECTIONAL, LIGHT_POINT, LIGHTTYPE_END };
+
+		LIGHTTYPE		eType;
+		_bool				bIsLightOn;
+
+		/* For Directional Light */
+		XMFLOAT4		vDirection;
+
+		/* For Point Light */
+		XMFLOAT4		vPosition;
+		_float				fRange;
+
+		XMFLOAT4		vDiffuse;
+		XMFLOAT4		vAmbient;
+		XMFLOAT4		vSpecular;
+	} LIGHTDESC;
+
+	typedef struct ENGINE_DLL tagVertexPositionTexture_Declaration
+	{
+		static const unsigned int				iNumElements = 2;
+		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	} VTXTEX_DECLARATION;
+
+	typedef struct ENGINE_DLL tagVertexpositionNormalTexture_Declaration
+	{
+		static const unsigned int				iNumElements = 3;
+		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	} VTXNORTEX_DECLARATION;
 }
