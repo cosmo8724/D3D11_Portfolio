@@ -1,5 +1,6 @@
 #include "ImGuiMgr.h"
 #include "Tool.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CImGuiMgr)
 
@@ -16,8 +17,8 @@ HRESULT CImGuiMgr::Ready_ImGui(HWND hWnd, ID3D11Device* pGraphicDev, ID3D11Devic
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;      
 	io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;   
 																										
-	//ImGui::StyleColorsDark();
-	ImGui::StyleColorsLight();
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
 
 	ImGuiStyle& style = ImGui::GetStyle();
 	if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -34,6 +35,12 @@ HRESULT CImGuiMgr::Ready_ImGui(HWND hWnd, ID3D11Device* pGraphicDev, ID3D11Devic
 
 void CImGuiMgr::ImGui_NewFrame(_double dTimeDelta)
 {
+	if (CGameInstance::GetInstance()->Key_Down(DIK_T))
+		m_bDrawImGui = !m_bDrawImGui;
+
+	if (!m_bDrawImGui)
+		return;
+
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -43,6 +50,9 @@ void CImGuiMgr::ImGui_NewFrame(_double dTimeDelta)
 
 void CImGuiMgr::ImGui_Render()
 {
+	if (!m_bDrawImGui)
+		return;
+
 	ImGui_DockSpace();
 	ImGui_RenderTab();
 	ImGui_RenderWindow();
@@ -52,6 +62,9 @@ void CImGuiMgr::ImGui_Render()
 
 void CImGuiMgr::ImGui_Render_Update()
 {
+	if (!m_bDrawImGui)
+		return;
+
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
@@ -149,7 +162,7 @@ void CImGuiMgr::ImGui_DockSpace()
 	ImGuiIO&	io = ImGui::GetIO();
 	if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 	{
-		ImGuiID	DockSpaceID = ImGui::GetID("MyDockspace");
+		ImGuiID	DockSpaceID = ImGui::GetID("DockSpace");
 		ImGuiDockNodeFlags Flag = ImGuiDockNodeFlags_PassthruCentralNode;
 		ImGui::DockSpace(DockSpaceID, ImVec2(0.f, 0.f), Flag);
 	}

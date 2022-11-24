@@ -79,9 +79,9 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 	m_pObjectMgr->Late_Tick(dTimeDelta);
 	m_pLevelMgr->Late_Tick(dTimeDelta);
 
-	m_pInputDev->Reset_EveryKey();
-
 	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
+
+	m_pInputDev->Reset_EveryKey();
 }
 
 void CGameInstance::Clear_Level(_uint iLevelIndex)
