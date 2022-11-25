@@ -7,6 +7,7 @@ CMesh::CMesh(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 CMesh::CMesh(const CMesh & rhs)
 	: CVIBuffer(rhs)
+	, m_iMaterialIndex(rhs.m_iMaterialIndex)
 {
 }
 

@@ -114,7 +114,7 @@ void CObjectMgr::ImGui_ObjectViewer(_uint iLevel, CGameObject *& pSelectedObejct
 			CGameUtility::wctc(Pair.first.c_str(), szLayerTag);
 			if (ImGui::TreeNode(szLayerTag))
 			{
-				if (ImGui::BeginListBox("##"))
+				if (ImGui::BeginListBox("##", ImVec2(250.f, 50.f)))
 				{
 					for (auto& Obj : Pair.second->GetGameObjects())
 					{

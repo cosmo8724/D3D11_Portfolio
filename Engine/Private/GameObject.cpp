@@ -55,11 +55,10 @@ void CGameObject::ImGui_RenderComponentProperties()
 {
 	for (const auto& Pair : m_mapComponent)
 	{
-		ImGui::Separator();
 		char szName[MAX_PATH];
 		CGameUtility::wctc(Pair.first.c_str(), szName);
 
-		ImGui::Text("%s", szName);
+		ImGui::BulletText("%s", szName);
 		Pair.second->ImGui_RenderProperty();
 	}
 }

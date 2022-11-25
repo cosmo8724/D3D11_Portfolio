@@ -64,18 +64,19 @@ HRESULT CTransform::Initialize(void * pArg)
 
 void CTransform::ImGui_RenderProperty()
 {
+	ImGui::NewLine();
 	ImGuizmo::BeginFrame();
 
 	static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
 
-	IMGUI_LEFT_LABEL(ImGui::Text, "ImGuizmo Type");
-	if (IMGUI_LEFT_LABEL(ImGui::RadioButton, "Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
+	ImGui::BulletText("ImGuizmo Type");
+	if (ImGui::RadioButton("Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
 		CurGuizmoType = ImGuizmo::TRANSLATE;
 	ImGui::SameLine();
-	if (IMGUI_LEFT_LABEL(ImGui::RadioButton, "Scale", CurGuizmoType == ImGuizmo::SCALE))
+	if (ImGui::RadioButton("Scale", CurGuizmoType == ImGuizmo::SCALE))
 		CurGuizmoType = ImGuizmo::SCALE;
 	ImGui::SameLine();
-	if (IMGUI_LEFT_LABEL(ImGui::RadioButton, "Rotate", CurGuizmoType == ImGuizmo::ROTATE))
+	if (ImGui::RadioButton("Rotate", CurGuizmoType == ImGuizmo::ROTATE))
 		CurGuizmoType = ImGuizmo::ROTATE;
 
 	_float	vPos[3], vScale[3], vAngle[3];
