@@ -41,6 +41,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
 	NULL_CHECK_RETURN(m_pComponentMgr, E_FAIL);
 
+	m_hWnd = tGraphicDesc.hWnd;
 	m_iStaticLevelIndex = iNumLevels;
 
 	/* Initialize Graphic Device */

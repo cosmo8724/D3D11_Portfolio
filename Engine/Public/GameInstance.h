@@ -16,6 +16,7 @@ private:
 	virtual ~CGameInstance() = default;
 
 public:
+	HWND					Get_Handle() { return m_hWnd; }
 	static _uint			Get_StaticLevelIndex() { return m_iStaticLevelIndex; }
 
 public:
@@ -76,6 +77,9 @@ public:		/* For Timer Manager */
 public:		/* For Light Manager */
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
 	HRESULT				Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC& LightDesc);
+
+private:
+	HWND							m_hWnd;
 
 private:
 	static _uint					m_iStaticLevelIndex;
