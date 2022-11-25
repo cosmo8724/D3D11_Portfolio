@@ -19,6 +19,8 @@ HRESULT CLevel_TestStage::Initialize()
 
 	FAILED_CHECK_RETURN(Ready_Layer_Sphere(L"Layer_Sphere"), E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
+
 	return S_OK;
 }
 
@@ -93,6 +95,18 @@ HRESULT CLevel_TestStage::Ready_Layer_Sphere(const wstring wstrLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Sphere"), E_FAIL);
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Layer_Player(const wstring wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Player"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 

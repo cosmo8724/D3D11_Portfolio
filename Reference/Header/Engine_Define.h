@@ -11,6 +11,8 @@
 #include <DirectXTK/ScreenGrab.h>
 #include <d3dcompiler.h>
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
+#include <TypeInfo.h>
 #define DIRECTINPUT_VERSION 0x0800
 #include <dinput.h>
 using namespace DirectX;

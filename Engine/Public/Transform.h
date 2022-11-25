@@ -56,7 +56,7 @@ public:
 	void				Rotation(_fvector vAxis, _float fRadian);
 
 	void				LookAt(_fvector vTargetPos);
-	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit);
+	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit = 0.1f);
 
 private:
 	_float4x4				m_matWorld;

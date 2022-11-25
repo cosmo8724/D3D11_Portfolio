@@ -86,11 +86,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			dTimerAcc += pGameInstance->Get_TimeDelta(L"Timer_Default");	
 
-			//if (dTimerAcc > 1.0 / 165.0)
+			if (dTimerAcc > 1.0 / 165.0)
 			{
 				pGameInstance->Update_Timer(L"Timer_165");
 
-				pMainApp->Tick(0.1);//(pGameInstance->Get_TimeDelta(L"Timer_165"));
+				pMainApp->Tick(pGameInstance->Get_TimeDelta(L"Timer_165"));
 				pMainApp->Render();
 				pMainApp->Resize_BackBuffer();
 				g_bNeedResizeSwapChain = false;

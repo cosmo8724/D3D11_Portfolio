@@ -22,7 +22,11 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void * pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
+
+	m_pTransformCom->Set_Scale(_float3(0.05f, 0.05f, 0.05f));
+
 	return S_OK;
 }
 
@@ -46,16 +50,37 @@ HRESULT CPlayer::Render()
 
 	m_pShaderCom->Begin(0);
 
+	m_pModelCom->Render(m_pShaderCom);
+
 	return S_OK;
 }
 
 HRESULT CPlayer::SetUp_Component()
 {
+	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Shader_NonAnim", L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Container", L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
+
 	return S_OK;
 }
 
 HRESULT CPlayer::SetUp_ShaderResource()
 {
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_WorldMatrix"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_ViewMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
+	m_pShaderCom->Set_Matrix(L"g_ProjMatrix", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+
+	
+
+	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 
