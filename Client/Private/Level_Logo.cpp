@@ -6,6 +6,7 @@
 #include "Tool_Settings.h"
 #include "Tool_Debugger.h"
 #include "Tool_LevelViewer.h"
+#include "TestTool.h"
 
 CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -23,6 +24,7 @@ HRESULT CLevel_Logo::Initialize()
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Settings::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Debugger::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_LevelViewer::Create(m_pDevice, m_pContext));
+	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTestTool::Create());
 
 	return S_OK;
 }

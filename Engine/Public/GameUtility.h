@@ -1,7 +1,7 @@
 #pragma once
 #include "Engine_Define.h"
 
-class CGameUtility
+class ENGINE_DLL CGameUtility
 {
 public:
 	CGameUtility() = default;
@@ -9,5 +9,6 @@ public:
 
 public:
 	static void wctc(const wchar_t* szWchar, char* szChar);
+	static void Saturate(int& InValue, int InMax, int InMin);
 };
 

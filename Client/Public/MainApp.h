@@ -1,7 +1,6 @@
 #pragma once
 #include "Client_Define.h"
 #include "Base.h"
-#include "TestTool.h"
 
 BEGIN(Engine)
 
@@ -32,9 +31,6 @@ private:
 
 	ID3D11Device*			m_pGraphicDev = nullptr;
 	ID3D11DeviceContext* m_pDeviceContext = nullptr;
-
-	// For TestTool
-	CTestTool*	pTool = nullptr;
 
 private:
 	HRESULT	Start_Level(LEVEL eLevel);

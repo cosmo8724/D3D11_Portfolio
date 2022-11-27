@@ -32,8 +32,6 @@ HRESULT CMainApp::Initialize()
 
 	FAILED_CHECK_RETURN(Start_Level(LEVEL_LOGO), E_FAIL);
 
-	pTool = CTestTool::Create();
-
 	return S_OK;
 }
 
