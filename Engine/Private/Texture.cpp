@@ -59,7 +59,7 @@ void CTexture::ImGui_RenderProperty()
 		if (ImGui::ImageButton(m_pTextures[i], ImVec2(50.f, 50.f)))
 		{
 			iSelectedIndex = i;
-			ImGuiFileDialog::Instance()->OpenDialog("Choose Texture", "Choose Texture", ".png,.dds,.tga,.jpg,.jpeg", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+			ImGuiFileDialog::Instance()->OpenDialog("Choose Texture", "Choose Texture", ".png,.dds,.tga,.jpg,.jpeg", "../Bin/Resource", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 		}
 		ImGui::SameLine();
 	}
