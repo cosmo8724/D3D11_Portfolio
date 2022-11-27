@@ -16,6 +16,7 @@ HRESULT CMesh::Initialize_Prototype(aiMesh * pAIMesh)
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
+	m_strName = pAIMesh->mName.C_Str();
 	m_iNumVertexBuffers = 1;
 	m_iStride = sizeof(VTXMODEL);
 	m_iNumVertices = pAIMesh->mNumVertices;

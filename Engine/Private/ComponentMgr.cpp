@@ -25,9 +25,24 @@ HRESULT CComponentMgr::Add_Prototype(_uint iLevelIndex, const wstring & wstrProt
 	assert(iLevelIndex < m_iNumLevels);
 
 	if (nullptr != Find_Prototype(iLevelIndex, wstrPrototypeTag))
-		return E_FAIL;
+	{
+		Safe_Release(pPrototype);
+		return S_OK;
+	}
 
 	m_mapPrototype[iLevelIndex].emplace(wstrPrototypeTag, pPrototype);
+
+	return S_OK;
+}
+
+HRESULT CComponentMgr::Clear_Prototype(_uint iLevelIndex)
+{
+	NULL_CHECK_RETURN(m_mapPrototype, E_FAIL);
+	assert(iLevelIndex < m_iNumLevels);
+
+	for (auto& Pair : m_mapPrototype[iLevelIndex])
+		Safe_Release(Pair.second);
+	m_mapPrototype[iLevelIndex].clear();
 
 	return S_OK;
 }

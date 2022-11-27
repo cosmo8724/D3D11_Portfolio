@@ -12,6 +12,7 @@ private:
 
 public:
 	const _uint&				Get_MaterialIndex() const { return m_iMaterialIndex; }
+	const string&				Get_MeshName() const { return m_strName; }
 
 public:
 	virtual HRESULT			Initialize_Prototype(aiMesh* pAIMesh);
@@ -19,6 +20,7 @@ public:
 
 private:
 	_uint						m_iMaterialIndex = 0;
+	string						m_strName = "";
 
 public:
 	static CMesh*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext, aiMesh* pAIMesh);

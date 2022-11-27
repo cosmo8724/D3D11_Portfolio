@@ -53,6 +53,7 @@ public:		/* For InputDevice */
 public:		/* For Level Manager */
 	HRESULT				Open_Level(_uint iLevelIndelx, class CLevel* pNewLevel);
 	HRESULT				Render_Level();
+	const _uint&			Get_CurLevelIndex();
 
 public:		/* For Object Manager */
 	HRESULT				Add_Prototype(const wstring& wstrPrototypeTag, class CGameObject* pPrototype);
@@ -60,6 +61,7 @@ public:		/* For Object Manager */
 
 public:		/* For Component Manager */
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, class CComponent* pPrototype);
+	HRESULT				Clear_Prototype(_uint iLevelIndex);
 	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 
 public:		/* For PipeLine */

@@ -37,7 +37,10 @@ HRESULT CObjectMgr::Clear(_uint iLevelIndex)
 HRESULT CObjectMgr::Add_Prototype(const wstring & wstrPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr != Find_Prototype(wstrPrototypeTag))
-		return E_FAIL;
+	{
+		Safe_Release(pPrototype);
+		return S_OK;
+	}
 
 	m_mapProtypes.emplace(wstrPrototypeTag, pPrototype);
 

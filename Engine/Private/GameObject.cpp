@@ -58,8 +58,8 @@ void CGameObject::ImGui_RenderComponentProperties()
 		char szName[MAX_PATH];
 		CGameUtility::wctc(Pair.first.c_str(), szName);
 
-		ImGui::BulletText("%s", szName);
-		Pair.second->ImGui_RenderProperty();
+		if (ImGui::CollapsingHeader(szName))
+			Pair.second->ImGui_RenderProperty();
 	}
 }
 

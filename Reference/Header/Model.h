@@ -16,6 +16,7 @@ private:
 public:
 	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath);
 	virtual HRESULT					Initialize(void* pArg) override;
+	virtual void						ImGui_RenderProperty() override;
 
 public:
 	HRESULT							Render(class CShader* pShaderCom);

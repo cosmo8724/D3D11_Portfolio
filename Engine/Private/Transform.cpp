@@ -64,7 +64,6 @@ HRESULT CTransform::Initialize(void * pArg)
 
 void CTransform::ImGui_RenderProperty()
 {
-	ImGui::NewLine();
 	ImGuizmo::BeginFrame();
 
 	static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);

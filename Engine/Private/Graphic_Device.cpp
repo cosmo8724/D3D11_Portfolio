@@ -84,6 +84,8 @@ HRESULT CGraphic_Device::Present()
 	if (nullptr == m_pSwapChain)
 		return E_FAIL;
 
+	return m_pSwapChain->Present(0, 0);
+
 	static _bool	bStandByMode = false;
 	HRESULT		hr;
 

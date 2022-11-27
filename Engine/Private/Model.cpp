@@ -14,6 +14,7 @@ CModel::CModel(const CModel& rhs)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_vecMesh(rhs.m_vecMesh)
 	, m_Materials(rhs.m_Materials)
+	, m_iNumMaterials(rhs.m_iNumMaterials)
 {
 	for (auto& pMesh : m_vecMesh)
 		Safe_AddRef(pMesh);
@@ -47,6 +48,46 @@ HRESULT CModel::Initialize(void * pArg)
 	return S_OK;
 }
 
+void CModel::ImGui_RenderProperty()
+{
+	if (ImGui::CollapsingHeader("Materials"))
+	{
+		for (size_t i = 0; i < m_iNumMaterials; ++i)
+		{
+			ImGui::Text("%d", i);
+			ImGui::Separator();
+			for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; j++)
+			{
+				if (m_Materials[i].pTexture[j] != nullptr)
+				{
+					ImGui::Image(m_Materials[i].pTexture[j]->Get_Texture(), ImVec2(50.f, 50.f));
+					ImGui::SameLine();
+				}
+			}
+			ImGui::NewLine();
+		}
+	}
+	
+	if (ImGui::CollapsingHeader("Meshes"))
+	{
+		for (size_t i = 0; i < m_iNumMeshes; ++i)
+		{
+			_uint	iMaterialIndex = m_vecMesh[i]->Get_MaterialIndex();
+			ImGui::BulletText("%s", m_vecMesh[i]->Get_MeshName().c_str());
+			ImGui::Separator();
+
+			for (_uint j = 0; j < AI_TEXTURE_TYPE_MAX; j++)
+			{
+				if (m_Materials[iMaterialIndex].pTexture[j] != nullptr)
+				{
+					ImGui::SameLine();
+					ImGui::Image(m_Materials[iMaterialIndex].pTexture[j]->Get_Texture(), ImVec2(50.f, 50.f));
+				}
+			}
+		}
+	}
+}
+
 HRESULT CModel::Render(CShader * pShaderCom)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
@@ -55,7 +96,8 @@ HRESULT CModel::Render(CShader * pShaderCom)
 	{
 		if (nullptr != m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_DIFFUSE])
 			m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_DIFFUSE]->Bind_ShaderResource(pShaderCom, L"g_DiffuseTexture");
-		m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_NORMALS]->Bind_ShaderResource(pShaderCom, L"g_NormalTexture");
+		if (nullptr != m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_NORMALS])
+			m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_NORMALS]->Bind_ShaderResource(pShaderCom, L"g_NormalTexture");
 
 		if (nullptr != m_vecMesh[i])
 			m_vecMesh[i]->Render();
