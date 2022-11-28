@@ -48,9 +48,15 @@ HRESULT CPlayer::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_ShaderResource(), E_FAIL);
 
-	m_pShaderCom->Begin(0);
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	m_pModelCom->Render(m_pShaderCom);
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+
+		m_pModelCom->Render(m_pShaderCom, i);
+	}
 
 	return S_OK;
 }

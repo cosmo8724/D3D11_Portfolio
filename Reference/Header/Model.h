@@ -14,12 +14,16 @@ private:
 	virtual ~CModel() = default;
 
 public:
+	const _uint&						Get_NumMeshes() const { return m_iNumMeshes; }
+
+public:
 	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath);
 	virtual HRESULT					Initialize(void* pArg) override;
 	virtual void						ImGui_RenderProperty() override;
 
 public:
-	HRESULT							Render(class CShader* pShaderCom);
+	HRESULT							Bind_Material(class CShader* pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring& wstrConstantName);
+	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex);
 
 public:
 	const aiScene*					m_pAIScene = nullptr;
@@ -32,6 +36,7 @@ public:
 
 	_uint								m_iNumMaterials = 0;
 	vector<MODELMATERIAL>		m_Materials;
+	typedef vector<MODELMATERIAL>	MATERIALS;
 
 public:
 	HRESULT							Ready_MeshContainers();

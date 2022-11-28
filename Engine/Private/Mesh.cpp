@@ -11,14 +11,17 @@ CMesh::CMesh(const CMesh & rhs)
 {
 }
 
-HRESULT CMesh::Initialize_Prototype(aiMesh * pAIMesh)
+HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh)
 {
+	if (eType == CModel::MODELTYPE_END)
+		return E_FAIL;
+
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
+	m_eType = eType;
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 	m_strName = pAIMesh->mName.C_Str();
 	m_iNumVertexBuffers = 1;
-	m_iStride = sizeof(VTXMODEL);
 	m_iNumVertices = pAIMesh->mNumVertices;
 	m_iNumPrimitive = pAIMesh->mNumFaces;
 	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -28,32 +31,10 @@ HRESULT CMesh::Initialize_Prototype(aiMesh * pAIMesh)
 	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitive;
 
 	/* Create Vertex Buffer */
-	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
-	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_tBufferDesc.StructureByteStride = m_iStride;
-	m_tBufferDesc.CPUAccessFlags = 0;
-	m_tBufferDesc.MiscFlags = 0;
-
-	VTXMODEL*			pVertices = new VTXMODEL[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXMODEL) * m_iNumVertices);
-
-	for (_uint i = 0; i < m_iNumVertices; ++i)
-	{
-		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
-		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
-		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
-		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
-	}
-
-	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
-	m_tSubResourceData.pSysMem = pVertices;
-
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
-
-	Safe_Delete_Array(pVertices);
+	if (m_eType == CModel::MODEL_NONANIM)
+		Ready_VertexBuffer_NonAnimModel(pAIMesh);
+	else
+		Ready_VertexBuffer_AnimModel(pAIMesh);
 
 	/* Create Index Buffer */
 	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -90,11 +71,114 @@ HRESULT CMesh::Initialize(void * pArg)
 	return S_OK;
 }
 
-CMesh * CMesh::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, aiMesh * pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh)
+{
+	m_iStride = sizeof(VTXMODEL);
+
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iStride;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
+
+	VTXMODEL*	pVertices = new VTXMODEL[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXMODEL) * m_iNumVertices);
+
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
+		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
+		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
+		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+	}
+
+	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+	m_tSubResourceData.pSysMem = pVertices;
+
+	if (FAILED(__super::Create_VertexBuffer()))
+		return E_FAIL;
+
+	Safe_Delete_Array(pVertices);
+
+	return S_OK;
+}
+
+HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
+{
+	m_iStride = sizeof(VTXANIMMODEL);
+
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iStride;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
+
+	VTXANIMMODEL*		pVertices = new VTXANIMMODEL[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXANIMMODEL) * m_iNumVertices);
+
+	for (_uint i = 0; i < m_iNumVertices; ++i)
+	{
+		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
+		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
+		memcpy(&pVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+	}
+
+	m_iNumBones = pAIMesh->mNumBones;
+
+	for (_uint i = 0; i < m_iNumBones; ++i)
+	{
+		aiBone*	pAIBone = pAIMesh->mBones[i];
+
+		_uint		iNumWeights = pAIBone->mNumWeights;
+
+		for (_uint j = 0; j < iNumWeights; ++j)
+		{
+			_uint	iVertexIndex = pAIBone->mWeights[j].mVertexId;
+
+			if (fabs(pVertices[iVertexIndex].vBlendWeight.x - 0.f) < EPSILON)
+			{
+				pVertices[iVertexIndex].vBlendIndex.x = i;
+				pVertices[iVertexIndex].vBlendWeight.x = pAIBone->mWeights[j].mWeight;
+			}
+			if (fabs(pVertices[iVertexIndex].vBlendWeight.y - 0.f) < EPSILON)
+			{
+				pVertices[iVertexIndex].vBlendIndex.y = i;
+				pVertices[iVertexIndex].vBlendWeight.y = pAIBone->mWeights[j].mWeight;
+			}
+			if (fabs(pVertices[iVertexIndex].vBlendWeight.z - 0.f) < EPSILON)
+			{
+				pVertices[iVertexIndex].vBlendIndex.z = i;
+				pVertices[iVertexIndex].vBlendWeight.z = pAIBone->mWeights[j].mWeight;
+			}
+			if (fabs(pVertices[iVertexIndex].vBlendWeight.w - 0.f) < EPSILON)
+			{
+				pVertices[iVertexIndex].vBlendIndex.w = i;
+				pVertices[iVertexIndex].vBlendWeight.w = pAIBone->mWeights[j].mWeight;
+			}
+		}
+	}
+
+	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+	m_tSubResourceData.pSysMem = pVertices;
+
+	if (FAILED(__super::Create_VertexBuffer()))
+		return E_FAIL;
+
+	Safe_Delete_Array(pVertices);
+
+	return S_OK;
+}
+
+CMesh * CMesh::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, CModel::MODELTYPE eType, aiMesh * pAIMesh)
 {
 	CMesh*	pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(pAIMesh)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh)))
 	{
 		MSG_BOX("Failed to Create : CMesh");
 		Safe_Release(pInstance);

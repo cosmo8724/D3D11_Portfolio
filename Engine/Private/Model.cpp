@@ -1,6 +1,7 @@
 #include "..\Public\Model.h"
 #include "Mesh.h"
 #include "Texture.h"
+#include "Shader.h"
 
 CModel::CModel(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
@@ -27,6 +28,11 @@ CModel::CModel(const CModel& rhs)
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath)
 {
+	if (eType == MODELTYPE_END)
+		return E_FAIL;
+
+	m_eType = eType;
+
 	_uint		iFlag = 0;
 
 	if (eType == MODEL_NONANIM)
@@ -88,20 +94,33 @@ void CModel::ImGui_RenderProperty()
 	}
 }
 
-HRESULT CModel::Render(CShader * pShaderCom)
+HRESULT CModel::Bind_Material(CShader * pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring & wstrConstantName)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 
-	for (_uint i = 0; i < m_iNumMeshes; ++i)
-	{
-		if (nullptr != m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_DIFFUSE])
-			m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_DIFFUSE]->Bind_ShaderResource(pShaderCom, L"g_DiffuseTexture");
-		if (nullptr != m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_NORMALS])
-			m_Materials[m_vecMesh[i]->Get_MaterialIndex()].pTexture[aiTextureType_NORMALS]->Bind_ShaderResource(pShaderCom, L"g_NormalTexture");
+	if (iMeshIndex >= m_iNumMeshes)
+		return E_FAIL;
 
-		if (nullptr != m_vecMesh[i])
-			m_vecMesh[i]->Render();
-	}
+	_uint	iMaterialIndex = m_vecMesh[iMeshIndex]->Get_MaterialIndex();
+	if (iMaterialIndex >= m_iNumMaterials)
+		return E_FAIL;
+
+	if (nullptr != m_Materials[iMaterialIndex].pTexture[eType])
+		m_Materials[iMaterialIndex].pTexture[eType]->Bind_ShaderResource(pShaderCom, wstrConstantName);
+	else
+		return S_FALSE;
+
+	return S_OK;
+}
+
+HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex)
+{
+	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
+
+	pShaderCom->Begin(0);
+
+	if (nullptr != m_vecMesh[iMeshIndex])
+		m_vecMesh[iMeshIndex]->Render();
 
 	return S_OK;
 }
@@ -116,7 +135,7 @@ HRESULT CModel::Ready_MeshContainers()
 	{
 		aiMesh*	pAIMesh = m_pAIScene->mMeshes[i];
 
-		CMesh*	pMesh = CMesh::Create(m_pDevice, m_pContext, pAIMesh);
+		CMesh*	pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, pAIMesh);
 		NULL_CHECK_RETURN(pMesh, E_FAIL);
 
 		m_vecMesh.push_back(pMesh);

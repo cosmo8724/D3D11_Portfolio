@@ -58,4 +58,6 @@ using namespace std;
 
 #endif // _DEBUG
 
+#define EPSILON		0.000001f
+
 using namespace Engine;
