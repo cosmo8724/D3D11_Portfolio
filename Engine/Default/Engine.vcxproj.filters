@@ -112,6 +112,9 @@
     <Filter Include="01. Utility\03. Component\06. Model">
       <UniqueIdentifier>{3d7f9820-76cc-4e04-a2ea-33e2022e9e17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\06. Model\Mesh">
+      <UniqueIdentifier>{0958645b-e85f-493c-9c49-2fe7e0bb9299}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -245,6 +248,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Model.cpp">
       <Filter>01. Utility\03. Component\06. Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>01. Utility\03. Component\06. Model\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -406,6 +412,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Model.h">
       <Filter>01. Utility\03. Component\06. Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>01. Utility\03. Component\06. Model\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

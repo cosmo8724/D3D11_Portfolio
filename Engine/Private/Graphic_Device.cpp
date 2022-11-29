@@ -42,8 +42,8 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
 	ViewPortDesc.TopLeftX = 0;
 	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (float)iWinCX;
-	ViewPortDesc.Height = (float)iWinCY;
+	ViewPortDesc.Width = (_float)iWinCX;
+	ViewPortDesc.Height = (_float)iWinCY;
 	ViewPortDesc.MinDepth = 0.f;
 	ViewPortDesc.MaxDepth = 1.f;
 
@@ -51,9 +51,6 @@ HRESULT CGraphic_Device::Ready_Graphic_Device(HWND hWnd, GRAPHIC_DESC::WINMODE W
 
 	*ppDeviceOut = m_pDevice;
 	*ppDeviceContextOut = m_pDeviceContext;
-
-	m_pDevice->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CGraphicDevice::ID3D11Device") - 1, "CGraphicDevice::ID3D11Device");
-	m_pDeviceContext->SetPrivateData(WKPDID_D3DDebugObjectName, sizeof("CGraphicDevice::ID3D11DeviceContext") - 1, "CGraphicDevice::ID3D11DeviceContext");
 
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pDeviceContext);
@@ -86,6 +83,8 @@ HRESULT CGraphic_Device::Present()
 {
 	if (nullptr == m_pSwapChain)
 		return E_FAIL;
+
+	return m_pSwapChain->Present(0, 0);
 
 	static _bool	bStandByMode = false;
 	HRESULT		hr;
@@ -212,48 +211,6 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 
 HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate)
 {
-	//if (bIsFullScreen)
-	//{
-	//	ImGuiContext*	CurContext = ImGui::GetCurrentContext();
-	//	ImGuiViewportP*	ToolWindowViewport = nullptr;
-	//	
-	//	ImVector<ImGuiWindow*>*		Windows = &ImGui::GetCurrentContext()->Windows;
-	//	ImVector<ImGuiViewportP*>*	Viewports = &ImGui::GetCurrentContext()->Viewports;
-	//	for (auto Window : *Windows)
-	//	{
-	//		if (Window->Viewport->ID == ImGui::GetMainViewport()->ID)
-	//			ToolWindowViewport = Window->Viewport;
-
-	//		if (Window->ViewportOwned && ToolWindowViewport)
-	//		{
-	//			if (Window->Viewport == ImGui::GetCurrentContext()->MouseLastHoveredViewport)
-	//				ImGui::GetCurrentContext()->MouseLastHoveredViewport = nullptr;
-
-	//			//ImGui::DestroyPlatformWindow(Window->Viewport);
-	//			//IM_ASSERT(ImGui::GetCurrentContext()->PlatformIO.Viewports.contains(Window->Viewport) == false);
-	//			//IM_ASSERT(ImGui::GetCurrentContext()->Viewports[Window->Viewport->Idx] == Window->Viewport);
-	//			//ImGui::GetCurrentContext()->Viewports.erase(ImGui::GetCurrentContext()->Viewports.Data + Window->Viewport->Idx);
-	//			//IM_DELETE(Window->Viewport);
-
-	//			Window->Pos = Window->Viewport->Pos;
-	//			Window->Viewport = ToolWindowViewport;
-	//			Window->ViewportId = ToolWindowViewport->ID;
-	//			Window->ViewportOwned = false;
-	//			
-
-	//			/*for (auto Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.begin(); Viewport != ImGui::GetCurrentContext()->PlatformIO.Viewports.end();)
-	//			{
-	//				if ((*Viewport)->ID == Window->Viewport->ID)
-	//				{
-	//					Viewport = ImGui::GetCurrentContext()->PlatformIO.Viewports.erase(Viewport);
-	//					ImGui::GetCurrentContext()->PlatformIO.Viewports.Size--;
-	//					continue;
-	//				}
-	//				Viewport++;
-	//			}*/
-	//		}
-	//	}
-	//}
 	if (!bNeedUpdate)
 	{
 		m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
@@ -289,32 +246,6 @@ HRESULT CGraphic_Device::Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY,
 
 	m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
 	
-
-	//if (m_pBackBufferRTV)
-	//	Safe_Release(m_pBackBufferRTV);
-	//if (m_pDepthStencilView)
-	//	Safe_Release(m_pDepthStencilView);
-	//
-	//if (bIsFullScreen)
-	//{
-	//	iWinCX = GetSystemMetrics(SM_CXSCREEN);
-	//	iWinCY = GetSystemMetrics(SM_CYSCREEN);
-	//}
-
-	//m_pSwapChain->ResizeBuffers(0, iWinCX, iWinCY, DXGI_FORMAT_B8G8R8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH);
-	//
-	//if (FAILED(Ready_BackBufferRenderTargetView()))
-	//	return E_FAIL;
-
-	//if (FAILED(Ready_DepthStencilRenderTargetView(iWinCX, iWinCY)))
-	//	return E_FAIL;
-
-	////m_pDeviceContext->OMSetRenderTargets(1, &m_pBackBufferRTV, m_pDepthStencilView);
-	//
-	//m_pSwapChain->SetFullscreenState(bIsFullScreen, nullptr);
-
-	
-
 	return S_OK;
 }
 
@@ -325,23 +256,23 @@ void CGraphic_Device::Free()
 	Safe_Release(m_pBackBufferRTV);
 	Safe_Release(m_pDeviceContext);
 
-#if defined(DEBUG) || defined(_DEBUG)
-	ID3D11Debug* d3dDebug;
-	HRESULT hr = m_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&d3dDebug));
-	if (SUCCEEDED(hr))
-	{
-		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker \r ");
-		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-
-		hr = d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-
-		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker END \r ");
-		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-	}
-	if (d3dDebug != nullptr)            d3dDebug->Release();
-#endif
+//#if defined(DEBUG) || defined(_DEBUG)
+//	ID3D11Debug* d3dDebug;
+//	HRESULT hr = m_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&d3dDebug));
+//	if (SUCCEEDED(hr))
+//	{
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker \r ");
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//
+//		hr = d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+//
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker END \r ");
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//	}
+//	if (d3dDebug != nullptr)            d3dDebug->Release();
+//#endif
 
 	Safe_Release(m_pDevice);
 }

@@ -199,6 +199,7 @@
     <ClInclude Include="..\Public\LevelMgr.h" />
     <ClInclude Include="..\Public\Light.h" />
     <ClInclude Include="..\Public\LightMgr.h" />
+    <ClInclude Include="..\Public\Mesh.h" />
     <ClInclude Include="..\Public\Model.h" />
     <ClInclude Include="..\Public\ObjectMgr.h" />
     <ClInclude Include="..\Public\PipeLine.h" />
@@ -283,6 +284,7 @@
     <ClCompile Include="..\Private\LevelMgr.cpp" />
     <ClCompile Include="..\Private\Light.cpp" />
     <ClCompile Include="..\Private\LightMgr.cpp" />
+    <ClCompile Include="..\Private\Mesh.cpp" />
     <ClCompile Include="..\Private\Model.cpp" />
     <ClCompile Include="..\Private\ObjectMgr.cpp" />
     <ClCompile Include="..\Private\PipeLine.cpp" />

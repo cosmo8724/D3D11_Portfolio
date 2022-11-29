@@ -5,7 +5,7 @@
 
 HRESULT CTool_Property::Initialize(void * pArg)
 {
-	m_szTabName = "Property Editor";
+	m_szTabName = "Property Editor"; 
 
 	return S_OK;
 }

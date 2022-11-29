@@ -36,6 +36,24 @@ namespace Engine
 		XMFLOAT2		vTexUV;
 	} VTXNORTEX;
 
+	typedef struct tagVertexModelTexture
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+	} VTXMODEL;
+
+	typedef struct tagVertexAnimModelTexture
+	{
+		XMFLOAT3		vPosition;
+		XMFLOAT3		vNormal;
+		XMFLOAT2		vTexUV;
+		XMFLOAT3		vTangent;
+		XMUINT4			vBlendIndex;
+		XMFLOAT4		vBlendWeight;
+	} VTXANIMMODEL;
+
 	typedef struct tagLightDesc
 	{
 		enum LIGHTTYPE { LIGHT_DIRECTIONAL, LIGHT_POINT, LIGHTTYPE_END };
@@ -55,6 +73,11 @@ namespace Engine
 		XMFLOAT4		vSpecular;
 	} LIGHTDESC;
 
+	typedef  struct tagModelMaterial
+	{
+		class CTexture*	pTexture[AI_TEXTURE_TYPE_MAX];
+	} MODELMATERIAL;
+
 	typedef struct ENGINE_DLL tagVertexPositionTexture_Declaration
 	{
 		static const unsigned int				iNumElements = 2;
@@ -66,4 +89,16 @@ namespace Engine
 		static const unsigned int				iNumElements = 3;
 		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
 	} VTXNORTEX_DECLARATION;
+
+	typedef struct ENGINE_DLL tagVertexModel_Declaration
+	{
+		static const unsigned int				iNumElements = 4;
+		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	} VTXMODEL_DECLARATION;
+
+	typedef struct ENGINE_DLL tagVertexAnimModel_Declaration
+	{
+		static const unsigned int				iNumElements = 6;
+		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	}VTXANIMMODEL_DECLARATION;
 }

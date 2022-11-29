@@ -12,6 +12,10 @@ public:
 	virtual ~CObjectMgr() = default;
 
 public:
+	map<const wstring, class CGameObject*>*	Get_Prototypes() { return &m_mapProtypes; }
+	map<const wstring, class CLayer*>*			Get_Layers(_uint iLevelIndex) { return &m_pLayers[iLevelIndex]; }
+
+public:
 	HRESULT	Reserve_Manager(_uint iNumLevels);
 	HRESULT	Clear(_uint iLevelIndex);
 
@@ -36,7 +40,7 @@ private:	/* For Cloned Objects */
 
 private:
 	class CGameObject*		Find_Prototype(const wstring& wstrPrototypeTag);
-	class CLayer*				Find_Layer(const wstring& wstrLayerTag);
+	class CLayer*				Find_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
 
 public:
 	virtual void Free() override;

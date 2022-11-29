@@ -64,6 +64,15 @@
     <Filter Include="97. Tool\01. Debugger">
       <UniqueIdentifier>{48c0ed84-6087-4749-8f82-e138d1e7d058}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Tool\02. Level Viewer">
+      <UniqueIdentifier>{6be0ba71-60eb-4378-8499-0df47864102b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\03. Map Editor">
+      <UniqueIdentifier>{719a5ad2-7fca-4d50-837a-0f9b1d77b673}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\04. Model Editor">
+      <UniqueIdentifier>{97ee26b9-ef07-4e52-97ae-841040b53199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -126,6 +135,15 @@
     <ClInclude Include="..\Public\Tool_Settings.h">
       <Filter>97. Tool\00. ImGui_Settings</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tool_LevelViewer.h">
+      <Filter>97. Tool\02. Level Viewer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_MapEditor.h">
+      <Filter>97. Tool\03. Map Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Model.h">
+      <Filter>97. Tool\04. Model Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -179,6 +197,15 @@
     <ClCompile Include="..\Private\Tool_Settings.cpp">
       <Filter>97. Tool\00. ImGui_Settings</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Tool_LevelViewer.cpp">
+      <Filter>97. Tool\02. Level Viewer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_MapEditor.cpp">
+      <Filter>97. Tool\03. Map Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Model.cpp">
+      <Filter>97. Tool\04. Model Editor</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -198,6 +225,9 @@
       <Filter>96. Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex.hlsl">
+      <Filter>96. Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Shader_VtxNonAnim.hlsl">
       <Filter>96. Shader</Filter>
     </FxCompile>
   </ItemGroup>

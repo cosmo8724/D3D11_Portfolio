@@ -16,6 +16,7 @@ private:
 	virtual ~CGameInstance() = default;
 
 public:
+	HWND					Get_Handle() { return m_hWnd; }
 	static _uint			Get_StaticLevelIndex() { return m_iStaticLevelIndex; }
 
 public:
@@ -52,13 +53,17 @@ public:		/* For InputDevice */
 public:		/* For Level Manager */
 	HRESULT				Open_Level(_uint iLevelIndelx, class CLevel* pNewLevel);
 	HRESULT				Render_Level();
+	const _uint&			Get_CurLevelIndex();
 
 public:		/* For Object Manager */
+	map<const wstring, class CGameObject*>*	Get_Prototypes();
+	map<const wstring, class CLayer*>*			Get_Layers(_uint iLevelIndex);
 	HRESULT				Add_Prototype(const wstring& wstrPrototypeTag, class CGameObject* pPrototype);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 
 public:		/* For Component Manager */
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, class CComponent* pPrototype);
+	HRESULT				Clear_Prototype(_uint iLevelIndex);
 	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 
 public:		/* For PipeLine */
@@ -76,6 +81,9 @@ public:		/* For Timer Manager */
 public:		/* For Light Manager */
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
 	HRESULT				Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC& LightDesc);
+
+private:
+	HWND							m_hWnd;
 
 private:
 	static _uint					m_iStaticLevelIndex;

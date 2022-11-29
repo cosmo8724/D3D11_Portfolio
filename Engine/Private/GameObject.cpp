@@ -15,6 +15,7 @@ CGameObject::CGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CGameObject::CGameObject(const CGameObject & rhs)
 	: m_pDevice(rhs.m_pDevice)
 	, m_pContext(rhs.m_pContext)
+	, m_bHasModel(rhs.m_bHasModel)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
@@ -55,12 +56,11 @@ void CGameObject::ImGui_RenderComponentProperties()
 {
 	for (const auto& Pair : m_mapComponent)
 	{
-		ImGui::Separator();
 		char szName[MAX_PATH];
 		CGameUtility::wctc(Pair.first.c_str(), szName);
 
-		ImGui::Text("%s", szName);
-		Pair.second->ImGui_RenderProperty();
+		if (ImGui::CollapsingHeader(szName))
+			Pair.second->ImGui_RenderProperty();
 	}
 }
 
