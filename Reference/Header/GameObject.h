@@ -17,6 +17,9 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
+	const _bool&				Get_HasModel() { return m_bHasModel; }
+
+public:
 	static const wstring		m_wstrTransformComTag;
 
 public:
@@ -37,6 +40,8 @@ protected:
 	map<const wstring, class CComponent*>		m_mapComponent;
 
 	CTransform*				m_pTransformCom = nullptr;
+
+	_bool						m_bHasModel = false;
 
 protected:
 	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppComponentOut, void* pArg = nullptr);

@@ -235,6 +235,20 @@ const _uint & CGameInstance::Get_CurLevelIndex()
 	return m_pLevelMgr->Get_CurLevelIndex();
 }
 
+map<const wstring, class CGameObject*>* CGameInstance::Get_Prototypes()
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, nullptr);
+
+	return m_pObjectMgr->Get_Prototypes();
+}
+
+map<const wstring, class CLayer*>* CGameInstance::Get_Layers(_uint iLevelIndex)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, nullptr);
+
+	return m_pObjectMgr->Get_Layers(iLevelIndex);
+}
+
 HRESULT CGameInstance::Add_Prototype(const wstring & wstrPrototypeTag, CGameObject * pPrototype)
 {
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
@@ -344,25 +358,25 @@ void CGameInstance::Release_Engine()
 {
 	CTimerMgr::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
+	CImGuiMgr::GetInstance()->DestroyInstance();
 	CObjectMgr::GetInstance()->DestroyInstance();
 	CPipeLine::GetInstance()->DestroyInstance();
 	CComponentMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLightMgr::GetInstance()->DestroyInstance();
-	CImGuiMgr::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
 {
 	Safe_Release(m_pTimerMgr);
+	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pObjectMgr);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);
 	Safe_Release(m_pInputDev);
 	Safe_Release(m_pLightMgr);
-	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pGraphicDev);
 }

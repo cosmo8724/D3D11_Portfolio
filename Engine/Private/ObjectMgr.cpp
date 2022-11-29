@@ -54,7 +54,7 @@ HRESULT CObjectMgr::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLaye
 
 	CGameObject*		pCloneObject = pPrototypeObject->Clone(pArg);
 
-	CLayer*				pLayer = Find_Layer(wstrLayerTag);
+	CLayer*				pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
 
 	if (nullptr == pLayer)
 	{
@@ -155,11 +155,11 @@ CGameObject * CObjectMgr::Find_Prototype(const wstring & wstrPrototypeTag)
 	return iter->second;
 }
 
-CLayer * CObjectMgr::Find_Layer(const wstring & wstrLayerTag)
+CLayer * CObjectMgr::Find_Layer(_uint iLevelIndex, const wstring & wstrLayerTag)
 {
-	LAYERS::iterator	iter = find_if(m_pLayers->begin(), m_pLayers->end(), CTag_Finder(wstrLayerTag));
+	LAYERS::iterator	iter = find_if(m_pLayers[iLevelIndex].begin(), m_pLayers[iLevelIndex].end(), CTag_Finder(wstrLayerTag));
 
-	if (iter == m_pLayers->end())
+	if (iter == m_pLayers[iLevelIndex].end())
 		return nullptr;
 
 	return iter->second;

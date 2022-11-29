@@ -6449,12 +6449,12 @@ bool ImGui::BeginListBox(const char* label, const ImVec2& size_arg)
 
     // FIXME-OPT: We could omit the BeginGroup() if label_size.x but would need to omit the EndGroup() as well.
     BeginGroup();
-    if (label_size.x > 0.0f)
+    /*if (label_size.x > 0.0f)
     {
         ImVec2 label_pos = ImVec2(frame_bb.Max.x + style.ItemInnerSpacing.x, frame_bb.Min.y + style.FramePadding.y);
         RenderText(label_pos, label);
-        window->DC.CursorMaxPos = ImMax(window->DC.CursorMaxPos, label_pos + label_size);
-    }
+		window->DC.CursorMaxPos = ImMax(window->DC.CursorMaxPos, label_pos + label_size);
+	}*/
 
     BeginChildFrame(id, frame_bb.GetSize());
     return true;

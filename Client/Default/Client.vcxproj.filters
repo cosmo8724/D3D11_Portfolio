@@ -70,6 +70,9 @@
     <Filter Include="97. Tool\03. Map Editor">
       <UniqueIdentifier>{719a5ad2-7fca-4d50-837a-0f9b1d77b673}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Tool\04. Model Editor">
+      <UniqueIdentifier>{97ee26b9-ef07-4e52-97ae-841040b53199}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -138,6 +141,9 @@
     <ClInclude Include="..\Public\Tool_MapEditor.h">
       <Filter>97. Tool\03. Map Editor</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tool_Model.h">
+      <Filter>97. Tool\04. Model Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -196,6 +202,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_MapEditor.cpp">
       <Filter>97. Tool\03. Map Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Model.cpp">
+      <Filter>97. Tool\04. Model Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -56,6 +56,8 @@ public:		/* For Level Manager */
 	const _uint&			Get_CurLevelIndex();
 
 public:		/* For Object Manager */
+	map<const wstring, class CGameObject*>*	Get_Prototypes();
+	map<const wstring, class CLayer*>*			Get_Layers(_uint iLevelIndex);
 	HRESULT				Add_Prototype(const wstring& wstrPrototypeTag, class CGameObject* pPrototype);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 

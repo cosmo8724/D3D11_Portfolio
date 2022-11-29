@@ -8,7 +8,8 @@ public:
 	~CGameUtility() = default;
 
 public:
-	static void wctc(const wchar_t* szWchar, char* szChar);
-	static void Saturate(int& InValue, int InMax, int InMin);
+	static void		wctc(const wchar_t* szWchar, char* szChar);
+	static void		ctwc(const char* szChar, wchar_t* wszChar);
+	static void		Saturate(int& InValue, int InMax, int InMin);
 };
 
