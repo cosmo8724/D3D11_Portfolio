@@ -1,5 +1,6 @@
 #pragma once
 #include "Base.h"
+#include "Layer.h"
 
 BEGIN(Engine)
 
@@ -14,6 +15,7 @@ public:
 public:
 	map<const wstring, class CGameObject*>*	Get_Prototypes() { return &m_mapProtypes; }
 	map<const wstring, class CLayer*>*			Get_Layers(_uint iLevelIndex) { return &m_pLayers[iLevelIndex]; }
+	list<class CGameObject*>*						Get_CloneObjectList(_uint iLevelIndex, const wstring& wstrLayerTag) { return Find_Layer(iLevelIndex, wstrLayerTag)->GetGameObject(); }
 
 public:
 	HRESULT	Reserve_Manager(_uint iNumLevels);

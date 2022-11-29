@@ -62,7 +62,6 @@ void CTool_MapEditor::ImGui_RenderWindow()
 				j++;
 			}
 
-			ImGui::Separator();
 			IMGUI_LEFT_LABEL(ImGui::Combo, "Target Layer", &iSelectLayer, ppLayerTags, (_int)m_mapLayers->size());
 
 			ImGui::SameLine();
@@ -76,6 +75,46 @@ void CTool_MapEditor::ImGui_RenderWindow()
 
 				CGameInstance::GetInstance()->Clone_GameObject(m_iCurLevel, wstrLayerTag, wstrPrototypeTag);
 			}
+
+			ImGui::Separator();
+
+			static	_int iSelectLayer2 = 0;
+			static _int iSelectCloneObject = -1;
+			ImGui::BulletText("Layer Viewer");
+			IMGUI_LEFT_LABEL(ImGui::Combo, "Select Layer", &iSelectLayer2, ppLayerTags, (_int)m_mapLayers->size());
+
+			_tchar		wszLayerTag[MAX_PATH] = L"";
+			CGameUtility::ctwc(ppLayerTags[iSelectLayer2], wszLayerTag);
+
+			list<CGameObject*>*	CloneObjectList = CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, wstring(wszLayerTag));
+
+			char**		ppCloneTags = new char*[CloneObjectList->size()];
+			wstring	wstrLastTag = L"";
+			_tchar		wszBuff[128] = L"";
+			CGameUtility::ctwc(ppProtoModelTag[iSelectObject], wszBuff);
+			CGameUtility::SplitTag(wszBuff, wstrLastTag);
+			char		szLastTag[128] = "";
+
+			for (size_t i = 0; i < CloneObjectList->size(); ++i)
+			{
+				ppCloneTags[i] = new char[MAX_PATH];
+				CGameUtility::wctc(wstrLastTag.c_str(), szLastTag);
+				sprintf(ppCloneTags[i], strcat(szLastTag, "_%d"), i);
+			}
+			ImGui::ListBox("Clone Model List", &iSelectCloneObject, ppCloneTags, CloneObjectList->size());
+
+			if (iSelectCloneObject != -1)
+			{
+				ImGui::Text("I am "); ImGui::SameLine();
+				ImGui::Text(ppCloneTags[iSelectCloneObject]);
+				ImGui::Text("22.11.30 | Continue from Here.");
+				ImGui::Text("Feature Delete Clone Object.");
+			}
+
+
+			for (size_t i = 0; i < CloneObjectList->size(); ++i)
+				Safe_Delete_Array(ppCloneTags[i]);
+			Safe_Delete_Array(ppCloneTags);
 
 			for (size_t i = 0; i < m_mapLayers->size(); ++i)
 				Safe_Delete_Array(ppLayerTags[i]);

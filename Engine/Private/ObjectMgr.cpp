@@ -119,7 +119,7 @@ void CObjectMgr::ImGui_ObjectViewer(_uint iLevel, CGameObject *& pSelectedObejct
 			{
 				if (ImGui::BeginListBox("##", ImVec2(250.f, 50.f)))
 				{
-					for (auto& Obj : Pair.second->GetGameObjects())
+					for (auto& Obj : *Pair.second->GetGameObject())
 					{
 						const _bool bSelected = pSelectedObejct == Obj;
 						if (bSelected)
