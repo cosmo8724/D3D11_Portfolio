@@ -18,6 +18,7 @@ protected:
 
 public:
 	const _bool&				Get_HasModel() { return m_bHasModel; }
+	const _float4x4&		Get_WorldMatrix() const { return m_pTransformCom->Get_WorldMatrix(); }
 
 public:
 	static const wstring		m_wstrTransformComTag;

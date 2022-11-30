@@ -46,16 +46,16 @@ void CImGuiMgr::ImGui_NewFrame(_double dTimeDelta)
 	ImGui::NewFrame();
 
 	m_dTimeDelta = dTimeDelta;
+
+	ImGui_DockSpace();
+	ImGui_RenderTab();
+	ImGui_RenderWindow();
 }
 
 void CImGuiMgr::ImGui_Render()
 {
 	if (!m_bDrawImGui)
 		return;
-
-	ImGui_DockSpace();
-	ImGui_RenderTab();
-	ImGui_RenderWindow();
 
 	ImGui::Render();
 }
