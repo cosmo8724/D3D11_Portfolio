@@ -26,7 +26,7 @@ protected:
 	ID3D11Buffer*					m_pVB = nullptr;
 	_uint								m_iNumVertices = 0;
 	_uint								m_iNumVertexBuffers = 0;
-
+	
 protected:
 	ID3D11Buffer*					m_pIB = nullptr;
 	DXGI_FORMAT					m_eIndexFormat;

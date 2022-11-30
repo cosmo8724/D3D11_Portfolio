@@ -230,7 +230,7 @@ HRESULT CGameInstance::Render_Level()
 
 const _uint & CGameInstance::Get_CurLevelIndex()
 {
-	NULL_CHECK_RETURN(m_pLevelMgr, E_FAIL);
+	NULL_CHECK_RETURN(m_pLevelMgr, 1000);
 
 	return m_pLevelMgr->Get_CurLevelIndex();
 }
@@ -268,6 +268,13 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring & wstrL
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
 
 	return m_pObjectMgr->Clone_GameObject(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
+}
+
+map<const wstring, class CComponent*>* CGameInstance::Get_PrototypeComponents()
+{
+	NULL_CHECK_RETURN(m_pComponentMgr, nullptr);
+
+	return m_pComponentMgr->Get_PrototypeComponents();
 }
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & wstrPrototypeTag, CComponent * pPrototype)

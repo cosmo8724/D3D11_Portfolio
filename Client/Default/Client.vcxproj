@@ -189,6 +189,7 @@
     <ClInclude Include="..\Public\Tool_Debugger.h" />
     <ClInclude Include="..\Public\Tool_MapEditor.h" />
     <ClInclude Include="..\Public\Tool_Model.h" />
+    <ClInclude Include="..\Public\Tool_PrototypeMgr.h" />
     <ClInclude Include="..\Public\Tool_Settings.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -213,6 +214,7 @@
     <ClCompile Include="..\Private\Tool_Debugger.cpp" />
     <ClCompile Include="..\Private\Tool_MapEditor.cpp" />
     <ClCompile Include="..\Private\Tool_Model.cpp" />
+    <ClCompile Include="..\Private\Tool_PrototypeMgr.cpp" />
     <ClCompile Include="..\Private\Tool_Settings.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">

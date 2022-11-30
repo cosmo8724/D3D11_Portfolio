@@ -149,7 +149,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
-
+	
 	return S_OK;
 }
 

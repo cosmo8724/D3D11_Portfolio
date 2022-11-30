@@ -67,10 +67,13 @@
     <Filter Include="97. Tool\02. Level Viewer">
       <UniqueIdentifier>{6be0ba71-60eb-4378-8499-0df47864102b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. Tool\03. Map Editor">
+    <Filter Include="97. Tool\03. Prototype Manager">
+      <UniqueIdentifier>{d6974744-559a-4c65-af75-ec7aa0570892}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\04. Map Editor">
       <UniqueIdentifier>{719a5ad2-7fca-4d50-837a-0f9b1d77b673}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97. Tool\04. Model Editor">
+    <Filter Include="97. Tool\05. Model Editor">
       <UniqueIdentifier>{97ee26b9-ef07-4e52-97ae-841040b53199}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -139,10 +142,13 @@
       <Filter>97. Tool\02. Level Viewer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_MapEditor.h">
-      <Filter>97. Tool\03. Map Editor</Filter>
+      <Filter>97. Tool\04. Map Editor</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_Model.h">
-      <Filter>97. Tool\04. Model Editor</Filter>
+      <Filter>97. Tool\05. Model Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_PrototypeMgr.h">
+      <Filter>97. Tool\03. Prototype Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -201,10 +207,13 @@
       <Filter>97. Tool\02. Level Viewer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_MapEditor.cpp">
-      <Filter>97. Tool\03. Map Editor</Filter>
+      <Filter>97. Tool\04. Map Editor</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_Model.cpp">
-      <Filter>97. Tool\04. Model Editor</Filter>
+      <Filter>97. Tool\05. Model Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_PrototypeMgr.cpp">
+      <Filter>97. Tool\03. Prototype Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
