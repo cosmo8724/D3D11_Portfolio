@@ -26,7 +26,7 @@ HRESULT CLevel_Logo::Initialize()
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Settings::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Debugger::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_LevelViewer::Create(m_pDevice, m_pContext));
-	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_PrototypeMgr::Create());
+	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_PrototypeMgr::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_MapEditor::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTestTool::Create());
 

@@ -16,12 +16,16 @@ class CTool_PrototypeMgr final : public CTool
 	enum COMPONENTTYPE { COM_RENDERER, COM_VIBUFFER, COM_SHADER, COM_TRANSFORM, COM_TEXTURE, COM_MODEL, COMPONENTTYPE_END };
 
 private:
-	CTool_PrototypeMgr();
+	CTool_PrototypeMgr(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	virtual ~CTool_PrototypeMgr() = default;
 
 public:
-	virtual HRESULT					Initialize(void* pArg) override;
+	virtual HRESULT					Initialize(void* pArg);
 	virtual void						ImGui_RenderWindow() override;
+
+private:
+	DEVICE									m_pDevice = nullptr;
+	DEVICE_CONTEXT						m_pContext = nullptr;
 
 private:
 	_uint										m_iCurLevel = 0;
@@ -40,7 +44,7 @@ private:
 	COMPONENTTYPE				CheckComponentType(_int iSelectLevel, const char* pComponentTag);
 
 public:
-	static CTool_PrototypeMgr*	Create(void* pArg = nullptr);
+	static CTool_PrototypeMgr*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, void* pArg = nullptr);
 	virtual void						Free() override;
 };
 
