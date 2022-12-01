@@ -35,7 +35,7 @@ HRESULT CImGuiMgr::Ready_ImGui(HWND hWnd, ID3D11Device* pGraphicDev, ID3D11Devic
 
 void CImGuiMgr::ImGui_NewFrame(_double dTimeDelta)
 {
-	if (CGameInstance::GetInstance()->Key_Down(DIK_T))
+	if (CGameInstance::GetInstance()->Key_Down(DIK_T) && CGameInstance::GetInstance()->Get_DIKeyState(DIK_LCONTROL) & 0x80)
 		m_bDrawImGui = !m_bDrawImGui;
 
 	if (!m_bDrawImGui)

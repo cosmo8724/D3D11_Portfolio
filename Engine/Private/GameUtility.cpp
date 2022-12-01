@@ -29,6 +29,26 @@ void CGameUtility::SplitTag(wchar_t * wszTag, wstring & wszChar)
 	}
 }
 
+void CGameUtility::ConvertNumberTo_d(char * szChar)
+{
+	_int	iLastWord = strlen(szChar) - 1;
+
+	if (isdigit(szChar[iLastWord]))
+	{
+		if (isdigit(szChar[iLastWord - 1]))
+		{
+			szChar[iLastWord - 1] = '%';
+			szChar[iLastWord] = 'd';
+		}
+		else
+		{
+			szChar[iLastWord] = '%';
+			szChar[iLastWord + 1] = 'd';
+			szChar[iLastWord + 2] = '\0';
+		}
+	}
+}
+
 void CGameUtility::Saturate(int & InValue, int InMax, int InMin)
 {
 	if (InValue > InMax)
