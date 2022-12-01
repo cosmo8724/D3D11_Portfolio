@@ -37,6 +37,7 @@ private:
 	_uint										m_iProtoObjCnt = 0;
 
 	char*										m_pLevelName[LEVEL_END + 1] = { "Loading", "Logo", "Test Stage", "Public"};
+	_int*										m_iSelectTextureCom = nullptr;
 
 private:
 	void								Component_Editor();

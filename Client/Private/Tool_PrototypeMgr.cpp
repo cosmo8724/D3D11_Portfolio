@@ -418,7 +418,9 @@ void CTool_PrototypeMgr::GameObject_Editor()
 
 		static _int	iTextureComCnt = 1;
 		static _int	iLastTextureComCnt = iTextureComCnt;
-		static _int*	iSelectTextureCom = new _int[iTextureComCnt];
+		
+		if (m_iSelectTextureCom == nullptr)
+			m_iSelectTextureCom = new _int[iTextureComCnt];
 
 		if (iTextureComCnt != iLastTextureComCnt)
 		{
@@ -426,12 +428,13 @@ void CTool_PrototypeMgr::GameObject_Editor()
 			ZeroMemory(iTemp, sizeof(_int) * iTextureComCnt);
 
 			if (iTextureComCnt < iLastTextureComCnt)
-				memcpy(iTemp, iSelectTextureCom, sizeof(_int) * iTextureComCnt);
+				memcpy(iTemp, m_iSelectTextureCom, sizeof(_int) * iTextureComCnt);
 			else
-				memcpy(iTemp, iSelectTextureCom, sizeof(_int) * iLastTextureComCnt);
-			Safe_Delete_Array(iSelectTextureCom);
+				memcpy(iTemp, m_iSelectTextureCom, sizeof(_int) * iLastTextureComCnt);
+			Safe_Delete_Array(m_iSelectTextureCom);
 
-			iSelectTextureCom = iTemp;
+			m_iSelectTextureCom = iTemp;
+			iLastTextureComCnt = iTextureComCnt;
 		}
 
 		ImGui::BulletText("Object Tag");
@@ -441,19 +444,19 @@ void CTool_PrototypeMgr::GameObject_Editor()
 		ImGui::NewLine();
 		ImGui::BulletText("Select Component");
 
-		ImGui::Combo("Renderer", &iSelectRender, *ppComponentTag[COM_RENDERER], iComponentCnt[COM_RENDERER]);
-		ImGui::Combo("VIBuffer", &iSelectVIBuffer, *ppComponentTag[COM_VIBUFFER], iComponentCnt[COM_VIBUFFER]);
-		ImGui::Combo("Shader", &iSelectShader, *ppComponentTag[COM_SHADER], iComponentCnt[COM_SHADER]);
-		ImGui::Combo("Transform", &iSelectTransform, *ppComponentTag[COM_TRANSFORM], iComponentCnt[COM_TRANSFORM]);
+		ImGui::Combo("Renderer", &iSelectRender, ppComponentTag[COM_RENDERER], iComponentCnt[COM_RENDERER]);
+		ImGui::Combo("VIBuffer", &iSelectVIBuffer, ppComponentTag[COM_VIBUFFER], iComponentCnt[COM_VIBUFFER]);
+		ImGui::Combo("Shader", &iSelectShader, ppComponentTag[COM_SHADER], iComponentCnt[COM_SHADER]);
+		ImGui::Combo("Transform", &iSelectTransform, ppComponentTag[COM_TRANSFORM], iComponentCnt[COM_TRANSFORM]);
 		ImGui::InputInt("Texture Component Count", &iTextureComCnt, 0, 0);
 		for (_uint i = 0; i < iTextureComCnt; ++i)
 		{
 			char	szTextureLabel[32] = "";
 			sprintf(szTextureLabel, "Texture%d", i);
 			const char*	pTextureLabel = szTextureLabel;
-			ImGui::Combo( pTextureLabel, &iSelectTextureCom[i], *ppComponentTag[COM_TEXTURE], iComponentCnt[COM_TEXTURE]);
+			ImGui::Combo( pTextureLabel, &m_iSelectTextureCom[i], ppComponentTag[COM_TEXTURE], iComponentCnt[COM_TEXTURE]);
 		}
-		ImGui::Combo("Model", &iSelectModel, *ppComponentTag[COM_MODEL], iComponentCnt[COM_MODEL]);
+		ImGui::Combo("Model", &iSelectModel, ppComponentTag[COM_MODEL], iComponentCnt[COM_MODEL]);
 		
 		if (ImGui::Button("Create"))
 		{
@@ -476,7 +479,6 @@ void CTool_PrototypeMgr::GameObject_Editor()
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
 		{
-
 		}
 
 		for (size_t i = 0; i < m_iProtoObjCnt; ++i)
@@ -573,7 +575,11 @@ void CTool_PrototypeMgr::SortComponentByType(char ***& ppComponentTag, _uint* pC
 
 	ppComponentTag = new char**[COMPONENTTYPE_END];
 	for (_int i = 0; i < (_int)COMPONENTTYPE_END; ++i)
+	{
 		ppComponentTag[i] = new char*[ComponentCnt[i]];
+		for (_int j = 0; j < ComponentCnt[i]; ++j)
+			ppComponentTag[i][j] = new char[64];
+	}
 
 	char	szPrototypeTag[MAX_PATH] = "";
 	_uint	ComCnt[COMPONENTTYPE_END];
@@ -591,48 +597,42 @@ void CTool_PrototypeMgr::SortComponentByType(char ***& ppComponentTag, _uint* pC
 
 			if (dynamic_cast<CRenderer*>(Pair.second))
 			{ 
-				ppComponentTag[COM_RENDERER][ComCnt[COM_RENDERER]] = new char[iLength];
-				ZeroMemory(ppComponentTag[COM_RENDERER][ComCnt[COM_RENDERER]], iLength);
+				ZeroMemory(ppComponentTag[COM_RENDERER][ComCnt[COM_RENDERER]], 64);
 				sprintf_s(ppComponentTag[COM_RENDERER][ComCnt[COM_RENDERER]], iLength, szPrototypeTag);
 				ComCnt[COM_RENDERER]++;
 				continue;
 			}
 			if (dynamic_cast<CVIBuffer*>(Pair.second))
 			{
-				ppComponentTag[COM_VIBUFFER][ComCnt[COM_VIBUFFER]] = new char[iLength];
-				ZeroMemory(ppComponentTag[COM_VIBUFFER][ComCnt[COM_VIBUFFER]], iLength);
+				ZeroMemory(ppComponentTag[COM_VIBUFFER][ComCnt[COM_VIBUFFER]], 64);
 				sprintf_s(ppComponentTag[COM_VIBUFFER][ComCnt[COM_VIBUFFER]], iLength, szPrototypeTag);
 				ComCnt[COM_VIBUFFER]++;
 				continue;
 			}
 			if (dynamic_cast<CShader*>(Pair.second))
 			{
-				ppComponentTag[COM_SHADER][ComCnt[COM_SHADER]] = new char[iLength];
-				ZeroMemory(ppComponentTag[COM_SHADER][ComCnt[COM_SHADER]], iLength);
+				ZeroMemory(ppComponentTag[COM_SHADER][ComCnt[COM_SHADER]], 64);
 				sprintf_s(ppComponentTag[COM_SHADER][ComCnt[COM_SHADER]], iLength, szPrototypeTag);
 				ComCnt[COM_SHADER]++;
 				continue;
 			}
 			if (dynamic_cast<CTransform*>(Pair.second))
 			{
-				ppComponentTag[COM_TRANSFORM][ComCnt[COM_TRANSFORM]] = new char[iLength];
-				ZeroMemory(ppComponentTag[COM_TRANSFORM][ComCnt[COM_TRANSFORM]], iLength);
+				ZeroMemory(ppComponentTag[COM_TRANSFORM][ComCnt[COM_TRANSFORM]], 64);
 				sprintf_s(ppComponentTag[COM_TRANSFORM][ComCnt[COM_TRANSFORM]], iLength, szPrototypeTag);
 				ComCnt[COM_TRANSFORM]++;
 				continue;
 			}
 			if (dynamic_cast<CTexture*>(Pair.second))
 			{
-				ppComponentTag[COM_TEXTURE][ComCnt[COM_TEXTURE]] = new char[iLength];
-				ZeroMemory(ppComponentTag[COM_TEXTURE][ComCnt[COM_TEXTURE]], iLength);
+				ZeroMemory(ppComponentTag[COM_TEXTURE][ComCnt[COM_TEXTURE]], 64);
 				sprintf_s(ppComponentTag[COM_TEXTURE][ComCnt[COM_TEXTURE]], iLength, szPrototypeTag);
 				ComCnt[COM_TEXTURE]++;
 				continue;
 			}
 			if (dynamic_cast<CModel*>(Pair.second))
 			{
-				ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]] = new char[iLength];
-				ZeroMemory(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]], iLength);
+				ZeroMemory(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]], 64);
 				sprintf_s(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]], iLength, szPrototypeTag);
 				ComCnt[COM_MODEL]++;
 			}
@@ -658,6 +658,8 @@ CTool_PrototypeMgr * CTool_PrototypeMgr::Create(DEVICE pDevice, DEVICE_CONTEXT p
 
 void CTool_PrototypeMgr::Free()
 {
+	Safe_Delete_Array(m_iSelectTextureCom);
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 }
