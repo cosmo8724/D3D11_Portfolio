@@ -232,6 +232,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\Shader\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxNonAnim.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxTex.hlsl" />

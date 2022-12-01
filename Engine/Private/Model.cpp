@@ -2,6 +2,8 @@
 #include "Mesh.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Bone.h"
+#include "Animation.h"
 
 CModel::CModel(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
@@ -14,16 +16,39 @@ CModel::CModel(const CModel& rhs)
 	, m_eType(rhs.m_eType)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
 	, m_vecMesh(rhs.m_vecMesh)
-	, m_Materials(rhs.m_Materials)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
+	, m_Materials(rhs.m_Materials)
+	, m_iNumEntireBone(rhs.m_iNumEntireBone)
+	, m_vecEntireBone(rhs.m_vecEntireBone)
+	, m_iNumAnimations(rhs.m_iNumAnimations)
+	, m_vecAnimation(rhs.m_vecAnimation)
 {
 	for (auto& pMesh : m_vecMesh)
 		Safe_AddRef(pMesh);
+
 	for (auto& ModelMaterial : m_Materials)
 	{
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(ModelMaterial.pTexture[i]);
 	}
+
+	for (auto& pBone : m_vecEntireBone)
+		Safe_AddRef(pBone);
+
+	for (auto& pAnimation : m_vecAnimation)
+		Safe_AddRef(pAnimation);
+}
+
+CBone * CModel::Get_BoneFromEntireBone(const char * pBoneName)
+{
+	auto	iter = find_if(m_vecEntireBone.begin(), m_vecEntireBone.end(), [&](CBone* pBone)->bool {
+		return !strcmp(pBoneName, pBone->Get_Name().c_str());
+	});
+
+	if (iter == m_vecEntireBone.end())
+		return nullptr;
+
+	return *iter;
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath)
@@ -94,6 +119,15 @@ void CModel::ImGui_RenderProperty()
 	}
 }
 
+void CModel::Play_Animation(_double dTimeDelta)
+{
+	for (auto& pBone : m_vecEntireBone)
+	{
+		if (nullptr != pBone)
+			pBone->Compute_CombindTransformMatrix();
+	}
+}
+
 HRESULT CModel::Bind_Material(CShader * pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring & wstrConstantName)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
@@ -125,6 +159,19 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Ready_Bones(aiNode * pAINode)
+{
+	CBone*	pBone = CBone::Create(pAINode);
+	NULL_CHECK_RETURN(pBone, E_FAIL);
+
+	m_vecEntireBone.push_back(pBone);
+
+	for (_uint i = 0; i < pAINode->mNumChildren; ++i)
+		Ready_Bones(pAINode->mChildren[i]);
+
+	return S_OK;
+}
+
 HRESULT CModel::Ready_MeshContainers()
 {
 	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
@@ -135,7 +182,7 @@ HRESULT CModel::Ready_MeshContainers()
 	{
 		aiMesh*	pAIMesh = m_pAIScene->mMeshes[i];
 
-		CMesh*	pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, pAIMesh);
+		CMesh*	pMesh = CMesh::Create(m_pDevice, m_pContext, m_eType, pAIMesh, this);
 		NULL_CHECK_RETURN(pMesh, E_FAIL);
 
 		m_vecMesh.push_back(pMesh);
@@ -230,6 +277,14 @@ void CModel::Free()
 			Safe_Release(ModelMaterial.pTexture[i]);
 	}
 	m_Materials.clear();
+
+	for (auto& pBone : m_vecEntireBone)
+		Safe_Release(pBone);
+	m_vecEntireBone.clear();
+
+	for (auto& pAnimation : m_vecAnimation)
+		Safe_Release(pAnimation);
+	m_vecAnimation.clear();
 
 	m_Importer.FreeScene();
 }

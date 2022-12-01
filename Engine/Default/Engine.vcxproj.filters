@@ -115,6 +115,12 @@
     <Filter Include="01. Utility\03. Component\06. Model\Mesh">
       <UniqueIdentifier>{0958645b-e85f-493c-9c49-2fe7e0bb9299}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\06. Model\Animation">
+      <UniqueIdentifier>{4d677985-022c-40a4-b8b7-c8d7d70dd0c3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\06. Model\Bone">
+      <UniqueIdentifier>{5f5339a3-d180-40c2-94f3-4e1a1d0dfd6f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -251,6 +257,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Mesh.cpp">
       <Filter>01. Utility\03. Component\06. Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bone.cpp">
+      <Filter>01. Utility\03. Component\06. Model\Bone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Animation.cpp">
+      <Filter>01. Utility\03. Component\06. Model\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -415,6 +427,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Mesh.h">
       <Filter>01. Utility\03. Component\06. Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bone.h">
+      <Filter>01. Utility\03. Component\06. Model\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Animation.h">
+      <Filter>01. Utility\03. Component\06. Model\Animation</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

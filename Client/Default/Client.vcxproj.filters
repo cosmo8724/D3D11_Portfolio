@@ -239,5 +239,8 @@
     <FxCompile Include="..\Bin\Shader\Shader_VtxNonAnim.hlsl">
       <Filter>96. Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Shader_VtxAnimModel.hlsl">
+      <Filter>96. Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>
