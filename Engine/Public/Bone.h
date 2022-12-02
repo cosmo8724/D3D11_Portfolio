@@ -11,7 +11,10 @@ private:
 
 public:
 	const string&		Get_Name() const { return m_strName; }
+	_matrix			Get_matOffset() { return XMLoadFloat4x4(&m_matOffset); }
+	_matrix			Get_CombindMatrix() { return XMLoadFloat4x4(&m_matCombindTransform); }
 	void				Set_matOffset(_float4x4 matOffset) { m_matOffset = matOffset; }
+	void				Set_matTransform(_fmatrix matTransform) { XMStoreFloat4x4(&m_matTransform, matTransform); }
 
 public:
 	HRESULT			Initialize(aiNode* pAINode);
@@ -24,7 +27,7 @@ private:
 	_float4x4			m_matTransform;
 	_float4x4			m_matCombindTransform;
 
-	CBone*			m_pParent;
+	CBone*			m_pParent = nullptr;
 
 public:
 	static CBone*		Create(aiNode* pAINode);

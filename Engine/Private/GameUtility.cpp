@@ -31,7 +31,7 @@ void CGameUtility::SplitTag(wchar_t * wszTag, wstring & wszChar)
 
 void CGameUtility::ConvertNumberTo_d(char * szChar)
 {
-	_int	iLastWord = strlen(szChar) - 1;
+	_int	iLastWord = (_int)strlen(szChar) - 1;
 
 	if (isdigit(szChar[iLastWord]))
 	{

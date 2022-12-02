@@ -20,6 +20,7 @@ CModel::CModel(const CModel& rhs)
 	, m_Materials(rhs.m_Materials)
 	, m_iNumEntireBone(rhs.m_iNumEntireBone)
 	, m_vecEntireBone(rhs.m_vecEntireBone)
+	, m_iCurAnimationIndex(rhs.m_iCurAnimationIndex)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
 	, m_vecAnimation(rhs.m_vecAnimation)
 {
@@ -39,10 +40,10 @@ CModel::CModel(const CModel& rhs)
 		Safe_AddRef(pAnimation);
 }
 
-CBone * CModel::Get_BoneFromEntireBone(const char * pBoneName)
+CBone * CModel::Get_BoneFromEntireBone(const string & strBoneName)
 {
 	auto	iter = find_if(m_vecEntireBone.begin(), m_vecEntireBone.end(), [&](CBone* pBone)->bool {
-		return !strcmp(pBoneName, pBone->Get_Name().c_str());
+		return strBoneName == pBone->Get_Name();
 	});
 
 	if (iter == m_vecEntireBone.end())
@@ -60,7 +61,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 
 	_uint		iFlag = 0;
 
-	if (eType == MODEL_NONANIM)
+	if (m_eType == MODEL_NONANIM)
 		iFlag = aiProcess_PreTransformVertices | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
 	else
 		iFlag = aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast;
@@ -68,8 +69,10 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Animations(), E_FAIL);
 
 	return S_OK;
 }
@@ -121,6 +124,8 @@ void CModel::ImGui_RenderProperty()
 
 void CModel::Play_Animation(_double dTimeDelta)
 {
+	m_vecAnimation[m_iCurAnimationIndex]->Update_Bones(dTimeDelta);
+
 	for (auto& pBone : m_vecEntireBone)
 	{
 		if (nullptr != pBone)
@@ -147,14 +152,25 @@ HRESULT CModel::Bind_Material(CShader * pShaderCom, _uint iMeshIndex, aiTextureT
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex)
+HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 
-	pShaderCom->Begin(0);
-
 	if (nullptr != m_vecMesh[iMeshIndex])
+	{
+		if (wstrBoneConstantName != L"")
+		{
+			_float4x4		matBones[256];
+
+			m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones);
+
+			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 256);
+		}
+
+		pShaderCom->Begin(0);
+
 		m_vecMesh[iMeshIndex]->Render();
+	}
 
 	return S_OK;
 }
@@ -234,6 +250,23 @@ HRESULT CModel::Ready_Materials(const char * pModelFIlePath)
 		m_Materials.push_back(ModelMaterial);
 	}
 	
+	return S_OK;
+}
+
+HRESULT CModel::Ready_Animations()
+{
+	m_iNumAnimations = m_pAIScene->mNumAnimations;
+
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+	{
+		aiAnimation*	pAIAnimation = m_pAIScene->mAnimations[i];
+
+		CAnimation*	pAnimation = CAnimation::Create(pAIAnimation, this);
+		NULL_CHECK_RETURN(pAnimation, E_FAIL);
+
+		m_vecAnimation.push_back(pAnimation);
+	}
+
 	return S_OK;
 }
 

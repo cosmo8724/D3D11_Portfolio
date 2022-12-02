@@ -73,6 +73,14 @@ namespace Engine
 		XMFLOAT4		vSpecular;
 	} LIGHTDESC;
 
+	typedef struct tagKeyFrame
+	{
+		double				dTime;
+		XMFLOAT3		vScale;
+		XMFLOAT4		vRotation;
+		XMFLOAT3		vPosition;
+	} KEYFRAME;
+
 	typedef  struct tagModelMaterial
 	{
 		class CTexture*	pTexture[AI_TEXTURE_TYPE_MAX];

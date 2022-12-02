@@ -19,6 +19,9 @@ public:
 	virtual HRESULT			Initialize_Prototype(CModel::MODELTYPE eType, aiMesh* pAIMesh, class CModel* pModel);
 	virtual HRESULT			Initialize(void* pArg) override;
 
+public:
+	void						SetUp_BoneMatrices(_float4x4* pBoneMatrices);
+
 private:
 	string						m_strName = "";
 	CModel::MODELTYPE		m_eType = CModel::MODELTYPE_END;

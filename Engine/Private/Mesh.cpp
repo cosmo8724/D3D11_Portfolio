@@ -34,9 +34,13 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, C
 
 	/* Create Vertex Buffer */
 	if (m_eType == CModel::MODEL_NONANIM)
-		Ready_VertexBuffer_NonAnimModel(pAIMesh);
+	{
+		FAILED_CHECK_RETURN(Ready_VertexBuffer_NonAnimModel(pAIMesh), E_FAIL);
+	}
 	else
-		Ready_VertexBuffer_AnimModel(pAIMesh, pModel);
+	{
+		FAILED_CHECK_RETURN(Ready_VertexBuffer_AnimModel(pAIMesh, pModel), E_FAIL);
+	}
 
 	/* Create Index Buffer */
 	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
@@ -71,6 +75,14 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, C
 HRESULT CMesh::Initialize(void * pArg)
 {
 	return S_OK;
+}
+
+void CMesh::SetUp_BoneMatrices(_float4x4 * pBoneMatrices)
+{
+	_uint	iNumBones = 0;
+
+	for (auto& pBone : m_vecMeshBone)
+		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_matOffset() * pBone->Get_CombindMatrix());
 }
 
 HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh)

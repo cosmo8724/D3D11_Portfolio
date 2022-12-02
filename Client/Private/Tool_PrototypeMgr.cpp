@@ -331,6 +331,8 @@ void CTool_PrototypeMgr::Component_Editor()
 
 		if (iSelectComponent != -1)
 		{
+			ImGui::Separator();
+
 			CComponent*		pComponent = nullptr;
 
 			for (auto Pair : m_mapProtoComponenets[iSelectLevel])
@@ -535,7 +537,7 @@ void CTool_PrototypeMgr::SortComponentByType(char ***& ppComponentTag, _uint* pC
 	if (ppComponentTag != nullptr)
 		return;
 
-	_uint ComponentCnt[COMPONENTTYPE_END] = { 0, 0, 0, 0, 0, 0 };
+	_uint ComponentCnt[COMPONENTTYPE_END] = { 1, 1, 1, 1, 1, 1 };
 
 	for (_uint i = 0; i < LEVEL_END + 1; ++i)
 	{
@@ -578,12 +580,16 @@ void CTool_PrototypeMgr::SortComponentByType(char ***& ppComponentTag, _uint* pC
 	{
 		ppComponentTag[i] = new char*[ComponentCnt[i]];
 		for (_int j = 0; j < ComponentCnt[i]; ++j)
+		{
 			ppComponentTag[i][j] = new char[64];
+
+			if (j == 0)
+				strcpy_s(ppComponentTag[i][j], 7, "<None>");
+		}
 	}
 
 	char	szPrototypeTag[MAX_PATH] = "";
-	_uint	ComCnt[COMPONENTTYPE_END];
-	ZeroMemory(ComCnt, sizeof(_uint) * COMPONENTTYPE_END);
+	_uint	ComCnt[COMPONENTTYPE_END] = { 1, 1, 1, 1, 1, 1 };
 
 	for (_uint i = 0; i < LEVEL_END + 1; ++i)
 	{
@@ -598,43 +604,37 @@ void CTool_PrototypeMgr::SortComponentByType(char ***& ppComponentTag, _uint* pC
 			if (dynamic_cast<CRenderer*>(Pair.second))
 			{ 
 				ZeroMemory(ppComponentTag[COM_RENDERER][ComCnt[COM_RENDERER]], 64);
-				sprintf_s(ppComponentTag[COM_RENDERER][ComCnt[COM_RENDERER]], iLength, szPrototypeTag);
-				ComCnt[COM_RENDERER]++;
+				sprintf_s(ppComponentTag[COM_RENDERER][ComCnt[COM_RENDERER]++], iLength, szPrototypeTag);
 				continue;
 			}
 			if (dynamic_cast<CVIBuffer*>(Pair.second))
 			{
 				ZeroMemory(ppComponentTag[COM_VIBUFFER][ComCnt[COM_VIBUFFER]], 64);
-				sprintf_s(ppComponentTag[COM_VIBUFFER][ComCnt[COM_VIBUFFER]], iLength, szPrototypeTag);
-				ComCnt[COM_VIBUFFER]++;
+				sprintf_s(ppComponentTag[COM_VIBUFFER][ComCnt[COM_VIBUFFER]++], iLength, szPrototypeTag);
 				continue;
 			}
 			if (dynamic_cast<CShader*>(Pair.second))
 			{
 				ZeroMemory(ppComponentTag[COM_SHADER][ComCnt[COM_SHADER]], 64);
-				sprintf_s(ppComponentTag[COM_SHADER][ComCnt[COM_SHADER]], iLength, szPrototypeTag);
-				ComCnt[COM_SHADER]++;
+				sprintf_s(ppComponentTag[COM_SHADER][ComCnt[COM_SHADER]++], iLength, szPrototypeTag);
 				continue;
 			}
 			if (dynamic_cast<CTransform*>(Pair.second))
 			{
 				ZeroMemory(ppComponentTag[COM_TRANSFORM][ComCnt[COM_TRANSFORM]], 64);
-				sprintf_s(ppComponentTag[COM_TRANSFORM][ComCnt[COM_TRANSFORM]], iLength, szPrototypeTag);
-				ComCnt[COM_TRANSFORM]++;
+				sprintf_s(ppComponentTag[COM_TRANSFORM][ComCnt[COM_TRANSFORM]++], iLength, szPrototypeTag);
 				continue;
 			}
 			if (dynamic_cast<CTexture*>(Pair.second))
 			{
 				ZeroMemory(ppComponentTag[COM_TEXTURE][ComCnt[COM_TEXTURE]], 64);
-				sprintf_s(ppComponentTag[COM_TEXTURE][ComCnt[COM_TEXTURE]], iLength, szPrototypeTag);
-				ComCnt[COM_TEXTURE]++;
+				sprintf_s(ppComponentTag[COM_TEXTURE][ComCnt[COM_TEXTURE]++], iLength, szPrototypeTag);
 				continue;
 			}
 			if (dynamic_cast<CModel*>(Pair.second))
 			{
 				ZeroMemory(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]], 64);
-				sprintf_s(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]], iLength, szPrototypeTag);
-				ComCnt[COM_MODEL]++;
+				sprintf_s(ppComponentTag[COM_MODEL][ComCnt[COM_MODEL]++], iLength, szPrototypeTag);
 			}
 		}
 	}

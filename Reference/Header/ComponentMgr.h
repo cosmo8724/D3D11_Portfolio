@@ -20,7 +20,10 @@ public:
 	virtual ~CComponentMgr() = default;
 
 public:
-	map<const wstring, class CComponent*>*		Get_PrototypeComponents() { if (m_mapPrototype) return m_mapPrototype; }
+	map<const wstring, class CComponent*>*		Get_PrototypeComponents() {
+		if (m_mapPrototype)	return m_mapPrototype;
+		else						return nullptr;
+	}
 
 public:
 	HRESULT					Reserve_Manager(_uint iNumLevels);

@@ -117,6 +117,19 @@ HRESULT CShader::Set_Matrix(const wstring & wstrConstantName, const _float4x4 * 
 	return pVariable->SetMatrix((_float*)pMatrix);
 }
 
+HRESULT CShader::Set_MatrixArray(const wstring & wstrConstantName, const _float4x4 * pMatrix, _uint iNumMatrices)
+{
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	char	szConstantName[MAX_PATH];
+	CGameUtility::wctc(wstrConstantName.c_str(), szConstantName);
+
+	ID3DX11EffectMatrixVariable*	pVariable = m_pEffect->GetVariableByName(szConstantName)->AsMatrix();
+	NULL_CHECK_RETURN(m_pEffect, E_FAIL);
+
+	return pVariable->SetMatrixArray((_float*)pMatrix, 0, iNumMatrices);
+}
+
 HRESULT CShader::Set_ShaderResourceView(const wstring & wstrConstantName, ID3D11ShaderResourceView * pSRV)
 {
 	NULL_CHECK_RETURN(m_pEffect, E_FAIL);

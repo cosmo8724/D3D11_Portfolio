@@ -21,12 +21,9 @@ HRESULT CBone::Initialize(aiNode * pAINode)
 void CBone::Compute_CombindTransformMatrix()
 {
 	if (m_pParent == nullptr)
-	{
 		m_matCombindTransform = m_matTransform;
-		return;
-	}
-
-	XMStoreFloat4x4(&m_matCombindTransform, XMLoadFloat4x4(&m_matTransform) * XMLoadFloat4x4(&m_pParent->m_matCombindTransform));
+	else
+		XMStoreFloat4x4(&m_matCombindTransform, XMLoadFloat4x4(&m_matTransform) * XMLoadFloat4x4(&m_pParent->m_matCombindTransform));
 }
 
 CBone * CBone::Create(aiNode * pAINode)
