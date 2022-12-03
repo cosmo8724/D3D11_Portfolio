@@ -42,6 +42,7 @@ private:
 	void								GameObject_Editor();
 	COMPONENTTYPE				CheckComponentType(_int iSelectLevel, const char* pComponentTag);
 	void								SortComponentByType(char***& ppComponentTag, _uint* pComponentCnt);
+	_uint								FindPrototypeComponentLevel(const _tchar* pComponentTag);
 
 public:
 	static CTool_PrototypeMgr*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, void* pArg = nullptr);

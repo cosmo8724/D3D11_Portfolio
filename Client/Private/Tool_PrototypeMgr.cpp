@@ -463,26 +463,58 @@ void CTool_PrototypeMgr::GameObject_Editor()
 		
 		if (ImGui::Button("Create"))
 		{
-			vector<wstring>	vecPrototypeTags;
-			vecPrototypeTags.reserve(10);
+			vector<pair<_uint, wstring>>	vecPrototypeInfo;
+			vecPrototypeInfo.reserve(10);
 			
 			_tchar		wszComponentTag[MAX_PATH] = L"";
+			_uint		iPrototypeLevel = 0;
+			pair<_uint, wstring>		MyPair;
 			CGameUtility::ctwc(ppComponentTag[COM_RENDERER][iSelectRender], wszComponentTag);
-			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+			if (iPrototypeLevel != 1000)
+			{
+				MyPair.first = iPrototypeLevel;
+				MyPair.second = wstring(wszComponentTag);
+				vecPrototypeInfo.push_back(MyPair);
+			}
 			CGameUtility::ctwc(ppComponentTag[COM_VIBUFFER][iSelectVIBuffer], wszComponentTag);
-			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+			if (iPrototypeLevel != 1000)
+			{
+				MyPair.first = iPrototypeLevel;
+				MyPair.second = wstring(wszComponentTag);
+				vecPrototypeInfo.push_back(MyPair);
+			}
 			CGameUtility::ctwc(ppComponentTag[COM_SHADER][iSelectShader], wszComponentTag);
-			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+			if (iPrototypeLevel != 1000)
+			{
+				MyPair.first = iPrototypeLevel;
+				MyPair.second = wstring(wszComponentTag);
+				vecPrototypeInfo.push_back(MyPair);
+			}
 			CGameUtility::ctwc(ppComponentTag[COM_TRANSFORM][iSelectTransform], wszComponentTag);
-			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+			if (iPrototypeLevel != 1000)
+			{
+				MyPair.first = iPrototypeLevel;
+				MyPair.second = wstring(wszComponentTag);
+				vecPrototypeInfo.push_back(MyPair);
+			}
 			CGameUtility::ctwc(ppComponentTag[COM_MODEL][iSelectModel], wszComponentTag);
-			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+			if (iPrototypeLevel != 1000)
+			{
+				MyPair.first = iPrototypeLevel;
+				MyPair.second = wstring(wszComponentTag);
+				vecPrototypeInfo.push_back(MyPair);
+			}
 
 			_tchar		wszPrototypeTag[MAX_PATH] = L"";
 			CGameUtility::ctwc(szPrototypeTag, wszPrototypeTag);
-			CGameInstance::GetInstance()->Add_Prototype(wszPrototypeTag, CCustomGameObject::Create(m_pDevice, m_pContext, vecPrototypeTags, iTextureComCnt));
+			CGameInstance::GetInstance()->Add_Prototype(wszPrototypeTag, CCustomGameObject::Create(m_pDevice, m_pContext, vecPrototypeInfo, iTextureComCnt));
 
-			vecPrototypeTags.clear();
+			vecPrototypeInfo.clear();
 
 			for (size_t i = 0; i < m_iProtoObjCnt; ++i)
 				Safe_Delete_Array(ppProtoObjTag[i]);
@@ -663,6 +695,25 @@ void CTool_PrototypeMgr::SortComponentByType(char ***& ppComponentTag, _uint* pC
 
 	for (_int i = 0; i < (_int)COMPONENTTYPE_END; ++i)
 		pComponentCnt[i] = ComponentCnt[i];
+}
+
+_uint CTool_PrototypeMgr::FindPrototypeComponentLevel(const _tchar * pComponentTag)
+{
+	_uint	iLevelIndex = 1000;
+
+	for (_uint i = 0; i < LEVEL_END + 1; ++i)
+	{
+		for (auto& Pair : m_mapProtoComponenets[i])
+		{
+			if (!lstrcmp(Pair.first.c_str(), pComponentTag))
+			{
+				iLevelIndex = i;
+				return iLevelIndex;
+			}
+		}
+	}
+
+	return iLevelIndex;
 }
 
 CTool_PrototypeMgr * CTool_PrototypeMgr::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, void * pArg)

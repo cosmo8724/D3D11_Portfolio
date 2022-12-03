@@ -9,17 +9,23 @@ CCustomGameObject::CCustomGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 CCustomGameObject::CCustomGameObject(const CCustomGameObject& rhs)
 	: CGameObject(rhs)
+	, m_iRendererComLevel(rhs.m_iRendererComLevel)
+	, m_iVIBufferComLevel(rhs.m_iVIBufferComLevel)
+	, m_iShaderComLevel(rhs.m_iShaderComLevel)
+	, m_iTransformComLevel(rhs.m_iTransformComLevel)
+	, m_iTextureComLevel(rhs.m_iTextureComLevel)
+	, m_iModelComLevel(rhs.m_iModelComLevel)
 	, m_wstrRendererComTag(rhs.m_wstrRendererComTag)
 	, m_wstrVIBufferComTag(rhs.m_wstrVIBufferComTag)
 	, m_wstrShaderComTag(rhs.m_wstrShaderComTag)
 	, m_wstrProtoTransformComTag(rhs.m_wstrProtoTransformComTag)
+	, m_iNumTextureCom(rhs.m_iNumTextureCom)
 	, m_wstrTextureComTag(rhs.m_wstrTextureComTag)
 	, m_wstrModelComTag(rhs.m_wstrModelComTag)
-	, m_iNumTextureCom(rhs.m_iNumTextureCom)
 {
 }
 
-HRESULT CCustomGameObject::Initialize_Prototype(const vector<wstring>& vecPrototypeTags, _uint iNumTextureCom)
+HRESULT CCustomGameObject::Initialize_Prototype(const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom)
 {
 	m_iNumTextureCom = iNumTextureCom;
 
@@ -28,35 +34,44 @@ HRESULT CCustomGameObject::Initialize_Prototype(const vector<wstring>& vecProtot
 	_uint	iTextureComIndex = 0;
 
 	COMPONENTTYPE	eType = COMPONENTTYPE_END;
-	for (_uint i = 0; i < vecPrototypeTags.size(); ++i)
+	for (_uint i = 0; i < vecPrototypeInfo.size(); ++i)
 	{
-		eType = CGameUtility::CheckComponentTypeFromTag(vecPrototypeTags[i]);
+		eType = CGameUtility::CheckComponentTypeFromTag(vecPrototypeInfo[i].second);
 
 		if (eType == COMPONENTTYPE_END)
 			continue;
 
 		else if (eType == COM_RENDERER)
-			m_wstrRendererComTag = vecPrototypeTags[i];
-
+		{
+			m_iRendererComLevel = vecPrototypeInfo[i].first;
+			m_wstrRendererComTag = vecPrototypeInfo[i].second;
+		}
 		else if (eType == COM_VIBUFFER)
-			m_wstrVIBufferComTag = vecPrototypeTags[i];
-
+		{
+			m_iVIBufferComLevel = vecPrototypeInfo[i].first;
+			m_wstrVIBufferComTag = vecPrototypeInfo[i].second;
+		}
 		else if (eType == COM_SHADER)
-			m_wstrShaderComTag = vecPrototypeTags[i];
-
+		{
+			m_iShaderComLevel = vecPrototypeInfo[i].first;
+			m_wstrShaderComTag = vecPrototypeInfo[i].second;
+		}
 		else if (eType == COM_TRANSFORM)
-			m_wstrProtoTransformComTag = vecPrototypeTags[i];
-
+		{
+			m_iTransformComLevel = vecPrototypeInfo[i].first;
+			m_wstrProtoTransformComTag = vecPrototypeInfo[i].second;
+		}
 		else if (eType == COM_TEXTURE)
 		{
-			m_wstrTextureComTag[iTextureComIndex].resize(vecPrototypeTags[i].size() + 1);
-			m_wstrTextureComTag[iTextureComIndex++] = vecPrototypeTags[i];
+			m_iTextureComLevel = vecPrototypeInfo[i].first;
+			m_wstrTextureComTag[iTextureComIndex].resize(vecPrototypeInfo[i].second.size() + 1);
+			m_wstrTextureComTag[iTextureComIndex++] = vecPrototypeInfo[i].second;
 		}
-
 		else if (eType == COM_MODEL)
 		{
+			m_iModelComLevel = vecPrototypeInfo[i].first;
 			m_bHasModel = true;
-			m_wstrModelComTag = vecPrototypeTags[i];
+			m_wstrModelComTag = vecPrototypeInfo[i].second;
 		}
 	}
 
@@ -72,7 +87,7 @@ HRESULT CCustomGameObject::Initialize(void * pArg)
 		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
 
 	if(m_wstrProtoTransformComTag != L"")
-		FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(), m_wstrProtoTransformComTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL);
+		FAILED_CHECK_RETURN(Add_Component(m_iTransformComLevel, m_wstrProtoTransformComTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
@@ -123,17 +138,17 @@ HRESULT CCustomGameObject::Render()
 HRESULT CCustomGameObject::SetUp_Component()
 {
 	if (m_wstrRendererComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), m_wstrRendererComTag, L"Com_Renderer", (CComponent**)&m_pRendererCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iRendererComLevel, m_wstrRendererComTag, L"Com_Renderer", (CComponent**)&m_pRendererCom), E_FAIL);
 	if (m_wstrVIBufferComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), m_wstrVIBufferComTag, L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iVIBufferComLevel, m_wstrVIBufferComTag, L"Com_VIBuffer", (CComponent**)&m_pVIBufferCom), E_FAIL);
 	if (m_wstrShaderComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, m_wstrShaderComTag, L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iShaderComLevel, m_wstrShaderComTag, L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
 	if (m_wstrTextureComTag != nullptr)
 	{
 
 	}
 	if (m_wstrModelComTag != L"")
-		FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, m_wstrModelComTag, L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
+		FAILED_CHECK_RETURN(__super::Add_Component(m_iModelComLevel, m_wstrModelComTag, L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
 
 	return S_OK;
 }
@@ -154,11 +169,11 @@ HRESULT CCustomGameObject::SetUp_ShaderResource()
 	return S_OK;
 }
 
-CCustomGameObject * CCustomGameObject::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const vector<wstring>& vecPrototypeTags, _uint iNumTextureCom)
+CCustomGameObject * CCustomGameObject::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom)
 {
 	CCustomGameObject*	pInstance = new CCustomGameObject(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(vecPrototypeTags, iNumTextureCom)))
+	if (FAILED(pInstance->Initialize_Prototype(vecPrototypeInfo, iNumTextureCom)))
 	{
 		MSG_BOX("Failed to Create : CCustomGameObject");
 		Safe_Release(pInstance);

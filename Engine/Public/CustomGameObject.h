@@ -20,13 +20,20 @@ private:
 	virtual ~CCustomGameObject() = default;
 
 public:
-	virtual HRESULT			Initialize_Prototype(const vector<wstring>& vecPrototypeTags, _uint iNumTextureCom);
+	virtual HRESULT			Initialize_Prototype(const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom);
 	virtual HRESULT			Initialize(void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
 private:
+	_uint						m_iRendererComLevel = 1000;
+	_uint						m_iVIBufferComLevel = 1000;
+	_uint						m_iShaderComLevel = 1000;
+	_uint						m_iTransformComLevel = 1000;
+	_uint						m_iTextureComLevel = 1000;
+	_uint						m_iModelComLevel = 1000;
+
 	wstring					m_wstrRendererComTag = L"";
 	wstring					m_wstrVIBufferComTag = L"";
 	wstring					m_wstrShaderComTag = L"";
@@ -46,7 +53,7 @@ private:
 	HRESULT					SetUp_ShaderResource();
 
 public:
-	static CCustomGameObject*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const vector<wstring>& vecPrototypeTags, _uint iNumTextureCom = 0);
+	static CCustomGameObject*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom = 0);
 	virtual CGameObject*			Clone(void* pArg = nullptr) override;
 	virtual void						Free() override;
 };
