@@ -15,6 +15,7 @@ CGameObject::CGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CGameObject::CGameObject(const CGameObject & rhs)
 	: m_pDevice(rhs.m_pDevice)
 	, m_pContext(rhs.m_pContext)
+	, m_bIsClone(true)
 	, m_bHasModel(rhs.m_bHasModel)
 {
 	Safe_AddRef(m_pDevice);
@@ -97,7 +98,8 @@ CComponent * CGameObject::Find_Component(const wstring & wstrComponentTag)
 
 void CGameObject::Free()
 {
-	Safe_Release(m_pTransformCom);
+	if (m_pTransformCom != nullptr)
+		Safe_Release(m_pTransformCom);
 
 	for (auto& Pair : m_mapComponent)
 		Safe_Release(Pair.second);

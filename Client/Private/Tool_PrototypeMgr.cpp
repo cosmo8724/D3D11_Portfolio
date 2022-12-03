@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "GameObject.h"
 #include "GameUtility.h"
+#include "CustomGameObject.h"
 
 #define	LEVEL_PUBLIC	3
 
@@ -418,7 +419,7 @@ void CTool_PrototypeMgr::GameObject_Editor()
 		SortComponentByType(ppComponentTag, iComponentCnt);
 		static _int	iSelectRender = 0, iSelectVIBuffer = 0, iSelectShader = 0, iSelectTransform = 0, iSelectModel = 0;
 
-		static _int	iTextureComCnt = 1;
+		static _int	iTextureComCnt = 0;
 		static _int	iLastTextureComCnt = iTextureComCnt;
 		
 		if (m_iSelectTextureCom == nullptr)
@@ -450,8 +451,8 @@ void CTool_PrototypeMgr::GameObject_Editor()
 		ImGui::Combo("VIBuffer", &iSelectVIBuffer, ppComponentTag[COM_VIBUFFER], iComponentCnt[COM_VIBUFFER]);
 		ImGui::Combo("Shader", &iSelectShader, ppComponentTag[COM_SHADER], iComponentCnt[COM_SHADER]);
 		ImGui::Combo("Transform", &iSelectTransform, ppComponentTag[COM_TRANSFORM], iComponentCnt[COM_TRANSFORM]);
-		ImGui::InputInt("Texture Component Count", &iTextureComCnt, 0, 0);
-		for (_uint i = 0; i < iTextureComCnt; ++i)
+		ImGui::InputInt("Texture Component Count", &iTextureComCnt, 1, 0);
+		for (_int i = 0; i < iTextureComCnt; ++i)
 		{
 			char	szTextureLabel[32] = "";
 			sprintf(szTextureLabel, "Texture%d", i);
@@ -462,6 +463,27 @@ void CTool_PrototypeMgr::GameObject_Editor()
 		
 		if (ImGui::Button("Create"))
 		{
+			vector<wstring>	vecPrototypeTags;
+			vecPrototypeTags.reserve(10);
+			
+			_tchar		wszComponentTag[MAX_PATH] = L"";
+			CGameUtility::ctwc(ppComponentTag[COM_RENDERER][iSelectRender], wszComponentTag);
+			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			CGameUtility::ctwc(ppComponentTag[COM_VIBUFFER][iSelectVIBuffer], wszComponentTag);
+			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			CGameUtility::ctwc(ppComponentTag[COM_SHADER][iSelectShader], wszComponentTag);
+			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			CGameUtility::ctwc(ppComponentTag[COM_TRANSFORM][iSelectTransform], wszComponentTag);
+			vecPrototypeTags.push_back(wstring(wszComponentTag));
+			CGameUtility::ctwc(ppComponentTag[COM_MODEL][iSelectModel], wszComponentTag);
+			vecPrototypeTags.push_back(wstring(wszComponentTag));
+
+			_tchar		wszPrototypeTag[MAX_PATH] = L"";
+			CGameUtility::ctwc(szPrototypeTag, wszPrototypeTag);
+			CGameInstance::GetInstance()->Add_Prototype(wszPrototypeTag, CCustomGameObject::Create(m_pDevice, m_pContext, vecPrototypeTags, iTextureComCnt));
+
+			vecPrototypeTags.clear();
+
 			for (size_t i = 0; i < m_iProtoObjCnt; ++i)
 				Safe_Delete_Array(ppProtoObjTag[i]);
 			Safe_Delete_Array(ppProtoObjTag);
@@ -499,7 +521,7 @@ void CTool_PrototypeMgr::GameObject_Editor()
 	}
 }
 
-CTool_PrototypeMgr::COMPONENTTYPE CTool_PrototypeMgr::CheckComponentType(_int iSelectLevel, const char* pComponentTag)
+COMPONENTTYPE CTool_PrototypeMgr::CheckComponentType(_int iSelectLevel, const char* pComponentTag)
 {
 	CComponent*		pComponent = nullptr;
 
@@ -579,7 +601,7 @@ void CTool_PrototypeMgr::SortComponentByType(char ***& ppComponentTag, _uint* pC
 	for (_int i = 0; i < (_int)COMPONENTTYPE_END; ++i)
 	{
 		ppComponentTag[i] = new char*[ComponentCnt[i]];
-		for (_int j = 0; j < ComponentCnt[i]; ++j)
+		for (_uint j = 0; j < ComponentCnt[i]; ++j)
 		{
 			ppComponentTag[i][j] = new char[64];
 

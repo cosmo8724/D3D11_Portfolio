@@ -42,6 +42,7 @@ protected:
 
 	CTransform*				m_pTransformCom = nullptr;
 
+	_bool						m_bIsClone = false;
 	_bool						m_bHasModel = false;
 
 protected:

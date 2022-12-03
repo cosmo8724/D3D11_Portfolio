@@ -10,7 +10,11 @@ CMesh::CMesh(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CMesh::CMesh(const CMesh & rhs)
 	: CVIBuffer(rhs)
 	, m_iMaterialIndex(rhs.m_iMaterialIndex)
+	, m_iNumMeshBone(rhs.m_iNumMeshBone)
+	, m_vecMeshBone(rhs.m_vecMeshBone)
 {
+	for (auto& pBone : m_vecMeshBone)
+		Safe_AddRef(pBone);
 }
 
 HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)

@@ -13,8 +13,6 @@ BEGIN(Client)
 
 class CTool_PrototypeMgr final : public CTool
 {
-	enum COMPONENTTYPE { COM_RENDERER, COM_VIBUFFER, COM_SHADER, COM_TRANSFORM, COM_TEXTURE, COM_MODEL, COMPONENTTYPE_END };
-
 private:
 	CTool_PrototypeMgr(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	virtual ~CTool_PrototypeMgr() = default;

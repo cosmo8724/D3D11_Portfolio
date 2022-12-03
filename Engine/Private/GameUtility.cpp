@@ -49,6 +49,60 @@ void CGameUtility::ConvertNumberTo_d(char * szChar)
 	}
 }
 
+COMPONENTTYPE CGameUtility::CheckComponentTypeFromTag(const wstring & wstrComponentTag)
+{
+	COMPONENTTYPE	eType = COMPONENTTYPE_END;
+	wstring				wstrTemp = L"";
+
+	for (size_t i = 0; i < wstrComponentTag.length() + 1; ++i)
+	{
+		wstrTemp += wstrComponentTag[i];
+
+		wchar_t wszTemp = L'_';
+
+		if (wstrTemp.back() == L'_')
+		{
+			wstrTemp = L"";
+			continue;
+		}
+
+		if (wstrTemp == L"<None>")
+			break;
+		if (wstrTemp == L"Renderer")
+		{
+			eType = COM_RENDERER;
+			break;
+		}
+		if (wstrTemp == L"VIBuffer")
+		{
+			eType = COM_VIBUFFER;
+			break;
+		}
+		if (wstrTemp == L"Shader")
+		{
+			eType = COM_SHADER;
+			break;
+		}
+		if (wstrTemp == L"Transform")
+		{
+			eType = COM_TRANSFORM;
+			break;
+		}
+		if (wstrTemp == L"Texture")
+		{
+			eType = COM_TEXTURE;
+			break;
+		}
+		if (wstrTemp == L"Model")
+		{
+			eType = COM_MODEL;
+			break;
+		}
+	}
+
+	return eType;
+}
+
 void CGameUtility::Saturate(int & InValue, int InMax, int InMin)
 {
 	if (InValue > InMax)
