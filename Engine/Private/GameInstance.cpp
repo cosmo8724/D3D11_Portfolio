@@ -256,6 +256,13 @@ list<class CGameObject*>* CGameInstance::Get_CloneObjectList(_uint iLevelIndex, 
 	return m_pObjectMgr->Get_CloneObjectList(iLevelIndex, wstrLayerTag);
 }
 
+HRESULT CGameInstance::Add_Layer(_uint iLevelIndex, const wstring & wstrLayerTag)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
+
+	return m_pObjectMgr->Add_Layer(iLevelIndex, wstrLayerTag);
+}
+
 HRESULT CGameInstance::Add_Prototype(const wstring & wstrPrototypeTag, CGameObject * pPrototype)
 {
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);

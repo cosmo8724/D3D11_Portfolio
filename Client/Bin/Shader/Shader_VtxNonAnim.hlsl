@@ -2,8 +2,8 @@
 #include "Shader_Defines.hpp"
 
 // float4x4
-matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix			g_SocketMatrix;
+matrix			g_matWorld, g_matView, g_matProj;
+matrix			g_matSocket;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
 
@@ -33,17 +33,17 @@ VS_OUT VS_MAIN(VS_IN In)
 
 	matrix		matWV, matWVP;
 
-	matWV = mul(g_WorldMatrix, g_ViewMatrix);
-	matWVP = mul(matWV, g_ProjMatrix);
+	matWV = mul(g_matWorld, g_matView);
+	matWVP = mul(matWV, g_matProj);
 
 	vector		vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 
 	Out.vPosition = vPosition;
-	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix).xyz);
-	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix).xyz);
+	Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_matWorld).xyz);
+	Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_matWorld).xyz);
 	Out.vBinormal = normalize(cross(Out.vNormal, Out.vTangent));
 	Out.vTexUV = In.vTexUV;
-	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_matWorld);
 	Out.vProjPos = vPosition;
 
 	return Out;
@@ -56,16 +56,16 @@ VS_OUT VS_MAIN_SOCKET(VS_IN In)
 	matrix		matVP;
 
 	
-	matVP = mul(g_ViewMatrix, g_ProjMatrix);
+	matVP = mul(g_matView, g_matProj);
 
-	vector		vPosition = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-	vPosition = mul(vPosition, g_SocketMatrix);
+	vector		vPosition = mul(float4(In.vPosition, 1.f), g_matWorld);
+	vPosition = mul(vPosition, g_matSocket);
 	vPosition = mul(vPosition, matVP);
 
 	Out.vPosition = vPosition;
-	Out.vNormal = mul(vector(In.vNormal, 0.f), g_WorldMatrix).xyz;
+	Out.vNormal = mul(vector(In.vNormal, 0.f), g_matWorld).xyz;
 	Out.vTexUV = In.vTexUV;
-	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_matWorld);
 
 	return Out;
 }

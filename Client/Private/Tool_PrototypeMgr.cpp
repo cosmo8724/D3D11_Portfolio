@@ -528,6 +528,15 @@ void CTool_PrototypeMgr::GameObject_Editor()
 			}
 			Safe_Delete_Array(ppComponentTag);
 
+			strcpy_s(szPrototypeTag, "");
+			iSelectRender = 0;
+			iSelectVIBuffer = 0;
+			iSelectShader = 0;
+			iSelectTransform = 0;
+			iSelectModel = 0;
+			iTextureComCnt = 0;
+			iLastTextureComCnt = iTextureComCnt;
+
 			ImGui::EndTabItem();
 
 			return;
@@ -535,6 +544,14 @@ void CTool_PrototypeMgr::GameObject_Editor()
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
 		{
+			strcpy_s(szPrototypeTag, "");
+			iSelectRender = 0;
+			iSelectVIBuffer = 0;
+			iSelectShader = 0;
+			iSelectTransform = 0;
+			iSelectModel = 0;
+			iTextureComCnt = 0;
+			iLastTextureComCnt = iTextureComCnt;
 		}
 
 		for (size_t i = 0; i < m_iProtoObjCnt; ++i)

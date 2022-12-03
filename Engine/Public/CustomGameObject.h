@@ -39,7 +39,7 @@ private:
 	wstring					m_wstrShaderComTag = L"";
 	wstring					m_wstrProtoTransformComTag = L"";
 	wstring					m_wstrModelComTag = L"";
-	_uint						m_iNumTextureCom = 1;
+	_uint						m_iNumTextureCom = 0;
 	wstring*					m_wstrTextureComTag = nullptr;
 
 	class CRenderer*			m_pRendererCom = nullptr;

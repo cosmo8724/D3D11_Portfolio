@@ -50,8 +50,31 @@ void CTool_MapEditor::ImGui_RenderWindow()
 		ImGui::BulletText("Prototype Model List");
 		ImGui::ListBox("Prototype Model List", &iSelectObject, ppProtoModelTag, (_int)m_mapPrototypeModels.size());
 
+		if (m_iCurLevel == LEVEL_LOADING)
+		{
+			ImGui::Text("Wait for Loading Complete.");
+
+			for (size_t i = 0; i < m_mapPrototypeModels.size(); ++i)
+				Safe_Delete_Array(ppProtoModelTag[i]);
+			Safe_Delete_Array(ppProtoModelTag);
+
+			return;
+		}
+
 		if (iSelectObject != -1)
 		{
+			static char	szLayerTag[MAX_PATH] = "";
+
+			IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "Add Layer   ", "Input LayerTag here and Press Add Button", szLayerTag, MAX_PATH);
+			ImGui::SameLine();
+			if (ImGui::Button("Add") && strcmp(szLayerTag, ""))
+			{
+				_tchar		wszLayerTag[MAX_PATH] = L"";
+				CGameUtility::ctwc(szLayerTag, wszLayerTag);
+				CGameInstance::GetInstance()->Add_Layer(m_iCurLevel, wstring(wszLayerTag));
+				ZeroMemory(szLayerTag, MAX_PATH);
+			}
+
 			static _int	iSelectLayer = 0;
 			char**			ppLayerTags = new char*[m_mapLayers->size()];
 			_uint			j = 0;

@@ -145,7 +145,12 @@ HRESULT CCustomGameObject::SetUp_Component()
 		FAILED_CHECK_RETURN(__super::Add_Component(m_iShaderComLevel, m_wstrShaderComTag, L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
 	if (m_wstrTextureComTag != nullptr)
 	{
-
+		for (_uint i = 0; i < m_iNumTextureCom; ++i)
+		{
+			_tchar		wszCloneTextureComTag[MAX_PATH] = L"";
+			wsprintf(wszCloneTextureComTag, L"Com_Texture%d", i);
+			FAILED_CHECK_RETURN(__super::Add_Component(m_iTextureComLevel, m_wstrTextureComTag[i], wstring(wszCloneTextureComTag), (CComponent**)&m_pTextureCom[i]), E_FAIL);
+		}
 	}
 	if (m_wstrModelComTag != L"")
 		FAILED_CHECK_RETURN(__super::Add_Component(m_iModelComLevel, m_wstrModelComTag, L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
