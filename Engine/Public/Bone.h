@@ -17,7 +17,7 @@ public:
 	void				Set_matTransform(_fmatrix matTransform) { XMStoreFloat4x4(&m_matTransform, matTransform); }
 
 public:
-	HRESULT			Initialize(aiNode* pAINode);
+	HRESULT			Initialize(aiNode* pAINode, CBone* pParent);
 	void				Compute_CombindTransformMatrix();
 
 private:
@@ -30,7 +30,7 @@ private:
 	CBone*			m_pParent = nullptr;
 
 public:
-	static CBone*		Create(aiNode* pAINode);
+	static CBone*		Create(aiNode* pAINode, CBone* pParent);
 	virtual void		Free() override;
 };
 

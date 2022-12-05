@@ -69,7 +69,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Animations(), E_FAIL);
@@ -175,15 +175,15 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & w
 	return S_OK;
 }
 
-HRESULT CModel::Ready_Bones(aiNode * pAINode)
+HRESULT CModel::Ready_Bones(aiNode * pAINode, CBone * pParent)
 {
-	CBone*	pBone = CBone::Create(pAINode);
+	CBone*	pBone = CBone::Create(pAINode, pParent);
 	NULL_CHECK_RETURN(pBone, E_FAIL);
 
 	m_vecEntireBone.push_back(pBone);
 
 	for (_uint i = 0; i < pAINode->mNumChildren; ++i)
-		Ready_Bones(pAINode->mChildren[i]);
+		Ready_Bones(pAINode->mChildren[i], pBone);
 
 	return S_OK;
 }

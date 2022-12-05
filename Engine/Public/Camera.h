@@ -18,7 +18,7 @@ protected:
 
 public:
 	virtual HRESULT			Initialize_Prototype() override;
-	virtual HRESULT			Initialize(void* pArg) override;
+	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
@@ -28,7 +28,7 @@ private:
 	CAMERADESC				m_CameraDesc;
 
 public:
-	virtual CGameObject*	Clone(void* pArg = nullptr) PURE;
+	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;
 	virtual void				Free() override;
 };
 

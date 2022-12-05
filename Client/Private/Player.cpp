@@ -21,9 +21,9 @@ HRESULT CPlayer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CPlayer::Initialize(void * pArg)
+HRESULT CPlayer::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
@@ -107,11 +107,11 @@ CPlayer * CPlayer::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	return pInstance;
 }
 
-CGameObject * CPlayer::Clone(void * pArg)
+CGameObject * CPlayer::Clone(const wstring & wstrPrototypeTag, void * pArg)
 {
 	CPlayer*		pInstance = new CPlayer(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CPlayer");
 		Safe_Release(pInstance);

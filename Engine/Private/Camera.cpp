@@ -21,14 +21,14 @@ HRESULT CCamera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CCamera::Initialize(void * pArg)
+HRESULT CCamera::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
 	ZeroMemory(&m_CameraDesc, sizeof(CAMERADESC));
 
 	if (nullptr != pArg)
 		memcpy(&m_CameraDesc, pArg, sizeof(m_CameraDesc));
 
-	if (FAILED(__super::Initialize(&m_CameraDesc)))
+	if (FAILED(__super::Initialize(wstrPrototypeTag, &m_CameraDesc)))
 		return E_FAIL;
 
 	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4(&m_CameraDesc.vEye));

@@ -51,7 +51,7 @@ public:
 	typedef vector<class CAnimation*>	ANIMATIONS;
 
 public:
-	HRESULT							Ready_Bones(aiNode* pAINode);
+	HRESULT							Ready_Bones(aiNode* pAINode, class CBone* pParent);
 	HRESULT							Ready_MeshContainers();
 	HRESULT							Ready_Materials(const char* pModelFIlePath);
 	HRESULT							Ready_Animations();

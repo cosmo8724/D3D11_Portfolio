@@ -17,6 +17,7 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
+	const wstring&			Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
 	const _bool&				Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldMatrix() const { return m_pTransformCom->Get_WorldMatrix(); }
 
@@ -25,7 +26,7 @@ public:
 
 public:
 	virtual HRESULT			Initialize_Prototype();
-	virtual HRESULT			Initialize(void* pArg);
+	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg);
 	virtual void				Tick(_double dTimeDelta);
 	virtual void				Late_Tick(_double dTimeDelta);
 	virtual HRESULT			Render();
@@ -44,13 +45,14 @@ protected:
 
 	_bool						m_bIsClone = false;
 	_bool						m_bHasModel = false;
+	wstring					m_wstrPrototypeGameObjectTag = L"";
 
 protected:
 	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppComponentOut, void* pArg = nullptr);
 	class CComponent*		Find_Component(const wstring& wstrComponentTag);
 
 public:
-	virtual CGameObject*	Clone(void* pArg = nullptr) PURE;
+	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;
 	virtual void				Free();
 };
 

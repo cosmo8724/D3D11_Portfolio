@@ -125,12 +125,23 @@ void CTool_MapEditor::ImGui_RenderWindow()
 			CGameUtility::SplitTag(wszBuff, wstrLastTag);
 			char		szLastTag[128] = "";
 
-			for (size_t i = 0; i < CloneObjectList->size(); ++i)
+			_uint i = 0;
+			for (auto iter : *CloneObjectList)
+			{
+				wsprintf(wszBuff, &(*iter->Get_PrototypeGameObjectTag().c_str()));
+				CGameUtility::SplitTag(wszBuff, wstrLastTag);
+				CGameUtility::wctc(wstrLastTag.c_str(), szLastTag);
+				ppCloneTags[i] = new char[MAX_PATH];
+				sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
+				i++;
+			}
+
+			/*for (size_t i = 0; i < CloneObjectList->size(); ++i)
 			{
 				ppCloneTags[i] = new char[MAX_PATH];
 				CGameUtility::wctc(wstrLastTag.c_str(), szLastTag);
 				sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
-			}
+			}*/
 			ImGui::ListBox("Clone Model List", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
 
 			if (CGameInstance::GetInstance()->Mouse_Down(DIM_RB))

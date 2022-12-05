@@ -12,6 +12,7 @@ private:
 public:
 	HRESULT				Initialize(aiNodeAnim* pAIChannel, class CModel* pModel);
 	void					Update_matTransform(_double dPlayTime);
+	void					Reset_KeyFrameIndex() { m_iCurKeyFrameIndex = 0; }
 
 private:
 	string					m_strName = "";

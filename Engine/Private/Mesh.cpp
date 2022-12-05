@@ -51,7 +51,7 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, C
 	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
 	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_tBufferDesc.StructureByteStride = 0;
+	m_tBufferDesc.StructureByteStride = sizeof(_ushort);
 	m_tBufferDesc.CPUAccessFlags = 0;
 	m_tBufferDesc.MiscFlags = 0;
 
@@ -83,6 +83,12 @@ HRESULT CMesh::Initialize(void * pArg)
 
 void CMesh::SetUp_BoneMatrices(_float4x4 * pBoneMatrices)
 {
+	if (m_iNumMeshBone == 0)
+	{
+		XMStoreFloat4x4(&pBoneMatrices[0], XMMatrixIdentity());
+		return;
+	}
+
 	_uint	iNumBones = 0;
 
 	for (auto& pBone : m_vecMeshBone)
@@ -152,7 +158,7 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh, CModel* pModel)
 	{
 		aiBone*	pAIBone = pAIMesh->mBones[i];
 
-		CBone*	pBone = pModel->Get_BoneFromEntireBone(pAIMesh->mName.data);
+		CBone*	pBone = pModel->Get_BoneFromEntireBone(pAIBone->mName.data);
 		NULL_CHECK_RETURN(pBone, E_FAIL);
 
 		_float4x4 matOffset;
@@ -191,6 +197,17 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh, CModel* pModel)
 				pVertices[iVertexIndex].vBlendWeight.w = pAIBone->mWeights[j].mWeight;
 			}
 		}
+	}
+
+	if (m_iNumMeshBone == 0)
+	{
+		CBone*	pBone = pModel->Get_BoneFromEntireBone(m_strName);
+		NULL_CHECK_RETURN(pBone, S_FALSE);
+
+		m_iNumMeshBone = 1;
+
+		m_vecMeshBone.push_back(pBone);
+		Safe_AddRef(pBone);
 	}
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));

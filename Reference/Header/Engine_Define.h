@@ -30,6 +30,9 @@ using namespace Assimp;
 #include <algorithm>
 using namespace std;
 
+#include <Json/json_fwd.hpp>
+using Json = nlohmann::json;
+
 #include <Shlwapi.h>
 
 #include "Engine_Typedef.h"

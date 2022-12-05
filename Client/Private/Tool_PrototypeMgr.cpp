@@ -227,7 +227,7 @@ void CTool_PrototypeMgr::Component_Editor()
 				IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FildDialog.", szFilePath, sizeof(char) * MAX_PATH);
 				ImGui::SameLine();
 				if (ImGui::SmallButton("Open"))
-					ImGuiFileDialog::Instance()->OpenDialog("Choose Model", "Choose Model", ".fbx", "../Bin/Resource/Mesh", ".fbx", 1, nullptr, ImGuiFileDialogFlags_Modal);
+					ImGuiFileDialog::Instance()->OpenDialog("Choose Model", "Choose Model", ".fbx,.blend", "../Bin/Resource/Mesh", ".fbx", 1, nullptr, ImGuiFileDialogFlags_Modal);
 
 				if (ImGuiFileDialog::Instance()->Display("Choose Model"))
 				{
@@ -500,6 +500,17 @@ void CTool_PrototypeMgr::GameObject_Editor()
 				MyPair.first = iPrototypeLevel;
 				MyPair.second = wstring(wszComponentTag);
 				vecPrototypeInfo.push_back(MyPair);
+			}
+			for (_uint i = 0; i < iTextureComCnt; ++i)
+			{
+				CGameUtility::ctwc(ppComponentTag[COM_TEXTURE][m_iSelectTextureCom[i]], wszComponentTag);
+				iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);
+				if (iPrototypeLevel != 1000)
+				{
+					MyPair.first = iPrototypeLevel;
+					MyPair.second = wstring(wszComponentTag);
+					vecPrototypeInfo.push_back(MyPair);
+				}
 			}
 			CGameUtility::ctwc(ppComponentTag[COM_MODEL][iSelectModel], wszComponentTag);
 			iPrototypeLevel = FindPrototypeComponentLevel(wszComponentTag);

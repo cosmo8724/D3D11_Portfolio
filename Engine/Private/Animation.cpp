@@ -27,10 +27,27 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel * pModel)
 
 void CAnimation::Update_Bones(_double dTimeDelta)
 {
+	if (!m_bIsLoop && m_bIsFinish)
+		return;
+
 	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
 
+	if (m_dPlayTime >= m_dDuration)
+	{
+		m_dPlayTime = 0.0;
+		m_bIsFinish = true;
+	}
+
 	for (_uint i = 0; i < m_iNumChannels; ++i)
+	{
+		if (m_bIsFinish == true)
+			m_vecChannel[i]->Reset_KeyFrameIndex();
+
 		m_vecChannel[i]->Update_matTransform(m_dPlayTime);
+	}
+
+	if (m_bIsFinish)
+		m_bIsFinish = false;
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)

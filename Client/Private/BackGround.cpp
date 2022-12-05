@@ -19,7 +19,7 @@ HRESULT CBackGround::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CBackGround::Initialize(void * pArg)
+HRESULT CBackGround::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
 	CGameObject::GAMEOBJECTDESC		GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(CGameObject::GAMEOBJECTDESC));
@@ -27,7 +27,7 @@ HRESULT CBackGround::Initialize(void * pArg)
 	GameObjectDesc.TransformDesc.dSpeedPerSec = 5.0;
 	GameObjectDesc.TransformDesc.dRotationPerSec = (_double)XMConvertToRadians(90.f);
 
-	FAILED_CHECK_RETURN(__super::Initialize(&GameObjectDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, &GameObjectDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
@@ -114,11 +114,11 @@ CBackGround * CBackGround::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	return pInstance;
 }
 
-CGameObject * CBackGround::Clone(void * pArg)
+CGameObject * CBackGround::Clone(const wstring & wstrPrototypeTag, void * pArg)
 {
 	CBackGround*	pInstance = new CBackGround(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Create : CBackGround");
 		Safe_Release(pInstance);

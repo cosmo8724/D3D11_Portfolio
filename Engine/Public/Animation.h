@@ -14,6 +14,8 @@ public:
 	void							Update_Bones(_double dTimeDelta);
 
 private:
+	_bool							m_bIsLoop = true;
+	_bool							m_bIsFinish = false;
 	string							m_strName = "";
 	_double						m_dDuration = 0.0;
 	_double						m_dTickPerSecond = 0.0;

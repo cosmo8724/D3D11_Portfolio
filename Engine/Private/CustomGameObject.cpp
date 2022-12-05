@@ -78,7 +78,7 @@ HRESULT CCustomGameObject::Initialize_Prototype(const vector<pair<_uint, wstring
 	return S_OK;
 }
 
-HRESULT CCustomGameObject::Initialize(void * pArg)
+HRESULT CCustomGameObject::Initialize(const wstring& wstrPrototypeTag, void * pArg)
 {
 	GAMEOBJECTDESC	GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
@@ -187,11 +187,11 @@ CCustomGameObject * CCustomGameObject::Create(DEVICE pDevice, DEVICE_CONTEXT pCo
 	return pInstance;
 }
 
-CGameObject * CCustomGameObject::Clone(void * pArg)
+CGameObject * CCustomGameObject::Clone(const wstring & wstrPrototypeTag, void * pArg)
 {
 	CCustomGameObject*	pInstance = new CCustomGameObject(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CCustomGameObject");
 		Safe_Release(pInstance);

@@ -27,8 +27,10 @@ HRESULT CGameObject::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CGameObject::Initialize(void * pArg)
+HRESULT CGameObject::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
+	m_wstrPrototypeGameObjectTag = wstrPrototypeTag;
+
 	GAMEOBJECTDESC	GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
 

@@ -4,9 +4,12 @@ CBone::CBone()
 {
 }
 
-HRESULT CBone::Initialize(aiNode * pAINode)
+HRESULT CBone::Initialize(aiNode * pAINode, CBone * pParent)
 {
 	m_strName = pAINode->mName.data;
+
+	m_pParent = pParent;
+	Safe_AddRef(m_pParent);
 
 	XMStoreFloat4x4(&m_matOffset, XMMatrixIdentity());
 
@@ -26,11 +29,11 @@ void CBone::Compute_CombindTransformMatrix()
 		XMStoreFloat4x4(&m_matCombindTransform, XMLoadFloat4x4(&m_matTransform) * XMLoadFloat4x4(&m_pParent->m_matCombindTransform));
 }
 
-CBone * CBone::Create(aiNode * pAINode)
+CBone * CBone::Create(aiNode * pAINode, CBone * pParent)
 {
 	CBone*	pInstance = new CBone;
 
-	if (FAILED(pInstance->Initialize(pAINode)))
+	if (FAILED(pInstance->Initialize(pAINode, pParent)))
 	{
 		MSG_BOX("Failed to Create : CBone");
 		Safe_Release(pInstance);
@@ -41,4 +44,5 @@ CBone * CBone::Create(aiNode * pAINode)
 
 void CBone::Free()
 {
+	Safe_Release(m_pParent);
 }
