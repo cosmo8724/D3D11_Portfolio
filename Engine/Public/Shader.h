@@ -19,6 +19,7 @@ public:
 
 	HRESULT					Set_RawValue(const wstring& wstrConstantName, const void* pData, _uint iLength);
 	HRESULT					Set_Matrix(const wstring& wstrConstantName, const _float4x4* pMatrix);
+	HRESULT					Set_MatrixArray(const wstring& wstrConstantName, const _float4x4* pMatrix, _uint iNumMatrices);
 	HRESULT					Set_ShaderResourceView(const wstring& wstrConstantName, ID3D11ShaderResourceView* pSRV);
 	HRESULT					Set_ShaderResourceViewArray(const wstring& wstrConstantName, ID3D11ShaderResourceView** ppSRV, _uint iNumTextures);
 

@@ -19,9 +19,9 @@ HRESULT CTerrain::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTerrain::Initialize(void * pArg)
+HRESULT CTerrain::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
@@ -113,11 +113,11 @@ CTerrain * CTerrain::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	return pInstance;
 }
 
-CGameObject * CTerrain::Clone(void * pArg)
+CGameObject * CTerrain::Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	CTerrain*		pInstance = new CTerrain(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CTerrain");
 		Safe_Release(pInstance);

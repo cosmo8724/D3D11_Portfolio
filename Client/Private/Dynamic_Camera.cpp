@@ -20,7 +20,7 @@ HRESULT CDynamic_Camera::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CDynamic_Camera::Initialize(void * pArg)
+HRESULT CDynamic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
 	CCamera::CAMERADESC		CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
@@ -36,7 +36,7 @@ HRESULT CDynamic_Camera::Initialize(void * pArg)
 		CameraDesc.TransformDesc.dRotationPerSec = (_double)XMConvertToRadians(90.f);
 	}
 
-	FAILED_CHECK_RETURN(__super::Initialize(&CameraDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, &CameraDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
@@ -106,11 +106,11 @@ CDynamic_Camera * CDynamic_Camera::Create(DEVICE pDevice, DEVICE_CONTEXT pContex
 	return pInstance;
 }
 
-CGameObject * CDynamic_Camera::Clone(void * pArg)
+CGameObject * CDynamic_Camera::Clone(const wstring & wstrPrototypeTag, void * pArg)
 {
 	CDynamic_Camera*		pInstance = new CDynamic_Camera(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CCamera_Dynamic");
 		Safe_Release(pInstance);

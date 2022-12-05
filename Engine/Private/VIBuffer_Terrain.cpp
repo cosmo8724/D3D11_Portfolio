@@ -25,7 +25,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	BITMAPFILEHEADER		fh;
 	BITMAPINFOHEADER		ih;
 	_ulong*					pPixel = nullptr;
-
+	
 	ReadFile(hFile, &fh, sizeof(BITMAPFILEHEADER), &dwByte, nullptr);
 	ReadFile(hFile, &ih, sizeof(BITMAPINFOHEADER), &dwByte, nullptr);
 
@@ -149,7 +149,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
-
+	
 	return S_OK;
 }
 

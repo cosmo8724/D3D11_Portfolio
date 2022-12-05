@@ -3,6 +3,7 @@
 #pragma warning (disable : 4005)
 #pragma warning (disable : 4099)
 #pragma warning (disable : 4251)
+#pragma warning (disable : 4996)		// strcat
 
 #include <d3d11.h>
 #include <Effects11//d3dx11effect.h>
@@ -28,6 +29,11 @@ using namespace Assimp;
 #include <unordered_map>
 #include <algorithm>
 using namespace std;
+
+#include <Json/json_fwd.hpp>
+using Json = nlohmann::json;
+
+#include <Shlwapi.h>
 
 #include "Engine_Typedef.h"
 #include "Engine_Enum.h"

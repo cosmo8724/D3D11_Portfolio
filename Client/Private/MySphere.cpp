@@ -19,9 +19,9 @@ HRESULT CMySphere::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CMySphere::Initialize(void * pArg)
+HRESULT CMySphere::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
@@ -108,11 +108,11 @@ CMySphere * CMySphere::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	return pInstance;
 }
 
-CGameObject * CMySphere::Clone(void * pArg)
+CGameObject * CMySphere::Clone(const wstring& wstrPrototypeTag, void * pArg)
 {
 	CMySphere *	pInstance = new CMySphere(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(wstrPrototypeTag, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CMySphere");
 		Safe_Release(pInstance);

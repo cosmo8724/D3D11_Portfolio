@@ -34,6 +34,21 @@ HRESULT CObjectMgr::Clear(_uint iLevelIndex)
 	return S_OK;
 }
 
+HRESULT CObjectMgr::Add_Layer(_uint iLevelIndex, const wstring & wstrLayerTag)
+{
+	CLayer*			pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+
+	if (pLayer == nullptr)
+	{
+		pLayer = CLayer::Create();
+		NULL_CHECK_RETURN(pLayer, E_FAIL);
+
+		m_pLayers[iLevelIndex].emplace(wstrLayerTag, pLayer);
+	}
+
+	return S_OK;
+}
+
 HRESULT CObjectMgr::Add_Prototype(const wstring & wstrPrototypeTag, CGameObject * pPrototype)
 {
 	if (nullptr != Find_Prototype(wstrPrototypeTag))
@@ -52,7 +67,7 @@ HRESULT CObjectMgr::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLaye
 	CGameObject*		pPrototypeObject = Find_Prototype(wstrPrototypeTag);
 	NULL_CHECK_RETURN(pPrototypeObject, E_FAIL);
 
-	CGameObject*		pCloneObject = pPrototypeObject->Clone(pArg);
+	CGameObject*		pCloneObject = pPrototypeObject->Clone(wstrPrototypeTag, pArg);
 
 	CLayer*				pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
 

@@ -22,7 +22,6 @@ void CTool_LevelViewer::ImGui_RenderWindow()
 {
 	m_iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 	ImGui::Text("Current Level : %s", m_pLevelName[m_iCurrentLevel]);
-	ImGui::ShowDemoWindow();
 
 	ImGui::NewLine();
 	ImGui::BulletText("Change Level");

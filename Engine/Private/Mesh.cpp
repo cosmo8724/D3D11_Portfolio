@@ -1,4 +1,6 @@
 #include "Mesh.h"
+#include "Model.h"
+#include "Bone.h"
 
 CMesh::CMesh(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CVIBuffer(pDevice, pContext)
@@ -8,10 +10,14 @@ CMesh::CMesh(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CMesh::CMesh(const CMesh & rhs)
 	: CVIBuffer(rhs)
 	, m_iMaterialIndex(rhs.m_iMaterialIndex)
+	, m_iNumMeshBone(rhs.m_iNumMeshBone)
+	, m_vecMeshBone(rhs.m_vecMeshBone)
 {
+	for (auto& pBone : m_vecMeshBone)
+		Safe_AddRef(pBone);
 }
 
-HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh)
+HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	if (eType == CModel::MODELTYPE_END)
 		return E_FAIL;
@@ -32,16 +38,20 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh)
 
 	/* Create Vertex Buffer */
 	if (m_eType == CModel::MODEL_NONANIM)
-		Ready_VertexBuffer_NonAnimModel(pAIMesh);
+	{
+		FAILED_CHECK_RETURN(Ready_VertexBuffer_NonAnimModel(pAIMesh), E_FAIL);
+	}
 	else
-		Ready_VertexBuffer_AnimModel(pAIMesh);
+	{
+		FAILED_CHECK_RETURN(Ready_VertexBuffer_AnimModel(pAIMesh, pModel), E_FAIL);
+	}
 
 	/* Create Index Buffer */
 	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
 	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
 	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-	m_tBufferDesc.StructureByteStride = 0;
+	m_tBufferDesc.StructureByteStride = sizeof(_ushort);
 	m_tBufferDesc.CPUAccessFlags = 0;
 	m_tBufferDesc.MiscFlags = 0;
 
@@ -69,6 +79,20 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh)
 HRESULT CMesh::Initialize(void * pArg)
 {
 	return S_OK;
+}
+
+void CMesh::SetUp_BoneMatrices(_float4x4 * pBoneMatrices)
+{
+	if (m_iNumMeshBone == 0)
+	{
+		XMStoreFloat4x4(&pBoneMatrices[0], XMMatrixIdentity());
+		return;
+	}
+
+	_uint	iNumBones = 0;
+
+	for (auto& pBone : m_vecMeshBone)
+		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_matOffset() * pBone->Get_CombindMatrix());
 }
 
 HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh)
@@ -105,7 +129,7 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh)
 	return S_OK;
 }
 
-HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
+HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh, CModel* pModel)
 {
 	m_iStride = sizeof(VTXANIMMODEL);
 
@@ -128,11 +152,23 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
 		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
 
-	m_iNumBones = pAIMesh->mNumBones;
+	m_iNumMeshBone = pAIMesh->mNumBones;
 
-	for (_uint i = 0; i < m_iNumBones; ++i)
+	for (_uint i = 0; i < m_iNumMeshBone; ++i)
 	{
 		aiBone*	pAIBone = pAIMesh->mBones[i];
+
+		CBone*	pBone = pModel->Get_BoneFromEntireBone(pAIBone->mName.data);
+		NULL_CHECK_RETURN(pBone, E_FAIL);
+
+		_float4x4 matOffset;
+		memcpy(&matOffset, &pAIBone->mOffsetMatrix, sizeof(_float4x4));
+		XMStoreFloat4x4(&matOffset, XMMatrixTranspose(XMLoadFloat4x4(&matOffset)));
+
+		pBone->Set_matOffset(matOffset);
+
+		m_vecMeshBone.push_back(pBone);
+		Safe_AddRef(pBone);
 
 		_uint		iNumWeights = pAIBone->mNumWeights;
 
@@ -163,6 +199,17 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
 		}
 	}
 
+	if (m_iNumMeshBone == 0)
+	{
+		CBone*	pBone = pModel->Get_BoneFromEntireBone(m_strName);
+		NULL_CHECK_RETURN(pBone, S_FALSE);
+
+		m_iNumMeshBone = 1;
+
+		m_vecMeshBone.push_back(pBone);
+		Safe_AddRef(pBone);
+	}
+
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_tSubResourceData.pSysMem = pVertices;
 
@@ -174,11 +221,11 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh)
 	return S_OK;
 }
 
-CMesh * CMesh::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, CModel::MODELTYPE eType, aiMesh * pAIMesh)
+CMesh * CMesh::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	CMesh*	pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, pAIMesh, pModel)))
 	{
 		MSG_BOX("Failed to Create : CMesh");
 		Safe_Release(pInstance);
@@ -203,4 +250,8 @@ CComponent * CMesh::Clone(void * pArg)
 void CMesh::Free()
 {
 	__super::Free();
+
+	for (auto& pBone : m_vecMeshBone)
+		Safe_Release(pBone);
+	m_vecMeshBone.clear();
 }

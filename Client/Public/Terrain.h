@@ -22,7 +22,7 @@ private:
 	virtual ~CTerrain() = default;
 public:
 	virtual HRESULT		Initialize_Prototype() override;
-	virtual HRESULT		Initialize(void* pArg) override;
+	virtual HRESULT		Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void			Tick(_double dTimeDelta) override;
 	virtual void			Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT		Render() override;
@@ -39,7 +39,7 @@ private:
 
 public:
 	static CTerrain*		Create(DEVICE pDevice, DEVICE_CONTEXT pContext);
-	virtual CGameObject*	Clone(void* pArg = nullptr) override;
+	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) override;
 	virtual void			Free() override;
 };
 

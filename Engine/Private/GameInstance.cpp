@@ -230,7 +230,7 @@ HRESULT CGameInstance::Render_Level()
 
 const _uint & CGameInstance::Get_CurLevelIndex()
 {
-	NULL_CHECK_RETURN(m_pLevelMgr, E_FAIL);
+	NULL_CHECK_RETURN(m_pLevelMgr, 1000);
 
 	return m_pLevelMgr->Get_CurLevelIndex();
 }
@@ -256,6 +256,13 @@ list<class CGameObject*>* CGameInstance::Get_CloneObjectList(_uint iLevelIndex, 
 	return m_pObjectMgr->Get_CloneObjectList(iLevelIndex, wstrLayerTag);
 }
 
+HRESULT CGameInstance::Add_Layer(_uint iLevelIndex, const wstring & wstrLayerTag)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
+
+	return m_pObjectMgr->Add_Layer(iLevelIndex, wstrLayerTag);
+}
+
 HRESULT CGameInstance::Add_Prototype(const wstring & wstrPrototypeTag, CGameObject * pPrototype)
 {
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
@@ -268,6 +275,13 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring & wstrL
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
 
 	return m_pObjectMgr->Clone_GameObject(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
+}
+
+map<const wstring, class CComponent*>* CGameInstance::Get_PrototypeComponents()
+{
+	NULL_CHECK_RETURN(m_pComponentMgr, nullptr);
+
+	return m_pComponentMgr->Get_PrototypeComponents();
 }
 
 HRESULT CGameInstance::Add_Prototype(_uint iLevelIndex, const wstring & wstrPrototypeTag, CComponent * pPrototype)

@@ -50,8 +50,31 @@ void CTool_MapEditor::ImGui_RenderWindow()
 		ImGui::BulletText("Prototype Model List");
 		ImGui::ListBox("Prototype Model List", &iSelectObject, ppProtoModelTag, (_int)m_mapPrototypeModels.size());
 
+		if (m_iCurLevel == LEVEL_LOADING)
+		{
+			ImGui::Text("Wait for Loading Complete.");
+
+			for (size_t i = 0; i < m_mapPrototypeModels.size(); ++i)
+				Safe_Delete_Array(ppProtoModelTag[i]);
+			Safe_Delete_Array(ppProtoModelTag);
+
+			return;
+		}
+
 		if (iSelectObject != -1)
 		{
+			static char	szLayerTag[MAX_PATH] = "";
+
+			IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "Add Layer   ", "Input LayerTag here and Press Add Button", szLayerTag, MAX_PATH);
+			ImGui::SameLine();
+			if (ImGui::Button("Add") && strcmp(szLayerTag, ""))
+			{
+				_tchar		wszLayerTag[MAX_PATH] = L"";
+				CGameUtility::ctwc(szLayerTag, wszLayerTag);
+				CGameInstance::GetInstance()->Add_Layer(m_iCurLevel, wstring(wszLayerTag));
+				ZeroMemory(szLayerTag, MAX_PATH);
+			}
+
 			static _int	iSelectLayer = 0;
 			char**			ppLayerTags = new char*[m_mapLayers->size()];
 			_uint			j = 0;
@@ -79,9 +102,16 @@ void CTool_MapEditor::ImGui_RenderWindow()
 			ImGui::Separator();
 
 			static	_int iSelectLayer2 = 0;
+			static _int iLastSelectedLayer = iSelectLayer2;
 			static _int iSelectCloneObject = -1;
 			ImGui::BulletText("Layer Viewer");
 			IMGUI_LEFT_LABEL(ImGui::Combo, "Select Layer", &iSelectLayer2, ppLayerTags, (_int)m_mapLayers->size());
+
+			if (iSelectLayer2 != iLastSelectedLayer)
+			{
+				iSelectCloneObject = -1;
+				iLastSelectedLayer = iSelectLayer2;
+			}
 
 			_tchar		wszLayerTag[MAX_PATH] = L"";
 			CGameUtility::ctwc(ppLayerTags[iSelectLayer2], wszLayerTag);
@@ -91,16 +121,27 @@ void CTool_MapEditor::ImGui_RenderWindow()
 			char**		ppCloneTags = new char*[CloneObjectList->size()];
 			wstring	wstrLastTag = L"";
 			_tchar		wszBuff[128] = L"";
-			CGameUtility::ctwc(ppProtoModelTag[iSelectObject], wszBuff);
+			CGameUtility::ctwc(ppLayerTags[iSelectLayer2], wszBuff);
 			CGameUtility::SplitTag(wszBuff, wstrLastTag);
 			char		szLastTag[128] = "";
 
-			for (size_t i = 0; i < CloneObjectList->size(); ++i)
+			_uint i = 0;
+			for (auto iter : *CloneObjectList)
+			{
+				wsprintf(wszBuff, &(*iter->Get_PrototypeGameObjectTag().c_str()));
+				CGameUtility::SplitTag(wszBuff, wstrLastTag);
+				CGameUtility::wctc(wstrLastTag.c_str(), szLastTag);
+				ppCloneTags[i] = new char[MAX_PATH];
+				sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
+				i++;
+			}
+
+			/*for (size_t i = 0; i < CloneObjectList->size(); ++i)
 			{
 				ppCloneTags[i] = new char[MAX_PATH];
 				CGameUtility::wctc(wstrLastTag.c_str(), szLastTag);
-				sprintf(ppCloneTags[i], strcat(szLastTag, "_%d"), i);
-			}
+				sprintf_s(ppCloneTags[i], sizeof(char) * MAX_PATH, strcat(szLastTag, "_%d"), i);
+			}*/
 			ImGui::ListBox("Clone Model List", &iSelectCloneObject, ppCloneTags, (_int)CloneObjectList->size());
 
 			if (CGameInstance::GetInstance()->Mouse_Down(DIM_RB))
@@ -108,50 +149,86 @@ void CTool_MapEditor::ImGui_RenderWindow()
 
 			if (iSelectCloneObject != -1)
 			{
-				ImGui::Separator();
-
+				_bool	bClickedAnyButton = false;
 				auto	iter = CloneObjectList->begin();
-				for (_int i = 0; i < iSelectCloneObject; ++i)
-					iter++;
 
-				CGameObject*	pGameObject = *iter;
-				const _float4x4&	matWorld = pGameObject->Get_WorldMatrix();
+				if (ImGui::Button("Delete") || CGameInstance::GetInstance()->Key_Down(DIK_DELETE))
+				{
+					bClickedAnyButton = true;
 
-				ImGui::BulletText("Current Selected Object : %s", ppCloneTags[iSelectCloneObject]);
+					for (_int i = 0; i < iSelectCloneObject; ++i)
+						iter++;
 
-				ImGuizmo::BeginFrame();
+					Safe_Release(*iter);
+					CloneObjectList->erase(iter);
+					Safe_Delete_Array(ppCloneTags[iSelectCloneObject]);
 
-				static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
+					/* 중간 삭제 시, 맨 마지막 문자열 또한 지워줌. */
+					if (iSelectCloneObject != CloneObjectList->size() + 1)
+						Safe_Delete_Array(ppCloneTags[CloneObjectList->size()]);
 
-				ImGui::Text("ImGuizmo Type");
-				if (ImGui::RadioButton("Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
-					CurGuizmoType = ImGuizmo::TRANSLATE;
+					iSelectCloneObject = -1;
+				}
 				ImGui::SameLine();
-				if (ImGui::RadioButton("Scale", CurGuizmoType == ImGuizmo::SCALE))
-					CurGuizmoType = ImGuizmo::SCALE;
+				if (ImGui::Button("Save"))
+				{
+					bClickedAnyButton = true;
+
+				}
 				ImGui::SameLine();
-				if (ImGui::RadioButton("Rotate", CurGuizmoType == ImGuizmo::ROTATE))
-					CurGuizmoType = ImGuizmo::ROTATE;
+				if (ImGui::Button("Load"))
+				{
+					bClickedAnyButton = true;
 
-				_float	vPos[3], vScale[3], vAngle[3];
-				ImGuizmo::DecomposeMatrixToComponents((_float*)&matWorld, vPos, vAngle, vScale);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Translate", vPos);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
-				IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotate", vAngle);
-				ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&matWorld);
+				}
+				if (!bClickedAnyButton)
+				{
+					ImGui::Separator();
 
-				ImGuiIO&	io = ImGui::GetIO();
-				RECT		rt;
-				GetClientRect(CGameInstance::GetInstance()->Get_Handle(), &rt);
-				POINT		LT{ rt.left, rt.top };
-				ClientToScreen(CGameInstance::GetInstance()->Get_Handle(), &LT);
-				ImGuizmo::SetRect((_float)LT.x, (_float)LT.y, io.DisplaySize.x, io.DisplaySize.y);
+					iter = CloneObjectList->begin();
+					for (_int i = 0; i < iSelectCloneObject; ++i)
+						iter++;
 
-				_float4x4		matView, matProj;
-				XMStoreFloat4x4(&matView, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
-				XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+					CGameObject*	pGameObject = *iter;
+					const _float4x4&	matWorld = pGameObject->Get_WorldMatrix();
 
-				ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&matWorld);
+					ImGui::BulletText("Current Selected Object : %s", ppCloneTags[iSelectCloneObject]);
+
+					ImGuizmo::BeginFrame();
+
+					static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
+
+					ImGui::Text("ImGuizmo Type");
+					if (ImGui::RadioButton("Translate", CurGuizmoType == ImGuizmo::TRANSLATE))
+						CurGuizmoType = ImGuizmo::TRANSLATE;
+					ImGui::SameLine();
+					if (ImGui::RadioButton("Scale", CurGuizmoType == ImGuizmo::SCALE))
+						CurGuizmoType = ImGuizmo::SCALE;
+					ImGui::SameLine();
+					if (ImGui::RadioButton("Rotate", CurGuizmoType == ImGuizmo::ROTATE))
+						CurGuizmoType = ImGuizmo::ROTATE;
+					ImGui::Separator();
+
+					_float	vPos[3], vScale[3], vAngle[3];
+					ImGuizmo::DecomposeMatrixToComponents((_float*)&matWorld, vPos, vAngle, vScale);
+					IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Translate", vPos);
+					IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Scale", vScale);
+					IMGUI_LEFT_LABEL(ImGui::InputFloat3, "Rotate", vAngle);
+					ImGuizmo::RecomposeMatrixFromComponents(vPos, vAngle, vScale, (_float*)&matWorld);
+
+					ImGuiIO&	io = ImGui::GetIO();
+					RECT		rt;
+					GetClientRect(g_hWnd, &rt);
+					POINT		LT{ rt.left, rt.top };
+					ClientToScreen(g_hWnd, &LT);
+					ImGuizmo::SetRect((_float)LT.x, (_float)LT.y, io.DisplaySize.x, io.DisplaySize.y);
+
+					_float4x4		matView, matProj;
+					XMStoreFloat4x4(&matView, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+					XMStoreFloat4x4(&matProj, CGameInstance::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+
+					ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&matWorld);
+				}
 			}
 
 
@@ -169,7 +246,7 @@ void CTool_MapEditor::ImGui_RenderWindow()
 		Safe_Delete_Array(ppProtoModelTag);
 	}
 	else
-		ImGui::Text("There is no Prototype Model.");
+		ImGui::Text("There is no Prototype Model.\nPlease Add Prototype Model First.");
 }
 
 void CTool_MapEditor::CheckNewPrototype()

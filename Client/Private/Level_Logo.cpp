@@ -8,6 +8,7 @@
 #include "Tool_LevelViewer.h"
 #include "TestTool.h"
 #include "Tool_MapEditor.h"
+#include "Tool_PrototypeMgr.h"
 
 CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -21,10 +22,11 @@ HRESULT CLevel_Logo::Initialize()
 	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
 
 	CGameInstance::GetInstance()->Clear_ImGuiObject();
-	CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
+	//CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Settings::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_Debugger::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_LevelViewer::Create(m_pDevice, m_pContext));
+	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_PrototypeMgr::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTool_MapEditor::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObejct(CTestTool::Create());
 
