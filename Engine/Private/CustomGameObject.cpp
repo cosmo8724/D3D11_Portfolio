@@ -97,6 +97,9 @@ HRESULT CCustomGameObject::Initialize(const wstring& wstrPrototypeTag, void * pA
 void CCustomGameObject::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	if (m_pModelCom != nullptr)
+		m_pModelCom->Play_Animation(dTimeDelta);
 }
 
 void CCustomGameObject::Late_Tick(_double dTimeDelta)

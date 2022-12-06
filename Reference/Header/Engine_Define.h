@@ -32,6 +32,7 @@ using namespace std;
 
 #include <Json/json_fwd.hpp>
 using Json = nlohmann::json;
+using namespace nlohmann;
 
 #include <Shlwapi.h>
 

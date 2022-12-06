@@ -4,6 +4,7 @@
 #include "Shader.h"
 #include "Bone.h"
 #include "Animation.h"
+#include "GameUtility.h"
 
 CModel::CModel(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
@@ -14,30 +15,22 @@ CModel::CModel(const CModel& rhs)
 	: CComponent(rhs)
 	, m_pAIScene(rhs.m_pAIScene)
 	, m_eType(rhs.m_eType)
+	, m_matPivot(rhs.m_matPivot)
 	, m_iNumMeshes(rhs.m_iNumMeshes)
-	, m_vecMesh(rhs.m_vecMesh)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_Materials(rhs.m_Materials)
 	, m_iNumEntireBone(rhs.m_iNumEntireBone)
-	, m_vecEntireBone(rhs.m_vecEntireBone)
 	, m_iCurAnimationIndex(rhs.m_iCurAnimationIndex)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
-	, m_vecAnimation(rhs.m_vecAnimation)
 {
-	for (auto& pMesh : m_vecMesh)
-		Safe_AddRef(pMesh);
+	for (auto& pMesh : rhs.m_vecMesh)
+		m_vecMesh.push_back(dynamic_cast<CMesh*>(pMesh->Clone()));
 
 	for (auto& ModelMaterial : m_Materials)
 	{
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(ModelMaterial.pTexture[i]);
 	}
-
-	for (auto& pBone : m_vecEntireBone)
-		Safe_AddRef(pBone);
-
-	for (auto& pAnimation : m_vecAnimation)
-		Safe_AddRef(pAnimation);
 }
 
 CBone * CModel::Get_BoneFromEntireBone(const string & strBoneName)
@@ -52,12 +45,16 @@ CBone * CModel::Get_BoneFromEntireBone(const string & strBoneName)
 	return *iter;
 }
 
-HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath)
+HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
 {
 	if (eType == MODELTYPE_END)
 		return E_FAIL;
 
 	m_eType = eType;
+	_tchar		wszModelFilePath[MAX_PATH] = L"";
+	CGameUtility::ctwc(pModelFilePath, wszModelFilePath);
+	m_wstrFilePath = wstring(wszModelFilePath);
+	XMStoreFloat4x4(&m_matPivot, matPivot);
 
 	_uint		iFlag = 0;
 
@@ -69,16 +66,21 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	m_pAIScene = m_Importer.ReadFile(pModelFilePath, iFlag);
 	NULL_CHECK_RETURN(m_pAIScene, E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_MeshContainers(), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Materials(pModelFilePath), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Animations(), E_FAIL);
 
 	return S_OK;
 }
 
 HRESULT CModel::Initialize(void * pArg)
 {
+	FAILED_CHECK_RETURN(Ready_Bones(m_pAIScene->mRootNode, nullptr), E_FAIL);
+
+	for (auto& pMesh : m_vecMesh)
+		pMesh->SetUp_MeshBones(this);
+
+	FAILED_CHECK_RETURN(Ready_Animations(), E_FAIL);
+
 	return S_OK;
 }
 
@@ -124,6 +126,9 @@ void CModel::ImGui_RenderProperty()
 
 void CModel::Play_Animation(_double dTimeDelta)
 {
+	if (m_eType == MODEL_NONANIM)
+		return;
+
 	m_vecAnimation[m_iCurAnimationIndex]->Update_Bones(dTimeDelta);
 
 	for (auto& pBone : m_vecEntireBone)
@@ -162,7 +167,7 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & w
 		{
 			_float4x4		matBones[256];
 
-			m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones);
+			m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, XMLoadFloat4x4(&m_matPivot));
 
 			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 256);
 		}
@@ -270,11 +275,11 @@ HRESULT CModel::Ready_Animations()
 	return S_OK;
 }
 
-CModel * CModel::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType, const char * pModelFilePath)
+CModel * CModel::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
 {
 	CModel*		pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eType, pModelFilePath)))
+	if (FAILED(pInstance->Initialize_Prototype(eType, pModelFilePath, matPivot)))
 	{
 		MSG_BOX("Failed to Create : CModel");
 		Safe_Release(pInstance);

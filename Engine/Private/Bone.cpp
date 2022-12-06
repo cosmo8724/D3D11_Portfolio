@@ -8,8 +8,11 @@ HRESULT CBone::Initialize(aiNode * pAINode, CBone * pParent)
 {
 	m_strName = pAINode->mName.data;
 
-	m_pParent = pParent;
-	Safe_AddRef(m_pParent);
+	if (pParent != nullptr)
+	{
+		m_pParent = pParent;
+		Safe_AddRef(m_pParent);
+	}
 
 	XMStoreFloat4x4(&m_matOffset, XMMatrixIdentity());
 
@@ -44,5 +47,6 @@ CBone * CBone::Create(aiNode * pAINode, CBone * pParent)
 
 void CBone::Free()
 {
-	Safe_Release(m_pParent);
+	if (m_pParent != nullptr)
+		Safe_Release(m_pParent);
 }

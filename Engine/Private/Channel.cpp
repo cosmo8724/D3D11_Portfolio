@@ -74,7 +74,7 @@ void CChannel::Update_matTransform(_double dPlayTime)
 	}
 	else
 	{
-		if (dPlayTime >= m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime)
+		while (dPlayTime >= m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime)
 			++m_iCurKeyFrameIndex;
 
 		_double	dRatio = (dPlayTime - m_vecKeyFrame[m_iCurKeyFrameIndex].dTime)

@@ -20,6 +20,7 @@ HRESULT CTexture::Initialize_Prototype(const wstring wstrTextureFilePath, _uint 
 {
 	m_pTextures = new ID3D11ShaderResourceView*[iNumTexture];
 
+	m_wstrFilePath = wstrTextureFilePath;
 	m_iNumTexture = iNumTexture;
 
 	for (_uint i = 0; i < m_iNumTexture; ++i)

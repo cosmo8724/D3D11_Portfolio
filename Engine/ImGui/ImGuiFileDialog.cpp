@@ -2561,6 +2561,8 @@ namespace IGFD
 				path += std::string(1u, PATH_SEP) + selectedDirectory;
 		}
 
+		path.erase(remove(path.begin(), path.end(), '\0'), path.end());
+
 		return path;
 	}
 
