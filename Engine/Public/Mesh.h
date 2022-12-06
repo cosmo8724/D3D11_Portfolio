@@ -20,9 +20,11 @@ public:
 	virtual HRESULT			Initialize(void* pArg) override;
 
 public:
-	void						SetUp_BoneMatrices(_float4x4* pBoneMatrices);
+	void						SetUp_MeshBones(class CModel* pModel);
+	void						SetUp_BoneMatrices(_float4x4* pBoneMatrices, _fmatrix matPivot);
 
 private:
+	aiMesh*					m_pAIMesh = nullptr;
 	string						m_strName = "";
 	CModel::MODELTYPE		m_eType = CModel::MODELTYPE_END;
 	_uint						m_iMaterialIndex = 0;
@@ -31,7 +33,7 @@ private:
 	vector<class CBone*>	m_vecMeshBone;
 
 private:
-	HRESULT					Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh);
+	HRESULT					Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh, class CModel* pModel);
 	HRESULT					Ready_VertexBuffer_AnimModel(aiMesh* pAIMesh, class CModel* pModel);
 
 public:

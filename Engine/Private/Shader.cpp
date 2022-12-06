@@ -18,8 +18,12 @@ CShader::CShader(const CShader& rhs)
 		Safe_AddRef(pInputLayout);
 }
 
-HRESULT CShader::Initialize_Prototype(const wstring & wstrShderFilePath, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements)
+HRESULT CShader::Initialize_Prototype(const wstring & wstrShderFilePath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements)
 {
+	m_wstrFilePath = wstrShderFilePath;
+	m_eType = eType;
+	m_iElementCnt = iNumElements;
+
 	_uint	iHlslFlag = 0;
 
 #ifdef _DEBUG
@@ -156,11 +160,11 @@ HRESULT CShader::Set_ShaderResourceViewArray(const wstring & wstrConstantName, I
 	return pVariable->SetResourceArray(ppSRV, 0, iNumTextures);
 }
 
-CShader * CShader::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrShaderFilPath, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements)
+CShader * CShader::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrShaderFilPath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements)
 {
 	CShader*		pInstance = new CShader(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(wstrShaderFilPath, pElements, iNumElements)))
+	if (FAILED(pInstance->Initialize_Prototype(wstrShaderFilPath, eType, pElements, iNumElements)))
 	{
 		MSG_BOX("Failed to Create : CShader");
 		Safe_Release(pInstance);

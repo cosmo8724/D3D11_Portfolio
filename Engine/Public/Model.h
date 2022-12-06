@@ -15,23 +15,25 @@ private:
 
 public:
 	const _uint&						Get_NumMeshes() const { return m_iNumMeshes; }
+	_matrix							Get_PivotMatrix() const { return XMLoadFloat4x4(&m_matPivot); }
 	class CBone*						Get_BoneFromEntireBone(const string & strBoneName);
 	void								Set_CurAnimationIndex(_uint iAnimationIndex) { m_iCurAnimationIndex = iAnimationIndex; }
 
 public:
-	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath);
+	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot);
 	virtual HRESULT					Initialize(void* pArg) override;
 	virtual void						ImGui_RenderProperty() override;
 
 public:
 	void								Play_Animation(_double dTimeDelta);
 	HRESULT							Bind_Material(class CShader* pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring& wstrConstantName);
-	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName);
+	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"");
 
 public:
 	const aiScene*					m_pAIScene = nullptr;
 	Importer							m_Importer;
 	MODELTYPE						m_eType = MODELTYPE_END;
+	_float4x4							m_matPivot;
 
 	_uint								m_iNumMeshes = 0;
 	vector<class CMesh*>			m_vecMesh;
@@ -57,7 +59,7 @@ public:
 	HRESULT							Ready_Animations();
 
 public:
-	static CModel*					Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType, const char* pModelFilePath);
+	static CModel*					Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot = XMMatrixRotationY(XMConvertToRadians(180.0f)));
 	virtual CComponent*			Clone(void* pArg = nullptr) override;
 	virtual void						Free() override;
 };

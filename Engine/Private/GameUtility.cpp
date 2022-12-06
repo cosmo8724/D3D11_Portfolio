@@ -16,6 +16,16 @@ void CGameUtility::ctwc(const char * szChar, wchar_t * wszChar)
 	::MultiByteToWideChar(CP_ACP, MB_COMPOSITE, szChar, iLength, wszChar, slength);
 }
 
+string CGameUtility::WstrToStr(const wstring & wstrSour)
+{
+	string		strDest = "";
+
+	if (wstrSour != L"")
+		strDest.assign(wstrSour.begin(), wstrSour.end());
+
+	return strDest;
+}
+
 void CGameUtility::SplitTag(wchar_t * wszTag, wstring & wszChar)
 {
 	for (_int i = 0; i < lstrlen(wszTag); ++i)

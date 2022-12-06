@@ -34,13 +34,14 @@ private:
 	map<const wstring, CGameObject*>*	m_mapProtoObjects = nullptr;
 	_uint										m_iProtoObjCnt = 0;
 
-	char*										m_pLevelName[LEVEL_END + 1] = { "Loading", "Logo", "Test Stage", "Public"};
+	char*										m_pLevelName[LEVEL_END + 1] = { "Loading", "Logo", "Test Stage", "Public" };
 	_int*										m_iSelectTextureCom = nullptr;
 
 private:
 	void								Component_Editor();
 	void								GameObject_Editor();
 	COMPONENTTYPE				CheckComponentType(_int iSelectLevel, const char* pComponentTag);
+	COMPONENTTYPE				CheckComponentType(class CComponent* pComponent);
 	void								SortComponentByType(char***& ppComponentTag, _uint* pComponentCnt);
 	_uint								FindPrototypeComponentLevel(const _tchar* pComponentTag);
 

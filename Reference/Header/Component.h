@@ -11,6 +11,9 @@ protected:
 	virtual ~CComponent() = default;
 
 public:
+	const wstring&			Get_FilePath() const { return m_wstrFilePath; }
+
+public:
 	virtual HRESULT			Initialize_Prototype();
 	virtual HRESULT			Initialize(void* pArg);
 
@@ -20,6 +23,8 @@ public:
 protected:
 	DEVICE					m_pDevice = nullptr;
 	DEVICE_CONTEXT		m_pContext = nullptr;
+
+	wstring					m_wstrFilePath = L"";
 
 	_bool						m_bIsCloned = false;
 
