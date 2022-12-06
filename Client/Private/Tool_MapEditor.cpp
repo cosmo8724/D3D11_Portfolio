@@ -30,11 +30,19 @@ HRESULT CTool_MapEditor::Initialize(void * pArg)
 
 void CTool_MapEditor::ImGui_RenderWindow()
 {
-	CheckLevel();
+	_bool	bLevelChanged = CheckLevel();
 	CheckNewPrototype();
 
 	static _int	iSelectObject = -1;
-	size_t i2 = m_mapPrototypeModels.size();
+	static _int	iSelectLayer = 0;
+	static	_int iSelectLayer2 = 0;
+
+	if (bLevelChanged)
+	{
+		iSelectObject = -1;
+		iSelectLayer = 0;
+		iSelectLayer2 = 0;
+	}
 
 	if (m_mapPrototypeModels.size())
 	{
@@ -75,7 +83,6 @@ void CTool_MapEditor::ImGui_RenderWindow()
 				ZeroMemory(szLayerTag, MAX_PATH);
 			}
 
-			static _int	iSelectLayer = 0;
 			char**			ppLayerTags = new char*[m_mapLayers->size()];
 			_uint			j = 0;
 			for (auto Pair : *m_mapLayers)
@@ -101,7 +108,6 @@ void CTool_MapEditor::ImGui_RenderWindow()
 
 			ImGui::Separator();
 
-			static	_int iSelectLayer2 = 0;
 			static _int iLastSelectedLayer = iSelectLayer2;
 			static _int iSelectCloneObject = -1;
 			ImGui::BulletText("Layer Viewer");
@@ -268,13 +274,16 @@ void CTool_MapEditor::CheckNewPrototype()
 	}
 }
 
-void CTool_MapEditor::CheckLevel()
+_bool CTool_MapEditor::CheckLevel()
 {
 	if (m_iCurLevel != CGameInstance::GetInstance()->Get_CurLevelIndex())
 	{
 		m_iCurLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
 		m_mapLayers = CGameInstance::GetInstance()->Get_Layers(m_iCurLevel);
+		return true;
 	}
+
+	return false;
 }
 
 CTool_MapEditor * CTool_MapEditor::Create(void * pArg)
