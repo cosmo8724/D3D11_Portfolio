@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\Tool_MapEditor.h"
 #include "GameInstance.h"
-#include "GameObject.h"
 #include "Layer.h"
 #include "GameUtility.h"
+#include "CustomGameObject.h"
 
 CTool_MapEditor::CTool_MapEditor()
 {
@@ -196,12 +196,30 @@ void CTool_MapEditor::ImGui_RenderWindow()
 						iter++;
 
 					CGameObject*	pGameObject = *iter;
-					const _float4x4&	matWorld = pGameObject->Get_WorldMatrix();
-
+					
 					ImGui::BulletText("Current Selected Object : %s", ppCloneTags[iSelectCloneObject]);
+
+					if (pGameObject->Get_HasModel() && dynamic_cast<CCustomGameObject*>(pGameObject))
+					{
+						static _int	iCurrentAnimation = 0;
+						_uint	iAnimationCnt = dynamic_cast<CCustomGameObject*>(pGameObject)->Get_ModelComponent()->Get_NumAnimations();
+
+						ImGui::NewLine();
+						ImGui::BulletText("Current Animation : %d", iCurrentAnimation);
+						ImGui::SameLine();
+						if (ImGui::SmallButton("<"))
+							iCurrentAnimation--;
+						ImGui::SameLine();
+						if (ImGui::SmallButton(">"))
+							iCurrentAnimation++;
+						CGameUtility::Saturate(iCurrentAnimation, iAnimationCnt, 0);
+
+						dynamic_cast<CCustomGameObject*>(pGameObject)->Get_ModelComponent()->Set_CurAnimationIndex(iCurrentAnimation);
+					}
 
 					ImGuizmo::BeginFrame();
 
+					const _float4x4&	matWorld = pGameObject->Get_WorldMatrix();
 					static ImGuizmo::OPERATION CurGuizmoType(ImGuizmo::TRANSLATE);
 
 					ImGui::Text("ImGuizmo Type");

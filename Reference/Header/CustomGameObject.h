@@ -7,6 +7,7 @@ class ENGINE_DLL CCustomGameObject final : public CGameObject
 {
 public:
 	enum LEVEL { LEVEL_LOADING, LEVEL_LOGO, LEVEL_TESTSTAGE, LEVEL_END };
+	enum OBJECTUSAGE { PLAYER, MONSTER, UI, INVENTORY, COMMONOBJECT, OBJECTUSAGE_END };
 
 	typedef struct tagProtoTypeInfos
 	{
@@ -18,6 +19,11 @@ private:
 	CCustomGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	CCustomGameObject(const CCustomGameObject& rhs);
 	virtual ~CCustomGameObject() = default;
+
+public:
+	vector<pair<_uint, wstring>>	Get_PrototypeSaveData();
+	const _uint&						Get_TextureComCount() const { return m_iNumTextureCom; }
+	class CModel*						Get_ModelComponent() const { return m_pModelCom; }
 
 public:
 	virtual HRESULT			Initialize_Prototype(const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom);

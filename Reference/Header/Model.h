@@ -16,6 +16,7 @@ private:
 public:
 	const MODELTYPE&				Get_ModelType() const { return m_eType; }
 	const _uint&						Get_NumMeshes() const { return m_iNumMeshes; }
+	_uint								Get_NumAnimations() const { return m_iNumAnimations; }
 	_matrix							Get_PivotMatrix() const { return XMLoadFloat4x4(&m_matPivot); }
 	class CBone*						Get_BoneFromEntireBone(const string & strBoneName);
 	void								Set_CurAnimationIndex(_uint iAnimationIndex) { m_iCurAnimationIndex = iAnimationIndex; }
