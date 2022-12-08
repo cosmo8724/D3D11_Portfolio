@@ -22,6 +22,8 @@ HRESULT CStatic_Camera::Initialize_Prototype()
 
 HRESULT CStatic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
+	m_bRender = true;
+
 	CCamera::CAMERADESC		CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
 
@@ -45,6 +47,9 @@ HRESULT CStatic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pArg
 
 void CStatic_Camera::Tick(_double dTimeDelta)
 {
+	if (!m_bRender)
+		return;
+
 	__super::Tick(dTimeDelta);
 
 	_uint	iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
@@ -79,11 +84,17 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 
 void CStatic_Camera::Late_Tick(_double dTimeDelta)
 {
+	if (!m_bRender)
+		return;
+
 	__super::Late_Tick(dTimeDelta);
 }
 
 HRESULT CStatic_Camera::Render()
 {
+	if (!m_bRender)
+		return E_FAIL;
+
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	return S_OK;

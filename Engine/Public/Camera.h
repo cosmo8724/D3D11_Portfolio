@@ -17,11 +17,17 @@ protected:
 	virtual ~CCamera() = default;
 
 public:
+	_bool&						Get_RenderState() { return m_bRender; }
+
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
+
+protected:
+	_bool						m_bRender = false;
 
 private:
 	class CPipeLine*			m_pPipeLine = nullptr;

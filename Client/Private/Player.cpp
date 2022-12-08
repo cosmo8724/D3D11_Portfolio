@@ -62,7 +62,7 @@ HRESULT CPlayer::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 		memcpy(&TransformDesc, pArg, sizeof(CTransform::TRANSFORMDESC));
 	else
 	{
-		TransformDesc.dSpeedPerSec = 5.0;
+		TransformDesc.dSpeedPerSec = 15.0;
 		TransformDesc.dRotationPerSec = (_double)XMConvertToRadians(90.f);
 	}
 
@@ -87,6 +87,34 @@ void CPlayer::Tick(_double dTimeDelta)
 		iCurrentAnimation--;
 	m_pModelCom->Set_CurAnimationIndex(iCurrentAnimation);
 
+	_long		MouseMove = 0;
+	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
+
+	m_pModelCom->Set_CurAnimationIndex(6);
+
+	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_W) & 0x80)
+	{
+		m_pTransformCom->Go_Straight(dTimeDelta);
+		m_pModelCom->Set_CurAnimationIndex(13);
+	}
+	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_A) & 0x80)
+	{
+		m_pTransformCom->Go_Left(dTimeDelta);
+		m_pModelCom->Set_CurAnimationIndex(13);
+	}
+	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_S) & 0x80)
+	{
+		m_pTransformCom->Go_BackWard(dTimeDelta);
+		m_pModelCom->Set_CurAnimationIndex(13);
+	}
+	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_D) & 0x80)
+	{
+		m_pTransformCom->Go_Right(dTimeDelta);
+		m_pModelCom->Set_CurAnimationIndex(13);
+	}
+	if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB))
+		m_pModelCom->Set_CurAnimationIndex(20);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
 }
@@ -123,7 +151,7 @@ HRESULT CPlayer::SetUp_Component()
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Shader_Anim", L"Com_Shader", (CComponent**)&m_pShaderCom), E_FAIL);
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Container", L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Model_GhostRunner_Hand", L"Com_Model", (CComponent**)&m_pModelCom), E_FAIL);
 
 	return S_OK;
 }
