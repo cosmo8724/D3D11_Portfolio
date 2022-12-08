@@ -27,7 +27,6 @@ void CTool_Settings::ImGui_RenderWindow()
 		if (ImGui::RadioButton("Free Cam", bSelect))
 		{
 			bSelect = !bSelect;
-
 			DynamicCamera = true;
 			StaticCamera = false;
 		}
