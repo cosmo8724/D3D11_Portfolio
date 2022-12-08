@@ -29,6 +29,9 @@ HRESULT CTool_PrototypeMgr::Initialize(void * pArg)
 	m_mapProtoObjects = CGameInstance::GetInstance()->Get_Prototypes();
 	m_iProtoObjCnt = (_uint)m_mapProtoObjects->size();
 
+	m_mapLayers = CGameInstance::GetInstance()->Get_Layers(m_iCurLevel);
+	m_iLayerCnt = (_uint)m_mapLayers->size();
+
 	return S_OK;
 }
 
@@ -39,6 +42,7 @@ void CTool_PrototypeMgr::ImGui_RenderWindow()
 	ImGui::BeginTabBar("Prototype Manager");
 	Component_Editor();
 	GameObject_Editor();
+	CloneObject_Editor();
 	ImGui::EndTabBar();
 }
 
@@ -1045,6 +1049,258 @@ void CTool_PrototypeMgr::GameObject_Editor()
 				Safe_Delete_Array(ppProtoObjTag[i]);
 			Safe_Delete_Array(ppProtoObjTag);
 		}
+
+		ImGui::EndTabItem();
+	}
+}
+
+void CTool_PrototypeMgr::CloneObject_Editor()
+{
+	m_mapLayers = CGameInstance::GetInstance()->Get_Layers(m_iCurLevel);
+	m_iLayerCnt = (_uint)m_mapLayers->size();
+
+	static _uint		iSelectLayer = 0;
+	static	_int		iSelectObject = -1;
+	static	_bool		bSave = false;
+
+	if (ImGui::BeginTabItem("CloneObject"))
+	{
+		if (m_iLayerCnt == 0)
+		{
+			ImGui::EndTabItem();
+			return;
+		}
+
+		char**		ppLayerTag = new char*[m_iLayerCnt];
+		_uint		i = 0;
+		for (auto Pair : *m_mapLayers)
+		{
+			ppLayerTag[i] = new char[Pair.first.length() + 1];
+			CGameUtility::wctc(Pair.first.c_str(), ppLayerTag[i++]);
+		}
+
+		ImGui::BulletText("Current Level : %s", m_pLevelName[m_iCurLevel]);
+		ImGui::BulletText("CloneObjects List");
+		ImGui::Combo("##", (_int*)&iSelectLayer, ppLayerTag, (_int)m_iLayerCnt);
+		
+		string		strSelectLayerTag = ppLayerTag[iSelectLayer];
+		wstring	wstrSelectLayerTag = L"";
+		wstrSelectLayerTag.assign(strSelectLayerTag.begin(), strSelectLayerTag.end());
+
+		list<class CGameObject*>*		CloneObjectsList = CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, wstrSelectLayerTag);
+		char**		ppCloneObjectsTag = new char*[CloneObjectsList->size()];
+
+		CGameObject*	pCloneObject = nullptr;
+		_uint		j = 0;
+		for (auto& Obj : *CloneObjectsList)
+		{
+			wstring	wstrPrototypeGameObjectTag = Obj->Get_PrototypeGameObjectTag();
+			string		strPrototypeGameObjectTag = "";
+			strPrototypeGameObjectTag.assign(wstrPrototypeGameObjectTag.begin(), wstrPrototypeGameObjectTag.end());
+			ppCloneObjectsTag[j] = new char[strPrototypeGameObjectTag.length() + 1];
+			strcpy_s(ppCloneObjectsTag[j], strPrototypeGameObjectTag.length() + 1, strPrototypeGameObjectTag.c_str());
+
+			if (j++ == iSelectObject)
+				pCloneObject = Obj;
+		}
+
+		ImGui::BulletText("CloneObjects List");
+		ImGui::ListBox("##", &iSelectObject, ppCloneObjectsTag, (_int)CloneObjectsList->size());
+
+		if (ImGui::Button("Save"))
+			bSave = true;
+		ImGui::SameLine();
+		if (ImGui::Button("Load"))
+		{
+			if (bSave)
+				bSave = false;
+
+			ImGuiFileDialog::Instance()->OpenDialog("Load Layer", "Select Layer Json", ".json", "../Bin/Save Data", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+		}
+
+		if (bSave)
+		{
+			static char	szSaveFileName[MAX_PATH] = "";
+			ImGui::Separator();
+			ImGui::InputText("File Name", szSaveFileName, MAX_PATH);
+
+			if (ImGui::Button("Confirm"))
+				ImGuiFileDialog::Instance()->OpenDialog("Save Layer", "Select Folder Directory", ".json", "../Bin/Save Data", ".", 0, nullptr, ImGuiFileDialogFlags_Modal);
+			ImGui::SameLine();
+			if (ImGui::Button("Cancel"))
+			{
+				strcpy_s(szSaveFileName, "");
+				bSave = false;
+			}
+
+			if (ImGuiFileDialog::Instance()->Display("Save Layer"))
+			{
+				if (ImGuiFileDialog::Instance()->IsOk())
+				{
+					string		strSaveFileDirectory = ImGuiFileDialog::Instance()->GetCurrentPath();
+					char	szDash[128] = "\\";
+					strcat_s(szDash, szSaveFileName);
+					strSaveFileDirectory += string(szDash);
+					strSaveFileDirectory += ".json";
+
+					Json	jLayers;
+					Json	jLayer;
+					Json	jCloneObj;
+
+					jLayers["Level"] = m_pLevelName[m_iCurLevel];
+
+					for (auto& Pair : *m_mapLayers)
+					{
+						list<CGameObject*>*	CloneObjects = CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, Pair.first);
+						if (CloneObjects->size() == 0 || CloneObjects == nullptr)
+							continue;
+
+						string		strLayerTag = "";
+						strLayerTag.assign(Pair.first.begin(), Pair.first.end());
+						jLayer["Layer Tag"] = strLayerTag;
+
+						for (auto& Obj : *CloneObjects)
+						{
+							/* 클론 오브젝트 저장 내용 : 원본 오브젝트 태그, 클론 오브젝트의 월드행렬 */
+							string		strPrototypeObjTag = "";
+							strPrototypeObjTag.assign(Obj->Get_PrototypeGameObjectTag().begin(), Obj->Get_PrototypeGameObjectTag().end());
+							jCloneObj["Prototype GameObject Tag"] = strPrototypeObjTag;
+
+							_float4x4		matWorld = Obj->Get_WorldMatrix();
+							for (_uint i = 0; i < 16; ++i)
+							{
+								_float		fElement = 0.f;
+								memcpy(&fElement, ((_float*)&matWorld) + i, sizeof(_float));
+								jCloneObj["Transform State"].push_back(fElement);
+							}
+							jLayer["Clone Objects"].push_back(jCloneObj);
+							jCloneObj.clear();
+						}
+						jLayers["Layers"].push_back(jLayer);
+						jLayer.clear();
+					}
+
+					ofstream	file(strSaveFileDirectory.c_str());
+					file << jLayers;
+					file.close();
+
+					strcpy_s(szSaveFileName, "");
+
+					ImGuiFileDialog::Instance()->Close();
+				}
+				if (!ImGuiFileDialog::Instance()->IsOk())
+					ImGuiFileDialog::Instance()->Close();
+			}
+		}
+
+		if (ImGuiFileDialog::Instance()->Display("Load Layer"))
+		{
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				for (size_t i = 0; i < CloneObjectsList->size(); ++i)
+					Safe_Delete_Array(ppCloneObjectsTag[i]);
+				Safe_Delete_Array(ppCloneObjectsTag);
+
+				for (_uint i = 0; i < m_iLayerCnt; ++i)
+					Safe_Delete_Array(ppLayerTag[i]);
+				Safe_Delete_Array(ppLayerTag);
+
+				string		strFilePath = ImGuiFileDialog::Instance()->GetFilePathName();
+
+				CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+				Safe_AddRef(pGameInstance);
+				pGameInstance->Clear_Level(m_iCurLevel);
+
+				Json		jLayers;
+				
+				ifstream	file(strFilePath.c_str());
+				file >> jLayers;
+				file.close();
+
+				for (auto jLayer : jLayers["Layers"])
+				{
+					string		strLayerTag = "";
+					wstring	wstrLayerTag = L"";
+					jLayer["Layer Tag"].get_to<string>(strLayerTag);
+					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
+					
+					for (auto jCloneObj : jLayer["Clone Objects"])
+					{
+						string		strPrototypeObjTag = "";
+						wstring	wstrPrototypeObjTag = L"";
+						jCloneObj["Prototype GameObject Tag"].get_to<string>(strPrototypeObjTag);
+						wstrPrototypeObjTag.assign(strPrototypeObjTag.begin(), strPrototypeObjTag.end());
+
+						_float4x4		matWorld;
+						XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
+
+						_uint	k = 0;
+						for (_float fElement : jCloneObj["Transform State"])
+							memcpy(((_float*)&matWorld) + (k++), &fElement, sizeof(_float));
+
+						pGameInstance->Clone_GameObject(m_iCurLevel, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+					}
+				}
+
+				Safe_Release(pGameInstance);
+
+				ImGuiFileDialog::Instance()->Close();
+
+				ImGui::EndTabItem();
+
+				return;
+			}
+			if (!ImGuiFileDialog::Instance()->IsOk())
+				ImGuiFileDialog::Instance()->Close();
+		}
+
+		if (!bSave && !ImGuiFileDialog::Instance()->Display("Load Layer") && pCloneObject != nullptr)
+		{
+			ImGui::Separator();
+
+			wstring	wstrPrototypeGameObjectTag = pCloneObject->Get_PrototypeGameObjectTag();
+			string		strPrototypeGameObjectTag = "";
+			strPrototypeGameObjectTag.assign(wstrPrototypeGameObjectTag.begin(), wstrPrototypeGameObjectTag.end());
+
+			ImGui::BulletText("Prototype GameObject Tag : %s", strPrototypeGameObjectTag.c_str());
+
+			if (ImGui::Button("Move to"))
+			{
+
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Delete"))
+			{
+				for (size_t i = 0; i < CloneObjectsList->size(); ++i)
+					Safe_Delete_Array(ppCloneObjectsTag[i]);
+				Safe_Delete_Array(ppCloneObjectsTag);
+
+				for (_uint i = 0; i < m_iLayerCnt; ++i)
+					Safe_Delete_Array(ppLayerTag[i]);
+				Safe_Delete_Array(ppLayerTag);
+
+				auto	iter = CloneObjectsList->begin();
+				for (_uint i = 0; i < iSelectObject; ++i)
+					iter++;
+
+				Safe_Release(*iter);
+				CloneObjectsList->erase(iter);
+
+				iSelectObject = -1;
+
+				ImGui::EndTabItem();
+
+				return;
+			}
+		}
+
+		for (size_t i = 0; i < CloneObjectsList->size(); ++i)
+			Safe_Delete_Array(ppCloneObjectsTag[i]);
+		Safe_Delete_Array(ppCloneObjectsTag);
+
+		for (_uint i = 0; i < m_iLayerCnt; ++i)
+			Safe_Delete_Array(ppLayerTag[i]);
+		Safe_Delete_Array(ppLayerTag);
 
 		ImGui::EndTabItem();
 	}
