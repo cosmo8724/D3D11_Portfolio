@@ -19,6 +19,8 @@ public:
 	_uint								Get_NumAnimations() const { return m_iNumAnimations; }
 	_matrix							Get_PivotMatrix() const { return XMLoadFloat4x4(&m_matPivot); }
 	class CBone*						Get_BoneFromEntireBone(const string & strBoneName);
+	_matrix							Get_BoneMatrix(const string& strBoneName);
+	_matrix							Get_OffsetMatrix(const string & strBoneName);
 	void								Set_CurAnimationIndex(_uint iAnimationIndex) { m_iCurAnimationIndex = iAnimationIndex; }
 
 public:

@@ -45,6 +45,22 @@ CBone * CModel::Get_BoneFromEntireBone(const string & strBoneName)
 	return *iter;
 }
 
+_matrix CModel::Get_BoneMatrix(const string & strBoneName)
+{
+	CBone*	pBone = Get_BoneFromEntireBone(strBoneName);
+	NULL_CHECK_RETURN(pBone, XMMatrixIdentity());
+
+	return pBone->Get_CombindMatrix();
+}
+
+_matrix CModel::Get_OffsetMatrix(const string & strBoneName)
+{
+	CBone*	pBone = Get_BoneFromEntireBone(strBoneName);
+	NULL_CHECK_RETURN(pBone, XMMatrixIdentity());
+
+	return pBone->Get_matOffset();
+}
+
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
 {
 	if (eType == MODELTYPE_END)

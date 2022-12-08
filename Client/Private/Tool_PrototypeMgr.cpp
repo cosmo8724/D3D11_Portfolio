@@ -1280,7 +1280,7 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 				Safe_Delete_Array(ppLayerTag);
 
 				auto	iter = CloneObjectsList->begin();
-				for (_uint i = 0; i < iSelectObject; ++i)
+				for (_int i = 0; i < iSelectObject; ++i)
 					iter++;
 
 				Safe_Release(*iter);

@@ -7,6 +7,7 @@
 #include "VIBuffer_Sphere.h"
 #include "VIBuffer_Terrain.h"
 #include "Model.h"
+#include "Collider.h"
 #include "Component.h"
 
 BEGIN(Engine)

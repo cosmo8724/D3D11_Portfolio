@@ -76,6 +76,21 @@
     <Filter Include="97. Tool\05. Model Editor">
       <UniqueIdentifier>{97ee26b9-ef07-4e52-97ae-841040b53199}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Camera\Dynamic">
+      <UniqueIdentifier>{864c05de-f0d8-4d35-902b-3c55ea439fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Camera\Static">
+      <UniqueIdentifier>{2a6a81b0-1ffb-4fe8-ab5f-63cb7ee1fd2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Sword">
+      <UniqueIdentifier>{4eb38428-1eb7-40d8-b3c5-e811a2e92e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Sword\Blade">
+      <UniqueIdentifier>{7a10edca-2529-46aa-8604-1e65d8fe6e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Sword\Handle">
+      <UniqueIdentifier>{3307ba48-0964-4caf-97e1-949639988f40}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -117,9 +132,6 @@
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02. GameObject\Terrain</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Dynamic_Camera.h">
-      <Filter>02. GameObject\Camera</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\CurveEditor.h">
       <Filter>97. Tool\99. Sequencer\00. CurveEditor</Filter>
     </ClInclude>
@@ -149,6 +161,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Tool_PrototypeMgr.h">
       <Filter>97. Tool\03. Prototype Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Dynamic_Camera.h">
+      <Filter>02. GameObject\Camera\Dynamic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Static_Camera.h">
+      <Filter>02. GameObject\Camera\Static</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sword_Handle.h">
+      <Filter>02. GameObject\Sword\Handle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sword_Blade.h">
+      <Filter>02. GameObject\Sword\Blade</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -182,9 +206,6 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02. GameObject\Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Dynamic_Camera.cpp">
-      <Filter>02. GameObject\Camera</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\CurveEditor.cpp">
       <Filter>97. Tool\99. Sequencer\00. CurveEditor</Filter>
     </ClCompile>
@@ -214,6 +235,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_PrototypeMgr.cpp">
       <Filter>97. Tool\03. Prototype Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Dynamic_Camera.cpp">
+      <Filter>02. GameObject\Camera\Dynamic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Static_Camera.cpp">
+      <Filter>02. GameObject\Camera\Static</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sword_Handle.cpp">
+      <Filter>02. GameObject\Sword\Handle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sword_Blade.cpp">
+      <Filter>02. GameObject\Sword\Blade</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
