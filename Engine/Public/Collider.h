@@ -21,6 +21,9 @@ private:
 	virtual ~CCollider() = default;
 
 public:
+	const COLLIDERTYPE&	Get_ColliderType() const { return m_eType; }
+
+public:
 	virtual HRESULT			Initialize_Prototype(COLLIDERTYPE eType);
 	virtual HRESULT			Initialize(void* pArg) override;
 

@@ -39,6 +39,7 @@ private:
 	_uint						m_iTransformComLevel = 1000;
 	_uint						m_iTextureComLevel = 1000;
 	_uint						m_iModelComLevel = 1000;
+	_uint						m_iColliderComLevel = 1000;
 
 	wstring					m_wstrRendererComTag = L"";
 	wstring					m_wstrVIBufferComTag = L"";
@@ -47,12 +48,14 @@ private:
 	wstring					m_wstrModelComTag = L"";
 	_uint						m_iNumTextureCom = 0;
 	wstring*					m_wstrTextureComTag = nullptr;
+	wstring					m_wstrColliderComTag = L"";
 
 	class CRenderer*			m_pRendererCom = nullptr;
 	class CVIBuffer*			m_pVIBufferCom = nullptr;
 	class CShader*			m_pShaderCom = nullptr;
 	class CTexture**			m_pTextureCom = nullptr;
 	class CModel*				m_pModelCom = nullptr;
+	class CCollider*			m_pColliderCom = nullptr;
 
 private:
 	HRESULT					SetUp_Component();

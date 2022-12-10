@@ -33,6 +33,8 @@ using namespace Assimp;
 #include <map>
 #include <unordered_map>
 #include <algorithm>
+#include <functional>
+#include <cassert>
 using namespace std;
 
 #include <Json/json_fwd.hpp>
