@@ -14,6 +14,7 @@ private:
 	virtual ~CModel() = default;
 
 public:
+	HRESULT							Save_Model(const char* pSaveFileDirectory);
 	const MODELTYPE&				Get_ModelType() const { return m_eType; }
 	const _uint&						Get_NumMeshes() const { return m_iNumMeshes; }
 	_uint								Get_NumAnimations() const { return m_iNumAnimations; }
@@ -33,7 +34,7 @@ public:
 	HRESULT							Bind_Material(class CShader* pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring& wstrConstantName);
 	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"");
 
-public:
+private:
 	const aiScene*					m_pAIScene = nullptr;
 	Importer							m_Importer;
 	MODELTYPE						m_eType = MODELTYPE_END;
@@ -44,7 +45,7 @@ public:
 	typedef vector<class CMesh*>			MESHES;
 
 	_uint								m_iNumMaterials = 0;
-	vector<MODELMATERIAL>		m_Materials;
+	vector<MODELMATERIAL>		m_vecMaterial;
 	typedef vector<MODELMATERIAL>		MATERIALS;
 
 	_uint								m_iNumEntireBone = 0;
@@ -56,11 +57,17 @@ public:
 	vector<class CAnimation*>		m_vecAnimation;
 	typedef vector<class CAnimation*>	ANIMATIONS;
 
-public:
+	DWORD							m_dwBeginBoneData = 0;
+
+private:
 	HRESULT							Ready_Bones(aiNode* pAINode, class CBone* pParent);
+	HRESULT							Ready_Bones(HANDLE& hFile, DWORD& dwByte, class CBone* pParent);
 	HRESULT							Ready_MeshContainers();
 	HRESULT							Ready_Materials(const char* pModelFIlePath);
 	HRESULT							Ready_Animations();
+
+	HRESULT							Load_MeshMaterial(const wstring& wstrModelFilePath);
+	HRESULT							Load_BoneAnimation(HANDLE& hFile, DWORD& dwByte);
 
 public:
 	static CModel*					Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot = XMMatrixRotationY(XMConvertToRadians(180.0f)));

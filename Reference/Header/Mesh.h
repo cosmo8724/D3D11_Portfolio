@@ -12,6 +12,9 @@ private:
 	virtual ~CMesh() = default;
 
 public:
+	HRESULT					Save_Mesh(HANDLE& hFile, DWORD& dwByte);
+	HRESULT					Save_MeshBones(HANDLE& hFile, DWORD& dwByte);
+	HRESULT					Load_Mesh(HANDLE& hFile, DWORD& dwByte);
 	const _uint&				Get_MaterialIndex() const { return m_iMaterialIndex; }
 	const string&				Get_MeshName() const { return m_strName; }
 
@@ -21,6 +24,7 @@ public:
 
 public:
 	void						SetUp_MeshBones(class CModel* pModel);
+	HRESULT					SetUp_MeshBones(HANDLE& hFile, DWORD& dwByte, class CModel* pModel);
 	void						SetUp_BoneMatrices(_float4x4* pBoneMatrices, _fmatrix matPivot);
 
 private:
@@ -31,6 +35,10 @@ private:
 
 	_uint						m_iNumMeshBone = 0;
 	vector<class CBone*>	m_vecMeshBone;
+
+	VTXMODEL*				m_pNonAnimVertices = nullptr;
+	VTXANIMMODEL*			m_pAnimVertices = nullptr;
+	FACEINDICES32*			m_pIndices = nullptr;
 
 private:
 	HRESULT					Ready_VertexBuffer_NonAnimModel(aiMesh* pAIMesh, class CModel* pModel);

@@ -163,7 +163,7 @@ void CTool_PrototypeMgr::Component_Editor()
 				IMGUI_LEFT_LABEL(ImGui::InputText, "Component Tag", szPrototypeTag, sizeof(char) * MAX_PATH);
 
 				/* Input File Path */
-				IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FildDialog.", szFilePath, sizeof(char) * MAX_PATH);
+				IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FileDialog.", szFilePath, sizeof(char) * MAX_PATH);
 				ImGui::SameLine();
 				if (ImGui::SmallButton("Open"))
 					ImGuiFileDialog::Instance()->OpenDialog("Choose HLSL", "Choose .hlsl", ".hlsl", "../Bin/Shader", ".hlsl", 1, nullptr, ImGuiFileDialogFlags_Modal);
@@ -254,7 +254,7 @@ void CTool_PrototypeMgr::Component_Editor()
 				IMGUI_LEFT_LABEL(ImGui::InputTextWithHint, "File Path", "Input Path here or Choose from FildDialog.", szFilePath, sizeof(char) * MAX_PATH);
 				ImGui::SameLine();
 				if (ImGui::SmallButton("Open"))
-					ImGuiFileDialog::Instance()->OpenDialog("Choose Model", "Choose Model", ".fbx,.blend", "../Bin/Resource/Mesh", ".fbx", 1, nullptr, ImGuiFileDialogFlags_Modal);
+					ImGuiFileDialog::Instance()->OpenDialog("Choose Model", "Choose Model", ".fbx,.model", "../Bin/Resource/Mesh", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
 
 				if (ImGuiFileDialog::Instance()->Display("Choose Model"))
 				{

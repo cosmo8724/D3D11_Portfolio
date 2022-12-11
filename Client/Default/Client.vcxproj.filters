@@ -91,6 +91,9 @@
     <Filter Include="02. GameObject\Sword\Handle">
       <UniqueIdentifier>{3307ba48-0964-4caf-97e1-949639988f40}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Tool\98. Model Save">
+      <UniqueIdentifier>{99a53960-6745-4333-bbf8-20b8d01f25a9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -174,6 +177,9 @@
     <ClInclude Include="..\Public\Sword_Blade.h">
       <Filter>02. GameObject\Sword\Blade</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tool_ModelSave.h">
+      <Filter>97. Tool\98. Model Save</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -247,6 +253,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sword_Blade.cpp">
       <Filter>02. GameObject\Sword\Blade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_ModelSave.cpp">
+      <Filter>97. Tool\98. Model Save</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

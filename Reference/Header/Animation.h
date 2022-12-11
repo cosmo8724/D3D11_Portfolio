@@ -10,10 +10,16 @@ private:
 	virtual ~CAnimation() = default;
 
 public:
+	HRESULT						Save_Animation(HANDLE& hFile, DWORD& dwByte);
+	HRESULT						Load_Animation(HANDLE& hFile, DWORD& dwByte);
+
+public:
 	HRESULT						Initialize(aiAnimation* pAIAnimation, class CModel* pModel);
 	void							Update_Bones(_double dTimeDelta);
 
 private:
+	class CModel*					m_pModel = nullptr;
+
 	_bool							m_bIsLoop = true;
 	_bool							m_bIsFinish = false;
 	string							m_strName = "";

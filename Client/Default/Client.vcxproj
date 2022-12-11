@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Tool_ModelSave.h" />
     <ClInclude Include="..\Public\Sword_Blade.h" />
     <ClInclude Include="..\Public\Client_Define.h" />
     <ClInclude Include="..\Public\CurveEditor.h" />
@@ -201,6 +202,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Tool_ModelSave.cpp" />
     <ClCompile Include="..\Private\Sword_Blade.cpp" />
     <ClCompile Include="..\Private\CurveEditor.cpp" />
     <ClCompile Include="..\Private\Dynamic_Camera.cpp" />

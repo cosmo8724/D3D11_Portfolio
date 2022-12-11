@@ -6,8 +6,60 @@ CChannel::CChannel()
 {
 }
 
+HRESULT CChannel::Save_Channel(HANDLE & hFile, DWORD & dwByte)
+{
+	_uint			iNameLength = (_uint)m_strName.length() + 1;
+	const char*	pName = m_strName.c_str();
+	WriteFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+	WriteFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
+
+	WriteFile(hFile, &m_iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+	
+	for (auto& tKeyFrame : m_vecKeyFrame)
+		WriteFile(hFile, &tKeyFrame, sizeof(KEYFRAME), &dwByte, nullptr);
+
+	return S_OK;
+}
+
+HRESULT CChannel::Load_Channel(HANDLE & hFile, DWORD & dwByte)
+{
+	_uint			iNameLength = 0;
+	ReadFile(hFile, &iNameLength, sizeof(_uint), &dwByte, nullptr);
+
+	char*			pName = new char[iNameLength];
+	ReadFile(hFile, pName, sizeof(char) * iNameLength, &dwByte, nullptr);
+
+	m_strName = pName;
+
+	m_pBone = m_pModel->Get_BoneFromEntireBone(m_strName);
+	Safe_AddRef(m_pBone);
+
+	Safe_Delete_Array(pName);
+
+	ReadFile(hFile, &m_iNumKeyFrames, sizeof(_uint), &dwByte, nullptr);
+	m_vecKeyFrame.reserve(m_iNumKeyFrames);
+
+	for (_uint i = 0; i < m_iNumKeyFrames; ++i)
+	{
+		KEYFRAME		tKeyFrame;
+		ZeroMemory(&tKeyFrame, sizeof(KEYFRAME));
+
+		ReadFile(hFile, &tKeyFrame, sizeof(KEYFRAME), &dwByte, nullptr);
+
+		m_vecKeyFrame.push_back(tKeyFrame);
+	}
+
+	return S_OK;
+}
+
 HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel * pModel)
 {
+	m_pModel = pModel;
+	Safe_AddRef(m_pModel);
+
+	if (pAIChannel == nullptr)
+		return S_OK;
+
 	m_strName = pAIChannel->mNodeName.data;
 
 	m_pBone = pModel->Get_BoneFromEntireBone(m_strName);
@@ -105,6 +157,7 @@ CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CModel* pModel)
 
 void CChannel::Free()
 {
+	Safe_Release(m_pModel);
 	Safe_Release(m_pBone);
 
 	m_vecKeyFrame.clear();
