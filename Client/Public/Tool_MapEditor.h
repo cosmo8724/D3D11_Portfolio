@@ -33,7 +33,7 @@ private:
 
 private:
 	void							CheckNewPrototype();
-	void							CheckLevel();
+	_bool							CheckLevel();
 
 public:
 	static CTool_MapEditor*	Create(void* pArg = nullptr);

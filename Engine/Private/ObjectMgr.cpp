@@ -86,6 +86,31 @@ HRESULT CObjectMgr::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLaye
 	return S_OK;
 }
 
+HRESULT CObjectMgr::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLayerTag, const wstring & wstrPrototypeTag, _float4x4 matWorld, void* pArg)
+{
+	CGameObject*		pPrototypeObject = Find_Prototype(wstrPrototypeTag);
+	NULL_CHECK_RETURN(pPrototypeObject, E_FAIL);
+
+	CGameObject*		pCloneObject = pPrototypeObject->Clone(wstrPrototypeTag, pArg);
+	pCloneObject->Set_WorldMatrix(matWorld);
+
+	CLayer*				pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+
+	if (nullptr == pLayer)
+	{
+		pLayer = CLayer::Create();
+
+		NULL_CHECK_RETURN(pLayer, E_FAIL);
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pCloneObject), E_FAIL);
+
+		m_pLayers[iLevelIndex].emplace(wstrLayerTag, pLayer);
+	}
+	else
+		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pCloneObject), E_FAIL);
+
+	return S_OK;
+}
+
 void CObjectMgr::Tick(_double dTimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)

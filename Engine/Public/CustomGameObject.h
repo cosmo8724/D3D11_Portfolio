@@ -7,6 +7,7 @@ class ENGINE_DLL CCustomGameObject final : public CGameObject
 {
 public:
 	enum LEVEL { LEVEL_LOADING, LEVEL_LOGO, LEVEL_TESTSTAGE, LEVEL_END };
+	enum OBJECTUSAGE { PLAYER, MONSTER, UI, INVENTORY, COMMONOBJECT, OBJECTUSAGE_END };
 
 	typedef struct tagProtoTypeInfos
 	{
@@ -18,6 +19,11 @@ private:
 	CCustomGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	CCustomGameObject(const CCustomGameObject& rhs);
 	virtual ~CCustomGameObject() = default;
+
+public:
+	vector<pair<_uint, wstring>>	Get_PrototypeSaveData();
+	const _uint&						Get_TextureComCount() const { return m_iNumTextureCom; }
+	class CModel*						Get_ModelComponent() const { return m_pModelCom; }
 
 public:
 	virtual HRESULT			Initialize_Prototype(const vector<pair<_uint, wstring>>& vecPrototypeInfo, _uint iNumTextureCom);
@@ -33,6 +39,7 @@ private:
 	_uint						m_iTransformComLevel = 1000;
 	_uint						m_iTextureComLevel = 1000;
 	_uint						m_iModelComLevel = 1000;
+	_uint						m_iColliderComLevel = 1000;
 
 	wstring					m_wstrRendererComTag = L"";
 	wstring					m_wstrVIBufferComTag = L"";
@@ -41,12 +48,14 @@ private:
 	wstring					m_wstrModelComTag = L"";
 	_uint						m_iNumTextureCom = 0;
 	wstring*					m_wstrTextureComTag = nullptr;
+	wstring					m_wstrColliderComTag = L"";
 
 	class CRenderer*			m_pRendererCom = nullptr;
 	class CVIBuffer*			m_pVIBufferCom = nullptr;
 	class CShader*			m_pShaderCom = nullptr;
 	class CTexture**			m_pTextureCom = nullptr;
 	class CModel*				m_pModelCom = nullptr;
+	class CCollider*			m_pColliderCom = nullptr;
 
 private:
 	HRESULT					SetUp_Component();

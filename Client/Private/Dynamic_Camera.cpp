@@ -45,6 +45,9 @@ HRESULT CDynamic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pAr
 
 void CDynamic_Camera::Tick(_double dTimeDelta)
 {
+	if (!m_bRender)
+		return;
+
 	if (GetKeyState('W') & 0x8000)
 		m_pTransformCom->Go_Straight(dTimeDelta);
 	if (GetKeyState('S') & 0x8000)
@@ -79,11 +82,17 @@ void CDynamic_Camera::Tick(_double dTimeDelta)
 
 void CDynamic_Camera::Late_Tick(_double dTimeDelta)
 {
+	if (!m_bRender)
+		return;
+
 	__super::Late_Tick(dTimeDelta);
 }
 
 HRESULT CDynamic_Camera::Render()
 {
+	if (!m_bRender)
+		return E_FAIL;
+
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	return S_OK;

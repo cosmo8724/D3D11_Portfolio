@@ -130,6 +130,15 @@
     <Filter Include="00. System\91. Json">
       <UniqueIdentifier>{ce342a71-6fdb-41f3-a349-233159211a4c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\08. State Machine">
+      <UniqueIdentifier>{26316f51-5a00-4e72-809f-79fb68a694d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\07. Collider">
+      <UniqueIdentifier>{1051a5bf-4631-4281-8ccb-9d9797f8b00c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\07. Collider\DebugDraw">
+      <UniqueIdentifier>{c4077007-5cb8-4f75-b9a4-f508026ea579}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -279,6 +288,15 @@
     <ClCompile Include="..\Private\CustomGameObject.cpp">
       <Filter>01. Utility\02. GameObject\Customizable</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Collider.cpp">
+      <Filter>01. Utility\03. Component\07. Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DebugDraw.cpp">
+      <Filter>01. Utility\03. Component\07. Collider\DebugDraw</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMachine.cpp">
+      <Filter>01. Utility\03. Component\08. State Machine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\GameInstance.h">
@@ -383,9 +401,6 @@
     <ClInclude Include="..\Public\ObjectMgr.h">
       <Filter>01. Utility\02. GameObject\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Component.h">
-      <Filter>01. Utility\03. Component</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Renderer.h">
       <Filter>01. Utility\03. Component\01. Renderer</Filter>
     </ClInclude>
@@ -461,5 +476,22 @@
     <ClInclude Include="..\Public\Json\json.hpp">
       <Filter>00. System\91. Json</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Collider.h">
+      <Filter>01. Utility\03. Component\07. Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DebugDraw.h">
+      <Filter>01. Utility\03. Component\07. Collider\DebugDraw</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMachine.h">
+      <Filter>01. Utility\03. Component\08. State Machine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Component.h">
+      <Filter>01. Utility\03. Component</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\Public\HowToUse.txt">
+      <Filter>01. Utility\03. Component\08. State Machine</Filter>
+    </Text>
   </ItemGroup>
 </Project>

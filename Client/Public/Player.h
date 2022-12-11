@@ -18,6 +18,12 @@ private:
 	virtual ~CPlayer() = default;
 
 public:
+	_matrix					Get_BornMatrix(const string& strBoneName);
+	_matrix					Get_OffsetMatrix(const string & strBoneName);
+	_matrix					Get_PivotMatrix();
+	_vector					Get_TransformState(CTransform::STATE eState);
+
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
