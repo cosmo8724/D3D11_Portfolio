@@ -36,7 +36,7 @@ public:
 
 private:
 	const aiScene*					m_pAIScene = nullptr;
-	Importer							m_Importer;
+	Assimp::Importer							m_Importer;
 	MODELTYPE						m_eType = MODELTYPE_END;
 	_float4x4							m_matPivot;
 

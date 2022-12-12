@@ -6,6 +6,10 @@
 #include "Animation.h"
 #include "GameUtility.h"
 
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
+
 CModel::CModel(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
 {
@@ -32,8 +36,6 @@ CModel::CModel(const CModel& rhs)
 		for (_uint i = 0; i < AI_TEXTURE_TYPE_MAX; ++i)
 			Safe_AddRef(ModelMaterial.pTexture[i]);
 	}
-
-	m_wstrFilePath = rhs.m_wstrFilePath;
 }
 
 CBone * CModel::Get_BoneFromEntireBone(const string & strBoneName)
@@ -116,8 +118,12 @@ HRESULT CModel::Initialize(void * pArg)
 	}
 	else if (!lstrcmp(wszExt, L".model"))
 	{
-		DWORD	dwByte = m_dwBeginBoneData;
+		DWORD	dwByte = 0;
 		HANDLE	hFile = CreateFileW(m_wstrFilePath.c_str(), GENERIC_READ, 0, 0, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
+		SetFilePointer(hFile, m_dwBeginBoneData, nullptr, FILE_BEGIN);
+		
+		DWORD	Temp = 0;
+		ReadFile(hFile, &Temp, sizeof(DWORD), &dwByte, nullptr);
 
 		FAILED_CHECK_RETURN(Load_BoneAnimation(hFile, dwByte), E_FAIL);
 
@@ -453,7 +459,7 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 			return E_FAIL;
 		}
 	}
-
+	
 	/* Materials*/
 	if (m_iNumMaterials == 0)
 		return E_FAIL;
@@ -482,8 +488,9 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 		}
 	}
 
-	// TODO : 파일 위치 포인터 받아서 저장하기
-	m_dwBeginBoneData = fgetpos(hFile);
+	/* 파일 위치 포인터 받아서 저장하기 */
+	m_dwBeginBoneData = SetFilePointer(hFile, 0, nullptr, FILE_CURRENT);
+
 	/* Bones */
 	WriteFile(hFile, &m_dwBeginBoneData, sizeof(DWORD), &dwByte, nullptr);
 
@@ -568,7 +575,6 @@ void CModel::Free()
 	for (auto& pAnimation : m_vecAnimation)
 		Safe_Release(pAnimation);
 	m_vecAnimation.clear();
-
-	if (m_pAIScene)
-		m_Importer.FreeScene();
+	
+	m_Importer.FreeScene();
 }

@@ -2,6 +2,10 @@
 #include "Channel.h"
 #include "Model.h"
 
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
+
 CAnimation::CAnimation()
 {
 }
@@ -64,7 +68,6 @@ HRESULT CAnimation::Load_Animation(HANDLE & hFile, DWORD & dwByte)
 HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel * pModel)
 {
 	m_pModel = pModel;
-	Safe_AddRef(m_pModel);
 
 	if (pAIAnimation == nullptr)
 		return S_OK;
@@ -127,8 +130,6 @@ CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)
 
 void CAnimation::Free()
 {
-	Safe_Release(m_pModel);
-
 	for (auto& pChannel : m_vecChannel)
 		Safe_Release(pChannel);
 	m_vecChannel.clear();

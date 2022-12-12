@@ -1,5 +1,9 @@
 #include "..\Public\Bone.h"
 
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
+
 CBone::CBone()
 {
 }

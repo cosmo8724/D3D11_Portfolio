@@ -91,6 +91,7 @@ HRESULT CLoader::Loading_ForGamePlay()
 
 	m_wstrLoadingText = L"Loading Models...";
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_GhostRunner_Hand", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/GhostRunner Hand/PlayerOnlyMoveAnim.fbx", XMMatrixRotationX(XMConvertToRadians(-15.f)) * XMMatrixRotationY(XMConvertToRadians(180.f)))), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Fiona", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/Fiona/Fiona.model", XMMatrixRotationY(XMConvertToRadians(180.f)))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Handle", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sword/Handle/Handle.fbx", XMMatrixRotationZ(XMConvertToRadians(180.f)))), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Blade", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sword/Blade/Blade.fbx", XMMatrixRotationZ(XMConvertToRadians(180.f)))), E_FAIL);
 	

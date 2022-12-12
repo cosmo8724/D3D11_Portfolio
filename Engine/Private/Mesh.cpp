@@ -2,6 +2,10 @@
 #include "Model.h"
 #include "Bone.h"
 
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
+
 CMesh::CMesh(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CVIBuffer(pDevice, pContext)
 {
@@ -82,12 +86,22 @@ HRESULT CMesh::Load_Mesh(HANDLE & hFile, DWORD & dwByte)
 	ReadFile(hFile, &m_iNumMeshBone, sizeof(_uint), &dwByte, nullptr);
 	ReadFile(hFile, &m_iStride, sizeof(_uint), &dwByte, nullptr);
 
+	m_iNumVertexBuffers = 1;
+	m_eTopology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	m_eIndexFormat = DXGI_FORMAT_R32_UINT;
+	m_iIndicesSizePerPrimitive = sizeof(FACEINDICES32);
+	m_iNumIndicesPerPrimitive = 3;
+	m_iNumIndices = m_iNumIndicesPerPrimitive * m_iNumPrimitive;
+
 	if (m_eType == CModel::MODEL_NONANIM)
 	{
 		m_pNonAnimVertices = new VTXMODEL[m_iNumVertices];
 
 		for (_uint i = 0; i < m_iNumVertices; ++i)
 			ReadFile(hFile, &m_pNonAnimVertices[i], sizeof(VTXMODEL), &dwByte, nullptr);
+
+		ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+		m_tSubResourceData.pSysMem = m_pNonAnimVertices;
 	}
 	else if (m_eType == CModel::MODEL_ANIM)
 	{
@@ -95,12 +109,40 @@ HRESULT CMesh::Load_Mesh(HANDLE & hFile, DWORD & dwByte)
 
 		for (_uint i = 0; i < m_iNumVertices; ++i)
 			ReadFile(hFile, &m_pAnimVertices[i], sizeof(VTXANIMMODEL), &dwByte, nullptr);
+
+		ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+		m_tSubResourceData.pSysMem = m_pAnimVertices;
 	}
+
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iStride;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
+
+	if (FAILED(__super::Create_VertexBuffer()))
+		return E_FAIL;
+
+	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
+	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = 0;
+	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.MiscFlags = 0;
 
 	m_pIndices = new FACEINDICES32[m_iNumPrimitive];
 
 	for (_uint i = 0; i < m_iNumPrimitive; ++i)
 		ReadFile(hFile, &m_pIndices[i], sizeof(FACEINDICES32), &dwByte, nullptr);
+
+	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
+	m_tSubResourceData.pSysMem = m_pIndices;
+
+	if (FAILED(__super::Create_IndexBuffer()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -216,6 +258,8 @@ HRESULT CMesh::SetUp_MeshBones(HANDLE & hFile, DWORD & dwByte, CModel * pModel)
 		CBone*		pBone = pModel->Get_BoneFromEntireBone(string(pBoneName));
 
 		Safe_Delete_Array(pBoneName);
+		if (pBone == nullptr)
+			continue;
 
 		m_vecMeshBone.push_back(pBone);
 		Safe_AddRef(pBone);

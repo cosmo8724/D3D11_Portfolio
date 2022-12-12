@@ -4,6 +4,10 @@
 #include "ComponentMgr.h"
 #include "PipeLine.h"
 #include "Tool.h"
+#include "Graphic_Device.h"
+
+
+#define CONTEXT_LOCK CContext_LockGuard _CtxLock_(CGraphic_Device::GetInstance()->GetContextMtx());
 
 BEGIN(Engine)
 

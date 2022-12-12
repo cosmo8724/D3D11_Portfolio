@@ -2,6 +2,10 @@
 #include "Model.h"
 #include "Bone.h"
 
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
+
 CChannel::CChannel()
 {
 }
@@ -55,7 +59,6 @@ HRESULT CChannel::Load_Channel(HANDLE & hFile, DWORD & dwByte)
 HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel * pModel)
 {
 	m_pModel = pModel;
-	Safe_AddRef(m_pModel);
 
 	if (pAIChannel == nullptr)
 		return S_OK;
@@ -157,7 +160,6 @@ CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CModel* pModel)
 
 void CChannel::Free()
 {
-	Safe_Release(m_pModel);
 	Safe_Release(m_pBone);
 
 	m_vecKeyFrame.clear();
