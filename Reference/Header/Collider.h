@@ -25,10 +25,12 @@ public:
 
 public:
 	virtual HRESULT			Initialize_Prototype(COLLIDERTYPE eType);
-	virtual HRESULT			Initialize(void* pArg) override;
+	virtual HRESULT			Initialize(class CGameObject* pOwner, void* pArg);
 
 public:
 	void						Update(_fmatrix matTransform);
+	_bool						Collision(CCollider* pTargetCollider);
+	class CGameObject*		CollisionReturnObj(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 public:
@@ -36,8 +38,9 @@ public:
 #endif
 
 private:
-	_bool						m_bIsCollide = false;
 	COLLIDERTYPE			m_eType = COLLIDERTYPE_END;
+	_bool						m_bIsCollide = false;
+
 	BoundingSphere*			m_pSphere_Original = nullptr;
 	BoundingSphere*			m_pSphere = nullptr;
 	BoundingBox*				m_pAABB_Original = nullptr;
@@ -53,9 +56,12 @@ private:
 	_float4										m_vColor;
 #endif
 
+private:
+	_matrix					Remove_Rotation(_fmatrix matTransform);
+
 public:
 	static CCollider*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext, COLLIDERTYPE eType);
-	virtual CComponent*	Clone(void* pArg = nullptr) override;
+	virtual CComponent*	Clone(class CGameObject* pOwner, void* pArg = nullptr);
 	virtual void				Free() override;
 };
 

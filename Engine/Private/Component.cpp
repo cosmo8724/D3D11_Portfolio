@@ -12,6 +12,7 @@ CComponent::CComponent(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CComponent::CComponent(const CComponent & rhs)
 	: m_pDevice(rhs.m_pDevice)
 	, m_pContext(rhs.m_pContext)
+	, m_pOwner(nullptr)
 	, m_bIsCloned(true)
 	, m_wstrFilePath(rhs.m_wstrFilePath)
 {
@@ -24,8 +25,10 @@ HRESULT CComponent::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CComponent::Initialize(void* pArg)
+HRESULT CComponent::Initialize(CGameObject * pOwner, void* pArg)
 {
+	m_pOwner = pOwner;
+
 	return S_OK;
 }
 

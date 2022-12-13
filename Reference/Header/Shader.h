@@ -24,7 +24,7 @@ public:
 
 public:
 	HRESULT					Initialize_Prototype(const wstring& wstrShderFilePath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements);
-	virtual	HRESULT			Initialize(void* pArg) override;
+	virtual	HRESULT			Initialize(class CGameObject* pOwner, void* pArg) override;
 	
 public:
 	HRESULT					Begin(_uint iPassIndex);
@@ -39,7 +39,7 @@ private:
 
 public:
 	static CShader*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring& wstrShaderFilPath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements);
-	virtual CComponent*	Clone(void* pArg = nullptr) override;
+	virtual CComponent*	Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void				Free() override;
 };
 

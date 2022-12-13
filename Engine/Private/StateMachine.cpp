@@ -105,9 +105,9 @@ CStateMachine::CStateMachine(const CStateMachine & rhs)
 {
 }
 
-HRESULT CStateMachine::Initialize(void * pArg)
+HRESULT CStateMachine::Initialize(CGameObject* pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
 	CStateMachineBuilder*		pBuilder = static_cast<CStateMachineBuilder*>(pArg);
 
@@ -220,11 +220,11 @@ CStateMachine * CStateMachine::Create()
 	return new CStateMachine;
 }
 
-CComponent * CStateMachine::Clone(void * pArg)
+CComponent * CStateMachine::Clone(CGameObject * pOwner, void * pArg)
 {
 	CStateMachine*		pInstance = new CStateMachine(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CStateMachine");
 		Safe_Release(pInstance);

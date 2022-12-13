@@ -305,11 +305,11 @@ HRESULT CGameInstance::Clear_Prototype(_uint iLevelIndex)
 	return m_pComponentMgr->Clear_Prototype(iLevelIndex);
 }
 
-CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, void * pArg)
+CComponent * CGameInstance::Clone_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, CGameObject * pOwner, void * pArg)
 {
 	NULL_CHECK_RETURN(m_pComponentMgr, nullptr);
 	
-	return m_pComponentMgr->Clone_Component(iLevelIndex, wstrPrototypeTag, pArg);
+	return m_pComponentMgr->Clone_Component(iLevelIndex, wstrPrototypeTag, pOwner, pArg);
 }
 
 _matrix CGameInstance::Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState)

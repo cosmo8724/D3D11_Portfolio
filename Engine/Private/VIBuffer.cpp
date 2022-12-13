@@ -30,9 +30,9 @@ HRESULT CVIBuffer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer::Initialize(void * pArg)
+HRESULT CVIBuffer::Initialize(CGameObject * pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }

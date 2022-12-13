@@ -53,7 +53,7 @@ protected:
 	virtual ~CStateMachine() override = default;
 
 public:
-	virtual HRESULT			Initialize(void *pArg) override;
+	virtual HRESULT			Initialize(class CGameObject* pOwner, void *pArg) override;
 	virtual void				ImGui_RenderProperty() override;
 
 public:
@@ -73,7 +73,7 @@ private:
 
 public:
 	static CStateMachine*	Create();
-	virtual CComponent*	Clone(void* pArg = nullptr) override;
+	virtual CComponent*	Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void				Free() override;
 };
 

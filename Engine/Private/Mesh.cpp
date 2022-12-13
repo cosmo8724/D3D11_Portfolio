@@ -210,8 +210,10 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, C
 	return S_OK;
 }
 
-HRESULT CMesh::Initialize(void * pArg)
+HRESULT CMesh::Initialize(class CGameObject* pOwner, void * pArg)
 {
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
+
 	return S_OK;
 }
 
@@ -398,11 +400,11 @@ CMesh * CMesh::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, CModel::MODELTYPE
 	return pInstance;
 }
 
-CComponent * CMesh::Clone(void * pArg)
+CComponent * CMesh::Clone(CGameObject * pOwner, void * pArg)
 {
 	CMesh*	pInstance = new CMesh(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CMesh");
 		Safe_Release(pInstance);

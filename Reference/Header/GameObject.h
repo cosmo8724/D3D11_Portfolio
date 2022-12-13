@@ -49,7 +49,7 @@ protected:
 	wstring					m_wstrPrototypeGameObjectTag = L"";
 
 protected:
-	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppComponentOut, void* pArg = nullptr);
+	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppComponentOut, CGameObject* pOwner, void* pArg = nullptr);
 	class CComponent*		Find_Component(const wstring& wstrComponentTag);
 
 public:

@@ -4,10 +4,6 @@
 #include "ComponentMgr.h"
 #include "PipeLine.h"
 #include "Tool.h"
-#include "Graphic_Device.h"
-
-
-#define CONTEXT_LOCK CContext_LockGuard _CtxLock_(CGraphic_Device::GetInstance()->GetContextMtx());
 
 BEGIN(Engine)
 
@@ -72,7 +68,7 @@ public:		/* For Component Manager */
 	map<const wstring, class CComponent*>*		Get_PrototypeComponents();
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, class CComponent* pPrototype);
 	HRESULT				Clear_Prototype(_uint iLevelIndex);
-	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg = nullptr);
+	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, class CGameObject* pOwner, void* pArg = nullptr);
 
 public:		/* For PipeLine */
 	_matrix				Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState);

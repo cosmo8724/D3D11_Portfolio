@@ -70,9 +70,9 @@ HRESULT CShader::Initialize_Prototype(const wstring & wstrShderFilePath, DECLARA
 	return S_OK;
 }
 
-HRESULT CShader::Initialize(void * pArg)
+HRESULT CShader::Initialize(CGameObject * pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -172,11 +172,11 @@ CShader * CShader::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring
 	return pInstance;
 }
 
-CComponent * CShader::Clone(void * pArg)
+CComponent * CShader::Clone(CGameObject * pOwner, void * pArg)
 {
 	CShader*		pInstance = new CShader(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CShader");
 		Safe_Release(pInstance);

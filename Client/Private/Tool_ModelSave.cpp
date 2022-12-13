@@ -11,7 +11,7 @@ CTool_ModelSave::CTool_ModelSave(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 HRESULT CTool_ModelSave::Initialize(void * pArg)
 {
-	m_szWIndowName = "Model Save";
+	m_szWIndowName = "FBX to Model Converter";
 
 	return S_OK;
 }
@@ -48,7 +48,7 @@ void CTool_ModelSave::ImGui_RenderWindow()
 	if (ImGui::Button("Confirm"))
 	{
 		m_pModel = CModel::Create(m_pDevice, m_pContext, eModelType, szModelFilePath);
-		m_pCloneModel = dynamic_cast<CModel*>(m_pModel->Clone());
+		m_pCloneModel = dynamic_cast<CModel*>(m_pModel->Clone(nullptr));
 		sprintf_s(szModelFilePath, "");
 		eModelType = CModel::MODELTYPE_END;
 	}

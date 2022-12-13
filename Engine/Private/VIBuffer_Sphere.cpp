@@ -135,9 +135,9 @@ HRESULT CVIBuffer_Sphere::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Sphere::Initialize(void * pArg)
+HRESULT CVIBuffer_Sphere::Initialize(CGameObject * pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -154,11 +154,11 @@ CVIBuffer_Sphere * CVIBuffer_Sphere::Create(DEVICE pDevice, DEVICE_CONTEXT pCont
 	return pInstance;
 }
 
-CComponent * CVIBuffer_Sphere::Clone(void * pArg)
+CComponent * CVIBuffer_Sphere::Clone(CGameObject * pOwner, void * pArg)
 {
 	CVIBuffer_Sphere*		pInstance = new CVIBuffer_Sphere(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CVIBuffer_Sphere");
 		Safe_Release(pInstance);

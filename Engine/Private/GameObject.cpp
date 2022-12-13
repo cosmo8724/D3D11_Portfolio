@@ -37,7 +37,7 @@ HRESULT CGameObject::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	if (nullptr != pArg)
 		GameObjectDesc = *(GAMEOBJECTDESC*)pArg;
 
-	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(), CGameInstance::m_wstrPrototypeTransformTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, &GameObjectDesc.TransformDesc), E_FAIL);
+	FAILED_CHECK_RETURN(Add_Component(CGameInstance::Get_StaticLevelIndex(), CGameInstance::m_wstrPrototypeTransformTag, m_wstrTransformComTag, (CComponent**)&m_pTransformCom, this, &GameObjectDesc.TransformDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -67,7 +67,7 @@ void CGameObject::ImGui_RenderComponentProperties()
 	}
 }
 
-HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, const wstring & wstrComponentTag, CComponent ** ppComponentOut, void * pArg)
+HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, const wstring & wstrComponentTag, CComponent ** ppComponentOut, CGameObject* pOwner, void * pArg)
 {
 	if (nullptr != Find_Component(wstrComponentTag))
 		return E_FAIL;
@@ -75,7 +75,7 @@ HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring & wstrProtot
 	CGameInstance*	pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	CComponent*		pComponent = pGameInstance->Clone_Component(iLevelIndex, wstrPrototypeTag, pArg);
+	CComponent*		pComponent = pGameInstance->Clone_Component(iLevelIndex, wstrPrototypeTag, pOwner, pArg);
 	NULL_CHECK_RETURN(pComponent, E_FAIL);
 
 	m_mapComponent.emplace(wstrComponentTag, pComponent);

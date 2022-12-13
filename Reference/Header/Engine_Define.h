@@ -35,8 +35,6 @@ using namespace Assimp;
 #include <algorithm>
 #include <functional>
 #include <cassert>
-#include <mutex>
-#include <atomic>
 using namespace std;
 
 #include <Json/json_fwd.hpp>
@@ -56,7 +54,6 @@ using namespace nlohmann;
 #include "imgui.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
-#include "imgui_internal.h"
 #include "ImGuizmo.h"
 #include "ImGuiFileDialog.h"
 

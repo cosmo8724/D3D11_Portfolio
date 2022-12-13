@@ -29,7 +29,7 @@ CModel::CModel(const CModel& rhs)
 	, m_dwBeginBoneData(rhs.m_dwBeginBoneData)
 {
 	for (auto& pMesh : rhs.m_vecMesh)
-		m_vecMesh.push_back(dynamic_cast<CMesh*>(pMesh->Clone()));
+		m_vecMesh.push_back(dynamic_cast<CMesh*>(pMesh->Clone(nullptr)));
 
 	for (auto& ModelMaterial : m_vecMaterial)
 	{
@@ -102,8 +102,10 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePat
 	return S_OK;
 }
 
-HRESULT CModel::Initialize(void * pArg)
+HRESULT CModel::Initialize(CGameObject * pOwner, void * pArg)
 {
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
+
 	_tchar		wszExt[32] = L"";
 	_wsplitpath_s(m_wstrFilePath.c_str(), nullptr, 0, nullptr, 0, nullptr, 0, wszExt, 32);
 
@@ -540,11 +542,11 @@ CModel * CModel::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType
 	return pInstance;
 }
 
-CComponent * CModel::Clone(void * pArg)
+CComponent * CModel::Clone(CGameObject * pOwner, void * pArg)
 {
 	CModel*		pInstance = new CModel(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CModel");
 		Safe_Release(pInstance);

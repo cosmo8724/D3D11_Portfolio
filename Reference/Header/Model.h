@@ -26,7 +26,7 @@ public:
 
 public:
 	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot);
-	virtual HRESULT					Initialize(void* pArg) override;
+	virtual HRESULT					Initialize(class CGameObject* pOwner, void* pArg) override;
 	virtual void						ImGui_RenderProperty() override;
 
 public:
@@ -36,7 +36,7 @@ public:
 
 private:
 	const aiScene*					m_pAIScene = nullptr;
-	Assimp::Importer							m_Importer;
+	Importer							m_Importer;
 	MODELTYPE						m_eType = MODELTYPE_END;
 	_float4x4							m_matPivot;
 
@@ -71,7 +71,7 @@ private:
 
 public:
 	static CModel*					Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot = XMMatrixRotationY(XMConvertToRadians(180.0f)));
-	virtual CComponent*			Clone(void* pArg = nullptr) override;
+	virtual CComponent*			Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void						Free() override;
 };
 

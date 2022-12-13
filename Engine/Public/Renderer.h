@@ -14,7 +14,7 @@ public:
 
 public:
 	virtual HRESULT		Initialize_Prototype() override;
-	virtual HRESULT		Initialize(void* pArg) override;
+	virtual HRESULT		Initialize(class CGameObject* pOwner, void* pArg) override;
 
 public:
 	HRESULT				Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject);
@@ -33,7 +33,7 @@ private:
 
 public:
 	static	CRenderer*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);
-	virtual	CComponent*	Clone(void* pArg = nullptr) override;
+	virtual	CComponent*	Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual	void			Free() override;
 };
 

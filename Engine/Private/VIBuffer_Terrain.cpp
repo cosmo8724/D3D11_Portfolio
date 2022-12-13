@@ -153,9 +153,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Terrain::Initialize(void * pArg)
+HRESULT CVIBuffer_Terrain::Initialize(CGameObject * pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -172,11 +172,11 @@ CVIBuffer_Terrain * CVIBuffer_Terrain::Create(DEVICE pDevice, DEVICE_CONTEXT pCo
 	return pInstance;
 }
 
-CComponent * CVIBuffer_Terrain::Clone(void * pArg)
+CComponent * CVIBuffer_Terrain::Clone(CGameObject * pOwner, void * pArg)
 {
 	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CVIBuffer_Terrain");
 		Safe_Release(pInstance);
