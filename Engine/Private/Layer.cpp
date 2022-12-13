@@ -5,6 +5,18 @@ CLayer::CLayer()
 {
 }
 
+CComponent * CLayer::Get_Component(const wstring & wstrComponentTag, _uint iIndex)
+{
+	if (iIndex >= m_GameObjectList.size())
+		return nullptr;
+
+	auto	iter = m_GameObjectList.begin();
+	for (_uint i = 0; i < iIndex; ++i)
+		++iter;
+
+	return (*iter)->Find_Component(wstrComponentTag);
+}
+
 HRESULT CLayer::Add_GameObject(CGameObject * pGameObject)
 {
 	NULL_CHECK_RETURN(pGameObject, E_FAIL);

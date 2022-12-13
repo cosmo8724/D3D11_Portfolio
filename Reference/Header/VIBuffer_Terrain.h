@@ -12,7 +12,7 @@ private:
 
 public:
 	HRESULT						Initialize_Prototype(const wstring wstrHeightMapFilePath);
-	virtual HRESULT				Initialize(void* pArg) override;
+	virtual HRESULT				Initialize(class CGameObject* pOwner, void* pArg) override;
 
 private:
 	_uint							m_iNumVerticesX = 0;
@@ -20,7 +20,7 @@ private:
 
 public:
 	static	CVIBuffer_Terrain*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrHeightMapFilePath);
-	virtual CComponent*		Clone(void* pArg = nullptr) override;
+	virtual CComponent*		Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void					Free() override;
 };
 

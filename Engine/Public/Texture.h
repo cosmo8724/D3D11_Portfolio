@@ -16,7 +16,7 @@ public:
 
 public:
 	virtual HRESULT			Initialize_Prototype(const wstring wstrTextureFilePath, _uint iNumTexture);
-	virtual HRESULT			Initialize(void* pArg) override;
+	virtual HRESULT			Initialize(class CGameObject* pOwner, void* pArg) override;
 	virtual void				ImGui_RenderProperty() override;
 
 
@@ -25,12 +25,12 @@ public:
 	HRESULT					Bind_ShaderResources(class CShader* pShaderCom, const wstring wstrConstantName);
 
 private:
-	_uint												m_iNumTexture = 0;
-	ID3D11ShaderResourceView**					m_pTextures;
+	_uint								m_iNumTexture = 0;
+	ID3D11ShaderResourceView**	m_pTextures;
 
 public:
 	static CTexture*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrTextureFilePath, _uint iNumTexture = 1);
-	virtual CComponent*	Clone(void* pArg = nullptr) override;
+	virtual CComponent*	Clone(class CGameObject* pOwner, void* pArg = nullptr) override;
 	virtual void				Free() override;
 };
 

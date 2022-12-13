@@ -12,7 +12,7 @@ protected:
 
 public:
 	virtual HRESULT					Initialize_Prototype();
-	virtual HRESULT					Initialize(void* pArg);
+	virtual HRESULT					Initialize(class CGameObject* pOwner, void* pArg);
 	virtual HRESULT					Render();
 
 protected:
@@ -39,7 +39,7 @@ protected:
 	HRESULT							Create_IndexBuffer();
 
 public:
-	virtual CComponent*			Clone(void* pArg = nullptr) PURE;
+	virtual CComponent*			Clone(class CGameObject* pOwner, void* pArg = nullptr) PURE;
 	virtual void						Free() override;
 };
 

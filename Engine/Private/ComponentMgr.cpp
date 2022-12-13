@@ -47,12 +47,12 @@ HRESULT CComponentMgr::Clear_Prototype(_uint iLevelIndex)
 	return S_OK;
 }
 
-CComponent * CComponentMgr::Clone_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, void * pArg)
+CComponent * CComponentMgr::Clone_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, CGameObject * pOwner, void * pArg)
 {
 	CComponent*		pPrototype = Find_Prototype(iLevelIndex, wstrPrototypeTag);
 	NULL_CHECK_RETURN(pPrototype, nullptr);
 
-	CComponent*		pCloneComponent = pPrototype->Clone(pArg);
+	CComponent*		pCloneComponent = pPrototype->Clone(pOwner, pArg);
 	NULL_CHECK_RETURN(pCloneComponent, nullptr);
 
 	return pCloneComponent;

@@ -50,9 +50,9 @@ HRESULT CTransform::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CTransform::Initialize(void * pArg)
+HRESULT CTransform::Initialize(CGameObject * pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
 	if (nullptr != pArg)
 		memcpy(&m_TransformDesc, pArg, sizeof(TRANSFORMDESC));
@@ -240,11 +240,11 @@ CTransform * CTransform::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	return pInstance;
 }
 
-CComponent * CTransform::Clone(void * pArg)
+CComponent * CTransform::Clone(CGameObject * pOwner, void * pArg)
 {
 	CTransform*		pInstance = new CTransform(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CTransform");
 		Safe_Release(pInstance);

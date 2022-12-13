@@ -1,6 +1,7 @@
 #include "..\Public\Collider.h"
 #include "DebugDraw.h"
 #include "PipeLine.h"
+#include "GameObject.h"
 
 CCollider::CCollider(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
@@ -41,15 +42,17 @@ HRESULT CCollider::Initialize_Prototype(COLLIDERTYPE eType)
 	return S_OK;
 }
 
-HRESULT CCollider::Initialize(void * pArg)
+HRESULT CCollider::Initialize(CGameObject * pOwner, void * pArg)
 {
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
+
 	COLLIDERDESC		ColliderDesc;
 	memcpy(&ColliderDesc, pArg, sizeof(COLLIDERDESC));
 
 	switch (m_eType)
 	{
 	case COLLIDER_SPHERE:
-		m_pSphere_Original = new BoundingSphere(_float3(0.f, 0.f, 0.f), ColliderDesc.vSize.x * 0.5f);
+		m_pSphere_Original = new BoundingSphere(_float3(0.f, 0.f, 0.f), 0.5f);
 		m_pSphere_Original->Transform(*m_pSphere,
 			XMMatrixScaling(ColliderDesc.vSize.x, ColliderDesc.vSize.y, ColliderDesc.vSize.z) *
 			XMMatrixRotationX(ColliderDesc.vRotation.x) *
@@ -68,9 +71,8 @@ HRESULT CCollider::Initialize(void * pArg)
 		break;
 
 	case COLLIDER_OBB:
-		m_pOBB_Original = new BoundingOrientedBox(_float3(0.f, 0.f, 0.f), _float3(0.5f, 0.5f, 0.5f), _float4(0.f, 0.f, 0.f, 1.f));
+		m_pOBB_Original = new BoundingOrientedBox(_float3(0.f, 0.f, 0.f), _float3(ColliderDesc.vSize.x * 0.5f, ColliderDesc.vSize.y * 0.5f, ColliderDesc.vSize.z * 0.5f), _float4(0.f, 0.f, 0.f, 1.f));
 		m_pOBB_Original->Transform(*m_pOBB_Original,
-			XMMatrixScaling(ColliderDesc.vSize.x, ColliderDesc.vSize.y, ColliderDesc.vSize.z) *
 			XMMatrixRotationX(ColliderDesc.vRotation.x) *
 			XMMatrixRotationY(ColliderDesc.vRotation.y) *
 			XMMatrixRotationZ(ColliderDesc.vRotation.z) *
@@ -91,13 +93,106 @@ void CCollider::Update(_fmatrix matTransform)
 		break;
 
 	case COLLIDER_AABB:
-		m_pAABB_Original->Transform(*m_pAABB, matTransform);
+		m_pAABB_Original->Transform(*m_pAABB, Remove_Rotation(matTransform));
 		break;
 
 	case COLLIDER_OBB:
 		m_pOBB_Original->Transform(*m_pOBB, matTransform);
 		break;
 	}
+}
+
+_bool CCollider::Collision(CCollider * pTargetCollider)
+{
+	m_bIsCollide = false;
+
+	switch (m_eType)
+	{
+	case COLLIDER_SPHERE:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE)
+			m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pSphere);
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB)
+			m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pAABB);
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB)
+			m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pOBB);
+		break;
+
+	case COLLIDER_AABB:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE)
+			m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pSphere);
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB)
+			m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pAABB);
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB)
+			m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pOBB);
+		break;
+
+	case COLLIDER_OBB:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE)
+			m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pSphere);
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB)
+			m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pAABB);
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB)
+			m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pOBB);
+		break;
+	}
+
+	return m_bIsCollide;
+}
+
+CGameObject * CCollider::CollisionReturnObj(CCollider * pTargetCollider)
+{
+	m_bIsCollide = false;
+	CGameObject*		pTarget = nullptr;
+
+	switch (m_eType)
+	{
+	case COLLIDER_SPHERE:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
+			m_pSphere->Intersects(*pTargetCollider->m_pSphere))
+			pTarget = pTargetCollider->Get_Owner();
+
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB &&
+			m_pSphere->Intersects(*pTargetCollider->m_pAABB))
+			pTarget = pTargetCollider->Get_Owner();
+
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
+			m_pSphere->Intersects(*pTargetCollider->m_pOBB))
+			pTarget = pTargetCollider->Get_Owner();
+		break;
+
+	case COLLIDER_AABB:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
+			m_pAABB->Intersects(*pTargetCollider->m_pSphere))
+			pTarget = pTargetCollider->Get_Owner();
+
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB &&
+			m_pAABB->Intersects(*pTargetCollider->m_pAABB))
+			pTarget = pTargetCollider->Get_Owner();
+
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
+			m_pAABB->Intersects(*pTargetCollider->m_pOBB))
+			pTarget = pTargetCollider->Get_Owner();
+		break;
+
+	case COLLIDER_OBB:
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE &&
+			m_pOBB->Intersects(*pTargetCollider->m_pSphere))
+			pTarget = pTargetCollider->Get_Owner();
+
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB &&
+			m_pOBB->Intersects(*pTargetCollider->m_pAABB))
+			pTarget = pTargetCollider->Get_Owner();
+
+		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB &&
+			m_pOBB->Intersects(*pTargetCollider->m_pOBB))
+			pTarget = pTargetCollider->Get_Owner();
+		break;
+	}
+
+	if (pTarget != nullptr)
+		m_bIsCollide = true;
+
+	return pTarget;
 }
 
 #ifdef _DEBUG
@@ -142,6 +237,17 @@ HRESULT CCollider::Render()
 }
 #endif
 
+_matrix CCollider::Remove_Rotation(_fmatrix matTransform)
+{
+	_matrix		matResult = matTransform;
+
+	matResult.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f) * XMVectorGetX(XMVector3Length(matTransform.r[0]));
+	matResult.r[1] = XMVectorSet(0.f, 1.f, 0.f, 0.f) * XMVectorGetX(XMVector3Length(matTransform.r[1]));
+	matResult.r[2] = XMVectorSet(0.f, 0.f, 1.f, 0.f) * XMVectorGetX(XMVector3Length(matTransform.r[2]));
+
+	return matResult;
+}
+
 CCollider * CCollider::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, COLLIDERTYPE eType)
 {
 	CCollider*		pInstance = new CCollider(pDevice, pContext);
@@ -155,11 +261,11 @@ CCollider * CCollider::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, COLLIDERT
 	return pInstance;
 }
 
-CComponent * CCollider::Clone(void * pArg)
+CComponent * CCollider::Clone(CGameObject * pOwner, void * pArg)
 {
 	CCollider*		pInstance = new CCollider(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pOwner, pArg)))
 	{
 		MSG_BOX("Failed to Clone : CCollider");
 		Safe_Release(pInstance);
@@ -171,6 +277,8 @@ CComponent * CCollider::Clone(void * pArg)
 void CCollider::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pOwner);
 
 	Safe_Delete(m_pSphere_Original);
 	Safe_Delete(m_pSphere);

@@ -82,14 +82,20 @@
     <Filter Include="02. GameObject\Camera\Static">
       <UniqueIdentifier>{2a6a81b0-1ffb-4fe8-ab5f-63cb7ee1fd2f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Sword">
+    <Filter Include="97. Tool\98. Model Save">
+      <UniqueIdentifier>{99a53960-6745-4333-bbf8-20b8d01f25a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Weapon">
       <UniqueIdentifier>{4eb38428-1eb7-40d8-b3c5-e811a2e92e97}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Sword\Blade">
-      <UniqueIdentifier>{7a10edca-2529-46aa-8604-1e65d8fe6e8d}</UniqueIdentifier>
+    <Filter Include="02. GameObject\Weapon\Sword">
+      <UniqueIdentifier>{8c0ad76a-294f-41b6-8fec-2a4b4f122c49}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Sword\Handle">
+    <Filter Include="02. GameObject\Weapon\Sword\Handle">
       <UniqueIdentifier>{3307ba48-0964-4caf-97e1-949639988f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\Weapon\Sword\Blade">
+      <UniqueIdentifier>{7a10edca-2529-46aa-8604-1e65d8fe6e8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -169,10 +175,13 @@
       <Filter>02. GameObject\Camera\Static</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Sword_Handle.h">
-      <Filter>02. GameObject\Sword\Handle</Filter>
+      <Filter>02. GameObject\Weapon\Sword\Handle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Sword_Blade.h">
-      <Filter>02. GameObject\Sword\Blade</Filter>
+      <Filter>02. GameObject\Weapon\Sword\Blade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_ModelSave.h">
+      <Filter>97. Tool\98. Model Save</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -243,10 +252,13 @@
       <Filter>02. GameObject\Camera\Static</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sword_Handle.cpp">
-      <Filter>02. GameObject\Sword\Handle</Filter>
+      <Filter>02. GameObject\Weapon\Sword\Handle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sword_Blade.cpp">
-      <Filter>02. GameObject\Sword\Blade</Filter>
+      <Filter>02. GameObject\Weapon\Sword\Blade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_ModelSave.cpp">
+      <Filter>97. Tool\98. Model Save</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -35,9 +35,9 @@ HRESULT CRenderer::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CRenderer::Initialize(void * pArg)
+HRESULT CRenderer::Initialize(CGameObject * pOwner, void * pArg)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pArg), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
 	return S_OK;
 }
@@ -130,7 +130,7 @@ CRenderer * CRenderer::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	return pInstance;
 }
 
-CComponent * CRenderer::Clone(void * pArg)
+CComponent * CRenderer::Clone(CGameObject * pOwner, void * pArg)
 {
 	AddRef();
 

@@ -59,8 +59,10 @@ public:		/* For Object Manager */
 	map<const wstring, class CGameObject*>*	Get_Prototypes();
 	map<const wstring, class CLayer*>*			Get_Layers(_uint iLevelIndex);
 	list<class CGameObject*>*						Get_CloneObjectList(_uint iLevelIndex, const wstring& wstrLayerTag);
+	vector<class CGameObject*>*					Get_AnimObjects();
 	HRESULT				Add_Layer(_uint iLevelIndex, const wstring& wstrLayerTag);
 	HRESULT				Add_Prototype(const wstring& wstrPrototypeTag, class CGameObject* pPrototype);
+	HRESULT				Add_AnimObject(class CGameObject* pAnimObject);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld, void* pArg = nullptr);
 
@@ -68,7 +70,7 @@ public:		/* For Component Manager */
 	map<const wstring, class CComponent*>*		Get_PrototypeComponents();
 	HRESULT				Add_Prototype(_uint iLevelIndex, const wstring& wstrPrototypeTag, class CComponent* pPrototype);
 	HRESULT				Clear_Prototype(_uint iLevelIndex);
-	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, void* pArg = nullptr);
+	class CComponent*	Clone_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, class CGameObject* pOwner, void* pArg = nullptr);
 
 public:		/* For PipeLine */
 	_matrix				Get_TransformMatrix(CPipeLine::TRANSFORMSTATE eState);
