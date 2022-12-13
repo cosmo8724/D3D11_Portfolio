@@ -22,7 +22,7 @@ public:
 	class CBone*						Get_BoneFromEntireBone(const string & strBoneName);
 	_matrix							Get_BoneMatrix(const string& strBoneName);
 	_matrix							Get_OffsetMatrix(const string & strBoneName);
-	void								Set_CurAnimationIndex(_uint iAnimationIndex) { m_iCurAnimationIndex = iAnimationIndex; }
+	void								Set_CurAnimationIndex(_uint iAnimationIndex);
 
 public:
 	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot);
@@ -52,9 +52,13 @@ private:
 	vector<class CBone*>			m_vecEntireBone;
 	typedef vector<class CBone*>			BONES;
 
+	_bool								m_bAnimChanged = false;
+	_bool								m_bAnimFinished = false;
+	_uint								m_iLastAnimationIndex = 0;
 	_uint								m_iCurAnimationIndex = 0;
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>		m_vecAnimation;
+	class CAnimation*				pLastAnimation = nullptr;
 	typedef vector<class CAnimation*>	ANIMATIONS;
 
 	DWORD							m_dwBeginBoneData = 0;

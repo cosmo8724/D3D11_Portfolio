@@ -5,6 +5,7 @@
 #include "Bone.h"
 #include "Animation.h"
 #include "GameUtility.h"
+#include "GameInstance.h"
 
 #ifdef _DEBUG
 #define new DBG_NEW 
@@ -24,7 +25,10 @@ CModel::CModel(const CModel& rhs)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_vecMaterial(rhs.m_vecMaterial)
 	, m_iNumEntireBone(rhs.m_iNumEntireBone)
-	, m_iCurAnimationIndex(rhs.m_iCurAnimationIndex)
+	, m_bAnimChanged(false)
+	, m_bAnimFinished(false)
+	, m_iLastAnimationIndex(0)
+	, m_iCurAnimationIndex(0)
 	, m_iNumAnimations(rhs.m_iNumAnimations)
 	, m_dwBeginBoneData(rhs.m_dwBeginBoneData)
 {
@@ -64,6 +68,22 @@ _matrix CModel::Get_OffsetMatrix(const string & strBoneName)
 	NULL_CHECK_RETURN(pBone, XMMatrixIdentity());
 
 	return pBone->Get_matOffset();
+}
+
+void CModel::Set_CurAnimationIndex(_uint iAnimationIndex)
+{
+	if (iAnimationIndex < 0 || iAnimationIndex > m_iNumAnimations || iAnimationIndex == m_iCurAnimationIndex)
+		return;
+
+	m_iCurAnimationIndex = iAnimationIndex;
+
+	if (m_iLastAnimationIndex != m_iCurAnimationIndex)
+	{
+		m_bAnimChanged = true;
+		pLastAnimation = m_vecAnimation[m_iLastAnimationIndex];
+		m_iLastAnimationIndex = m_iCurAnimationIndex;
+		m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();
+	}
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
@@ -132,6 +152,9 @@ HRESULT CModel::Initialize(CGameObject * pOwner, void * pArg)
 		CloseHandle(hFile);
 	}
 
+	if (m_eType == MODEL_ANIM)
+		CGameInstance::GetInstance()->Add_AnimObject(m_pOwner);
+
 	return S_OK;
 }
 
@@ -180,7 +203,16 @@ void CModel::Play_Animation(_double dTimeDelta)
 	if (m_eType == MODEL_NONANIM)
 		return;
 
-	m_vecAnimation[m_iCurAnimationIndex]->Update_Bones(dTimeDelta);
+	if (m_bAnimChanged)
+	{
+		if (m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp(dTimeDelta, pLastAnimation))
+		{
+			m_bAnimChanged = false;
+			pLastAnimation = m_vecAnimation[m_iCurAnimationIndex];
+		}
+	}
+	else
+		m_vecAnimation[m_iCurAnimationIndex]->Update_Bones(dTimeDelta);
 
 	for (auto& pBone : m_vecEntireBone)
 	{

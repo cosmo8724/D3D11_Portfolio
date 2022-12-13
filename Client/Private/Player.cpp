@@ -85,36 +85,37 @@ void CPlayer::Tick(_double dTimeDelta)
 		iCurrentAnimation++;
 	if (CGameInstance::GetInstance()->Key_Down(DIK_END))
 		iCurrentAnimation--;
-	m_pModelCom->Set_CurAnimationIndex(iCurrentAnimation);
+
+	iCurrentAnimation = 6;
 
 	_long		MouseMove = 0;
 	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
 
-	m_pModelCom->Set_CurAnimationIndex(6);
-
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(dTimeDelta);
-		m_pModelCom->Set_CurAnimationIndex(13);
+		iCurrentAnimation = 13;
 	}
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_A) & 0x80)
 	{
 		m_pTransformCom->Go_Left(dTimeDelta);
-		m_pModelCom->Set_CurAnimationIndex(13);
+		iCurrentAnimation = 13;
 	}
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_S) & 0x80)
 	{
 		m_pTransformCom->Go_BackWard(dTimeDelta);
-		m_pModelCom->Set_CurAnimationIndex(13);
+		iCurrentAnimation = 13;
 	}
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_D) & 0x80)
 	{
 		m_pTransformCom->Go_Right(dTimeDelta);
-		m_pModelCom->Set_CurAnimationIndex(13);
+		iCurrentAnimation = 13;
 	}
 	if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB))
-		m_pModelCom->Set_CurAnimationIndex(20);
+		iCurrentAnimation = 20;
+
+	m_pModelCom->Set_CurAnimationIndex(iCurrentAnimation);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
 }

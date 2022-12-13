@@ -122,10 +122,10 @@ void CChannel::Update_matTransform(_double dPlayTime)
 
 	if (dPlayTime >= m_vecKeyFrame.back().dTime)
 	{
-		vScale = XMLoadFloat3(&m_vecKeyFrame.back().vScale);
-		vRotation = XMLoadFloat4(&m_vecKeyFrame.back().vRotation);
+		m_vLastScale = vScale = XMLoadFloat3(&m_vecKeyFrame.back().vScale);
+		m_vLastRotation = vRotation = XMLoadFloat4(&m_vecKeyFrame.back().vRotation);
 		vPosition = XMLoadFloat3(&m_vecKeyFrame.back().vPosition);
-		vPosition = XMVectorSetW(vPosition, 1.f);
+		m_vLastPosition = vPosition = XMVectorSetW(vPosition, 1.f);
 	}
 	else
 	{
@@ -143,6 +143,103 @@ void CChannel::Update_matTransform(_double dPlayTime)
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
 	m_pBone->Set_matTransform(matTransform);
+}
+
+_bool CChannel::Update_Lerp(_double dPlayTime, CChannel * pLastChannel)
+{
+	_vector	vScale, vRotation, vPosition;
+	_matrix	matTransform;
+
+	if (m_bLerpFinished)
+		return true;
+
+	if (dPlayTime >= m_vecKeyFrame.back().dTime)
+	{
+		m_bLerpFinished = true;
+		vScale = XMLoadFloat3(&m_vecKeyFrame.back().vScale);
+		vRotation = XMLoadFloat4(&m_vecKeyFrame.back().vRotation);
+		vPosition = XMLoadFloat3(&m_vecKeyFrame.back().vPosition);
+		vPosition = XMVectorSetW(vPosition, 1.f);
+		return true;
+	}
+
+	if (dPlayTime >= m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime)
+	{
+		m_bLerpFinished = true;
+		++m_iCurKeyFrameIndex;
+		return true;
+	}
+
+	_double	dRatio = (dPlayTime - m_vecKeyFrame[m_iCurKeyFrameIndex].dTime) / (m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime - m_vecKeyFrame[m_iCurKeyFrameIndex].dTime);
+
+	vScale = XMVectorLerp(XMLoadFloat3(&pLastChannel->m_vecKeyFrame[pLastChannel->m_iCurKeyFrameIndex].vScale), XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vScale), (_float)dRatio);
+	vRotation = XMQuaternionSlerp(XMLoadFloat4(&pLastChannel->m_vecKeyFrame[pLastChannel->m_iCurKeyFrameIndex].vRotation), XMLoadFloat4(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vRotation), (_float)dRatio);
+	vPosition = XMVectorLerp(XMLoadFloat3(&pLastChannel->m_vecKeyFrame[pLastChannel->m_iCurKeyFrameIndex].vPosition), XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vPosition), (_float)dRatio);
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+	m_pBone->Set_matTransform(matTransform);
+
+	return false;
+
+	/*_vector	vScale, vRotation, vPosition;
+	_matrix	matTransform;
+
+	if (m_iLerpFrameIndex == -1)
+	{
+		while (dPlayTime >= m_vecKeyFrame[m_iLerpFrameIndex + 1].dTime)
+		{
+			m_iLerpFrameIndex++;
+
+			if ((_int)m_iNumKeyFrames <= m_iLerpFrameIndex + 1)
+			{
+				m_iLerpFrameIndex -= 1;
+				break;
+			}
+		}
+	}
+
+	_uint	iSour = 0, iDest = 0;
+
+	iSour = m_iLerpFrameIndex;
+
+	_uint	iLastNumKeyframes = (_uint)pLastChannel->m_vecKeyFrame.size();
+	if (iLastNumKeyframes <= iSour)
+		iSour = iLastNumKeyframes - 1;
+
+	m_dLerpRatio += 0.1;
+
+	_vector	vLastScale, vCurScale;
+	_vector	vLastRotation, vCurRotation;
+	_vector	vLastPosition, vCurPosition;
+
+	vLastScale = XMLoadFloat3(&pLastChannel->m_vecKeyFrame[iSour].vScale);
+	vCurScale = XMLoadFloat3(&pCurrentChannel->m_vecKeyFrame[iDest].vScale);
+
+	vLastRotation = XMLoadFloat4(&pLastChannel->m_vecKeyFrame[iSour].vRotation);
+	vCurRotation = XMLoadFloat4(&pCurrentChannel->m_vecKeyFrame[iDest].vRotation);
+
+	vLastPosition = XMLoadFloat3(&pLastChannel->m_vecKeyFrame[iSour].vPosition);
+	vCurPosition = XMLoadFloat3(&pCurrentChannel->m_vecKeyFrame[iDest].vPosition);
+
+	vScale = XMVectorLerp(vLastScale, vCurScale, (_float)m_dLerpRatio);
+	vRotation = XMQuaternionSlerp(vLastRotation, vCurRotation, (_float)m_dLerpRatio);
+	vPosition = XMVectorLerp(vLastPosition, vCurPosition, (_float)m_dLerpRatio);
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+	m_pBone->Set_matTransform(matTransform);
+
+	if (m_dLerpRatio >= 1.0)
+	{
+		m_dLerpRatio = 0.0;
+		bIsFinish = true;
+		return true;
+	}
+
+	return false;*/
 }
 
 CChannel * CChannel::Create(aiNodeAnim * pAIChannel, CModel* pModel)

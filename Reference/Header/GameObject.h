@@ -21,6 +21,7 @@ public:
 	const _bool&				Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldMatrix() const { return m_pTransformCom->Get_WorldMatrix(); }
 	void						Set_WorldMatrix(_float4x4 matWorld) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(matWorld); }
+	class CComponent*		Find_Component(const wstring& wstrComponentTag);
 
 public:
 	static const wstring		m_wstrTransformComTag;
@@ -50,7 +51,6 @@ protected:
 
 protected:
 	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppComponentOut, CGameObject* pOwner, void* pArg = nullptr);
-	class CComponent*		Find_Component(const wstring& wstrComponentTag);
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;

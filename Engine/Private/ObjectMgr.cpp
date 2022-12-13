@@ -9,6 +9,17 @@ CObjectMgr::CObjectMgr()
 {
 }
 
+CComponent * CObjectMgr::Get_Component(_uint iLevelIndex, const wstring & wstrLayerTag, const wstring & wstrComponentTag, _uint iIndex)
+{
+	if (iLevelIndex >= m_iNumLevels)
+		return nullptr;
+
+	CLayer*		pLayer = Find_Layer(iLevelIndex, wstrLayerTag);
+	NULL_CHECK_RETURN(pLayer, nullptr);
+
+	return pLayer->Get_Component(wstrComponentTag, iIndex);
+}
+
 HRESULT CObjectMgr::Reserve_Manager(_uint iNumLevels)
 {
 	if (nullptr != m_pLayers)
@@ -111,6 +122,16 @@ HRESULT CObjectMgr::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLaye
 	return S_OK;
 }
 
+HRESULT CObjectMgr::Add_AnimObject(CGameObject * pAnimObject)
+{
+	NULL_CHECK_RETURN(pAnimObject, E_FAIL);
+
+	m_vecAnimObjects.push_back(pAnimObject);
+	Safe_AddRef(pAnimObject);
+
+	return S_OK;
+}
+
 void CObjectMgr::Tick(_double dTimeDelta)
 {
 	for (_uint i = 0; i < m_iNumLevels; ++i)
@@ -207,6 +228,10 @@ CLayer * CObjectMgr::Find_Layer(_uint iLevelIndex, const wstring & wstrLayerTag)
 
 void CObjectMgr::Free()
 {
+	for (auto& pAnimObject : m_vecAnimObjects)
+		Safe_Release(pAnimObject);
+	m_vecAnimObjects.clear();
+
 	for (_uint i = 0; i < m_iNumLevels; ++i)
 	{
 		for (auto& Pair : m_pLayers[i])
@@ -214,7 +239,6 @@ void CObjectMgr::Free()
 
 		m_pLayers[i].clear();
 	}
-
 	Safe_Delete_Array(m_pLayers);
 
 	for (auto& Pair : m_mapProtypes)
