@@ -115,7 +115,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB))
 		iCurrentAnimation = 20;
 
-	m_pModelCom->Set_CurAnimationIndex(iCurrentAnimation);
+	//m_pModelCom->Set_CurAnimationIndex(iCurrentAnimation);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
 }

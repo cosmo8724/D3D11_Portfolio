@@ -28,6 +28,7 @@ public:
 	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot);
 	virtual HRESULT					Initialize(class CGameObject* pOwner, void* pArg) override;
 	virtual void						ImGui_RenderProperty() override;
+	void								ImGui_RenderAnimation();
 
 public:
 	void								Play_Animation(_double dTimeDelta);

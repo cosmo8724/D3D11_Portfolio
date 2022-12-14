@@ -36,7 +36,7 @@ public:		/* For ImGui */
 	void					ImGui_Render();
 	void					ImGui_Render_Update();
 	HRESULT				Add_ImGuiTabObject(class CTool* pTool);
-	HRESULT				Add_ImGuiWindowObejct(class CTool* pTool);
+	HRESULT				Add_ImGuiWindowObject(class CTool* pTool);
 	void					Clear_ImGuiObject();
 
 public:		/* For InputDevice */

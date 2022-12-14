@@ -17,6 +17,7 @@ protected:
 	virtual ~CGameObject() = default;
 
 public:
+	class CComponent*		Get_Component(const wstring& wstrComponentTag);
 	const wstring&			Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
 	const _bool&				Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldMatrix() const { return m_pTransformCom->Get_WorldMatrix(); }

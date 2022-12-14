@@ -198,6 +198,67 @@ void CModel::ImGui_RenderProperty()
 	}
 }
 
+void CModel::ImGui_RenderAnimation()
+{
+	static _int	iSelectAnimation = -1;
+	CAnimation*	pAnimation = nullptr;
+	char**			ppAnimationTag = new char*[m_iNumAnimations];
+	
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+	{
+		_uint	iTagLength = (_uint)m_vecAnimation[i]->Get_AnimationName().length() + 1;
+		ppAnimationTag[i] = new char[iTagLength];
+		sprintf_s(ppAnimationTag[i], sizeof(char) * iTagLength, m_vecAnimation[i]->Get_AnimationName().c_str());
+	}
+
+	ImGui::BulletText("Animation List");
+	ImGui::ListBox("Animations", &iSelectAnimation, ppAnimationTag, (_int)m_iNumAnimations);
+
+	if (iSelectAnimation != -1)
+	{
+		static _bool	bReName = false;
+		static char	szNewName[MAX_PATH] = "";
+		pAnimation = m_vecAnimation[iSelectAnimation];
+
+		if (ImGui::Button("Play"))
+		{
+			Set_CurAnimationIndex(iSelectAnimation);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("ReName"))
+		{
+			bReName = true;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			iSelectAnimation = -1;
+			bReName = false;
+		}
+
+		if (bReName)
+		{
+			IMGUI_LEFT_LABEL(ImGui::InputText, "Input New Name", szNewName, MAX_PATH);
+			if (ImGui::Button("Confirm"))
+			{
+				pAnimation->Get_AnimationName() = szNewName;
+				sprintf_s(szNewName, "");
+				bReName = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("UnDo"))
+			{
+				sprintf_s(szNewName, "");
+				bReName = false;
+			}
+		}
+	}
+
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+		Safe_Delete_Array(ppAnimationTag[i]);
+	Safe_Delete_Array(ppAnimationTag);	
+}
+
 void CModel::Play_Animation(_double dTimeDelta)
 {
 	if (m_eType == MODEL_NONANIM)

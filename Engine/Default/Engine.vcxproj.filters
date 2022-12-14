@@ -139,6 +139,12 @@
     <Filter Include="01. Utility\03. Component\07. Collider\DebugDraw">
       <UniqueIdentifier>{c4077007-5cb8-4f75-b9a4-f508026ea579}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\09. Navigation">
+      <UniqueIdentifier>{59fbfb39-db0c-445a-b6d8-0aef6a70b31a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\09. Navigation\Cell">
+      <UniqueIdentifier>{89abf3b9-35dc-4c64-ab13-b5a7d7bc1665}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -296,6 +302,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\StateMachine.cpp">
       <Filter>01. Utility\03. Component\08. State Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Navigation.cpp">
+      <Filter>01. Utility\03. Component\09. Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cell.cpp">
+      <Filter>01. Utility\03. Component\09. Navigation\Cell</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -487,6 +499,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Component.h">
       <Filter>01. Utility\03. Component</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Navigation.h">
+      <Filter>01. Utility\03. Component\09. Navigation</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cell.h">
+      <Filter>01. Utility\03. Component\09. Navigation\Cell</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,16 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	Safe_AddRef(m_pContext);
 }
 
+CComponent * CGameObject::Get_Component(const wstring & wstrComponentTag)
+{
+	auto	iter = find_if(m_mapComponent.begin(), m_mapComponent.end(), CTag_Finder(wstrComponentTag));
+
+	if (iter == m_mapComponent.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 HRESULT CGameObject::Initialize_Prototype()
 {
 	return S_OK;

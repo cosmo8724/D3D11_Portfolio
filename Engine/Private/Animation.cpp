@@ -137,8 +137,6 @@ void CAnimation::Update_Bones(_double dTimeDelta)
 _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation * pLastAnimation)
 {
 	m_bIsLerpFinish = false;
-	_uint		iNumNeedLerp = 0;
-	_uint		iNumLerpComplete = 0;
 
 	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
 
@@ -148,13 +146,11 @@ _bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation * pLastAnimation)
 
 		if (pLastChannel != nullptr)
 		{
-			iNumNeedLerp++;
-			iNumLerpComplete += (_uint)CurChannel->Update_Lerp(m_dPlayTime, pLastChannel);
+			m_bIsLerpFinish = CurChannel->Update_Lerp(m_dPlayTime, pLastChannel);
 		}
+		else
+			CurChannel->Update_matTransform(dTimeDelta);
 	}
-
-	if (iNumLerpComplete == iNumNeedLerp)
-		m_bIsLerpFinish = true;
 
 	return m_bIsLerpFinish;
 

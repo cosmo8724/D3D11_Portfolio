@@ -46,7 +46,7 @@ private:	/* For Cloned Objects */
 	typedef map<const wstring, class CLayer*>				LAYERS;
 	_uint															m_iNumLevels = 0;
 
-private:	/* For Animation Objects */
+private:	/* For Animation Objects. Used Animation Tool. */
 	vector<class CGameObject*>								m_vecAnimObjects;
 	typedef vector<class CGameObject*>						ANIMOBJECTS;
 

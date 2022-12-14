@@ -137,11 +137,11 @@ HRESULT CGameInstance::Add_ImGuiTabObject(CTool * pTool)
 	return m_pImGuiMgr->Add_ImGuiTabObject(pTool);
 }
 
-HRESULT CGameInstance::Add_ImGuiWindowObejct(CTool * pTool)
+HRESULT CGameInstance::Add_ImGuiWindowObject(CTool * pTool)
 {
 	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
 
-	return m_pImGuiMgr->Add_ImGuiWindowObejct(pTool);
+	return m_pImGuiMgr->Add_ImGuiWindowObject(pTool);
 }
 
 void CGameInstance::Clear_ImGuiObject()

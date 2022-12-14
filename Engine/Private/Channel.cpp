@@ -150,7 +150,7 @@ _bool CChannel::Update_Lerp(_double dPlayTime, CChannel * pLastChannel)
 	_vector	vScale, vRotation, vPosition;
 	_matrix	matTransform;
 
-	if (m_bLerpFinished)
+	/*if (m_bLerpFinished)
 		return true;
 
 	if (dPlayTime >= m_vecKeyFrame.back().dTime)
@@ -161,20 +161,32 @@ _bool CChannel::Update_Lerp(_double dPlayTime, CChannel * pLastChannel)
 		vPosition = XMLoadFloat3(&m_vecKeyFrame.back().vPosition);
 		vPosition = XMVectorSetW(vPosition, 1.f);
 		return true;
-	}
+	}*/
 
-	if (dPlayTime >= m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime)
+	/*if (dPlayTime >= m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime)
 	{
 		m_bLerpFinished = true;
 		++m_iCurKeyFrameIndex;
 		return true;
+	}*/
+
+	_double	dRatio = m_dLerpRatio;//(dPlayTime - m_vecKeyFrame[m_iCurKeyFrameIndex].dTime) / (m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime - m_vecKeyFrame[m_iCurKeyFrameIndex].dTime);
+
+	m_dLerpRatio += 0.03;
+
+	if (m_dLerpRatio >= 1.0)
+	{
+		m_dLerpRatio = 0.0;
+		return true;
 	}
-
-	_double	dRatio = (dPlayTime - m_vecKeyFrame[m_iCurKeyFrameIndex].dTime) / (m_vecKeyFrame[m_iCurKeyFrameIndex + 1].dTime - m_vecKeyFrame[m_iCurKeyFrameIndex].dTime);
-
 	vScale = XMVectorLerp(XMLoadFloat3(&pLastChannel->m_vecKeyFrame[pLastChannel->m_iCurKeyFrameIndex].vScale), XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vScale), (_float)dRatio);
 	vRotation = XMQuaternionSlerp(XMLoadFloat4(&pLastChannel->m_vecKeyFrame[pLastChannel->m_iCurKeyFrameIndex].vRotation), XMLoadFloat4(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vRotation), (_float)dRatio);
 	vPosition = XMVectorLerp(XMLoadFloat3(&pLastChannel->m_vecKeyFrame[pLastChannel->m_iCurKeyFrameIndex].vPosition), XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vPosition), (_float)dRatio);
+	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	vScale = XMVectorLerp(vScale, XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex].vScale), (_float)dRatio);
+	vRotation = XMQuaternionSlerp(vRotation, XMLoadFloat4(&m_vecKeyFrame[m_iCurKeyFrameIndex].vRotation), (_float)dRatio);
+	vPosition = XMVectorLerp(vPosition, XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex].vPosition), (_float)dRatio);
 	vPosition = XMVectorSetW(vPosition, 1.f);
 
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);

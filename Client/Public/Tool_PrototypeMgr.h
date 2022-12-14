@@ -19,7 +19,7 @@ private:
 	virtual ~CTool_PrototypeMgr() = default;
 
 public:
-	virtual HRESULT					Initialize(void* pArg);
+	virtual HRESULT					Initialize(void* pArg) override;
 	virtual void						ImGui_RenderWindow() override;
 
 private:
