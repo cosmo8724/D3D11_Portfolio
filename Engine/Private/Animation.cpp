@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Animation.h"
 #include "Channel.h"
 #include "Model.h"
@@ -109,6 +110,7 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel * pModel)
 	return S_OK;
 }
 
+
 void CAnimation::Update_Bones(_double dTimeDelta)
 {
 	if (!m_bIsLoop && m_bIsFinish)
@@ -134,51 +136,29 @@ void CAnimation::Update_Bones(_double dTimeDelta)
 		m_bIsFinish = false;
 }
 
-_bool CAnimation::Update_Lerp(_double dTimeDelta, CAnimation * pLastAnimation)
+void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 {
-	m_bIsLerpFinish = false;
+	if (!m_bIsLoop && m_bIsFinish)
+		return;
 
 	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
 
-	for (auto& CurChannel : m_vecChannel)
+	if (m_dPlayTime >= m_dDuration)
 	{
-		CChannel*		pLastChannel = pLastAnimation->Get_Channel(CurChannel->Get_ChannelName());
-
-		if (pLastChannel != nullptr)
-		{
-			m_bIsLerpFinish = CurChannel->Update_Lerp(m_dPlayTime, pLastChannel);
-		}
-		else
-			CurChannel->Update_matTransform(dTimeDelta);
+		m_dPlayTime = 0.0;
+		m_bIsFinish = true;
 	}
 
-	return m_bIsLerpFinish;
+	for (_uint i = 0; i < m_iNumChannels; ++i)
+	{
+		if (m_bIsFinish == true)
+			m_vecChannel[i]->Reset_KeyFrameIndex();
 
-	//if (m_bIsLerpFinish)
-	//{
-	//	m_dPlayTime = 0.0;
+		m_vecChannel[i]->Update_Lerp(m_dPlayTime, fRatio);
+	}
 
-	//	for (auto Channel : m_vecChannel)
-	//	{
-	//		Channel->Reset_KeyFrameIndex();
-	//		Channel->Reset_LerpFrameIndex();
-	//	}
-
-	//	m_bIsLerpFinish = false;
-
-	//	return false;
-	//}
-	//else
-	//{
-	//	for (auto& CurChannel : m_vecChannel)
-	//	{
-	//		CChannel*		pLastChannel = pLastAnimation->Get_Channel(CurChannel->Get_ChannelName());
-
-	//		if (pLastChannel != nullptr)
-	//			m_bIsLerpFinish = CurChannel->Update_Lerp(m_dPlayTime, pLastChannel, bIsFinish);
-	//	}
-	//	return true;
-	//}
+	if (m_bIsFinish)
+		m_bIsFinish = false;
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)

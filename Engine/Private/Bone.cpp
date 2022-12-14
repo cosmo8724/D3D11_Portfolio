@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Bone.h"
 
 #ifdef _DEBUG

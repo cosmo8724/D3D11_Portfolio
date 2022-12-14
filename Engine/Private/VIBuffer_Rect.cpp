@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\VIBuffer_Rect.h"
 
 CVIBuffer_Rect::CVIBuffer_Rect(DEVICE pDevice, DEVICE_CONTEXT pContext)

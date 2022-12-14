@@ -145,6 +145,9 @@
     <Filter Include="01. Utility\03. Component\09. Navigation\Cell">
       <UniqueIdentifier>{89abf3b9-35dc-4c64-ab13-b5a7d7bc1665}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Default">
+      <UniqueIdentifier>{d4785d67-6e4e-4c84-9ee7-b7fdd4fff5da}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -308,6 +311,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Cell.cpp">
       <Filter>01. Utility\03. Component\09. Navigation\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>97. Default</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -505,6 +511,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Cell.h">
       <Filter>01. Utility\03. Component\09. Navigation\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>97. Default</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

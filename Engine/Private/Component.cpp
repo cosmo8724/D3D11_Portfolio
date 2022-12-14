@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Component.h"
 
 CComponent::CComponent(DEVICE pDevice, DEVICE_CONTEXT pContext)

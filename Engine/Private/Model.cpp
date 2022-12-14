@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Model.h"
 #include "Mesh.h"
 #include "Texture.h"
@@ -25,7 +26,6 @@ CModel::CModel(const CModel& rhs)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_vecMaterial(rhs.m_vecMaterial)
 	, m_iNumEntireBone(rhs.m_iNumEntireBone)
-	, m_bAnimChanged(false)
 	, m_bAnimFinished(false)
 	, m_iLastAnimationIndex(0)
 	, m_iCurAnimationIndex(0)
@@ -76,14 +76,10 @@ void CModel::Set_CurAnimationIndex(_uint iAnimationIndex)
 		return;
 
 	m_iCurAnimationIndex = iAnimationIndex;
+	m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();
 
 	if (m_iLastAnimationIndex != m_iCurAnimationIndex)
-	{
-		m_bAnimChanged = true;
-		pLastAnimation = m_vecAnimation[m_iLastAnimationIndex];
-		m_iLastAnimationIndex = m_iCurAnimationIndex;
-		m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();
-	}
+		m_fCurAnimChangeTime = 0.f;
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
@@ -152,7 +148,7 @@ HRESULT CModel::Initialize(CGameObject * pOwner, void * pArg)
 		CloseHandle(hFile);
 	}
 
-	if (m_eType == MODEL_ANIM)
+	if (m_eType == MODEL_ANIM && m_pOwner != nullptr)
 		CGameInstance::GetInstance()->Add_AnimObject(m_pOwner);
 
 	return S_OK;
@@ -264,16 +260,21 @@ void CModel::Play_Animation(_double dTimeDelta)
 	if (m_eType == MODEL_NONANIM)
 		return;
 
-	if (m_bAnimChanged)
+	//Idle->Update_Bones();
+	//Walk->Update_Lerp();
+
+	if (m_fCurAnimChangeTime < m_fAnimChangeTime)
 	{
-		if (m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp(dTimeDelta, pLastAnimation))
-		{
-			m_bAnimChanged = false;
-			pLastAnimation = m_vecAnimation[m_iCurAnimationIndex];
-		}
+		m_vecAnimation[m_iLastAnimationIndex]->Update_Bones(dTimeDelta);
+		m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp(0.0, m_fCurAnimChangeTime / m_fAnimChangeTime);
+
+		m_fCurAnimChangeTime += (_float)dTimeDelta;
 	}
 	else
+	{
 		m_vecAnimation[m_iCurAnimationIndex]->Update_Bones(dTimeDelta);
+		m_iLastAnimationIndex = m_iCurAnimationIndex;
+	}
 
 	for (auto& pBone : m_vecEntireBone)
 	{

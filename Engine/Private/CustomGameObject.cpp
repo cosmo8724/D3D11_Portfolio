@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\CustomGameObject.h"
 #include "GameInstance.h"
 #include "GameUtility.h"

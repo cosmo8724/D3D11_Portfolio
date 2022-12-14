@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\LightMgr.h"
 #include "Light.h"
 

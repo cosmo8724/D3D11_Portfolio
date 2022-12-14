@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\VIBuffer_Terrain.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(DEVICE pDevice, DEVICE_CONTEXT pContext)

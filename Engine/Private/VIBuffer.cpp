@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\VIBuffer.h"
 
 CVIBuffer::CVIBuffer(DEVICE pDevice, DEVICE_CONTEXT pContext)

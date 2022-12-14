@@ -20,6 +20,7 @@ public:
 
 private:
 	CGameObject*				m_pOwner = nullptr;
+	_float4x4						m_matCamera;
 
 private:
 	HRESULT						SetUp_Component();

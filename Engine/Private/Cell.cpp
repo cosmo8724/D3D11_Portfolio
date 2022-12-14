@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Cell.h"
 
 CCell::CCell(DEVICE pDevice, DEVICE_CONTEXT pContext)

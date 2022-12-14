@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\GameUtility.h"
 
 void CGameUtility::wctc(const wchar_t* szWchar, char* szChar)

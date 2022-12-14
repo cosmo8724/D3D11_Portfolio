@@ -53,13 +53,14 @@ private:
 	vector<class CBone*>			m_vecEntireBone;
 	typedef vector<class CBone*>			BONES;
 
-	_bool								m_bAnimChanged = false;
 	_bool								m_bAnimFinished = false;
 	_uint								m_iLastAnimationIndex = 0;
 	_uint								m_iCurAnimationIndex = 0;
+	_float								m_fAnimChangeTime = 1.f;
+	_float								m_fCurAnimChangeTime = 1.f;
+
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>		m_vecAnimation;
-	class CAnimation*				pLastAnimation = nullptr;
 	typedef vector<class CAnimation*>	ANIMATIONS;
 
 	DWORD							m_dwBeginBoneData = 0;

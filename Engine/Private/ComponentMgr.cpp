@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\ComponentMgr.h"
 #include "Component.h"
 

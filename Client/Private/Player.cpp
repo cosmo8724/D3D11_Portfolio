@@ -91,6 +91,8 @@ void CPlayer::Tick(_double dTimeDelta)
 	_long		MouseMove = 0;
 	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
+	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
 
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_W) & 0x80)
 	{

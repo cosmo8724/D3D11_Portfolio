@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\LevelMgr.h"
 #include "Level.h"
 #include "GameInstance.h"

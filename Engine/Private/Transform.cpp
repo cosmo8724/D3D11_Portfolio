@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Transform.h"
 #include "GameInstance.h"
 #include "Shader.h"
@@ -184,9 +185,11 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 {
 	_matrix	matRotation = XMMatrixRotationAxis(vAxis, fRadian);
 
-	_vector	vRight		= XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	_vector	vUp		= XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector	vLook		= XMVectorSet(0.f, 0.f, 1.f, 0.f);
+	_float3	vScale = Get_Scale();
+
+	_vector	vRight		= XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScale.x;
+	_vector	vUp		= XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScale.y;
+	_vector	vLook		= XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScale.z;;
 
 	Set_State(CTransform::STATE_RIGHT, XMVector4Transform(vRight, matRotation));
 	Set_State(CTransform::STATE_UP, XMVector4Transform(vUp, matRotation));
