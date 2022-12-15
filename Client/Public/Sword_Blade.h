@@ -1,16 +1,17 @@
 #pragma once
 #include "Client_Define.h"
-#include "GameObject.h"
+#include "Weapon.h"
 
 BEGIN(Engine)
 class CShader;
 class CRenderer;
 class CModel;
+class CBone;
 END
 
 BEGIN(Client)
 
-class CSword_Blade final : public CGameObject
+class CSword_Blade final : public CWeapon
 {
 private:
 	CSword_Blade(DEVICE pDevice, DEVICE_CONTEXT pContext);
@@ -28,8 +29,6 @@ private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-
-	class CPlayer*			m_pOwner = nullptr;
 
 private:
 	HRESULT					SetUp_Component();

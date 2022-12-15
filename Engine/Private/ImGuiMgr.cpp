@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "ImGuiMgr.h"
 #include "Tool.h"
 #include "GameInstance.h"
@@ -83,7 +84,7 @@ HRESULT CImGuiMgr::Add_ImGuiTabObject(CTool * pTool)
 	return S_OK;
 }
 
-HRESULT CImGuiMgr::Add_ImGuiWindowObejct(CTool * pTool)
+HRESULT CImGuiMgr::Add_ImGuiWindowObject(CTool * pTool)
 {
 	NULL_CHECK_RETURN(pTool, E_FAIL);
 

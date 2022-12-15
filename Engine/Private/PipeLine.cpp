@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\PipeLine.h"
 
 IMPLEMENT_SINGLETON(CPipeLine)

@@ -19,7 +19,7 @@ public:
 	
 public:
 	HRESULT	Add_ImGuiTabObject(class CTool* pTool);
-	HRESULT	Add_ImGuiWindowObejct(class CTool* pTool);
+	HRESULT	Add_ImGuiWindowObject(class CTool* pTool);
 	void		Clear_ImGuiObject();
 
 private:

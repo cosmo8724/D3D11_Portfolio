@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Tool_Property.h"
 #include "GameObject.h"
 #include "ObjectMgr.h"

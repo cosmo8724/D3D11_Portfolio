@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Transform.h"
 #include "GameInstance.h"
 #include "Shader.h"
@@ -102,9 +103,10 @@ void CTransform::ImGui_RenderProperty()
 void CTransform::Go_Straight(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
-	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+	_float4	vLook;
+	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
 
-	vPos += XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	vPos += XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
 	Set_State(CTransform::STATE_TRANS, vPos);
 }
@@ -112,9 +114,10 @@ void CTransform::Go_Straight(_double dTimeDelta)
 void CTransform::Go_BackWard(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
-	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+	_float4	vLook;
+	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
 
-	vPos -= XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	vPos -= XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
 	Set_State(CTransform::STATE_TRANS, vPos);
 }
@@ -184,9 +187,11 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 {
 	_matrix	matRotation = XMMatrixRotationAxis(vAxis, fRadian);
 
-	_vector	vRight		= XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	_vector	vUp		= XMVectorSet(0.f, 1.f, 0.f, 0.f);
-	_vector	vLook		= XMVectorSet(0.f, 0.f, 1.f, 0.f);
+	_float3	vScale = Get_Scale();
+
+	_vector	vRight		= XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScale.x;
+	_vector	vUp		= XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScale.y;
+	_vector	vLook		= XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScale.z;;
 
 	Set_State(CTransform::STATE_RIGHT, XMVector4Transform(vRight, matRotation));
 	Set_State(CTransform::STATE_UP, XMVector4Transform(vUp, matRotation));

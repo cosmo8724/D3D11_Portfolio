@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\ObjectMgr.h"
 #include "Layer.h"
 #include "GameObject.h"
@@ -120,6 +121,17 @@ HRESULT CObjectMgr::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLaye
 		FAILED_CHECK_RETURN(pLayer->Add_GameObject(pCloneObject), E_FAIL);
 
 	return S_OK;
+}
+
+CGameObject * CObjectMgr::Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring & wstrLayerTag, const wstring & wstrPrototypeTag, void * pArg)
+{
+	CGameObject*	pPrototype = Find_Prototype(wstrPrototypeTag);
+	NULL_CHECK_RETURN(pPrototype, nullptr);
+
+	CGameObject*	pCloneObject = pPrototype->Clone(wstrPrototypeTag, pArg);
+	NULL_CHECK_RETURN(pCloneObject, nullptr);
+
+	return pCloneObject;
 }
 
 HRESULT CObjectMgr::Add_AnimObject(CGameObject * pAnimObject)

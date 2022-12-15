@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\TimerMgr.h"
 #include "Timer.h"
 

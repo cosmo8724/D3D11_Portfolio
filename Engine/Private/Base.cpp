@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Base.h"
 
 CBase::CBase()

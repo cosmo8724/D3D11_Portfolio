@@ -9,6 +9,7 @@
 #include "Model.h"
 #include "Collider.h"
 #include "StateMachine.h"
+#include "Navigation.h"
 #include "Component.h"
 
 BEGIN(Engine)

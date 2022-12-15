@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Light.h"
 
 CLight::CLight(DEVICE pDevice, DEVICE_CONTEXT pContext)

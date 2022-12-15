@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Collider.h"
 #include "DebugDraw.h"
 #include "PipeLine.h"

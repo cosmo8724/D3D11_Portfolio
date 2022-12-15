@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Tool_AnimationManager.h" />
     <ClInclude Include="..\Public\Tool_ModelSave.h" />
     <ClInclude Include="..\Public\Sword_Blade.h" />
     <ClInclude Include="..\Public\Client_Define.h" />
@@ -195,6 +196,7 @@
     <ClInclude Include="..\Public\Tool_Model.h" />
     <ClInclude Include="..\Public\Tool_PrototypeMgr.h" />
     <ClInclude Include="..\Public\Tool_Settings.h" />
+    <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -202,6 +204,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Tool_AnimationManager.cpp" />
     <ClCompile Include="..\Private\Tool_ModelSave.cpp" />
     <ClCompile Include="..\Private\Sword_Blade.cpp" />
     <ClCompile Include="..\Private\CurveEditor.cpp" />
@@ -224,6 +227,7 @@
     <ClCompile Include="..\Private\Tool_Model.cpp" />
     <ClCompile Include="..\Private\Tool_PrototypeMgr.cpp" />
     <ClCompile Include="..\Private\Tool_Settings.cpp" />
+    <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

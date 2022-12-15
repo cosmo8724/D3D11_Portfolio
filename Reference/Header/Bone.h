@@ -17,6 +17,7 @@ public:
 	const _uint&		Get_NumChiled() const { return m_iNumChild; }
 	_matrix			Get_matOffset() { return XMLoadFloat4x4(&m_matOffset); }
 	_matrix			Get_CombindMatrix() { return XMLoadFloat4x4(&m_matCombindTransform); }
+	_matrix			Get_matTransform() { return XMLoadFloat4x4(&m_matTransform); }
 	void				Set_matOffset(_float4x4 matOffset) { m_matOffset = matOffset; }
 	void				Set_matTransform(_fmatrix matTransform) { XMStoreFloat4x4(&m_matTransform, matTransform); }
 

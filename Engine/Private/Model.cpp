@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Model.h"
 #include "Mesh.h"
 #include "Texture.h"
@@ -25,7 +26,6 @@ CModel::CModel(const CModel& rhs)
 	, m_iNumMaterials(rhs.m_iNumMaterials)
 	, m_vecMaterial(rhs.m_vecMaterial)
 	, m_iNumEntireBone(rhs.m_iNumEntireBone)
-	, m_bAnimChanged(false)
 	, m_bAnimFinished(false)
 	, m_iLastAnimationIndex(0)
 	, m_iCurAnimationIndex(0)
@@ -76,14 +76,10 @@ void CModel::Set_CurAnimationIndex(_uint iAnimationIndex)
 		return;
 
 	m_iCurAnimationIndex = iAnimationIndex;
+	m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();
 
 	if (m_iLastAnimationIndex != m_iCurAnimationIndex)
-	{
-		m_bAnimChanged = true;
-		pLastAnimation = m_vecAnimation[m_iLastAnimationIndex];
-		m_iLastAnimationIndex = m_iCurAnimationIndex;
-		m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();
-	}
+		m_fCurAnimChangeTime = 0.f;
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
@@ -152,7 +148,7 @@ HRESULT CModel::Initialize(CGameObject * pOwner, void * pArg)
 		CloseHandle(hFile);
 	}
 
-	if (m_eType == MODEL_ANIM)
+	if (m_eType == MODEL_ANIM && m_pOwner != nullptr)
 		CGameInstance::GetInstance()->Add_AnimObject(m_pOwner);
 
 	return S_OK;
@@ -198,21 +194,87 @@ void CModel::ImGui_RenderProperty()
 	}
 }
 
+void CModel::ImGui_RenderAnimation()
+{
+	static _int	iSelectAnimation = -1;
+	CAnimation*	pAnimation = nullptr;
+	char**			ppAnimationTag = new char*[m_iNumAnimations];
+	
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+	{
+		_uint	iTagLength = (_uint)m_vecAnimation[i]->Get_AnimationName().length() + 1;
+		ppAnimationTag[i] = new char[iTagLength];
+		sprintf_s(ppAnimationTag[i], sizeof(char) * iTagLength, m_vecAnimation[i]->Get_AnimationName().c_str());
+	}
+
+	ImGui::BulletText("Animation List");
+	ImGui::ListBox("Animations", &iSelectAnimation, ppAnimationTag, (_int)m_iNumAnimations);
+
+	if (iSelectAnimation != -1)
+	{
+		static _bool	bReName = false;
+		static char	szNewName[MAX_PATH] = "";
+		pAnimation = m_vecAnimation[iSelectAnimation];
+
+		if (ImGui::Button("Play"))
+		{
+			Set_CurAnimationIndex(iSelectAnimation);
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("ReName"))
+		{
+			bReName = true;
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Cancel"))
+		{
+			iSelectAnimation = -1;
+			bReName = false;
+		}
+
+		if (bReName)
+		{
+			IMGUI_LEFT_LABEL(ImGui::InputText, "Input New Name", szNewName, MAX_PATH);
+			if (ImGui::Button("Confirm"))
+			{
+				pAnimation->Get_AnimationName() = szNewName;
+				sprintf_s(szNewName, "");
+				bReName = false;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("UnDo"))
+			{
+				sprintf_s(szNewName, "");
+				bReName = false;
+			}
+		}
+	}
+
+	for (_uint i = 0; i < m_iNumAnimations; ++i)
+		Safe_Delete_Array(ppAnimationTag[i]);
+	Safe_Delete_Array(ppAnimationTag);	
+}
+
 void CModel::Play_Animation(_double dTimeDelta)
 {
 	if (m_eType == MODEL_NONANIM)
 		return;
 
-	if (m_bAnimChanged)
+	//Idle->Update_Bones();
+	//Walk->Update_Lerp();
+
+	if (m_fCurAnimChangeTime < m_fAnimChangeTime)
 	{
-		if (m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp(dTimeDelta, pLastAnimation))
-		{
-			m_bAnimChanged = false;
-			pLastAnimation = m_vecAnimation[m_iCurAnimationIndex];
-		}
+		m_vecAnimation[m_iLastAnimationIndex]->Update_Bones(dTimeDelta);
+		m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp(0.0, m_fCurAnimChangeTime / m_fAnimChangeTime);
+
+		m_fCurAnimChangeTime += (_float)dTimeDelta;
 	}
 	else
+	{
 		m_vecAnimation[m_iCurAnimationIndex]->Update_Bones(dTimeDelta);
+		m_iLastAnimationIndex = m_iCurAnimationIndex;
+	}
 
 	for (auto& pBone : m_vecEntireBone)
 	{
@@ -240,7 +302,7 @@ HRESULT CModel::Bind_Material(CShader * pShaderCom, _uint iMeshIndex, aiTextureT
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName)
+HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName, _uint iPassIndex)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 
@@ -255,7 +317,7 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & w
 			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 256);
 		}
 
-		pShaderCom->Begin(0);
+		pShaderCom->Begin(iPassIndex);
 
 		m_vecMesh[iMeshIndex]->Render();
 	}

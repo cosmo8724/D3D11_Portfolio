@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Renderer.h"
 #include "GameObject.h"
 

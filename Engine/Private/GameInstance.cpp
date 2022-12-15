@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\GameInstance.h"
 #include "Graphic_Device.h"
 #include "ImGuiMgr.h"
@@ -137,11 +138,11 @@ HRESULT CGameInstance::Add_ImGuiTabObject(CTool * pTool)
 	return m_pImGuiMgr->Add_ImGuiTabObject(pTool);
 }
 
-HRESULT CGameInstance::Add_ImGuiWindowObejct(CTool * pTool)
+HRESULT CGameInstance::Add_ImGuiWindowObject(CTool * pTool)
 {
 	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
 
-	return m_pImGuiMgr->Add_ImGuiWindowObejct(pTool);
+	return m_pImGuiMgr->Add_ImGuiWindowObject(pTool);
 }
 
 void CGameInstance::Clear_ImGuiObject()
@@ -296,6 +297,13 @@ HRESULT CGameInstance::Clone_GameObject(_uint iLevelIndex, const wstring & wstrL
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
 
 	return m_pObjectMgr->Clone_GameObject(iLevelIndex, wstrLayerTag, wstrPrototypeTag, matWorld, pArg);
+}
+
+CGameObject * CGameInstance::Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring & wstrLayerTag, const wstring & wstrPrototypeTag, void * pArg)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, nullptr);
+
+	return m_pObjectMgr->Clone_GameObjectReturnPtr(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
 }
 
 map<const wstring, class CComponent*>* CGameInstance::Get_PrototypeComponents()

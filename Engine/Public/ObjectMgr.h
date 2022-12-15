@@ -28,6 +28,7 @@ public:
 	HRESULT	Add_Prototype(const wstring& wstrPrototypeTag, class CGameObject* pPrototype);
 	HRESULT	Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	HRESULT	Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld, void* pArg = nullptr);
+	class CGameObject*		Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	HRESULT	Add_AnimObject(class CGameObject* pAnimObject);
 
 	void		Tick(_double dTimeDelta);
@@ -46,7 +47,7 @@ private:	/* For Cloned Objects */
 	typedef map<const wstring, class CLayer*>				LAYERS;
 	_uint															m_iNumLevels = 0;
 
-private:	/* For Animation Objects */
+private:	/* For Animation Objects. Used Animation Tool. */
 	vector<class CGameObject*>								m_vecAnimObjects;
 	typedef vector<class CGameObject*>						ANIMOBJECTS;
 

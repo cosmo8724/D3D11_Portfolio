@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Level.h"
 
 CLevel::CLevel(DEVICE pDevice, DEVICE_CONTEXT pContext)

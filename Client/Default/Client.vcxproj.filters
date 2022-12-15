@@ -97,6 +97,9 @@
     <Filter Include="02. GameObject\Weapon\Sword\Blade">
       <UniqueIdentifier>{7a10edca-2529-46aa-8604-1e65d8fe6e8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Tool\06. Animator Manager">
+      <UniqueIdentifier>{032ea008-c88d-4ea6-96a7-2463c116d8aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -183,6 +186,12 @@
     <ClInclude Include="..\Public\Tool_ModelSave.h">
       <Filter>97. Tool\98. Model Save</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tool_AnimationManager.h">
+      <Filter>97. Tool\06. Animator Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon.h">
+      <Filter>02. GameObject\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -259,6 +268,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_ModelSave.cpp">
       <Filter>97. Tool\98. Model Save</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_AnimationManager.cpp">
+      <Filter>97. Tool\06. Animator Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon.cpp">
+      <Filter>02. GameObject\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

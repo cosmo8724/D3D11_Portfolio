@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\Texture.h"
 #include "GameUtility.h"
 #include "Shader.h"

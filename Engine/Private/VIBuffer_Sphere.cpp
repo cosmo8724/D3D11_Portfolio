@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "..\Public\VIBuffer_Sphere.h"
 
 CVIBuffer_Sphere::CVIBuffer_Sphere(DEVICE pDevice, DEVICE_CONTEXT pContext)
