@@ -42,11 +42,16 @@ private:
 	vector<CGameObject*>	m_vecPlayerPart;
 
 	_float						m_fTall = 0.f;
+	_float4x4					m_matTrans;
 
 private:
 	HRESULT					Ready_Part();
 	HRESULT					SetUp_Component();
 	HRESULT					SetUp_ShaderResource();
+
+private:
+	void						Mouse_Move(_double dTimeDelta);
+	void						Move_Camera(_double dTimeDelta);
 
 public:
 	static CPlayer*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

@@ -50,22 +50,6 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 	if (!m_bRender)
 		return;
 
-	_matrix	matOwnerWorld = XMLoadFloat4x4(&m_pOwnerTransform->Get_WorldMatrix());
-	_matrix	matSocket = m_pSocket->Get_CombindMatrix();
-
-	_matrix	matCombind;
-	matCombind = matSocket * m_matSocketPivot * matOwnerWorld;
-
-	XMStoreFloat4x4(&m_matCamera, matCombind);
-
-	//m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4((_float4*)&m_matCamera._41));
-
-	_float4	vPlayerPos;
-	XMStoreFloat4(&vPlayerPos, matOwnerWorld.r[3]);
-	vPlayerPos.y = m_matCamera._42 + 0.5f;
-
-	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4(&vPlayerPos) + XMVector3Normalize(XMVector3TransformNormal(m_pTransformCom->Get_State(CTransform::STATE_LOOK), m_matSocketPivot)) * -0.2f);
-
 	__super::Tick(dTimeDelta);
 }
 

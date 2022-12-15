@@ -76,7 +76,7 @@ HRESULT CPlayer::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(Ready_Part(), E_FAIL);
 
 	m_pCamera = dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back());
-	m_pCamera->Set_CameraDesc(m_pTransformCom, m_pModelCom->Get_BoneFromEntireBone("head_end"), m_pModelCom->Get_PivotMatrix());
+	m_pCamera->Set_CameraDesc(m_pTransformCom, m_pModelCom->Get_BoneFromEntireBone("head"), m_pModelCom->Get_PivotMatrix());
 
 	return S_OK;
 }
@@ -85,7 +85,7 @@ void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	m_fTall = m_pCamera->Get_WorldMatrix()._42 - XMVectorGetY(m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix().r[3]);
+	Mouse_Move(dTimeDelta);
 
 	static _int	iCurrentAnimation = 0;
 	_uint		iAnimationCnt = m_pModelCom->Get_NumAnimations();
@@ -132,54 +132,7 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	_matrix		matCam = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix());
-
-	matCam.r[0] = XMVector3Normalize(matCam.r[0]);
-	matCam.r[1] = XMVector3Normalize(matCam.r[1]);
-	matCam.r[2] = XMVector3Normalize(matCam.r[2]);
-
-	_long		MouseMove = 0;
-	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
-		m_pCamera->Yaw(dTimeDelta * MouseMove * 0.1f);
-
-
-	}
-	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
-	{
-		//_vector	vRootPos = m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix().r[3];
-		//_vector	vLastHeadPos = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix().r[3];
-
-		//_matrix	matHead = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix();
-		//_matrix	matTrans = XMMatrixTranslationFromVector(matHead.r[3]);
-		//m_pTransformCom->Turn(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)), dTimeDelta * MouseMove * 0.05f);
-		m_pCamera->Pitch(dTimeDelta * MouseMove * 0.1f);
-		//_vector	vCurHeadPos = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix().r[3];
-
-		//_vector	vLastHeight = vLastHeadPos - vRootPos;
-		//_vector	vCurHeight = vCurHeadPos - vRootPos;
-
-		//_float		fPitch = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vLastHeight), XMVector3Normalize(vCurHeight)));
-
-		//_float		fYDist = m_fTall - m_fTall * cosf(fPitch);
-		//_float		fLookDist = m_fTall * cosf(fPitch) * tanf(fPitch);
-
-		//_float4x4	vCamWorld = m_pCamera->Get_WorldMatrix();
-		//vCamWorld._42 += fYDist;
-		
-		//_vector	vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-		//vDir = -XMVector3Normalize(vDir) * fLookDist;
-
-		//vCamWorld._41 += XMVectorGetX(vDir);
-		//vCamWorld._42 += XMVectorGetY(vDir);
-		//vCamWorld._43 += XMVectorGetZ(vDir);
-
-		//dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"))->Set_WorldMatrix(vCamWorld);
-
-		//dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"))->Turn(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)), dTimeDelta * MouseMove * 0.1f);
-		//m_pCamera->Pitch(dTimeDelta * MouseMove * 0.1f);
-	}
+	Move_Camera(dTimeDelta);
 
 	for (_uint i = 0; i < m_iNumParts; ++i)
 		m_vecPlayerPart[i]->Late_Tick(dTimeDelta);
@@ -251,13 +204,51 @@ HRESULT CPlayer::SetUp_ShaderResource()
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
+	//FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matTrans);
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
 
 	Safe_Release(pGameInstance);
 
 	return S_OK;
+}
+
+void CPlayer::Mouse_Move(_double dTimeDelta)
+{
+	/* 플레이어 회전 */
+	_long		MouseMove = 0;
+	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
+	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
+}
+
+void CPlayer::Move_Camera(_double dTimeDelta)
+{
+	/* 플레이어 키 구하기 */
+	_vector	vHeadPos = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix().r[3];
+	_vector	vRootPos = m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix().r[3];
+	m_fTall = XMVectorGetX(XMVector3Length(vHeadPos - vRootPos));
+
+	/* pitch 구하기 */
+	_float		fDistance = XMVectorGetX(XMVector3Dot(vHeadPos - vRootPos, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+
+	_float		fPitch = acosf(fDistance / m_fTall);
+
+	/* z, z' 구하기 */
+	_float		fLookDist = m_fTall * sinf(fPitch);
+	_float		fYDist = m_fTall - fDistance;
+
+	/* 보정행렬 구하기 */
+	_matrix	matTrans = XMMatrixTranslationFromVector(XMVector3Normalize(XMLoadFloat4x4(&m_pCamera->Get_WorldMatrix()).r[2]) * -fLookDist) * XMMatrixTranslation(0.f, fYDist, 0.f);
+	_matrix	matScale = XMMatrixScaling(0.05f, 0.05f, 0.05f);
+
+	/* 뼈행렬에 보정행렬 곱 */
+	_matrix	matHead = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix() * matTrans * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix());
+	XMStoreFloat4x4(&m_matTrans, matHead);
+
+	dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"))->Set_WorldMatrix(m_matTrans);
 }
 
 CPlayer * CPlayer::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
