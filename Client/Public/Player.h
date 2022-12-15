@@ -36,6 +36,15 @@ private:
 	CModel*					m_pModelCom = nullptr;
 
 private:
+	class CStatic_Camera*	m_pCamera = nullptr;
+
+	_uint						m_iNumParts = 0;
+	vector<CGameObject*>	m_vecPlayerPart;
+
+	_float						m_fTall = 0.f;
+
+private:
+	HRESULT					Ready_Part();
 	HRESULT					SetUp_Component();
 	HRESULT					SetUp_ShaderResource();
 

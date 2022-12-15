@@ -33,7 +33,7 @@ public:
 public:
 	void								Play_Animation(_double dTimeDelta);
 	HRESULT							Bind_Material(class CShader* pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring& wstrConstantName);
-	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"");
+	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"", _uint iPassIndex = 0);
 
 private:
 	const aiScene*					m_pAIScene = nullptr;

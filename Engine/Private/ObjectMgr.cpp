@@ -123,6 +123,17 @@ HRESULT CObjectMgr::Clone_GameObject(_uint iLevelIndex, const wstring & wstrLaye
 	return S_OK;
 }
 
+CGameObject * CObjectMgr::Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring & wstrLayerTag, const wstring & wstrPrototypeTag, void * pArg)
+{
+	CGameObject*	pPrototype = Find_Prototype(wstrPrototypeTag);
+	NULL_CHECK_RETURN(pPrototype, nullptr);
+
+	CGameObject*	pCloneObject = pPrototype->Clone(wstrPrototypeTag, pArg);
+	NULL_CHECK_RETURN(pCloneObject, nullptr);
+
+	return pCloneObject;
+}
+
 HRESULT CObjectMgr::Add_AnimObject(CGameObject * pAnimObject)
 {
 	NULL_CHECK_RETURN(pAnimObject, E_FAIL);

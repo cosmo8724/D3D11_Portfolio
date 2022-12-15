@@ -302,7 +302,7 @@ HRESULT CModel::Bind_Material(CShader * pShaderCom, _uint iMeshIndex, aiTextureT
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName)
+HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName, _uint iPassIndex)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 
@@ -317,7 +317,7 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & w
 			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 256);
 		}
 
-		pShaderCom->Begin(0);
+		pShaderCom->Begin(iPassIndex);
 
 		m_vecMesh[iMeshIndex]->Render();
 	}

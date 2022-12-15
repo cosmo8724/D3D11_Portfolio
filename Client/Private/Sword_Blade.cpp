@@ -2,14 +2,15 @@
 #include "..\Public\Sword_Blade.h"
 #include "GameInstance.h"
 #include "Player.h"
+#include "Bone.h"
 
 CSword_Blade::CSword_Blade(DEVICE pDevice, DEVICE_CONTEXT pContext)
-	: CGameObject(pDevice, pContext)
+	: CWeapon(pDevice, pContext)
 {
 }
 
 CSword_Blade::CSword_Blade(const CSword_Blade & rhs)
-	: CGameObject(rhs)
+	: CWeapon(rhs)
 {
 }
 
@@ -28,37 +29,27 @@ HRESULT CSword_Blade::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-	m_pTransformCom->Set_Scale(_float3(0.05f, 0.05f, 0.05f));
-
 	return S_OK;
 }
 
 void CSword_Blade::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
-
-	_uint	iCurrentLevel = CGameInstance::GetInstance()->Get_CurLevelIndex();
-
-	if (m_pOwner == nullptr)
-	{
-		m_pOwner = dynamic_cast<CPlayer*>(CGameInstance::GetInstance()->Get_CloneObjectList(iCurrentLevel, L"Layer_Player")->front());
-		return;
-	}
-
-	_matrix	matOwnerWorld = XMLoadFloat4x4(&m_pOwner->Get_WorldMatrix());
-	_matrix	matTargetBone = dynamic_cast<CPlayer*>(m_pOwner)->Get_BornMatrix("Weapon_r");
-	_matrix	matPivot = dynamic_cast<CPlayer*>(m_pOwner)->Get_PivotMatrix();
-
-	_float4x4	matCombind;
-	XMStoreFloat4x4(&matCombind, matTargetBone * matPivot * matOwnerWorld);
-
-	m_pTransformCom->Set_WorldMatrix(matCombind);
-	m_pTransformCom->Set_Scale(_float3(0.05f, 0.05f, 0.05f));
 }
 
 void CSword_Blade::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	_matrix	matSocket = m_pModelCom->Get_PivotMatrix() * m_tWeaponDesc.pSocket->Get_CombindMatrix() * XMLoadFloat4x4(&m_tWeaponDesc.matPivot);
+
+	matSocket.r[0] = XMVector3Length(m_pModelCom->Get_PivotMatrix().r[0]) * XMVector3Normalize(matSocket.r[0]);
+	matSocket.r[1] = XMVector3Length(m_pModelCom->Get_PivotMatrix().r[1]) * XMVector3Normalize(matSocket.r[1]);
+	matSocket.r[2] = XMVector3Length(m_pModelCom->Get_PivotMatrix().r[2]) * XMVector3Normalize(matSocket.r[2]);
+
+	matSocket = matSocket * XMLoadFloat4x4(&m_tWeaponDesc.pTargetTransform->Get_WorldMatrix());
+
+	XMStoreFloat4x4(&m_matSocket, matSocket);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -76,7 +67,7 @@ HRESULT CSword_Blade::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i);
+		m_pModelCom->Render(m_pShaderCom, i, L"", 1);
 	}
 
 	return S_OK;
@@ -103,6 +94,7 @@ HRESULT CSword_Blade::SetUp_ShaderResource()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_Matrix(L"g_matSocket", &m_matSocket);
 
 	Safe_Release(pGameInstance);
 

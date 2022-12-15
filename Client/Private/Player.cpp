@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\Player.h"
 #include "GameInstance.h"
+#include "Static_Camera.h"
+#include "Weapon.h"
+#include "Bone.h"
 
 CPlayer::CPlayer(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -70,7 +73,10 @@ HRESULT CPlayer::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-	m_pTransformCom->Set_Scale(_float3(0.05f, 0.05f, 0.05f));
+	FAILED_CHECK_RETURN(Ready_Part(), E_FAIL);
+
+	m_pCamera = dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back());
+	m_pCamera->Set_CameraDesc(m_pTransformCom, m_pModelCom->Get_BoneFromEntireBone("head_end"), m_pModelCom->Get_PivotMatrix());
 
 	return S_OK;
 }
@@ -78,6 +84,8 @@ HRESULT CPlayer::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 void CPlayer::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	m_fTall = m_pCamera->Get_WorldMatrix()._42 - XMVectorGetY(m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix().r[3]);
 
 	static _int	iCurrentAnimation = 0;
 	_uint		iAnimationCnt = m_pModelCom->Get_NumAnimations();
@@ -87,12 +95,6 @@ void CPlayer::Tick(_double dTimeDelta)
 		iCurrentAnimation--;
 
 	iCurrentAnimation = 6;
-
-	_long		MouseMove = 0;
-	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
-	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
 
 	if (CGameInstance::GetInstance()->Get_DIKeyState(DIK_W) & 0x80)
 	{
@@ -120,11 +122,67 @@ void CPlayer::Tick(_double dTimeDelta)
 	//m_pModelCom->Set_CurAnimationIndex(iCurrentAnimation);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
+
+	m_iNumParts = (_uint)m_vecPlayerPart.size();
+	for (_uint i = 0; i < m_iNumParts; ++i)
+		m_vecPlayerPart[i]->Tick(dTimeDelta);
 }
 
 void CPlayer::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	_matrix		matCam = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix());
+
+	matCam.r[0] = XMVector3Normalize(matCam.r[0]);
+	matCam.r[1] = XMVector3Normalize(matCam.r[1]);
+	matCam.r[2] = XMVector3Normalize(matCam.r[2]);
+
+	_long		MouseMove = 0;
+	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
+		m_pCamera->Yaw(dTimeDelta * MouseMove * 0.1f);
+
+
+	}
+	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+	{
+		//_vector	vRootPos = m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix().r[3];
+		//_vector	vLastHeadPos = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix().r[3];
+
+		//_matrix	matHead = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix();
+		//_matrix	matTrans = XMMatrixTranslationFromVector(matHead.r[3]);
+		//m_pTransformCom->Turn(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)), dTimeDelta * MouseMove * 0.05f);
+		m_pCamera->Pitch(dTimeDelta * MouseMove * 0.1f);
+		//_vector	vCurHeadPos = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix().r[3];
+
+		//_vector	vLastHeight = vLastHeadPos - vRootPos;
+		//_vector	vCurHeight = vCurHeadPos - vRootPos;
+
+		//_float		fPitch = XMVectorGetX(XMVector3Dot(XMVector3Normalize(vLastHeight), XMVector3Normalize(vCurHeight)));
+
+		//_float		fYDist = m_fTall - m_fTall * cosf(fPitch);
+		//_float		fLookDist = m_fTall * cosf(fPitch) * tanf(fPitch);
+
+		//_float4x4	vCamWorld = m_pCamera->Get_WorldMatrix();
+		//vCamWorld._42 += fYDist;
+		
+		//_vector	vDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		//vDir = -XMVector3Normalize(vDir) * fLookDist;
+
+		//vCamWorld._41 += XMVectorGetX(vDir);
+		//vCamWorld._42 += XMVectorGetY(vDir);
+		//vCamWorld._43 += XMVectorGetZ(vDir);
+
+		//dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"))->Set_WorldMatrix(vCamWorld);
+
+		//dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"))->Turn(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_RIGHT)), dTimeDelta * MouseMove * 0.1f);
+		//m_pCamera->Pitch(dTimeDelta * MouseMove * 0.1f);
+	}
+
+	for (_uint i = 0; i < m_iNumParts; ++i)
+		m_vecPlayerPart[i]->Late_Tick(dTimeDelta);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -144,6 +202,33 @@ HRESULT CPlayer::Render()
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones");
 	}
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Ready_Part()
+{
+	CWeapon*		pPartObject = nullptr;
+
+	/* Sword_Handle */
+	CWeapon::WEAPONDESC	tWeaponDesc;
+	ZeroMemory(&tWeaponDesc, sizeof(CWeapon::WEAPONDESC));
+	XMStoreFloat4x4(&tWeaponDesc.matPivot, m_pModelCom->Get_PivotMatrix());
+	tWeaponDesc.pSocket = m_pModelCom->Get_BoneFromEntireBone("Weapon_r");
+	tWeaponDesc.pTargetTransform = m_pTransformCom;
+
+	pPartObject = dynamic_cast<CWeapon*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_Player_Parts", L"Prototype_GameObject_Handle", &tWeaponDesc));
+	NULL_CHECK_RETURN(pPartObject, E_FAIL);
+	pPartObject->Set_Owner(this);
+
+	m_vecPlayerPart.push_back(pPartObject);
+
+	/* Sword_Blade */
+	pPartObject = dynamic_cast<CWeapon*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_Player_Parts", L"Prototype_GameObject_Blade", &tWeaponDesc));
+	NULL_CHECK_RETURN(pPartObject, E_FAIL);
+	pPartObject->Set_Owner(this);
+
+	m_vecPlayerPart.push_back(pPartObject);
 
 	return S_OK;
 }
@@ -204,6 +289,10 @@ CGameObject * CPlayer::Clone(const wstring & wstrPrototypeTag, void * pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	for (auto& pPart : m_vecPlayerPart)
+		Safe_Release(pPart);
+	m_vecPlayerPart.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

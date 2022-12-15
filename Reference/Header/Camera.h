@@ -28,10 +28,10 @@ public:
 
 protected:
 	_bool						m_bRender = false;
+	CAMERADESC				m_CameraDesc;
 
 private:
 	class CPipeLine*			m_pPipeLine = nullptr;
-	CAMERADESC				m_CameraDesc;
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;

@@ -103,9 +103,10 @@ void CTransform::ImGui_RenderProperty()
 void CTransform::Go_Straight(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
-	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+	_float4	vLook;
+	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
 
-	vPos += XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	vPos += XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
 	Set_State(CTransform::STATE_TRANS, vPos);
 }
@@ -113,9 +114,10 @@ void CTransform::Go_Straight(_double dTimeDelta)
 void CTransform::Go_BackWard(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
-	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+	_float4	vLook;
+	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
 
-	vPos -= XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	vPos -= XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
 	Set_State(CTransform::STATE_TRANS, vPos);
 }

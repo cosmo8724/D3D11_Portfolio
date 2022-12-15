@@ -65,6 +65,7 @@ public:		/* For Object Manager */
 	HRESULT				Add_AnimObject(class CGameObject* pAnimObject);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld, void* pArg = nullptr);
+	class CGameObject*		Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 
 public:		/* For Component Manager */
 	map<const wstring, class CComponent*>*		Get_PrototypeComponents();

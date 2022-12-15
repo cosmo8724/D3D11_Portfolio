@@ -189,6 +189,9 @@
     <ClInclude Include="..\Public\Tool_AnimationManager.h">
       <Filter>97. Tool\06. Animator Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Weapon.h">
+      <Filter>02. GameObject\Weapon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -268,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Tool_AnimationManager.cpp">
       <Filter>97. Tool\06. Animator Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon.cpp">
+      <Filter>02. GameObject\Weapon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
