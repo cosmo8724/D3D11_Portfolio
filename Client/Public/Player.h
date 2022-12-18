@@ -29,29 +29,38 @@ public:
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
+	virtual void				ImGui_RenderProperty();
+
 
 private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
+	
 
 private:
 	class CStatic_Camera*	m_pCamera = nullptr;
 
-	_uint						m_iNumParts = 0;
-	vector<CGameObject*>	m_vecPlayerPart;
+	_uint						m_iNumWeapons = 0;
+	vector<class CWeapon*>	m_vecPlayerWeapon;
 
 	_float						m_fTall = 0.f;
-	_float4x4					m_matTrans;
+	_float						m_fWeaponHeight = 0.f;
+	_float4x4					m_matOffset;
+	_float4x4					m_matWeaponOffset;
+	_float4x4					m_matHeadWithOffset;
+
+	_double					m_dMouseMove;
 
 private:
-	HRESULT					Ready_Part();
+	HRESULT					Ready_Weapon();
 	HRESULT					SetUp_Component();
 	HRESULT					SetUp_ShaderResource();
 
 private:
 	void						Mouse_Move(_double dTimeDelta);
-	void						Move_Camera(_double dTimeDelta);
+	void						Move_Camera();
+	void						Move_Weapon();
 
 public:
 	static CPlayer*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

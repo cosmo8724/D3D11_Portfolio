@@ -100,6 +100,9 @@
     <Filter Include="97. Tool\06. Animator Manager">
       <UniqueIdentifier>{032ea008-c88d-4ea6-96a7-2463c116d8aa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\Player\Ash">
+      <UniqueIdentifier>{aa756438-e4c9-486d-8507-f4d9687d70e3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -192,6 +195,9 @@
     <ClInclude Include="..\Public\Weapon.h">
       <Filter>02. GameObject\Weapon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Ash.h">
+      <Filter>02. GameObject\Player\Ash</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -274,6 +280,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
       <Filter>02. GameObject\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ash.cpp">
+      <Filter>02. GameObject\Player\Ash</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

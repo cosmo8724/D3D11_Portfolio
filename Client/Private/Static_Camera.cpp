@@ -22,7 +22,7 @@ HRESULT CStatic_Camera::Initialize_Prototype()
 
 HRESULT CStatic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
-	m_bRender = true;
+	m_bRender = false;
 
 	CCamera::CAMERADESC		CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
@@ -57,6 +57,13 @@ void CStatic_Camera::Late_Tick(_double dTimeDelta)
 {
 	if (!m_bRender)
 		return;
+
+	_vector	vPlayerLookAt = m_pTransformCom->Get_State(CTransform::STATE_TRANS) + XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+	_vector	vCamEye = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+
+	m_vDir = vPlayerLookAt - vCamEye;
+
+	m_pTransformCom->LookAt(vPlayerLookAt);
 	
 	__super::Late_Tick(dTimeDelta);
 }
@@ -78,11 +85,6 @@ void CStatic_Camera::Pitch(_float dTimeDelta)
 	_matrix matRotation = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (_float)m_CameraDesc.TransformDesc.dRotationPerSec * (_float)dTimeDelta);
 	XMVector3TransformNormal(m_pTransformCom->Get_State(CTransform::STATE_UP), matRotation);
 	XMVector3TransformNormal(m_pTransformCom->Get_State(CTransform::STATE_LOOK), matRotation);
-
-	//_vector	vPlayerLookAt = m_pTransformCom->Get_State(CTransform::STATE_TRANS) + XMVector3Normalize(matOwnerWorld.r[2]);
-	//_vector	vCamEye = XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()).r[3];
-
-	//m_vDir = vPlayerLookAt - vCamEye;
 }
 
 void CStatic_Camera::Yaw(_float dTimeDelta)

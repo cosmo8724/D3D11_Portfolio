@@ -17,6 +17,7 @@ private:
 	virtual ~CStatic_Camera() = default;
 
 public:
+	_vector						Get_CameraLookAt() { return m_vDir; }
 	void							Set_CameraDesc(CTransform* pTransformCom, CBone* pSocket, _fmatrix matPivot) {
 		m_pOwnerTransform = pTransformCom;
 		m_pSocket = pSocket;

@@ -56,8 +56,8 @@ private:
 	_bool								m_bAnimFinished = false;
 	_uint								m_iLastAnimationIndex = 0;
 	_uint								m_iCurAnimationIndex = 0;
-	_float								m_fAnimChangeTime = 1.f;
-	_float								m_fCurAnimChangeTime = 1.f;
+	_float								m_fAnimChangeTime = 0.2f;
+	_float								m_fCurAnimChangeTime = 0.2f;
 
 	_uint								m_iNumAnimations = 0;
 	vector<class CAnimation*>		m_vecAnimation;

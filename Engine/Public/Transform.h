@@ -20,6 +20,7 @@ private:
 	virtual ~CTransform() = default;
 
 public:
+	TRANSFORMDESC&	Get_TransformDesc() { return m_TransformDesc; }
 	const _float4x4&Get_WorldMatrix() const { return m_matWorld; }
 	const _matrix	Get_WorldMatrix_Inverse() { return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matWorld)); }
 	const _vector&	Get_State(STATE eState) const { return XMLoadFloat4x4(&m_matWorld).r[eState]; }

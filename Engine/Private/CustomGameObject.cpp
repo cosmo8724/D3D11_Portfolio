@@ -110,6 +110,8 @@ HRESULT CCustomGameObject::Initialize_Prototype(const vector<pair<_uint, wstring
 
 HRESULT CCustomGameObject::Initialize(const wstring& wstrPrototypeTag, void * pArg)
 {
+	m_wstrPrototypeGameObjectTag = wstrPrototypeTag;
+
 	GAMEOBJECTDESC	GameObjectDesc;
 	ZeroMemory(&GameObjectDesc, sizeof(GAMEOBJECTDESC));
 

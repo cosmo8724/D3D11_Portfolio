@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Player.h"
 #include "GameInstance.h"
+#include "GameUtility.h"
 #include "Static_Camera.h"
 #include "Weapon.h"
 #include "Bone.h"
@@ -73,7 +74,7 @@ HRESULT CPlayer::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Part(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Weapon(), E_FAIL);
 
 	m_pCamera = dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back());
 	m_pCamera->Set_CameraDesc(m_pTransformCom, m_pModelCom->Get_BoneFromEntireBone("head"), m_pModelCom->Get_PivotMatrix());
@@ -86,6 +87,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	__super::Tick(dTimeDelta);
 
 	Mouse_Move(dTimeDelta);
+	Move_Camera();
 
 	static _int	iCurrentAnimation = 0;
 	_uint		iAnimationCnt = m_pModelCom->Get_NumAnimations();
@@ -123,19 +125,19 @@ void CPlayer::Tick(_double dTimeDelta)
 
 	m_pModelCom->Play_Animation(dTimeDelta);
 
-	m_iNumParts = (_uint)m_vecPlayerPart.size();
-	for (_uint i = 0; i < m_iNumParts; ++i)
-		m_vecPlayerPart[i]->Tick(dTimeDelta);
+	m_iNumWeapons = (_uint)m_vecPlayerWeapon.size();
+	for (_uint i = 0; i < m_iNumWeapons; ++i)
+		m_vecPlayerWeapon[i]->Tick(dTimeDelta);
 }
 
 void CPlayer::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+	
+	Move_Weapon();
 
-	Move_Camera(dTimeDelta);
-
-	for (_uint i = 0; i < m_iNumParts; ++i)
-		m_vecPlayerPart[i]->Late_Tick(dTimeDelta);
+	for (_uint i = 0; i < m_iNumWeapons; ++i)
+		m_vecPlayerWeapon[i]->Late_Tick(dTimeDelta);
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -159,14 +161,18 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_Part()
+void CPlayer::ImGui_RenderProperty()
+{
+}
+
+HRESULT CPlayer::Ready_Weapon()
 {
 	CWeapon*		pPartObject = nullptr;
 
 	/* Sword_Handle */
 	CWeapon::WEAPONDESC	tWeaponDesc;
 	ZeroMemory(&tWeaponDesc, sizeof(CWeapon::WEAPONDESC));
-	XMStoreFloat4x4(&tWeaponDesc.matPivot, m_pModelCom->Get_PivotMatrix());
+	XMStoreFloat4x4(&tWeaponDesc.matSocketPivot, m_pModelCom->Get_PivotMatrix());
 	tWeaponDesc.pSocket = m_pModelCom->Get_BoneFromEntireBone("Weapon_r");
 	tWeaponDesc.pTargetTransform = m_pTransformCom;
 
@@ -174,14 +180,14 @@ HRESULT CPlayer::Ready_Part()
 	NULL_CHECK_RETURN(pPartObject, E_FAIL);
 	pPartObject->Set_Owner(this);
 
-	m_vecPlayerPart.push_back(pPartObject);
+	m_vecPlayerWeapon.push_back(pPartObject);
 
 	/* Sword_Blade */
 	pPartObject = dynamic_cast<CWeapon*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_Player_Parts", L"Prototype_GameObject_Blade", &tWeaponDesc));
 	NULL_CHECK_RETURN(pPartObject, E_FAIL);
 	pPartObject->Set_Owner(this);
 
-	m_vecPlayerPart.push_back(pPartObject);
+	m_vecPlayerWeapon.push_back(pPartObject);
 
 	return S_OK;
 }
@@ -205,7 +211,9 @@ HRESULT CPlayer::SetUp_ShaderResource()
 	Safe_AddRef(pGameInstance);
 
 	//FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
-	m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matTrans);
+
+	//XMStoreFloat4x4(&m_matOffset, XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(&m_matOffset));
+	m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matOffset);
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
 
@@ -222,33 +230,95 @@ void CPlayer::Mouse_Move(_double dTimeDelta)
 		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta * MouseMove * 0.1f);
 	if (MouseMove = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta * MouseMove * 0.1f);
+
+	m_dMouseMove = (_double)MouseMove;
 }
 
-void CPlayer::Move_Camera(_double dTimeDelta)
+void CPlayer::Move_Camera()
 {
 	/* 플레이어 키 구하기 */
-	_vector	vHeadPos = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix().r[3];
-	_vector	vRootPos = m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix().r[3];
+	_vector	vHeadPos = (m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix()).r[3];
+	_vector	vRootPos = (m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix()).r[3];
 	m_fTall = XMVectorGetX(XMVector3Length(vHeadPos - vRootPos));
 
 	/* pitch 구하기 */
-	_float		fDistance = XMVectorGetX(XMVector3Dot(vHeadPos - vRootPos, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-
-	_float		fPitch = acosf(fDistance / m_fTall);
+	_float		fPitch = - asinf(XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMVectorSet(0.f, 1.f, 0.f, 0.f))));
 
 	/* z, z' 구하기 */
 	_float		fLookDist = m_fTall * sinf(fPitch);
-	_float		fYDist = m_fTall - fDistance;
+	_float		fYDist = m_fTall - m_fTall * fabs(cosf(fPitch));
 
 	/* 보정행렬 구하기 */
-	_matrix	matTrans = XMMatrixTranslationFromVector(XMVector3Normalize(XMLoadFloat4x4(&m_pCamera->Get_WorldMatrix()).r[2]) * -fLookDist) * XMMatrixTranslation(0.f, fYDist, 0.f);
-	_matrix	matScale = XMMatrixScaling(0.05f, 0.05f, 0.05f);
+	_vector	vPlayerLook = XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()).r[2];
+	vPlayerLook = XMVector3Normalize(XMVectorSetY(vPlayerLook, 0.f)) ;
+	_vector	vDir = vPlayerLook * -fLookDist;
+	_vector	vUp = XMVectorSet(0.f, fYDist, 0.f, 0.f);
+	_float4	vOffset = vDir + vUp;
 
-	/* 뼈행렬에 보정행렬 곱 */
-	_matrix	matHead = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix() * matTrans * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix());
-	XMStoreFloat4x4(&m_matTrans, matHead);
+	m_matOffset = m_pTransformCom->Get_WorldMatrix();
+	m_matOffset._41 += vOffset.x;
+	m_matOffset._42 += vOffset.y;
+	m_matOffset._43 += vOffset.z;
 
-	dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"))->Set_WorldMatrix(m_matTrans);
+	_matrix	matCamPitvot = _float4x4::CreateRotationY(XMConvertToRadians(-90.f));
+
+	_matrix	matHead = m_pModelCom->Get_BoneFromEntireBone("head")->Get_CombindMatrix();
+	_float3	fScale;
+
+	fScale.x = XMVectorGetX(XMVector3Length(matHead.r[0]));
+	fScale.y = XMVectorGetX(XMVector3Length(matHead.r[1]));
+	fScale.z = XMVectorGetX(XMVector3Length(matHead.r[2]));
+
+	matHead.r[0] = XMVectorSet(1.f, 0.f, 0.f, 0.f) * fScale.x;
+	matHead.r[0] = XMVectorSet(0.f, 1.f, 0.f, 0.f) * fScale.y;
+	matHead.r[0] = XMVectorSet(0.f, 0.f, 1.f, 0.f) * fScale.z;
+	matHead.r[3] = XMVectorSetX(matHead.r[3], XMVectorGetX(matHead.r[3]) - 10.f);
+	matHead.r[3] = XMVectorSetY(matHead.r[3], XMVectorGetY(matHead.r[3]) + 1.f);
+	matHead.r[3] = XMVectorSetZ(matHead.r[3], XMVectorGetZ(matHead.r[3]) - 10.f);
+
+	matHead = matCamPitvot
+				* matHead
+				* m_pModelCom->Get_PivotMatrix() 
+				* XMLoadFloat4x4(&m_matOffset);
+
+	m_matHeadWithOffset = matHead;
+
+	dynamic_cast<CTransform*>(m_pCamera->Get_Component(L"Com_Transform"))->Set_WorldMatrix(m_matHeadWithOffset);
+}
+
+void CPlayer::Move_Weapon()
+{
+	_vector	vWeaponPos = (m_pModelCom->Get_BoneFromEntireBone("Weapon_r")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix()).r[3];
+	_vector	vRootPos = (m_pModelCom->Get_BoneFromEntireBone("root")->Get_CombindMatrix() * m_pModelCom->Get_PivotMatrix()).r[3];
+	m_fWeaponHeight = XMVectorGetX(XMVector3Length(vWeaponPos - vRootPos));
+
+	/* pitch 구하기 */
+	_float		fPitch = -asinf(XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK), XMVectorSet(0.f, 1.f, 0.f, 0.f))));
+
+	/* z, z' 구하기 */
+	_float		fLookDist = m_fWeaponHeight * sinf(fPitch);
+	_float		fYDist = m_fWeaponHeight - m_fWeaponHeight * fabs(cosf(fPitch));
+
+	/* 보정행렬 구하기 */
+	_vector	vPlayerLook = XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()).r[2];
+	vPlayerLook = XMVector3Normalize(XMVectorSetY(vPlayerLook, 0.f));
+	_vector	vDir = vPlayerLook * -fLookDist;
+	_vector	vUp = XMVectorSet(0.f, fYDist, 0.f, 0.f);
+	_float4	vOffset = vDir + vUp;
+
+	m_matWeaponOffset = m_pTransformCom->Get_WorldMatrix();
+	m_matWeaponOffset._41 += vOffset.x;
+	m_matWeaponOffset._42 += vOffset.y;
+	m_matWeaponOffset._43 += vOffset.z;
+
+	_matrix	matWeapon = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationX(XMConvertToRadians(180.f))
+		* m_pModelCom->Get_BoneFromEntireBone("Weapon_r")->Get_CombindMatrix()
+		* m_pModelCom->Get_PivotMatrix()
+		* XMLoadFloat4x4(&m_matOffset);
+
+	for (auto& pWeapon : m_vecPlayerWeapon)
+		//pWeapon->Set_SocketMatrix(m_matWeaponOffset);
+		pWeapon->Set_WorldMatrix(matWeapon);
 }
 
 CPlayer * CPlayer::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
@@ -281,9 +351,9 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	for (auto& pPart : m_vecPlayerPart)
-		Safe_Release(pPart);
-	m_vecPlayerPart.clear();
+	for (auto& pWeapon : m_vecPlayerWeapon)
+		Safe_Release(pWeapon);
+	m_vecPlayerWeapon.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

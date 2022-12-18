@@ -14,7 +14,7 @@ class CWeapon abstract : public CGameObject
 public:
 	typedef struct tagWeaponDesc : public CGameObject::GAMEOBJECTDESC
 	{
-		_float4x4				matPivot;
+		_float4x4				matSocketPivot;
 		CBone*				pSocket;
 		CTransform*			pTargetTransform;
 	} WEAPONDESC;
@@ -26,6 +26,7 @@ protected:
 
 public:
 	void						Set_Owner(class CPlayer* pOwner) { m_pOwner = pOwner; }
+	void						Set_SocketMatrix(_float4x4 matSocket);
 
 public:
 	virtual HRESULT			Initialize_Prototype() override;
@@ -39,6 +40,7 @@ protected:
 
 	WEAPONDESC			m_tWeaponDesc;
 	_float4x4					m_matSocket;
+	_float4x4					m_matPivot;
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;

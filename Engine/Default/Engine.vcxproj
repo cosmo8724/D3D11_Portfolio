@@ -121,6 +121,10 @@
       <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib;assimp-vc140-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibrary/</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>cd /d $(SolutionDir)
+call Copy.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -158,6 +162,10 @@
       <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11.lib;DirectXTK.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibrary/</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>cd /d $(SolutionDir)
+call Copy.bat</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\ImGui\dirent.h" />
