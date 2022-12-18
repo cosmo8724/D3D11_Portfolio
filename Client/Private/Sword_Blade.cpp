@@ -29,6 +29,8 @@ HRESULT CSword_Blade::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
+	m_matPivot = m_pModelCom->Get_PivotMatrix();
+
 	return S_OK;
 }
 
@@ -41,7 +43,9 @@ void CSword_Blade::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	_matrix	matSocket = m_pModelCom->Get_PivotMatrix() * m_tWeaponDesc.pSocket->Get_CombindMatrix() * XMLoadFloat4x4(&m_tWeaponDesc.matPivot);
+	//m_matSocket = m_matSocket * m_pModelCom->Get_PivotMatrix();
+
+	/*_matrix	matSocket = m_pModelCom->Get_PivotMatrix() * m_tWeaponDesc.pSocket->Get_CombindMatrix() * XMLoadFloat4x4(&m_tWeaponDesc.matPivot);
 
 	matSocket.r[0] = XMVector3Length(m_pModelCom->Get_PivotMatrix().r[0]) * XMVector3Normalize(matSocket.r[0]);
 	matSocket.r[1] = XMVector3Length(m_pModelCom->Get_PivotMatrix().r[1]) * XMVector3Normalize(matSocket.r[1]);
@@ -49,7 +53,7 @@ void CSword_Blade::Late_Tick(_double dTimeDelta)
 
 	matSocket = matSocket * XMLoadFloat4x4(&m_tWeaponDesc.pTargetTransform->Get_WorldMatrix());
 
-	XMStoreFloat4x4(&m_matSocket, matSocket);
+	XMStoreFloat4x4(&m_matSocket, matSocket);*/
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -67,7 +71,7 @@ HRESULT CSword_Blade::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i, L"", 1);
+		m_pModelCom->Render(m_pShaderCom, i);
 	}
 
 	return S_OK;

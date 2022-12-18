@@ -141,7 +141,16 @@ void CChannel::Update_matTransform(_double dPlayTime)
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex].vPosition), XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vPosition), fRatio);
 		vPosition = XMVectorSetW(vPosition, 1.f);
 	}
+
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
+
+	/*if (m_strName == "head")
+	{
+		matTransform = XMMatrixRotationQuaternion(XMVectorSetW(vRotation, XMVectorGetW(vRotation) * -1.f))
+			* XMMatrixRotationX(XMConvertToRadians(40.f))
+			* XMMatrixRotationY(XMConvertToRadians(240.f))
+			* XMMatrixRotationZ(XMConvertToRadians(60.f)) * matTransform;
+	}*/
 
 	m_pBone->Set_matTransform(matTransform);
 }
@@ -179,7 +188,6 @@ void CChannel::Update_Lerp(_double dPlayTime, _float fRatio)
 	vRotation = XMQuaternionSlerp(vBaseRotation, vRotation, fRatio);
 	vPosition = XMVectorLerp(vBasePosition, vPosition, fRatio);
 	vPosition = XMVectorSetW(vPosition, 1.f);
-
 
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 

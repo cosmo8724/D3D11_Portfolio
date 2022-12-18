@@ -24,14 +24,14 @@ HRESULT CLevel_Logo::Initialize()
 	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
 
 	CGameInstance::GetInstance()->Clear_ImGuiObject();
-	//CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
+	CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Settings::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Debugger::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_LevelViewer::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_PrototypeMgr::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_MapEditor::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_AnimationManager::Create());
-	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTestTool::Create());
+	//CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTestTool::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_ModelSave::Create(m_pDevice, m_pContext));
 
 	return S_OK;

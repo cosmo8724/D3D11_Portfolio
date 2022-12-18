@@ -226,10 +226,35 @@ void CModel::ImGui_RenderAnimation()
 			bReName = true;
 		}
 		ImGui::SameLine();
+		if (ImGui::Button("Delete"))
+		{
+			for (_uint i = 0; i < m_iNumAnimations; ++i)
+				Safe_Delete_Array(ppAnimationTag[i]);
+			Safe_Delete_Array(ppAnimationTag);
+
+			auto	iter = m_vecAnimation.begin();
+			for (_uint i = 0; i < iSelectAnimation; ++i)
+				++iter;
+
+			Safe_Release(m_vecAnimation[iSelectAnimation]);
+			m_vecAnimation.erase(iter);			
+
+			m_iNumAnimations--;
+			iSelectAnimation = -1;
+
+			return;
+		}
+		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
 		{
 			iSelectAnimation = -1;
 			bReName = false;
+		}
+		if (ImGui::Button("Save"))
+		{
+			string		strFilePath;
+			strFilePath.assign(m_wstrFilePath.begin(), m_wstrFilePath.end());
+			Save_Model(strFilePath.c_str());
 		}
 
 		if (bReName)
@@ -259,9 +284,6 @@ void CModel::Play_Animation(_double dTimeDelta)
 {
 	if (m_eType == MODEL_NONANIM)
 		return;
-
-	//Idle->Update_Bones();
-	//Walk->Update_Lerp();
 
 	if (m_fCurAnimChangeTime < m_fAnimChangeTime)
 	{
