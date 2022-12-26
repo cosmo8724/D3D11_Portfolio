@@ -77,7 +77,7 @@ HRESULT CPlayer::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	FAILED_CHECK_RETURN(Ready_Weapon(), E_FAIL);
 
 	m_pCamera = dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back());
-	m_pCamera->Set_CameraDesc(m_pTransformCom, m_pModelCom->Get_BoneFromEntireBone("head"), m_pModelCom->Get_PivotMatrix());
+	m_pCamera->Set_OwnerTransform(m_pTransformCom);
 
 	return S_OK;
 }
@@ -87,7 +87,7 @@ void CPlayer::Tick(_double dTimeDelta)
 	__super::Tick(dTimeDelta);
 
 	Mouse_Move(dTimeDelta);
-	Move_Camera();
+	//Move_Camera();
 
 	static _int	iCurrentAnimation = 0;
 	_uint		iAnimationCnt = m_pModelCom->Get_NumAnimations();
@@ -134,7 +134,7 @@ void CPlayer::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 	
-	Move_Weapon();
+	//Move_Weapon();
 
 	for (_uint i = 0; i < m_iNumWeapons; ++i)
 		m_vecPlayerWeapon[i]->Late_Tick(dTimeDelta);
@@ -210,10 +210,10 @@ HRESULT CPlayer::SetUp_ShaderResource()
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	//FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 
 	//XMStoreFloat4x4(&m_matOffset, XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()) * XMLoadFloat4x4(&m_matOffset));
-	m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matOffset);
+	//m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matOffset);
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
 

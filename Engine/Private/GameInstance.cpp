@@ -83,7 +83,7 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 
 	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
 
-	m_pInputDev->Reset_EveryKey();
+	m_pInputDev->Reset_EveryKey(dTimeDelta);
 }
 
 void CGameInstance::Clear_Level(_uint iLevelIndex)
@@ -194,11 +194,25 @@ _bool CGameInstance::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 	return m_pInputDev->Mouse_DoubleClick(MouseButton);
 }
 
+_bool CGameInstance::Key_Pressing(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInputDev, false);
+
+	return m_pInputDev->Key_Pressing(byKeyID);
+}
+
 _bool CGameInstance::Key_Down(_ubyte byKeyID)
 {
 	NULL_CHECK_RETURN(m_pInputDev, false);
 
 	return m_pInputDev->Key_Down(byKeyID);
+}
+
+_bool CGameInstance::Key_DoubleDown(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInputDev, false);
+
+	return m_pInputDev->Key_DoubleDown(byKeyID);
 }
 
 _bool CGameInstance::Key_Up(_ubyte byKeyID)
@@ -208,11 +222,18 @@ _bool CGameInstance::Key_Up(_ubyte byKeyID)
 	return m_pInputDev->Key_Up(byKeyID);
 }
 
-void CGameInstance::Reset_EveryKey()
+_bool CGameInstance::Key_Charge(_ubyte byKeyID, _double dTime)
+{
+	NULL_CHECK_RETURN(m_pInputDev, false);
+
+	return m_pInputDev->Key_Charge(byKeyID, dTime);
+}
+
+void CGameInstance::Reset_EveryKey(_double dTimeDelta)
 {
 	NULL_CHECK_RETURN(m_pInputDev, );
 
-	m_pInputDev->Reset_EveryKey();
+	m_pInputDev->Reset_EveryKey(dTimeDelta);
 }
 
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)

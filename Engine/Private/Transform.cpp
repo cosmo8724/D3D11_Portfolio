@@ -100,6 +100,25 @@ void CTransform::ImGui_RenderProperty()
 	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_matWorld);
 }
 
+void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta)
+{
+	_float3		fScale = Get_Scale();
+
+	_vector		vPosition = Get_State(CTransform::STATE_TRANS);
+	_float4		vFDirection = vDirection;
+
+	_vector		vLook = XMVector3Normalize(XMVectorSet(vFDirection.x, 0.f, vFDirection.z, 0.f)) * fScale.z;
+	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * fScale.x;
+	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * fScale.y;
+
+	Set_State(CTransform::STATE_RIGHT, vRight);
+	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_LOOK, vLook);
+
+	vPosition += XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	Set_State(CTransform::STATE_TRANS, vPosition);
+}
+
 void CTransform::Go_Straight(_double dTimeDelta)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
@@ -170,8 +189,83 @@ void CTransform::Speed_Up(_bool bKeyState)
 		m_TransformDesc.dSpeedPerSec = m_dInitSpeed;
 }
 
+void CTransform::Jump(_double dTimeDelta, _float & fGravity, _float & fCurJumpSpeed)
+{
+	_float4	vPos = Get_State(CTransform::STATE_TRANS);
+
+	vPos.y += fCurJumpSpeed * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+
+	Set_State(CTransform::STATE_TRANS, vPos);
+
+	fCurJumpSpeed -= fGravity;
+}
+
+void CTransform::Dash(_double dTimeDelta, _float & fFriction, _float & fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir)
+{
+	if (fCurDashTickCount < 0.f)
+		return;
+
+	_float4	vPos = Get_State(CTransform::STATE_TRANS);
+	_float4	vLook = Get_State(CTransform::STATE_LOOK);
+	_float3	vScale = Get_Scale();
+
+	_float4	vDir;
+
+	if (eDir != DIR_END)
+	{
+		switch (eDir)
+		{
+		case DIR_W:
+			vDir = XMVector3Normalize(matCamWorld.r[2]);
+			break;
+
+		case DIR_A:
+			vDir = XMVector3Normalize(matCamWorld.r[0]) * -1.f;
+			break;
+
+		case DIR_S:
+			vDir = XMVector3Normalize(matCamWorld.r[2]) * -1.f;
+			break;
+
+		case DIR_D:
+			vDir = XMVector3Normalize(matCamWorld.r[0]);
+			break;
+
+		case DIR_WA:
+			vDir = XMVector3Normalize(matCamWorld.r[2] + matCamWorld.r[0] * -1.f);
+			break;
+
+		case DIR_WD:
+			vDir = XMVector3Normalize(matCamWorld.r[2] + matCamWorld.r[0]);
+			break;
+
+		case DIR_SA:
+			vDir = XMVector3Normalize(matCamWorld.r[2] * -1.f + matCamWorld.r[0] * -1.f);
+			break;
+
+		case DIR_SD:
+			vDir = XMVector3Normalize(matCamWorld.r[2] * -1.f + matCamWorld.r[0]);
+			break;
+		}
+
+		vLook = XMVector3Normalize(XMVectorSet(vDir.x, 0.f, vDir.z, 0.f)) * vScale.z;
+		_vector	vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
+		_vector	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
+
+		Set_State(STATE_RIGHT, vRight);
+		Set_State(STATE_UP, vUp);
+		Set_State(STATE_LOOK, vLook);
+	}
+	
+	vPos += XMVector3Normalize(vLook) * (_float)dTimeDelta * (_float)m_TransformDesc.dSpeedPerSec * 2.f;
+	Set_State(STATE_TRANS, vPos);
+}
+
 void CTransform::Turn(_fvector vAxis, _double dTimeDelta)
 {
+	if (dTimeDelta == 0.0)
+		return;
+
 	_matrix	matRotation = XMMatrixRotationAxis(vAxis, (_float)m_TransformDesc.dRotationPerSec * (_float)dTimeDelta);
 
 	_vector	vRight		= Get_State(CTransform::STATE_RIGHT);
@@ -196,6 +290,28 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 	Set_State(CTransform::STATE_RIGHT, XMVector4Transform(vRight, matRotation));
 	Set_State(CTransform::STATE_UP, XMVector4Transform(vUp, matRotation));
 	Set_State(CTransform::STATE_LOOK, XMVector4Transform(vLook, matRotation));
+}
+
+void CTransform::RotationFromNow(_fvector vAxis, _float fRadian)
+{
+	_matrix	matRotation = XMMatrixRotationAxis(vAxis, fRadian);
+
+	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
+	_vector	vUp = Get_State(CTransform::STATE_UP);
+	_vector	vLook = Get_State(CTransform::STATE_LOOK);
+
+	Set_State(CTransform::STATE_RIGHT, XMVector4Transform(vRight, matRotation));
+	Set_State(CTransform::STATE_UP, XMVector4Transform(vUp, matRotation));
+	Set_State(CTransform::STATE_LOOK, XMVector4Transform(vLook, matRotation));
+}
+
+void CTransform::Orbit(_fvector vTargetPos, _fvector vAxis, _float fDistance, _double dTimeDelta)
+{
+	if (dTimeDelta != 0.0)
+		Turn(vAxis, _float(m_TransformDesc.dRotationPerSec * dTimeDelta));
+
+	Set_State(CTransform::STATE_TRANS, vTargetPos - XMVector3Normalize(Get_State(CTransform::STATE_LOOK)) * fDistance);
+	LookAt(vTargetPos);
 }
 
 void CTransform::LookAt(_fvector vTargetPos)

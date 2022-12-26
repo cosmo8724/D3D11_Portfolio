@@ -16,6 +16,7 @@ public:
 	static COMPONENTTYPE	CheckComponentTypeFromTag(const wstring& wstrComponentTag);
 
 	static void		Saturate(int& InValue, int InMax, int InMin);
+	static void		SaturateF(float& InValue, float InMax, float InMin);
 	static void		DecomposePitchYawRollFromXMMatrix(_fmatrix matRotation, _float& fPitch, _float& fYaw, _float& fRoll);
 };
 

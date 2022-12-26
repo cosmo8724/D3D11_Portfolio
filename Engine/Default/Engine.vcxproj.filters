@@ -148,6 +148,9 @@
     <Filter Include="97. Default">
       <UniqueIdentifier>{d4785d67-6e4e-4c84-9ee7-b7fdd4fff5da}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\02. VIBuffer\Cell">
+      <UniqueIdentifier>{06feb062-8e5e-4036-b9d4-c9bf28041e49}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -303,9 +306,6 @@
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <Filter>01. Utility\03. Component\07. Collider\DebugDraw</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\StateMachine.cpp">
-      <Filter>01. Utility\03. Component\08. State Machine</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp">
       <Filter>01. Utility\03. Component\09. Navigation</Filter>
     </ClCompile>
@@ -314,6 +314,12 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>97. Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cell.cpp">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Cell</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\StateMachine.cpp">
+      <Filter>01. Utility\03. Component\08. State Machine</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -500,9 +506,6 @@
     <ClInclude Include="..\Public\DebugDraw.h">
       <Filter>01. Utility\03. Component\07. Collider\DebugDraw</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\StateMachine.h">
-      <Filter>01. Utility\03. Component\08. State Machine</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Component.h">
       <Filter>01. Utility\03. Component</Filter>
     </ClInclude>
@@ -514,6 +517,12 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>97. Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cell.h">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Cell</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\StateMachine.h">
+      <Filter>01. Utility\03. Component\08. State Machine</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

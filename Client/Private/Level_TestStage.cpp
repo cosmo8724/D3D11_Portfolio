@@ -13,11 +13,11 @@ HRESULT CLevel_TestStage::Initialize()
 	
 	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_BackGround(L"Layer_BackGround"), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Sphere(L"Layer_Sphere"), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_SkyBox(L"Layer_SkyBox"), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
 
@@ -65,12 +65,12 @@ HRESULT CLevel_TestStage::Ready_Light()
 	return S_OK;
 }
 
-HRESULT CLevel_TestStage::Ready_Layer_BackGround(const wstring wstrLayerTag)
+HRESULT CLevel_TestStage::Ready_Layer_Ocean(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Terrain"), E_FAIL);
+	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Ocean"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 
@@ -83,19 +83,19 @@ HRESULT CLevel_TestStage::Ready_Layer_Camera(const wstring wstrLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Dynamic"), E_FAIL);
-	//FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Static"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Static"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
 
-HRESULT CLevel_TestStage::Ready_Layer_Sphere(const wstring wstrLayerTag)
+HRESULT CLevel_TestStage::Ready_Layer_SkyBox(const wstring wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Sphere"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_SkyBox"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 

@@ -11,12 +11,20 @@ private:
 	virtual ~CVIBuffer_Terrain() = default;
 
 public:
+	_float3*						Get_TerrainPosition() { return m_pPos; }
+	_uint							Get_NumVerticesX() { return m_iNumVerticesX; }
+	_uint							Get_NumVerticesZ() { return m_iNumVerticesZ; }
+
+public:
 	HRESULT						Initialize_Prototype(const wstring wstrHeightMapFilePath);
 	virtual HRESULT				Initialize(class CGameObject* pOwner, void* pArg) override;
+	void							Tick(_double dTimeDelta);
 
 private:
 	_uint							m_iNumVerticesX = 0;
 	_uint							m_iNumVerticesZ = 0;
+
+	_float3*						m_pPos = nullptr;
 
 public:
 	static	CVIBuffer_Terrain*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrHeightMapFilePath);

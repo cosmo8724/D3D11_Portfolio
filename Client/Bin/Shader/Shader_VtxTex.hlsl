@@ -1,19 +1,7 @@
+#include "Shader_Define.h"
+
 matrix			g_matWorld, g_matView, g_matProj;
 texture2D		g_Texture;
-
-sampler	LinearSampler = sampler_state
-{
-	filter = min_mag_mip_Linear;
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
-sampler	PointSampler = sampler_state
-{
-	filter = min_mag_mip_Point;
-	AddressU = wrap;
-	AddressV = wrap;
-};
 
 struct VS_IN
 {
@@ -66,7 +54,27 @@ technique11 DefaultTechnique
 {
 	pass Rect
 	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader	= compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
 		PixelShader	= compile ps_5_0 PS_MAIN();
+	}
+
+	pass SkyBox
+	{
+		SetRasterizerState(RS_CW);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 }

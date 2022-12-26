@@ -27,9 +27,12 @@ public:
 	_bool		Mouse_Down(MOUSEKEYSTATE MouseButton);
 	_bool		Mouse_Up(MOUSEKEYSTATE MouseButton);
 	_bool		Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
+	_bool		Key_Pressing(_ubyte byKeyID);
 	_bool		Key_Down(_ubyte byKeyID);
+	_bool		Key_DoubleDown(_ubyte byKeyID);
 	_bool		Key_Up(_ubyte byKeyID);
-	void		Reset_EveryKey();
+	_bool		Key_Charge(_ubyte byKeyID, _double dTime);
+	void		Reset_EveryKey(_double dTimeDelta);
 
 public:
 	HRESULT	Ready_Input_Device(HINSTANCE hInst, HWND hWnd);
@@ -44,6 +47,8 @@ private:
 	_byte							m_byKeyState[256];
 	DIMOUSESTATE				m_MouseState;
 	_bool							m_bKeyState[256];
+	_bool							m_bPressThisFrame[256];
+	_double						m_dChargeTime[256];
 	_bool							m_bMouseState[3];
 
 	_int							m_iClickedCnt = 0;

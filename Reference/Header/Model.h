@@ -7,6 +7,7 @@ class ENGINE_DLL CModel final : public CComponent
 {
 public:
 	enum MODELTYPE { MODEL_NONANIM, MODEL_ANIM, MODELTYPE_END };
+	enum LERPTYPE { LERP_BEGIN, LERP_CONTINUE, LERPTYPE_END };
 
 private:
 	CModel(DEVICE pDevice, DEVICE_CONTEXT pContext);
@@ -17,12 +18,18 @@ public:
 	HRESULT							Save_Model(const char* pSaveFileDirectory);
 	const MODELTYPE&				Get_ModelType() const { return m_eType; }
 	const _uint&						Get_NumMeshes() const { return m_iNumMeshes; }
+	class CMesh*						Get_Mesh(const string& strMeshName);
 	_uint								Get_NumAnimations() const { return m_iNumAnimations; }
 	_matrix							Get_PivotMatrix() const { return XMLoadFloat4x4(&m_matPivot); }
 	class CBone*						Get_BoneFromEntireBone(const string & strBoneName);
 	_matrix							Get_BoneMatrix(const string& strBoneName);
 	_matrix							Get_OffsetMatrix(const string & strBoneName);
+	_uint								Get_LastAnimationIndex() { return m_iLastAnimationIndex; }
+	_bool								Get_AnimationFinish();
+	_float								Get_AnimationProgress();
 	void								Set_CurAnimationIndex(_uint iAnimationIndex);
+	void								Reset_Animation();
+	HRESULT							Check_MeshSize(const string& strMeshName, _float& Xmin, _float& Xmax, _float& Ymin, _float& Ymax, _float& Zmin, _float& Zmax);
 
 public:
 	virtual HRESULT					Initialize_Prototype(MODELTYPE eType, const char* pModelFilePath, _fmatrix matPivot);
@@ -31,7 +38,7 @@ public:
 	void								ImGui_RenderAnimation();
 
 public:
-	void								Play_Animation(_double dTimeDelta);
+	void								Play_Animation(_double dTimeDelta, LERPTYPE eType = LERP_BEGIN);
 	HRESULT							Bind_Material(class CShader* pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring& wstrConstantName);
 	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"", _uint iPassIndex = 0);
 

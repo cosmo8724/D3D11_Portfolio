@@ -148,6 +148,38 @@ HRESULT CMesh::Load_Mesh(HANDLE & hFile, DWORD & dwByte)
 	return S_OK;
 }
 
+void CMesh::Check_MeshSize(_float & Xmin, _float & Xmax, _float & Ymin, _float & Ymax, _float & Zmin, _float & Zmax)
+{
+	if (m_eType == CModel::MODEL_NONANIM)
+	{
+		for (_uint i = 0; i < m_iNumVertices; ++i)
+		{
+			Xmin = min(Xmin, m_pNonAnimVertices[i].vPosition.x);
+			Xmax = max(Xmax, m_pNonAnimVertices[i].vPosition.x);
+
+			Ymin = min(Ymin, m_pNonAnimVertices[i].vPosition.y);
+			Ymax = max(Ymax, m_pNonAnimVertices[i].vPosition.y);
+
+			Zmin = min(Zmin, m_pNonAnimVertices[i].vPosition.z);
+			Zmax = max(Zmax, m_pNonAnimVertices[i].vPosition.z);
+		}
+	}
+	else if (m_eType == CModel::MODEL_ANIM)
+	{
+		for (_uint i = 0; i < m_iNumVertices; ++i)
+		{
+			Xmin = min(Xmin, m_pAnimVertices[i].vPosition.x);
+			Xmax = max(Xmax, m_pAnimVertices[i].vPosition.x);
+
+			Ymin = min(Ymin, m_pAnimVertices[i].vPosition.y);
+			Ymax = max(Ymax, m_pAnimVertices[i].vPosition.y);
+
+			Zmin = min(Zmin, m_pAnimVertices[i].vPosition.z);
+			Zmax = max(Zmax, m_pAnimVertices[i].vPosition.z);
+		}
+	}
+}
+
 HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eType, aiMesh * pAIMesh, CModel* pModel)
 {
 	if (eType == CModel::MODELTYPE_END)
@@ -310,7 +342,10 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh, CModel * pModel
 		memcpy(&m_pNonAnimVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
 		XMStoreFloat3(&m_pNonAnimVertices[i].vNormal, XMVector3TransformCoord(XMLoadFloat3(&m_pNonAnimVertices[i].vNormal), matPivot));
 
-		memcpy(&m_pNonAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		if (pAIMesh->mTextureCoords[0] != nullptr)
+			memcpy(&m_pNonAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		else
+			m_pNonAnimVertices[i].vTexUV = _float2(0.f, 0.f);
 		memcpy(&m_pNonAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
 
@@ -342,7 +377,10 @@ HRESULT CMesh::Ready_VertexBuffer_AnimModel(aiMesh * pAIMesh, CModel * pModel)
 	{
 		memcpy(&m_pAnimVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
 		memcpy(&m_pAnimVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
-		memcpy(&m_pAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		if (pAIMesh->mTextureCoords[0] != nullptr)
+			memcpy(&m_pAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
+		else
+			m_pAnimVertices[i].vTexUV = _float2(0.f, 0.f);
 		memcpy(&m_pAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
 	}
 

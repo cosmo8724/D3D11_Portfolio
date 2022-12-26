@@ -2,6 +2,7 @@
 #include "..\Public\Static_Camera.h"
 #include "GameInstance.h"
 #include "Bone.h"
+#include "GameUtility.h"
 
 CStatic_Camera::CStatic_Camera(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CCamera(pDevice, pContext)
@@ -13,6 +14,20 @@ CStatic_Camera::CStatic_Camera(const CStatic_Camera & rhs)
 {
 }
 
+void CStatic_Camera::Init_Position()
+{
+	_vector	vTargetPos = m_pOwnerTransform->Get_State(CTransform::STATE_TRANS);
+	_vector	vTargetLook = m_pOwnerTransform->Get_State(CTransform::STATE_LOOK);
+
+	vTargetPos = XMVectorSet(XMVectorGetX(vTargetPos), XMVectorGetY(vTargetPos) + 2.f, XMVectorGetZ(vTargetPos), 1.f);
+
+	m_CameraDesc.vEye = vTargetPos + XMVector3Normalize(vTargetLook) * -m_fDistanceFromTarget;
+	m_CameraDesc.vAt = vTargetPos;
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANS, m_CameraDesc.vEye);
+	m_pTransformCom->LookAt(m_CameraDesc.vAt);
+}
+
 HRESULT CStatic_Camera::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
@@ -22,7 +37,7 @@ HRESULT CStatic_Camera::Initialize_Prototype()
 
 HRESULT CStatic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 {
-	m_bRender = false;
+	m_bRender = true;
 
 	CCamera::CAMERADESC		CameraDesc;
 	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
@@ -50,6 +65,37 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 	if (!m_bRender)
 		return;
 
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F1))
+		m_bMouseFix = !m_bMouseFix;
+
+	_vector	vTargetPos = m_pOwnerTransform->Get_State(CTransform::STATE_TRANS);
+	vTargetPos = XMVectorSet(XMVectorGetX(vTargetPos), XMVectorGetY(vTargetPos) + 2.f, XMVectorGetZ(vTargetPos), 1.f);
+
+	_vector	vEye = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+
+	_long		MouseMoveX = 0;
+	_long		MouseMoveY = 0;
+	_float		fVerticalAngle = 0.f;
+
+	fVerticalAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), XMVectorSet(0.f, 1.f, 0.f, 0.f))));
+
+	if (MouseMoveX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+		m_pTransformCom->Orbit(vTargetPos, XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fDistanceFromTarget, dTimeDelta * MouseMoveX * 0.1f);
+	if (MouseMoveY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+	{
+		_bool	bPossible = true;
+
+		if (fVerticalAngle < XMConvertToRadians(10.f) && MouseMoveY < 0)
+			bPossible = false;
+		if (fVerticalAngle > XMConvertToRadians(170.f) && MouseMoveY > 0)
+			bPossible = false;
+
+		if (bPossible == true)
+			m_pTransformCom->Orbit(vTargetPos, m_pTransformCom->Get_State(CTransform::STATE_RIGHT), m_fDistanceFromTarget, dTimeDelta * MouseMoveY * 0.1f);
+	}
+	if (MouseMoveX == 0 && MouseMoveY == 0)
+		m_pTransformCom->Orbit(vTargetPos, XMVectorSet(0.f, 0.f, 0.f, 0.f), m_fDistanceFromTarget, 0.0);
+
 	__super::Tick(dTimeDelta);
 }
 
@@ -58,13 +104,14 @@ void CStatic_Camera::Late_Tick(_double dTimeDelta)
 	if (!m_bRender)
 		return;
 
-	_vector	vPlayerLookAt = m_pTransformCom->Get_State(CTransform::STATE_TRANS) + XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-	_vector	vCamEye = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+	if (m_bMouseFix)
+	{
+		POINT		pt{ (LONG)g_iWinSizeX >> 1, (LONG)g_iWinSizeY >> 1 };
 
-	m_vDir = vPlayerLookAt - vCamEye;
+		ClientToScreen(g_hWnd, &pt);
+		SetCursorPos(pt.x, pt.y);
+	}
 
-	m_pTransformCom->LookAt(vPlayerLookAt);
-	
 	__super::Late_Tick(dTimeDelta);
 }
 

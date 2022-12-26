@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\MySequencer.h"
-#include "imgui_internal.h"
+//#include "imgui_internal.h"
 #include "CurveEditor.h"
 
 CMySequencer::CMySequencer()

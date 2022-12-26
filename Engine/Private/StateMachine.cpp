@@ -1,103 +1,12 @@
 #include "stdafx.h"
 #include "..\Public\StateMachine.h"
-#include "GameUtility.h"
-#include <sstream>
 
-/* FSM_TRANSITION */
-tagFSM_Transition::tagFSM_Transition(const wstring & wstrTransitionName, const std::function<_bool()>& Predicator, _uint iPriority)
-	: wstrTransitionName(wstrTransitionName)
-	, iPriority(iPriority)
-	, Predicator(Predicator)
-{
-}
+#ifdef _DEBUG
+#define new DBG_NEW 
+#endif
 
-tagFSM_Transition::tagFSM_Transition(const tagFSM_Transition & rhs)
-	: wstrTransitionName(rhs.wstrTransitionName)
-	, iPriority(rhs.iPriority)
-	, Predicator(rhs.Predicator)
-{
-}
-
-tagFSM_Transition::tagFSM_Transition(tagFSM_Transition && rhs) noexcept
-	: wstrTransitionName(rhs.wstrTransitionName)
-	, iPriority(rhs.iPriority)
-	, Predicator(std::move(rhs.Predicator))
-{
-}
-
-tagFSM_Transition & tagFSM_Transition::operator=(const tagFSM_Transition & rhs)
-{
-	if (this == &rhs)
-		return *this;
-
-	wstrTransitionName = rhs.wstrTransitionName;
-	iPriority = rhs.iPriority;
-	Predicator = rhs.Predicator;
-
-	return *this;
-}
-
-tagFSM_Transition & tagFSM_Transition::operator=(tagFSM_Transition && rhs) noexcept
-{
-	if (this == &rhs)
-		return *this;
-
-	wstrTransitionName = rhs.wstrTransitionName;
-	iPriority = rhs.iPriority;
-	Predicator = std::move(rhs.Predicator);
-
-	return *this;
-}
-
-/* FSM_STATE */
-tagFSM_State::tagFSM_State(const tagFSM_State & rhs)
-	: wstrStateName(rhs.wstrStateName)
-	, OnStart(rhs.OnStart)
-	, Tick(rhs.Tick)
-	, OnExit(rhs.OnExit)
-	, mapTransition(rhs.mapTransition)
-{
-}
-
-tagFSM_State::tagFSM_State(tagFSM_State && rhs) noexcept
-	: wstrStateName(rhs.wstrStateName)
-	, OnStart(std::move(rhs.OnStart))
-	, Tick(std::move(rhs.Tick))
-	, OnExit(std::move(rhs.OnExit))
-	, mapTransition(std::move(rhs.mapTransition))
-{
-}
-
-tagFSM_State & tagFSM_State::operator=(const tagFSM_State & rhs)
-{
-	if (this == &rhs)
-		return *this;
-
-	wstrStateName = rhs.wstrStateName;
-	OnStart = rhs.OnStart;
-	Tick = rhs.Tick;
-	OnExit = rhs.OnExit;
-	mapTransition = rhs.mapTransition;
-
-	return *this;
-}
-
-tagFSM_State & tagFSM_State::operator=(tagFSM_State && rhs) noexcept
-{
-	if (this == &rhs)
-		return *this;
-
-	wstrStateName = rhs.wstrStateName;
-	OnStart = std::move(rhs.OnStart);
-	Tick = std::move(rhs.Tick);
-	OnExit = std::move(rhs.OnExit);
-	mapTransition = std::move(rhs.mapTransition);
-
-	return *this;
-}
-
-CStateMachine::CStateMachine()
-	: CComponent(nullptr, nullptr)
+CStateMachine::CStateMachine(DEVICE pDevice, DEVICE_CONTEXT pContext)
+	: CComponent(pDevice, pContext)
 {
 }
 
@@ -106,119 +15,83 @@ CStateMachine::CStateMachine(const CStateMachine & rhs)
 {
 }
 
-HRESULT CStateMachine::Initialize(CGameObject* pOwner, void * pArg)
+CStateMachine & CStateMachine::Set_Root(const wstring & wstrStateName)
 {
-	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
+	m_wstrRootStateName = wstrStateName;
 
-	CStateMachineBuilder*		pBuilder = static_cast<CStateMachineBuilder*>(pArg);
+	return *this;
+}
 
-	m_wstrCurrentStateName = pBuilder->Get_InitStateName();
-	m_mapState = std::move(pBuilder->GetStates());
+CStateMachine & CStateMachine::Add_State(const wstring & wstrStateName)
+{
+	STATE		tState;
+	ZeroMemory(&tState, sizeof(STATE));
+
+	m_mapState.emplace(wstrStateName, tState);
+	
+	m_wstrCurrentStateName = wstrStateName;
+
+	return *this;
+}
+
+HRESULT CStateMachine::Initialize_Prototype()
+{
+	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
 	return S_OK;
 }
 
-void CStateMachine::ImGui_RenderProperty()
+HRESULT CStateMachine::Initialize(CGameObject * pOwner, void * pArg)
 {
-	char	szCurrentNode[256];
-	CGameUtility::wctc(m_wstrCurrentStateName.c_str(), szCurrentNode);
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
-	ImGui::Text("Current State : %s", szCurrentNode);
-
-	if (ImGui::BeginListBox("Node Transition History"))
-	{
-		for (const auto& e : m_strDebugQue)
-			ImGui::Selectable(e.c_str());
-		ImGui::EndListBox();
-	}
-
-	_int	iInput = (_int)m_iDebugQueSize;
-	ImGui::InputInt("Debug History Size", &iInput);
-
-	if (iInput >= 0)
-		m_iDebugQueSize = iInput;
-
-	m_bStoreHistory = true;
+	return S_OK;
 }
 
 void CStateMachine::Tick(_double dTimeDelta)
 {
-	_int	iLoopCount = 5000;
+	auto	CurState = find_if(m_mapState.begin(), m_mapState.end(), CTag_Finder(m_wstrCurrentStateName));
 
-	while (--iLoopCount)
+	for (auto& Changer : m_mapChanger[m_wstrCurrentStateName])
 	{
-		const auto CurrentIter = find_if(m_mapState.begin(), m_mapState.end(), CTag_Finder(m_wstrCurrentStateName));
-		assert(CurrentIter != m_mapState.end());
-
-		const FSM_STATE& tCurrentState = CurrentIter->second;
-
-		wstring		wstrNextStateName = L"";
-		for (auto& Pair : tCurrentState.mapTransition)
+		if (Changer.Changer_Func() == true)
 		{
-			for (auto& Transition : Pair.second)
-			{
-				if (Transition.Predicator())
-				{
-					wstrNextStateName = Pair.first;
-					m_wstrLastTransitionName = Transition.wstrTransitionName;
-					break;
-				}
-			}
-
-			if (wstrNextStateName != L"")
-				break;
-		}
-
-		if (wstrNextStateName != L"")
-		{
-			const auto NextIter = find_if(m_mapState.begin(), m_mapState.end(), CTag_Finder(wstrNextStateName));
-			assert(NextIter != m_mapState.end());
-
-			const FSM_STATE&	tNextState = NextIter->second;
-
-			if (tCurrentState.OnExit != nullptr)
-				tCurrentState.OnExit();
-
-			if (tNextState.OnStart != nullptr)
-				tNextState.OnStart();
-
-			StateHistoryUpdate(tNextState.wstrStateName);
-
-			m_wstrCurrentStateName = wstrNextStateName;
-		}
-		else
-		{
-			if (tCurrentState.Tick != nullptr)
-				tCurrentState.Tick(dTimeDelta);
+			m_wstrNextStateName = Changer.wstrNextState;
 			break;
 		}
 	}
 
-	assert(iLoopCount > 0);
+	if (m_wstrNextStateName != L"")
+	{
+		if (CurState->second.State_End != nullptr)
+			CurState->second.State_End(dTimeDelta);
+
+		m_wstrLastStateName = m_wstrCurrentStateName;
+		m_wstrCurrentStateName = m_wstrNextStateName;
+
+		if (m_mapState[m_wstrCurrentStateName].State_Start != nullptr)
+			m_mapState[m_wstrCurrentStateName].State_Start(dTimeDelta);
+
+		m_wstrNextStateName = L"";
+	}
+	else
+	{
+		if (CurState->second.State_Tick != nullptr)
+			CurState->second.State_Tick(dTimeDelta);
+	}
 }
 
-void CStateMachine::StateHistoryUpdate(const wstring & wstrNextStateName)
+CStateMachine * CStateMachine::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 {
-	if (!m_bStoreHistory)
-		return;
+	CStateMachine*		pInstance = new CStateMachine(pDevice, pContext);
 
-	char From[256], To[256];
-	CGameUtility::wctc(m_wstrLastTransitionName.c_str(), From);
-	CGameUtility::wctc(wstrNextStateName.c_str(), To);
+	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed to Create : CStateMachine");
+		Safe_Release(pInstance);
+	}
 
-	std::stringstream ss;
-	ss << From << " => " << To;
-	m_strDebugQue.push_front(ss.str());
-
-	if (m_strDebugQue.size() > m_iDebugQueSize)
-		m_strDebugQue.pop_back();
-
-	m_bStoreHistory = false;
-}
-
-CStateMachine * CStateMachine::Create()
-{
-	return new CStateMachine;
+	return pInstance;
 }
 
 CComponent * CStateMachine::Clone(CGameObject * pOwner, void * pArg)
@@ -236,4 +109,5 @@ CComponent * CStateMachine::Clone(CGameObject * pOwner, void * pArg)
 
 void CStateMachine::Free()
 {
+	__super::Free();
 }

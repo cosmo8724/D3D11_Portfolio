@@ -54,7 +54,7 @@ HRESULT CCollider::Initialize(CGameObject * pOwner, void * pArg)
 	{
 	case COLLIDER_SPHERE:
 		m_pSphere_Original = new BoundingSphere(_float3(0.f, 0.f, 0.f), 0.5f);
-		m_pSphere_Original->Transform(*m_pSphere,
+		m_pSphere_Original->Transform(*m_pSphere_Original,
 			XMMatrixScaling(ColliderDesc.vSize.x, ColliderDesc.vSize.y, ColliderDesc.vSize.z) *
 			XMMatrixRotationX(ColliderDesc.vRotation.x) *
 			XMMatrixRotationY(ColliderDesc.vRotation.y) *
@@ -278,8 +278,6 @@ CComponent * CCollider::Clone(CGameObject * pOwner, void * pArg)
 void CCollider::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pOwner);
 
 	Safe_Delete(m_pSphere_Original);
 	Safe_Delete(m_pSphere);
