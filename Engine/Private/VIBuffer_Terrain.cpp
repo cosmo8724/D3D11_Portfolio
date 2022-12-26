@@ -9,6 +9,7 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 	: CVIBuffer(rhs)
+	, m_pPos(rhs.m_pPos)
 	, m_iNumVerticesX(rhs.m_iNumVerticesX)
 	, m_iNumVerticesZ(rhs.m_iNumVerticesZ)
 {
@@ -53,6 +54,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 
 	/* Initialize Vertex Buffer */
 	VTXNORTEX*		pVertices = new VTXNORTEX[m_iNumVertices];
+	m_pPos = new _float3[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXNORTEX));
 
 	for (_uint z = 0; z < m_iNumVerticesZ; ++z)
@@ -61,9 +63,11 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 		{
 			_uint		iIndex = z * m_iNumVerticesX + x;
 
-			pVertices[iIndex].vPosition = _float3((_float)x, (pPixel[iIndex] & 0x000000ff) / 15.f, (_float)z);
+			pVertices[iIndex].vPosition = _float3((_float)x, (pPixel[iIndex] & 0x000000ff) / 150.f, (_float)z);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
-			pVertices[iIndex].vTexUV = _float2(x / (m_iNumVerticesX - 1.f), z / (m_iNumVerticesZ - 1.f));
+			pVertices[iIndex].vTexUV = _float2(x / (m_iNumVerticesX - 1.f) * 3.f, z / (m_iNumVerticesZ - 1.f) * 3.f);
+
+			m_pPos[iIndex] = pVertices[iIndex].vPosition;
 		}
 	}
 	Safe_Delete_Array(pPixel);
@@ -120,10 +124,10 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
 
 	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_tBufferDesc.StructureByteStride = m_iStride;
-	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_tBufferDesc.MiscFlags = 0;
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
@@ -161,6 +165,29 @@ HRESULT CVIBuffer_Terrain::Initialize(CGameObject * pOwner, void * pArg)
 	return S_OK;
 }
 
+void CVIBuffer_Terrain::Tick(_double dTimeDelta)
+{
+	D3D11_MAPPED_SUBRESOURCE			SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+	
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	for (_uint z = 0; z < m_iNumVerticesZ; ++z)
+	{
+		for (_uint x = 0; x < m_iNumVerticesX; ++x)
+		{
+			_uint		iIndex = z * m_iNumVerticesX + x;
+
+			if (iIndex + 1 != m_iNumVertices)
+				((VTXNORTEX*)SubResource.pData)[iIndex].vTexUV = ((VTXNORTEX*)SubResource.pData)[iIndex + 1].vTexUV;//_float2(x / (m_iNumVerticesX - 1.f), z / (m_iNumVerticesZ - 1.f));
+			else
+				((VTXNORTEX*)SubResource.pData)[iIndex].vTexUV = ((VTXNORTEX*)SubResource.pData)[0].vTexUV;
+		}
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
+}
+
 CVIBuffer_Terrain * CVIBuffer_Terrain::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrHeightMapFilePath)
 {
 	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(pDevice, pContext);
@@ -188,4 +215,7 @@ CComponent * CVIBuffer_Terrain::Clone(CGameObject * pOwner, void * pArg)
 void CVIBuffer_Terrain::Free()
 {
 	__super::Free();
+
+	if (m_bIsCloned == false)
+		Safe_Delete_Array(m_pPos);
 }

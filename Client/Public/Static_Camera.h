@@ -17,12 +17,8 @@ private:
 	virtual ~CStatic_Camera() = default;
 
 public:
-	_vector						Get_CameraLookAt() { return m_vDir; }
-	void							Set_CameraDesc(CTransform* pTransformCom, CBone* pSocket, _fmatrix matPivot) {
-		m_pOwnerTransform = pTransformCom;
-		m_pSocket = pSocket;
-		m_matSocketPivot = matPivot;
-	}
+	void							Set_OwnerTransform(CTransform* pTransformCom) { m_pOwnerTransform = pTransformCom; }
+	void							Init_Position();
 
 public:
 	virtual HRESULT				Initialize_Prototype() override;
@@ -38,11 +34,9 @@ public:
 
 private:
 	CTransform*					m_pOwnerTransform = nullptr;
-	CBone*						m_pSocket = nullptr;
-	_matrix						m_matSocketPivot;
+	_float							m_fDistanceFromTarget = 5.f;
 
-	_float4x4						m_matCamera;
-	_vector						m_vDir;
+	_bool							m_bMouseFix = true;
 
 private:
 	HRESULT						SetUp_Component();

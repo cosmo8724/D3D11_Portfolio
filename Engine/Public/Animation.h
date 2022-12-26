@@ -14,6 +14,10 @@ public:
 	HRESULT						Load_Animation(HANDLE& hFile, DWORD& dwByte);
 	string&						Get_AnimationName() { return m_strName; }
 	class CChannel*				Get_Channel(const string & strBoneName);
+	_double&						Get_AnimationTickPerSecond() { return m_dTickPerSecond; }
+	_bool							Get_AnimationFinish() { return m_bIsFinish; }
+	_bool&							Get_AnimationLoop() { return m_bIsLoop; }
+	_float							Get_AnimationProgress() { return _float(m_dPlayTime / m_dDuration); }
 	void							Reset_Animation();
 
 public:
@@ -24,7 +28,7 @@ public:
 private:
 	class CModel*					m_pModel = nullptr;
 
-	_bool							m_bIsLoop = true;
+	_bool							m_bIsLoop = false;
 	_bool							m_bIsFinish = false;
 	string							m_strName = "";
 	_double						m_dDuration = 0.0;

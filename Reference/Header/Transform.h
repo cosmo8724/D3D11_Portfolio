@@ -7,6 +7,7 @@ class ENGINE_DLL CTransform final : public CComponent
 {
 public:
 	enum STATE { STATE_RIGHT, STATE_UP, STATE_LOOK, STATE_TRANS, STATE_END };
+	enum DIRECTION { DIR_W, DIR_A, DIR_S, DIR_D, DIR_WA, DIR_WD, DIR_SA, DIR_SD, DIR_END };
 
 	typedef struct tagTransformDesc
 	{
@@ -47,6 +48,7 @@ public:
 	HRESULT			Bind_ShaderResource(class CShader * pShaderCom, const wstring wstrConstantName);
 
 public:
+	void				Go_Direction(_fvector vDirection, _double dTimeDelta);
 	void				Go_Straight(_double dTimeDelta);
 	void				Go_BackWard(_double dTimeDelta);
 	void				Go_Left(_double dTimeDelta);
@@ -55,8 +57,13 @@ public:
 	void				Go_Down(_double dTimeDelta);
 	void				Speed_Up(_bool bKeyState);
 
+	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
+	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir);
+
 	void				Turn(_fvector vAxis, _double dTimeDelta);
 	void				Rotation(_fvector vAxis, _float fRadian);
+	void				RotationFromNow(_fvector vAxis, _float fRadian);
+	void				Orbit(_fvector vTargetPos, _fvector vAxis, _float fDistance, _double dTimeDelta);
 
 	void				LookAt(_fvector vTargetPos);
 	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit = 0.1f);

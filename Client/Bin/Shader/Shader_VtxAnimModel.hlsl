@@ -1,22 +1,10 @@
+#include "Shader_Define.h"
+
 matrix			g_matWorld, g_matView, g_matProj;
 matrix			g_matBones[256];
 
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
-
-sampler	LinearSampler = sampler_state
-{
-	filter = min_mag_mip_Linear;
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
-sampler	PointSampler = sampler_state
-{
-	filter = min_mag_mip_Point;
-	AddressU = wrap;
-	AddressV = wrap;
-};
 
 struct VS_IN
 {
@@ -89,13 +77,14 @@ PS_OUT	PS_MAIN(PS_IN In)
 	return Out;
 }
 
-RasterizerState rsWireFrame { FillMode = WireFrame; };
-
 technique11 DefaultTechnique
 {
 	pass Default
 	{
-		//SetRasterizerState(rsWireFrame);
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader	= compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;

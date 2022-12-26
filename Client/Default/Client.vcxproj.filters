@@ -43,9 +43,6 @@
     <Filter Include="02. GameObject\Terrain">
       <UniqueIdentifier>{90dd5091-c489-4b07-8489-dbc0c7b27eef}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Camera">
-      <UniqueIdentifier>{b4099f5e-2fc6-494a-b6c8-a505fa834ac5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\Sphere">
       <UniqueIdentifier>{7bd46246-18af-478b-9c77-da0c017e6878}</UniqueIdentifier>
     </Filter>
@@ -76,32 +73,68 @@
     <Filter Include="97. Tool\05. Model Editor">
       <UniqueIdentifier>{97ee26b9-ef07-4e52-97ae-841040b53199}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Camera\Dynamic">
-      <UniqueIdentifier>{864c05de-f0d8-4d35-902b-3c55ea439fb4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Camera\Static">
-      <UniqueIdentifier>{2a6a81b0-1ffb-4fe8-ab5f-63cb7ee1fd2f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97. Tool\98. Model Save">
       <UniqueIdentifier>{99a53960-6745-4333-bbf8-20b8d01f25a9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Weapon">
-      <UniqueIdentifier>{4eb38428-1eb7-40d8-b3c5-e811a2e92e97}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Weapon\Sword">
-      <UniqueIdentifier>{8c0ad76a-294f-41b6-8fec-2a4b4f122c49}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Weapon\Sword\Handle">
-      <UniqueIdentifier>{3307ba48-0964-4caf-97e1-949639988f40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02. GameObject\Weapon\Sword\Blade">
-      <UniqueIdentifier>{7a10edca-2529-46aa-8604-1e65d8fe6e8d}</UniqueIdentifier>
     </Filter>
     <Filter Include="97. Tool\06. Animator Manager">
       <UniqueIdentifier>{032ea008-c88d-4ea6-96a7-2463c116d8aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\Player\Ash">
+    <Filter Include="02. GameObject\00. For_Public">
+      <UniqueIdentifier>{316972b5-36aa-445f-af7c-ca24aaa177e6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. For_Logo">
+      <UniqueIdentifier>{084d1561-b2fb-4c60-b1e9-23306e60d6cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Camera">
+      <UniqueIdentifier>{b4099f5e-2fc6-494a-b6c8-a505fa834ac5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Camera\Dynamic">
+      <UniqueIdentifier>{864c05de-f0d8-4d35-902b-3c55ea439fb4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Camera\Static">
+      <UniqueIdentifier>{2a6a81b0-1ffb-4fe8-ab5f-63cb7ee1fd2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Camera\Main_Camera">
+      <UniqueIdentifier>{397e7a04-1b46-4a16-9dc2-3362f7f3a1d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. For_Logo\00. UI">
+      <UniqueIdentifier>{5910275f-8760-4c65-ab55-218ca2187d56}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. For_Logo\00. UI\Logo">
+      <UniqueIdentifier>{bda5e6e0-7029-4617-8fd5-f8adab4322bd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player">
+      <UniqueIdentifier>{9ce75535-925a-4806-9d3d-343bd4a3ace9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Ocean">
+      <UniqueIdentifier>{0fca738d-b295-42b9-b973-b87507477cfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\SkyBox">
+      <UniqueIdentifier>{5e5c8db7-920d-423c-9aeb-b8d17ad2fa66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent">
+      <UniqueIdentifier>{fb712ba7-6460-48ed-a9e0-d1b5c8ca1b65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Weapon">
+      <UniqueIdentifier>{4eb38428-1eb7-40d8-b3c5-e811a2e92e97}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Weapon\Sword">
+      <UniqueIdentifier>{8c0ad76a-294f-41b6-8fec-2a4b4f122c49}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Weapon\Sword\Handle">
+      <UniqueIdentifier>{3307ba48-0964-4caf-97e1-949639988f40}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Weapon\Sword\Blade">
+      <UniqueIdentifier>{7a10edca-2529-46aa-8604-1e65d8fe6e8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\UI">
+      <UniqueIdentifier>{1f261487-d001-43d6-be53-c314e3161b39}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player\Sigrid">
       <UniqueIdentifier>{aa756438-e4c9-486d-8507-f4d9687d70e3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player\Sigrid_State">
+      <UniqueIdentifier>{797c049a-40a8-4e9e-897d-26e80d166068}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -175,16 +208,16 @@
       <Filter>97. Tool\03. Prototype Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Dynamic_Camera.h">
-      <Filter>02. GameObject\Camera\Dynamic</Filter>
+      <Filter>02. GameObject\00. For_Public\Camera\Dynamic</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Static_Camera.h">
-      <Filter>02. GameObject\Camera\Static</Filter>
+      <Filter>02. GameObject\00. For_Public\Camera\Static</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Sword_Handle.h">
-      <Filter>02. GameObject\Weapon\Sword\Handle</Filter>
+      <Filter>02. GameObject\99. Parent\Weapon\Sword\Handle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Sword_Blade.h">
-      <Filter>02. GameObject\Weapon\Sword\Blade</Filter>
+      <Filter>02. GameObject\99. Parent\Weapon\Sword\Blade</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Tool_ModelSave.h">
       <Filter>97. Tool\98. Model Save</Filter>
@@ -193,10 +226,28 @@
       <Filter>97. Tool\06. Animator Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Weapon.h">
-      <Filter>02. GameObject\Weapon</Filter>
+      <Filter>02. GameObject\99. Parent\Weapon</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Ash.h">
-      <Filter>02. GameObject\Player\Ash</Filter>
+    <ClInclude Include="..\Public\UI.h">
+      <Filter>02. GameObject\99. Parent\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Logo.h">
+      <Filter>02. GameObject\01. For_Logo\00. UI\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sigrid.h">
+      <Filter>02. GameObject\00. For_Public\Player\Sigrid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sigrid_State.h">
+      <Filter>02. GameObject\00. For_Public\Player\Sigrid_State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\Shader\Shader_Define.h">
+      <Filter>96. Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Ocean.h">
+      <Filter>02. GameObject\00. For_Public\Ocean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SkyBox.h">
+      <Filter>02. GameObject\00. For_Public\SkyBox</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -261,16 +312,16 @@
       <Filter>97. Tool\03. Prototype Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Dynamic_Camera.cpp">
-      <Filter>02. GameObject\Camera\Dynamic</Filter>
+      <Filter>02. GameObject\00. For_Public\Camera\Dynamic</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Static_Camera.cpp">
-      <Filter>02. GameObject\Camera\Static</Filter>
+      <Filter>02. GameObject\00. For_Public\Camera\Static</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sword_Handle.cpp">
-      <Filter>02. GameObject\Weapon\Sword\Handle</Filter>
+      <Filter>02. GameObject\99. Parent\Weapon\Sword\Handle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Sword_Blade.cpp">
-      <Filter>02. GameObject\Weapon\Sword\Blade</Filter>
+      <Filter>02. GameObject\99. Parent\Weapon\Sword\Blade</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Tool_ModelSave.cpp">
       <Filter>97. Tool\98. Model Save</Filter>
@@ -279,10 +330,25 @@
       <Filter>97. Tool\06. Animator Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Weapon.cpp">
-      <Filter>02. GameObject\Weapon</Filter>
+      <Filter>02. GameObject\99. Parent\Weapon</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Ash.cpp">
-      <Filter>02. GameObject\Player\Ash</Filter>
+    <ClCompile Include="..\Private\UI.cpp">
+      <Filter>02. GameObject\99. Parent\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Logo.cpp">
+      <Filter>02. GameObject\01. For_Logo\00. UI\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sigrid.cpp">
+      <Filter>02. GameObject\00. For_Public\Player\Sigrid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sigrid_State.cpp">
+      <Filter>02. GameObject\00. For_Public\Player\Sigrid_State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Ocean.cpp">
+      <Filter>02. GameObject\00. For_Public\Ocean</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SkyBox.cpp">
+      <Filter>02. GameObject\00. For_Public\SkyBox</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -309,6 +375,9 @@
       <Filter>96. Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\Shader_VtxAnimModel.hlsl">
+      <Filter>96. Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex_Ocean.hlsl">
       <Filter>96. Shader</Filter>
     </FxCompile>
   </ItemGroup>

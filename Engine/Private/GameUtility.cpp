@@ -127,6 +127,14 @@ void CGameUtility::Saturate(int & InValue, int InMax, int InMin)
 		InValue = InMax;
 }
 
+void CGameUtility::SaturateF(float & InValue, float InMax, float InMin)
+{
+	if (fabs(InValue - InMax) < EPSILON)
+		InValue = InMax;
+	if (fabs(InValue - InMin) < EPSILON)
+		InValue = InMin;
+}
+
 void CGameUtility::DecomposePitchYawRollFromXMMatrix(_fmatrix matRotation, _float & fPitch, _float & fYaw, _float & fRoll)
 {
 	_float4x4		matPYR;

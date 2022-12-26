@@ -83,6 +83,7 @@ void CAnimation::Reset_Animation()
 	for (auto& pChannel : m_vecChannel)
 		pChannel->Reset_KeyFrameIndex();
 	m_dPlayTime = 0.0;
+	m_bIsFinish = false;
 }
 
 HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel * pModel)
@@ -113,14 +114,21 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel * pModel)
 
 void CAnimation::Update_Bones(_double dTimeDelta)
 {
-	if (!m_bIsLoop && m_bIsFinish)
-		return;
+	if (m_bIsFinish)
+	{
+		if (m_bIsLoop)
+			m_bIsFinish = false;
+		else
+			return;
+	}
 
 	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
 
 	if (m_dPlayTime >= m_dDuration)
 	{
-		m_dPlayTime = 0.0;
+		if (m_bIsLoop)
+			m_dPlayTime = 0.0;
+
 		m_bIsFinish = true;
 	}
 
@@ -131,21 +139,25 @@ void CAnimation::Update_Bones(_double dTimeDelta)
 
 		m_vecChannel[i]->Update_matTransform(m_dPlayTime);
 	}
-
-	if (m_bIsFinish)
-		m_bIsFinish = false;
 }
 
 void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 {
-	if (!m_bIsLoop && m_bIsFinish)
-		return;
+	if (m_bIsFinish)
+	{
+		if (m_bIsLoop)
+			m_bIsFinish = false;
+		else
+			return;
+	}
 
-	m_dPlayTime += m_dTickPerSecond * dTimeDelta;
+	m_dPlayTime = dTimeDelta * m_dDuration;
 
 	if (m_dPlayTime >= m_dDuration)
 	{
-		m_dPlayTime = 0.0;
+		if (m_bIsLoop)
+			m_dPlayTime = 0.0;
+
 		m_bIsFinish = true;
 	}
 
@@ -156,9 +168,6 @@ void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 
 		m_vecChannel[i]->Update_Lerp(m_dPlayTime, fRatio);
 	}
-
-	if (m_bIsFinish)
-		m_bIsFinish = false;
 }
 
 CAnimation * CAnimation::Create(aiAnimation * pAIAnimation, CModel * pModel)

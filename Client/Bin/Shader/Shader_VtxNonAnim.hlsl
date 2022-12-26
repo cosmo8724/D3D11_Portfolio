@@ -1,21 +1,9 @@
+#include "Shader_Define.h"
+
 matrix			g_matWorld, g_matView, g_matProj;
 matrix			g_matSocket;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
-
-sampler LinearSampler = sampler_state
-{
-	filter = min_mag_mip_linear;
-	AddressU = wrap;
-	AddressV = wrap;
-};
-
-sampler PointSampler = sampler_state
-{
-	filter = min_mag_mip_Point;
-	AddressU = wrap;
-	AddressV = wrap;
-};
 
 struct VS_IN
 {
@@ -106,6 +94,10 @@ technique11 DefaultTechinque
 {
 	pass Default
 	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN();
 		GeometryShader = NULL;
 		HullShader = NULL;
@@ -115,6 +107,10 @@ technique11 DefaultTechinque
 
 	pass Socket
 	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
 		VertexShader = compile vs_5_0 VS_MAIN_SOCKET();
 		GeometryShader = NULL;
 		HullShader = NULL;

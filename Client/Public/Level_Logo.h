@@ -17,7 +17,11 @@ public:
 	virtual HRESULT		Render() override;
 
 private:
-	HRESULT				Ready_Layer_BackGround(const wstring& wstrLayerTag);
+	HRESULT				Ready_Light();
+	HRESULT				Ready_Layer_Camera(const wstring&  wstrLayertTag);
+	HRESULT				Ready_Layer_UI(const wstring& wstrLayerTag);
+	HRESULT				Ready_Layer_SkyBox(const wstring& wstrLayerTag);
+	HRESULT				Ready_Layer_Ocean(const wstring& wstrLayerTag);
 
 public:
 	static CLevel_Logo*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

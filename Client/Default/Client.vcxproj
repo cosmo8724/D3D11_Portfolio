@@ -171,13 +171,21 @@
     </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Public\Ash.h" />
+    <ClInclude Include="..\Bin\Shader\Shader_Define.h" />
+    <ClInclude Include="..\Public\Ocean.h" />
+    <ClInclude Include="..\Public\Sigrid.h" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Logo.h" />
+    <ClInclude Include="..\Public\Sigrid_State.h" />
+    <ClInclude Include="..\Public\SkyBox.h" />
     <ClInclude Include="..\Public\Tool_AnimationManager.h" />
     <ClInclude Include="..\Public\Tool_ModelSave.h" />
     <ClInclude Include="..\Public\Sword_Blade.h" />
     <ClInclude Include="..\Public\Client_Define.h" />
-    <ClInclude Include="..\Public\CurveEditor.h" />
+    <ClInclude Include="..\Public\CurveEditor.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\Dynamic_Camera.h" />
     <ClInclude Include="..\Public\Static_Camera.h" />
     <ClInclude Include="..\Public\Sword_Handle.h" />
@@ -187,16 +195,23 @@
     <ClInclude Include="..\Public\Level_TestStage.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\MainApp.h" />
-    <ClInclude Include="..\Public\MySequencer.h" />
+    <ClInclude Include="..\Public\MySequencer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\MySphere.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\Public\Terrain.h" />
-    <ClInclude Include="..\Public\TestTool.h" />
+    <ClInclude Include="..\Public\TestTool.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\Tool_Debugger.h" />
     <ClInclude Include="..\Public\Tool_MapEditor.h" />
     <ClInclude Include="..\Public\Tool_Model.h" />
     <ClInclude Include="..\Public\Tool_PrototypeMgr.h" />
     <ClInclude Include="..\Public\Tool_Settings.h" />
+    <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="Resource.h" />
@@ -204,12 +219,19 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Private\Ash.cpp" />
+    <ClCompile Include="..\Private\Ocean.cpp" />
+    <ClCompile Include="..\Private\Sigrid.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Logo.cpp" />
+    <ClCompile Include="..\Private\Sigrid_State.cpp" />
+    <ClCompile Include="..\Private\SkyBox.cpp" />
     <ClCompile Include="..\Private\Tool_AnimationManager.cpp" />
     <ClCompile Include="..\Private\Tool_ModelSave.cpp" />
     <ClCompile Include="..\Private\Sword_Blade.cpp" />
-    <ClCompile Include="..\Private\CurveEditor.cpp" />
+    <ClCompile Include="..\Private\CurveEditor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\Dynamic_Camera.cpp" />
     <ClCompile Include="..\Private\Static_Camera.cpp" />
     <ClCompile Include="..\Private\Sword_Handle.cpp" />
@@ -219,16 +241,23 @@
     <ClCompile Include="..\Private\Level_TestStage.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
-    <ClCompile Include="..\Private\MySequencer.cpp" />
+    <ClCompile Include="..\Private\MySequencer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\MySphere.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
-    <ClCompile Include="..\Private\TestTool.cpp" />
+    <ClCompile Include="..\Private\TestTool.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\Tool_Debugger.cpp" />
     <ClCompile Include="..\Private\Tool_MapEditor.cpp" />
     <ClCompile Include="..\Private\Tool_Model.cpp" />
     <ClCompile Include="..\Private\Tool_PrototypeMgr.cpp" />
     <ClCompile Include="..\Private\Tool_Settings.cpp" />
+    <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />
     <ClCompile Include="stdafx.cpp">
@@ -249,6 +278,7 @@
     <FxCompile Include="..\Bin\Shader\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxNonAnim.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex_Ocean.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxTex.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -70,6 +70,16 @@ _matrix CModel::Get_OffsetMatrix(const string & strBoneName)
 	return pBone->Get_matOffset();
 }
 
+_bool CModel::Get_AnimationFinish()
+{
+	return m_vecAnimation[m_iCurAnimationIndex]->Get_AnimationFinish();
+}
+
+_float CModel::Get_AnimationProgress()
+{
+	return m_vecAnimation[m_iCurAnimationIndex]->Get_AnimationProgress();
+}
+
 void CModel::Set_CurAnimationIndex(_uint iAnimationIndex)
 {
 	if (iAnimationIndex < 0 || iAnimationIndex > m_iNumAnimations || iAnimationIndex == m_iCurAnimationIndex)
@@ -80,6 +90,21 @@ void CModel::Set_CurAnimationIndex(_uint iAnimationIndex)
 
 	if (m_iLastAnimationIndex != m_iCurAnimationIndex)
 		m_fCurAnimChangeTime = 0.f;
+}
+
+void CModel::Reset_Animation()
+{
+	m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();
+}
+
+HRESULT CModel::Check_MeshSize(const string & strMeshName, _float & Xmin, _float & Xmax, _float & Ymin, _float & Ymax, _float & Zmin, _float & Zmax)
+{
+	CMesh*	pMesh =Get_Mesh(strMeshName);
+	NULL_CHECK_RETURN(pMesh, E_FAIL);
+
+	pMesh->Check_MeshSize(Xmin, Xmax, Ymin, Ymax, Zmin, Zmax);
+
+	return S_OK;
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
@@ -219,6 +244,7 @@ void CModel::ImGui_RenderAnimation()
 		if (ImGui::Button("Play"))
 		{
 			Set_CurAnimationIndex(iSelectAnimation);
+			m_vecAnimation[iSelectAnimation]->Reset_Animation();
 		}
 		ImGui::SameLine();
 		if (ImGui::Button("ReName"))
@@ -233,7 +259,7 @@ void CModel::ImGui_RenderAnimation()
 			Safe_Delete_Array(ppAnimationTag);
 
 			auto	iter = m_vecAnimation.begin();
-			for (_uint i = 0; i < iSelectAnimation; ++i)
+			for (_int i = 0; i < iSelectAnimation; ++i)
 				++iter;
 
 			Safe_Release(m_vecAnimation[iSelectAnimation]);
@@ -273,6 +299,21 @@ void CModel::ImGui_RenderAnimation()
 				bReName = false;
 			}
 		}
+
+		ImGui::Separator();
+		ImGui::Text("Loop");
+		if (ImGui::RadioButton("Allow", m_vecAnimation[iSelectAnimation]->Get_AnimationLoop()))
+			m_vecAnimation[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimation[iSelectAnimation]->Get_AnimationLoop();
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Disallow", !m_vecAnimation[iSelectAnimation]->Get_AnimationLoop()))
+			m_vecAnimation[iSelectAnimation]->Get_AnimationLoop() = !m_vecAnimation[iSelectAnimation]->Get_AnimationLoop();
+
+		ImGui::Text("Animation Speed");
+		_double&	dTickPerSecond = m_vecAnimation[iSelectAnimation]->Get_AnimationTickPerSecond();
+		IMGUI_LEFT_LABEL(ImGui::InputDouble, "Input", &dTickPerSecond, 0.5, 1.0);
+		ImGui::SameLine();
+		if (ImGui::Button("Reset"))
+			dTickPerSecond = 25.0;
 	}
 
 	for (_uint i = 0; i < m_iNumAnimations; ++i)
@@ -280,7 +321,7 @@ void CModel::ImGui_RenderAnimation()
 	Safe_Delete_Array(ppAnimationTag);	
 }
 
-void CModel::Play_Animation(_double dTimeDelta)
+void CModel::Play_Animation(_double dTimeDelta, LERPTYPE eType)
 {
 	if (m_eType == MODEL_NONANIM)
 		return;
@@ -288,7 +329,11 @@ void CModel::Play_Animation(_double dTimeDelta)
 	if (m_fCurAnimChangeTime < m_fAnimChangeTime)
 	{
 		m_vecAnimation[m_iLastAnimationIndex]->Update_Bones(dTimeDelta);
-		m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp(0.0, m_fCurAnimChangeTime / m_fAnimChangeTime);
+
+		if (eType == LERP_BEGIN)
+			m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp(0.0, m_fCurAnimChangeTime / m_fAnimChangeTime);
+		else if (eType == LERP_CONTINUE)
+			m_vecAnimation[m_iCurAnimationIndex]->Update_Lerp((_double)m_vecAnimation[m_iLastAnimationIndex]->Get_AnimationProgress(), m_fCurAnimChangeTime / m_fAnimChangeTime);
 
 		m_fCurAnimChangeTime += (_float)dTimeDelta;
 	}
@@ -643,6 +688,22 @@ HRESULT CModel::Save_Model(const char* pSaveFileDirectory)
 	CloseHandle(hFile);
 
 	return S_OK;
+}
+
+CMesh * CModel::Get_Mesh(const string & strMeshName)
+{
+	CMesh*		pFindMesh = nullptr;
+
+	for (auto& pMesh : m_vecMesh)
+	{
+		if (pMesh->Get_MeshName() == strMeshName)
+		{
+			pFindMesh = pMesh;
+			break;
+		}
+	}
+
+	return pFindMesh;
 }
 
 CModel * CModel::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, MODELTYPE eType, const char * pModelFilePath, _fmatrix matPivot)
