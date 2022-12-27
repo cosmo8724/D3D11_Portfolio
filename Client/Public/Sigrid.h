@@ -43,6 +43,12 @@ private:
 private:	/* State */
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;
 
+	_bool						m_bOnOcean = false;
+	_double					m_dSurfTime = 0.0;
+
+	_bool						m_bBoost = false;
+	_float						m_fInertia = 0.f;
+
 	_bool						m_bJump = false;
 	_bool						m_bDoubleJump = false;
 	_float						m_fGravity;

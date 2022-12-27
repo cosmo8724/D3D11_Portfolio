@@ -73,27 +73,27 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 
 	_vector	vEye = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	_long		MouseMoveX = 0;
-	_long		MouseMoveY = 0;
+	m_MouseMoveX = 0;
+	m_MouseMoveY = 0;
 	_float		fVerticalAngle = 0.f;
 
 	fVerticalAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), XMVectorSet(0.f, 1.f, 0.f, 0.f))));
 
-	if (MouseMoveX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
-		m_pTransformCom->Orbit(vTargetPos, XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fDistanceFromTarget, dTimeDelta * MouseMoveX * 0.1f);
-	if (MouseMoveY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
+	if (m_MouseMoveX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
+		m_pTransformCom->Orbit(vTargetPos, XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fDistanceFromTarget, dTimeDelta * m_MouseMoveX * 0.1f);
+	if (m_MouseMoveY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))
 	{
 		_bool	bPossible = true;
 
-		if (fVerticalAngle < XMConvertToRadians(10.f) && MouseMoveY < 0)
+		if (fVerticalAngle < XMConvertToRadians(10.f) && m_MouseMoveY < 0)
 			bPossible = false;
-		if (fVerticalAngle > XMConvertToRadians(170.f) && MouseMoveY > 0)
+		if (fVerticalAngle > XMConvertToRadians(170.f) && m_MouseMoveY > 0)
 			bPossible = false;
 
 		if (bPossible == true)
-			m_pTransformCom->Orbit(vTargetPos, m_pTransformCom->Get_State(CTransform::STATE_RIGHT), m_fDistanceFromTarget, dTimeDelta * MouseMoveY * 0.1f);
+			m_pTransformCom->Orbit(vTargetPos, m_pTransformCom->Get_State(CTransform::STATE_RIGHT), m_fDistanceFromTarget, dTimeDelta * m_MouseMoveY * 0.1f);
 	}
-	if (MouseMoveX == 0 && MouseMoveY == 0)
+	if (m_MouseMoveX == 0 && m_MouseMoveY == 0)
 		m_pTransformCom->Orbit(vTargetPos, XMVectorSet(0.f, 0.f, 0.f, 0.f), m_fDistanceFromTarget, 0.0);
 
 	__super::Tick(dTimeDelta);

@@ -138,13 +138,14 @@ public:
 
 private:
 	HRESULT					SetUp_State_Ground_Idle();
-	HRESULT					SetUp_State_Dash_Into_Idle();
 	HRESULT					SetUp_State_Ground_Run();
-	HRESULT					SetUp_State_Dash_Into_Run();
+	HRESULT					SetUp_State_Ground_Boost();
+	HRESULT					SetUp_State_Surf();
+	HRESULT					SetUp_State_Surf_Boost();
+	HRESULT					SetUp_State_Dash();
 	HRESULT					SetUp_State_Snap_Turn();
 	HRESULT					SetUp_State_Jump();
 	HRESULT					SetUp_State_Jump_Double();
-	HRESULT					SetUp_State_Dash_Into_Air();
 	HRESULT					SetUp_State_Air();
 	HRESULT					SetUp_State_Air_Gliding();
 	HRESULT					SetUp_State_Combat_Combo();
@@ -170,9 +171,23 @@ private:		/* State Start */
 	void	Start_Dash_Into_Idle(_double dTimeDelta);
 	void	Start_Ground_Run(_double dTimeDelta);
 	void	Start_Dash_Into_Run(_double dTimeDelta);
+	void	Start_Ground_Boost(_double dTimeDelta);
+	void	Start_Ground_Boost_Left(_double dTimeDelta);
+	void	Start_Ground_Boost_Right(_double dTimeDelta);
+	void	Start_Ground_Boost_Stop(_double dTimeDelta);
+	void	Start_Surf_Intro(_double dTimeDelta);
+	void	Start_Surf(_double dTimeDelta);
+	void	Start_Surf_Left(_double dTimeDelta);
+	void	Start_Surf_Right(_double dTimeDelta);
+	void	Start_Surf_Fast_Intro(_double dTimeDelta);
+	void	Start_Surf_Fast(_double dTimeDelta);
+	void	Start_Surf_Fast_Left(_double dTimeDelta);
+	void	Start_Surf_Fast_Right(_double dTimeDelta);
 	void	Start_Jump(_double dTimeDelta);
 	void	Start_Jump_Double(_double dTimeDelta);
 	void	Start_Dash_Into_Air(_double dTimeDelta);
+	void	Start_Dash_Into_Surf(_double dTimeDelta);
+	void	Start_Dash_Into_Surf_Fast(_double dTimeDelta);
 	void	Start_Snap_Turn_Ground_Idle(_double dTimeDelta);
 	void	Start_Snap_Turn_Ground_Run_Into_Idle(_double dTimeDelta);
 	void	Start_Snap_Turn_Ground_Run(_double dTimeDelta);
@@ -220,6 +235,18 @@ private:		/* State Tick */
 	void	Tick_Ground_Run_Back_Left(_double dTimeDelta);
 	void	Tick_Ground_Run_Back_Right(_double dTimeDelta);
 	void	Tick_Dash_Into_Run(_double dTimeDelta);
+	void	Tick_Ground_Boost(_double dTimeDelta);
+	void	Tick_Ground_Boost_Left(_double dTimeDelta);
+	void	Tick_Ground_Boost_Right(_double dTimeDelta);
+	void	Tick_Ground_Boost_Stop(_double dTimeDelta);
+	void	Tick_Surf_Intro(_double dTimeDelta);
+	void	Tick_Surf(_double dTimeDelta);
+	void	Tick_Surf_Left(_double dTimeDelta);
+	void	Tick_Surf_Right(_double dTimeDelta);
+	void	Tick_Surf_Fast_Intro(_double dTimeDelta);
+	void	Tick_Surf_Fast(_double dTimeDelta);
+	void	Tick_Surf_Fast_Left(_double dTimeDelta);
+	void	Tick_Surf_Fast_Right(_double dTimeDelta);
 	void	Tick_Snap_Turn_Ground_Idle(_double dTimeDelta);
 	void	Tick_Snap_Turn_Ground_Run_Into_Idle(_double dTimeDelta);
 	void	Tick_Snap_Turn_Ground_Run(_double dTimeDelta);
@@ -228,6 +255,8 @@ private:		/* State Tick */
 	void	Tick_Jump(_double dTimeDelta);
 	void	Tick_Jump_Double(_double dTimeDelta);
 	void	Tick_Dash_Into_Air(_double dTimeDelta);
+	void	Tick_Dash_Into_Surf(_double dTimeDelta);
+	void	Tick_Dash_Into_Surf_Fast(_double dTimeDelta);
 	void	Tick_Air(_double dTimeDelta);
 	void	Tick_Air_Gliding(_double dTimeDelta);
 	void	Tick_Air_Gliding_Left(_double dTimeDelta);
@@ -269,6 +298,18 @@ private:		/* State End */
 	void	End_Ground_Run_Back_Left(_double dTimeDelta);
 	void	End_Ground_Run_Back_Right(_double dTimeDelta);
 	void	End_Dash_Into_Run(_double dTimeDelta);
+	void	End_Ground_Boost(_double dTimeDelta);
+	void	End_Ground_Boost_Left(_double dTimeDelta);
+	void	End_Ground_Boost_Right(_double dTimeDelta);
+	void	End_Ground_Boost_Stop(_double dTimeDelta);
+	void	End_Surf_Intro(_double dTimeDelta);
+	void	End_Surf(_double dTimeDelta);
+	void	End_Surf_Left(_double dTimeDelta);
+	void	End_Surf_Right(_double dTimeDelta);
+	void	End_Surf_Fast_Intro(_double dTimeDelta);
+	void	End_Surf_Fast(_double dTimeDelta);
+	void	End_Surf_Fast_Left(_double dTimeDelta);
+	void	End_Surf_Fast_Right(_double dTimeDelta);
 	void	End_Snap_Turn_Ground_Idle(_double dTimeDelta);
 	void	End_Snap_Turn_Ground_Run_Into_Idle(_double dTimeDelta);
 	void	End_Snap_Turn_Ground_Run(_double dTimeDelta);
@@ -277,6 +318,8 @@ private:		/* State End */
 	void	End_Jump(_double dTimeDelta);
 	void	End_Jump_Double(_double dTimeDelta);
 	void	End_Dash_Into_Air(_double dTimeDelta);
+	void	End_Dash_Into_Surf(_double dTimeDelta);
+	void	End_Dash_Into_Surf_Fast(_double dTimeDelta);
 	void	End_Air(_double dTimeDelta);
 	void	End_Air_Gliding(_double dTimeDelta);
 	void	End_Air_Gliding_Left(_double dTimeDelta);
@@ -334,7 +377,10 @@ private:		/* State Changer*/
 	_bool	KeyDoubleDown_Space();
 	_bool	KeyDoubleDown_Space_Progress();
 
+	_bool	KeyUp_A();
+	_bool	KeyUp_D();
 	_bool	KeyUp_Space();
+	_bool	KeyUp_Shift();
 
 	_bool	KeyCharge_Space();
 	_bool	KeyCharge_Space_Progress();
@@ -345,6 +391,12 @@ private:		/* State Changer*/
 	_bool	KeyDown_Space_While_Dash_Into_Air();
 
 	_bool	Turn_Back();
+	_bool	Turn_Back_Left();
+	_bool	Turn_Back_Right();
+	_bool	Check_SurfTime();
+	_bool	Camera_Angle_Coincide();
+	_bool	Camera_Angle_Turn_Left();
+	_bool	Camera_Angle_Turn_Right();
 	_bool	Animation_Finish();
 	_bool	Collision_Ground();
 
