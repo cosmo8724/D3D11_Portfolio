@@ -43,6 +43,7 @@ public:		/* For InputDevice */
 	_byte					Get_DIKeyState(_ubyte byKeyID);
 	_byte					Get_DIMouseState(MOUSEKEYSTATE byMouseID);
 	_long					Get_DIMouseMove(MOUSEMOVESTATE eMoveState);
+	_double				Get_ChargeTime(_ubyte byKeyID);
 	_bool					Mouse_Down(MOUSEKEYSTATE MouseButton);
 	_bool					Mouse_Up(MOUSEKEYSTATE MouseButton);
 	_bool					Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);

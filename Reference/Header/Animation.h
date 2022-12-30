@@ -18,6 +18,7 @@ public:
 	_bool							Get_AnimationFinish() { return m_bIsFinish; }
 	_bool&							Get_AnimationLoop() { return m_bIsLoop; }
 	_float							Get_AnimationProgress() { return _float(m_dPlayTime / m_dDuration); }
+	void							Set_AnimationTickPerSecond(_double dTickPerSecond) { m_dTickPerSecond = dTickPerSecond; }
 	void							Reset_Animation();
 
 public:

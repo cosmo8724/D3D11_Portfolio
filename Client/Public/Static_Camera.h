@@ -17,6 +17,7 @@ private:
 	virtual ~CStatic_Camera() = default;
 
 public:
+	const _long&					Get_MouseMoveX() const { return m_MouseMoveX; }
 	void							Set_OwnerTransform(CTransform* pTransformCom) { m_pOwnerTransform = pTransformCom; }
 	void							Init_Position();
 
@@ -26,17 +27,15 @@ public:
 	virtual void					Tick(_double dTimeDelta) override;
 	virtual void					Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT				Render() override;
-	
-public:
-	void							Pitch(_float dTimeDelta);
-	void							Yaw(_float dTimeDelta);
-	void							Roll(_float dTimeDelta);
 
 private:
 	CTransform*					m_pOwnerTransform = nullptr;
 	_float							m_fDistanceFromTarget = 5.f;
 
 	_bool							m_bMouseFix = true;
+
+	_long							m_MouseMoveX = 0;
+	_long							m_MouseMoveY = 0;
 
 private:
 	HRESULT						SetUp_Component();

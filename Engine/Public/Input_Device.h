@@ -14,14 +14,9 @@ private:
 
 public:
 	_byte		Get_DIKeyState(_ubyte byKeyID) { return m_byKeyState[byKeyID]; }
-	_byte		Get_DIMouseState(MOUSEKEYSTATE byMouseID)
-	{
-		return m_MouseState.rgbButtons[byMouseID];
-	}
-	_long		Get_DIMouseMove(MOUSEMOVESTATE eMoveState)
-	{
-		return *(((long*)&m_MouseState) + eMoveState);
-	}
+	_byte		Get_DIMouseState(MOUSEKEYSTATE byMouseID) { return m_MouseState.rgbButtons[byMouseID]; }
+	_long		Get_DIMouseMove(MOUSEMOVESTATE eMoveState)	{ return *(((long*)&m_MouseState) + eMoveState); }
+	_double	Get_ChargeTime(_ubyte byKeyID) { return m_dChargeTime[byKeyID]; }
 
 public:
 	_bool		Mouse_Down(MOUSEKEYSTATE MouseButton);

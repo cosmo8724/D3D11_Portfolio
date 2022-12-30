@@ -47,6 +47,7 @@ Client/Bin/*
 !Client/Bin/Release/assimp-vc140-mt.dll
 !Client/Bin/Shader
 !Client/Bin/Resource
+Client/Bin/Resource/Mesh/Main Island/MainIsland.model
 !Client/Bin/Save Data
 Client/Bin/Resource/Game
 Engine/Default/Debug

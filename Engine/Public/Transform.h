@@ -7,7 +7,7 @@ class ENGINE_DLL CTransform final : public CComponent
 {
 public:
 	enum STATE { STATE_RIGHT, STATE_UP, STATE_LOOK, STATE_TRANS, STATE_END };
-	enum DIRECTION { DIR_W, DIR_A, DIR_S, DIR_D, DIR_WA, DIR_WD, DIR_SA, DIR_SD, DIR_END };
+	enum DIRECTION { DIR_W, DIR_A, DIR_S, DIR_D, DIR_WA, DIR_WD, DIR_SA, DIR_SD, DIR_LOOK, DIR_END };
 
 	typedef struct tagTransformDesc
 	{
@@ -30,6 +30,7 @@ public:
 			XMVectorGetX(XMVector3Length(Get_State(STATE_UP))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_LOOK))));
 	}
+	_double&			Get_Speed() { return m_TransformDesc.dSpeedPerSec; }
 	void				Set_WorldMatrix(_float4x4 matWorld) { m_matWorld = matWorld; }
 	void				Set_Scale(STATE eState, _float fScale);
 	void				Set_Scale(_float3 vScale);
@@ -39,6 +40,7 @@ public:
 		XMStoreFloat4(&vState, _vState);
 		memcpy(&m_matWorld.m[eState], &vState, sizeof(vState));
 	}
+	void				Set_Speed(_double dSpeedPerSec) { m_TransformDesc.dSpeedPerSec = dSpeedPerSec; }
 
 public:
 	virtual HRESULT	Initialize_Prototype() override;

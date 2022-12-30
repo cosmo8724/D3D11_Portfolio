@@ -173,6 +173,13 @@ _long CGameInstance::Get_DIMouseMove(MOUSEMOVESTATE eMoveState)
 	return m_pInputDev->Get_DIMouseMove(eMoveState);
 }
 
+_double CGameInstance::Get_ChargeTime(_ubyte byKeyID)
+{
+	NULL_CHECK_RETURN(m_pInputDev, 0.0);
+
+	return m_pInputDev->Get_ChargeTime(byKeyID);
+}
+
 _bool CGameInstance::Mouse_Down(MOUSEKEYSTATE MouseButton)
 {
 	NULL_CHECK_RETURN(m_pInputDev, false);
