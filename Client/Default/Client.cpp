@@ -65,6 +65,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	FAILED_CHECK_RETURN(pGameInstance->Ready_Timer(L"Timer_165"), FALSE);
 
 	_double			dTimerAcc = 0.0;
+	_double			dMaxFrame = 165.0;
+	_bool				bFrameChange = false;
 
     // 기본 메시지 루프입니다.
 	while (true)
@@ -86,7 +88,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 			dTimerAcc += pGameInstance->Get_TimeDelta(L"Timer_Default");	
 
-			if (dTimerAcc > 1.0 / 165.0)
+			if (dTimerAcc > 1.0 / dMaxFrame)
 			{
 				pGameInstance->Update_Timer(L"Timer_165");
 
@@ -96,6 +98,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 				g_bNeedResizeSwapChain = false;
 
 				dTimerAcc = 0.0;
+
+				if (pGameInstance->Get_DIKeyState(DIK_F2) & 0x80)
+					bFrameChange = !bFrameChange;
+
+				if (!bFrameChange)
+					dMaxFrame = 165.0;
+				else
+					dMaxFrame = 60.0;
 			}
 
 			

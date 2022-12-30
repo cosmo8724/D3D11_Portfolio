@@ -79,9 +79,6 @@ _bool CInput_Device::Key_DoubleDown(_ubyte byKeyID)
 
 _bool CInput_Device::Key_Up(_ubyte byKeyID)
 {
-	if (!m_bKeyState[byKeyID] && !(Get_DIKeyState(byKeyID) & 0x80))
-		return true;
-
 	if (m_bKeyState[byKeyID] && !(Get_DIKeyState(byKeyID) & 0x80))
 	{
 		m_bKeyState[byKeyID] = false;
@@ -127,7 +124,7 @@ void CInput_Device::Reset_EveryKey(_double dTimeDelta)
 		if (m_bKeyState[i] == true)
 			m_dChargeTime[i] += dTimeDelta;
 		else
-			m_dChargeTime[i] == 0.0;
+			m_dChargeTime[i] = 0.0;
 
 		m_bPressThisFrame[i] = false;
 	}

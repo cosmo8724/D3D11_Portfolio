@@ -114,11 +114,11 @@ HRESULT CLoader::Loading_ForGamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Shader_Anim", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_VtxAnimModel.hlsl", CShader::DECLARATION_VTXANIMMODEL, VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements)), E_FAIL);
 
 	m_wstrLoadingText = L"Create Prototype Objects...";
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sphere", CMySphere::Create(m_pDevice, m_pContext)), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sphere", CMySphere::Create(m_pDevice, m_pContext)), E_FAIL);
 	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Player", CPlayer::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Ash", CSigrid::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Handle", CSword_Handle::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Blade", CSword_Blade::Create(m_pDevice, m_pContext)), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Handle", CSword_Handle::Create(m_pDevice, m_pContext)), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Blade", CSword_Blade::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	m_wstrLoadingText = L"Complete Loading!";
 

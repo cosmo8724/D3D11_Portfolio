@@ -92,6 +92,11 @@ void CModel::Set_CurAnimationIndex(_uint iAnimationIndex)
 		m_fCurAnimChangeTime = 0.f;
 }
 
+void CModel::Set_CurAnimationSpeed(_double dAnimSpeed)
+{
+	m_vecAnimation[m_iCurAnimationIndex]->Set_AnimationTickPerSecond(dAnimSpeed);
+}
+
 void CModel::Reset_Animation()
 {
 	m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();

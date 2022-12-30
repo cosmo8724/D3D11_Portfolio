@@ -125,25 +125,6 @@ HRESULT CStatic_Camera::Render()
 	return S_OK;
 }
 
-void CStatic_Camera::Pitch(_float dTimeDelta)
-{
-	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), dTimeDelta);
-
-	_matrix matRotation = XMMatrixRotationAxis(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), (_float)m_CameraDesc.TransformDesc.dRotationPerSec * (_float)dTimeDelta);
-	XMVector3TransformNormal(m_pTransformCom->Get_State(CTransform::STATE_UP), matRotation);
-	XMVector3TransformNormal(m_pTransformCom->Get_State(CTransform::STATE_LOOK), matRotation);
-}
-
-void CStatic_Camera::Yaw(_float dTimeDelta)
-{
-	m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), dTimeDelta);
-}
-
-void CStatic_Camera::Roll(_float dTimeDelta)
-{
-	XMMatrixRotationRollPitchYaw(0.f, 0.f, _float(m_CameraDesc.TransformDesc.dRotationPerSec * dTimeDelta));
-}
-
 HRESULT CStatic_Camera::SetUp_Component()
 {
 	return S_OK;

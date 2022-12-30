@@ -45,6 +45,8 @@ private:	/* State */
 
 	_bool						m_bOnOcean = false;
 	_double					m_dSurfTime = 0.0;
+	_double					m_dBrakeSpeed = 1.0;
+	_double					m_dReduceSpeed = 0.0;
 
 	_bool						m_bBoost = false;
 	_float						m_fInertia = 0.f;

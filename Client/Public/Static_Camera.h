@@ -27,11 +27,6 @@ public:
 	virtual void					Tick(_double dTimeDelta) override;
 	virtual void					Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT				Render() override;
-	
-public:
-	void							Pitch(_float dTimeDelta);
-	void							Yaw(_float dTimeDelta);
-	void							Roll(_float dTimeDelta);
 
 private:
 	CTransform*					m_pOwnerTransform = nullptr;
