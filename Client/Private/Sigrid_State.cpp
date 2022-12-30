@@ -23,7 +23,6 @@ CSigrid_State::CSigrid_State()
 HRESULT CSigrid_State::Initialize(CSigrid * pPlayer, CStateMachine * pStateMachineCom, CModel * pModel, CTransform * pTransform, CStatic_Camera * pCamera)
 {
 	m_pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(m_pGameInstance);
 
 	m_pPlayer = pPlayer;
 	m_pStateMachine = pStateMachineCom;
@@ -3958,5 +3957,4 @@ CSigrid_State * CSigrid_State::Create(CSigrid * pPlayer, CStateMachine * pStateM
 
 void CSigrid_State::Free()
 {
-	Safe_Release(m_pGameInstance);
 }

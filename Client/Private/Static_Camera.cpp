@@ -78,7 +78,11 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 	_float		fVerticalAngle = 0.f;
 
 	fVerticalAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK)), XMVectorSet(0.f, 1.f, 0.f, 0.f))));
-
+	if (isnan(fVerticalAngle))
+	{
+		fVerticalAngle = 0.f;
+	}
+	
 	if (m_MouseMoveX = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_X))
 		m_pTransformCom->Orbit(vTargetPos, XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fDistanceFromTarget, dTimeDelta * m_MouseMoveX * 0.1f);
 	if (m_MouseMoveY = CGameInstance::GetInstance()->Get_DIMouseMove(DIMS_Y))

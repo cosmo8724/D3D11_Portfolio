@@ -22,6 +22,7 @@ private:
 	HRESULT						Ready_Layer_Camera(const wstring wstrLayerTag);
 	HRESULT						Ready_Layer_SkyBox(const wstring wstrLayerTag);
 	HRESULT						Ready_Layer_Player(const wstring wstrLayerTag);
+	HRESULT						Ready_Layer_Islands(const wstring& wstrLayerTag);
 
 public:
 	static CLevel_TestStage*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

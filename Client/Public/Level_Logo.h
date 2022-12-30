@@ -22,6 +22,8 @@ private:
 	HRESULT				Ready_Layer_UI(const wstring& wstrLayerTag);
 	HRESULT				Ready_Layer_SkyBox(const wstring& wstrLayerTag);
 	HRESULT				Ready_Layer_Ocean(const wstring& wstrLayerTag);
+	HRESULT				Ready_Layer_Player(const wstring& wstrLayerTag);
+	HRESULT				Ready_Layer_Islands(const wstring& wstrLayerTag);
 
 public:
 	static CLevel_Logo*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

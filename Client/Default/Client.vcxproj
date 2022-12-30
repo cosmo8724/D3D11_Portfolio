@@ -172,6 +172,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Bin\Shader\Shader_Define.h" />
+    <ClInclude Include="..\Public\MainIsland.h" />
     <ClInclude Include="..\Public\Ocean.h" />
     <ClInclude Include="..\Public\Sigrid.h" />
     <ClInclude Include="..\Public\BackGround.h" />
@@ -219,6 +220,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\MainIsland.cpp" />
     <ClCompile Include="..\Private\Ocean.cpp" />
     <ClCompile Include="..\Private\Sigrid.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
