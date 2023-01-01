@@ -11,8 +11,8 @@ private:
 	virtual ~CVIBuffer_Rect() = default;
 
 public:
-	virtual HRESULT	Initialize_Prototype() override;
-	virtual HRESULT	Initialize(class CGameObject* pOwner, void* pArg) override;
+	virtual HRESULT			Initialize_Prototype() override;
+	virtual HRESULT			Initialize(class CGameObject* pOwner, void* pArg) override;
 
 public:
 	static CVIBuffer_Rect*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

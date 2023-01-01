@@ -40,8 +40,7 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3 * pPoints)
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_tSubResourceData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_VertexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_VertexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pVertices);
 
@@ -65,8 +64,7 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3 * pPoints)
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
 	m_tSubResourceData.pSysMem = pIndices;
 
-	if (FAILED(__super::Create_IndexBuffer()))
-		return E_FAIL;
+	FAILED_CHECK_RETURN(__super::Create_IndexBuffer(), E_FAIL);
 
 	Safe_Delete_Array(pIndices);
 

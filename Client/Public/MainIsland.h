@@ -24,6 +24,8 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
+	virtual pair<_bool, _float3>		Picking_Mesh() override;
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;

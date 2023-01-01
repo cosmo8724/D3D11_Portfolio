@@ -1,16 +1,20 @@
 #include "stdafx.h"
 #include "..\Public\Navigation.h"
+#include "GameInstance.h"
 #include "Cell.h"
 #include "Shader.h"
+#include "Json/json.hpp"
+#include <fstream>
 
 CNavigation::CNavigation(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
-{
+{ 
 }
 
 CNavigation::CNavigation(const CNavigation & rhs)
 	: CComponent(rhs)
 	, m_vecCell(rhs.m_vecCell)
+	, m_tNavigationDesc(rhs.m_tNavigationDesc)
 #ifdef _DEBUG
 	, m_pShaderCom(rhs.m_pShaderCom)
 #endif // _DEBUG
@@ -26,38 +30,49 @@ CNavigation::CNavigation(const CNavigation & rhs)
 
 HRESULT CNavigation::Initialize_Prototype(const wstring & wstrFilePath)
 {
-	m_wstrFilePath = wstrFilePath;
-	
-	_ulong		dwByte = 0;
-
-	HANDLE	hFile = CreateFile(m_wstrFilePath.c_str(), GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (hFile == INVALID_HANDLE_VALUE)
-		return E_FAIL;
-
-	_float3	vPoint[CCell::POINT_END];
-
-	while (true)
+	if (wstrFilePath != L"")
 	{
-		ReadFile(hFile, vPoint, sizeof(_float3) * CCell::POINT_END, &dwByte, nullptr);
+		m_wstrFilePath = wstrFilePath;
 
-		if (dwByte == 0)
-			break;
+		Json	jCells;
 
-		CCell*		pCell = CCell::Create(m_pDevice, m_pContext, vPoint, (_int)m_vecCell.size());
-		NULL_CHECK_RETURN(pCell, E_FAIL);
+		string	strFilePath = "";
+		strFilePath.assign(m_wstrFilePath.begin(), m_wstrFilePath.end());
 
-		m_vecCell.push_back(pCell);
+		ifstream	file(strFilePath.c_str());
+		file >> jCells;
+		file.close();
+
+		_uint	iCellCount;
+		jCells["Cell Count"].get_to<_uint>(iCellCount);
+
+		for (auto jCell : jCells["Cells"])
+		{
+			_float3	vPoint[CCell::POINT_END];
+
+			jCell["Point A"][0].get_to<_float>(vPoint[CCell::POINT_A].x);
+			jCell["Point A"][1].get_to<_float>(vPoint[CCell::POINT_A].y);
+			jCell["Point A"][2].get_to<_float>(vPoint[CCell::POINT_A].z);
+			jCell["Point B"][0].get_to<_float>(vPoint[CCell::POINT_B].x);
+			jCell["Point B"][1].get_to<_float>(vPoint[CCell::POINT_B].y);
+			jCell["Point B"][2].get_to<_float>(vPoint[CCell::POINT_B].z);
+			jCell["Point C"][0].get_to<_float>(vPoint[CCell::POINT_C].x);
+			jCell["Point C"][1].get_to<_float>(vPoint[CCell::POINT_C].y);
+			jCell["Point C"][2].get_to<_float>(vPoint[CCell::POINT_C].z);
+
+			CCell*		pCell = CCell::Create(m_pDevice, m_pContext, vPoint, (_int)m_vecCell.size());
+			NULL_CHECK_RETURN(pCell, E_FAIL);
+
+			m_vecCell.push_back(pCell);
+		}
 	}
-
-	CloseHandle(hFile);
-
+	
 	FAILED_CHECK_RETURN(Ready_Neighbor(), E_FAIL);
-
+	
 #ifdef _DEBUG
-	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFile/Shader_Navigation.hlsl", CShader::DECLARATION_VTXPOS, VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements);
+	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Navigation.hlsl", CShader::DECLARATION_VTXPOS, VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements);
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
 #endif // _DEBUG
-
 
 	return S_OK;
 }
@@ -69,6 +84,111 @@ HRESULT CNavigation::Initialize(CGameObject * pOwner, void * pArg)
 
 	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 	
+	return S_OK;
+}
+
+HRESULT CNavigation::Add_Cell(_float3 * vPoints)
+{
+	CCell*		pCell = CCell::Create(m_pDevice, m_pContext, vPoints, (_int)m_vecCell.size());
+	NULL_CHECK_RETURN(pCell, E_FAIL);
+
+	m_vecCell.push_back(pCell);
+	FAILED_CHECK_RETURN(Ready_Neighbor(), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CNavigation::Delete_Cell(_int iIndex)
+{
+	if (iIndex < 0 || iIndex >= (_int)m_vecCell.size())
+		return E_FAIL;
+
+	auto	iter = m_vecCell.begin();
+
+	for (_int i = 0; i < iIndex; ++i)
+		++iter;
+
+	Safe_Release(*iter);
+	m_vecCell.erase(iter);
+
+	return S_OK;
+}
+
+HRESULT CNavigation::Save_Cell(string strSaveFilePath)
+{
+	Json	jCells;
+	Json	jCell;
+
+	jCells["Cell Count"] = (_uint)m_vecCell.size();
+
+	for (auto& pCell : m_vecCell)
+	{
+		jCell["Index"] = pCell->Get_Index();
+		jCell["Point A"].push_back(pCell->Get_Point(CCell::POINT_A).x);
+		jCell["Point A"].push_back(pCell->Get_Point(CCell::POINT_A).y);
+		jCell["Point A"].push_back(pCell->Get_Point(CCell::POINT_A).z);
+		jCell["Point B"].push_back(pCell->Get_Point(CCell::POINT_B).x);
+		jCell["Point B"].push_back(pCell->Get_Point(CCell::POINT_B).y);
+		jCell["Point B"].push_back(pCell->Get_Point(CCell::POINT_B).z);
+		jCell["Point C"].push_back(pCell->Get_Point(CCell::POINT_C).x);
+		jCell["Point C"].push_back(pCell->Get_Point(CCell::POINT_C).y);
+		jCell["Point C"].push_back(pCell->Get_Point(CCell::POINT_C).z);
+		jCell["Neighbor Index"].push_back(pCell->Get_NeighbotIndex()[CCell::NEIGHBOR_AB]);
+		jCell["Neighbor Index"].push_back(pCell->Get_NeighbotIndex()[CCell::NEIGHBOR_BC]);
+		jCell["Neighbor Index"].push_back(pCell->Get_NeighbotIndex()[CCell::NEIGHBOR_CA]);
+
+		jCells["Cells"].push_back(jCell);
+		jCell.clear();
+	}
+
+	ofstream	file(strSaveFilePath.c_str());
+	file << jCells;
+	file.close();
+
+	jCells.clear();
+
+	return S_OK;
+}
+
+HRESULT CNavigation::Find_NearBy_Point(_float3 & vPoint)
+{
+	_float3	vPoints[CCell::POINT_END];
+
+	for (auto& pCell : m_vecCell)
+	{
+		ZeroMemory(&vPoints, sizeof(_float3) * CCell::POINT_END);
+
+		vPoints[CCell::POINT_A] = pCell->Get_Point(CCell::POINT_A);
+		vPoints[CCell::POINT_B] = pCell->Get_Point(CCell::POINT_B);
+		vPoints[CCell::POINT_C] = pCell->Get_Point(CCell::POINT_C);
+		_vector	vDir;
+		_float		fDist = 10000.f;
+		
+		vDir = vPoints[CCell::POINT_A] - vPoint;
+		fDist = XMVectorGetX(XMVector3Length(vDir));
+		if (fDist < 0.15f)
+		{
+			vPoint = vPoints[CCell::POINT_A];
+			break;
+		}
+
+		vDir = vPoints[CCell::POINT_B] - vPoint;
+		fDist = XMVectorGetX(XMVector3Length(vDir));
+		if (fDist < 0.15f)
+		{
+			vPoint = vPoints[CCell::POINT_B];
+			break;
+		}
+
+		vDir = vPoints[CCell::POINT_C] - vPoint;
+		fDist = XMVectorGetX(XMVector3Length(vDir));
+		if (fDist < 0.15f)
+		{
+			vPoint = vPoints[CCell::POINT_C];
+			break;
+		}
+	}
+
 	return S_OK;
 }
 
@@ -108,16 +228,16 @@ HRESULT CNavigation::Render()
 {
 	_float		fHeight = 0.f;
 
-	if (m_tNavigationDesc.iCurrentIndex != -1)
+	if (m_tNavigationDesc.iCurrentIndex == -1)
 	{
-		fHeight = 0.f;
+		fHeight = 0.1f;
 
 		m_pShaderCom->Set_RawValue(L"g_fHeight", &fHeight, sizeof(_float));
 		m_pShaderCom->Set_RawValue(L"g_vColor", &_float4(0.f, 1.f, 0.f, 1.f), sizeof(_float4));
 	}
 	else
 	{
-		fHeight = 0.1f;
+		fHeight = 0.15f;
 
 		m_pShaderCom->Set_RawValue(L"g_fHeight", &fHeight, sizeof(_float));
 		m_pShaderCom->Set_RawValue(L"g_vColor", &_float4(1.f, 0.f, 0.f, 1.f), sizeof(_float4));
@@ -127,10 +247,24 @@ HRESULT CNavigation::Render()
 		return S_OK;
 	}
 
-	for (auto& pCell : m_vecCell)
+	if (m_vecCell.empty())
 	{
-		if (pCell != nullptr)
-			pCell->Render(m_pShaderCom);
+		_float4x4		matWorld;
+		XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
+
+		m_pShaderCom->Set_Matrix(L"g_matWorld", &matWorld);
+		m_pShaderCom->Set_Matrix(L"g_matView", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
+		m_pShaderCom->Set_Matrix(L"g_matProj", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+
+		m_pShaderCom->Begin(0);
+	}
+	else
+	{
+		for (auto& pCell : m_vecCell)
+		{
+			if (pCell != nullptr)
+				pCell->Render(m_pShaderCom);
+		}
 	}
 
 	return S_OK;
@@ -197,5 +331,4 @@ void CNavigation::Free()
 #ifdef _DEBUG
 	Safe_Release(m_pShaderCom);
 #endif // _DEBUG
-
 }

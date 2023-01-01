@@ -37,6 +37,7 @@ public:
 public:
 	void						ImGui_RenderComponentProperties();
 	virtual void				ImGui_RenderProperty() {}
+	virtual pair<_bool, _float3>		Picking_Mesh() { return pair<_bool, _float3>{false, _float3(0.f, 0.f, 0.f)}; }
 
 protected:
 	DEVICE					m_pDevice = nullptr;

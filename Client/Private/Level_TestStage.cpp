@@ -124,6 +124,8 @@ HRESULT CLevel_TestStage::Ready_Layer_Islands(const wstring & wstrLayerTag)
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_MainIsland"), E_FAIL);
 
 	Safe_Release(pGameInstance);
+
+	return S_OK;
 }
 
 CLevel_TestStage * CLevel_TestStage::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)

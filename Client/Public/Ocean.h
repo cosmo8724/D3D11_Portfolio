@@ -25,6 +25,9 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
+public:
+	pair<_bool, _float3>		Picking_Terrain();
+
 private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;

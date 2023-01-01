@@ -2,6 +2,8 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Bone.h"
+#include "Transform.h"
+#include "GameUtility.h"
 
 #ifdef _DEBUG
 #define new DBG_NEW 
@@ -315,6 +317,21 @@ void CMesh::SetUp_BoneMatrices(_float4x4 * pBoneMatrices, _fmatrix matPivot)
 
 	for (auto& pBone : m_vecMeshBone)
 		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_matOffset() * pBone->Get_CombindMatrix() * matPivot);
+}
+
+pair<_bool, _float> CMesh::Picking(HWND & hWnd, CTransform * pTransformCom, _float3 & vPickingPoint)
+{
+	pair<_bool, _float>	Result{ false, 0.f };
+
+	D3D11_VIEWPORT		ViewPort;
+	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+	_uint	iNumViewport = 1;
+
+	m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
+
+	Result = CGameUtility::Picking(hWnd, ViewPort.Width, ViewPort.Height, pTransformCom, m_pNonAnimVertices, m_pIndices, m_iNumPrimitive, vPickingPoint);
+
+	return Result;
 }
 
 HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh, CModel * pModel)

@@ -1133,17 +1133,22 @@ void CSigrid_State::Start_Ground_Run(_double dTimeDelta)
 	m_pPlayer->m_bDash = false;
 
 	m_pModelCom->Set_CurAnimationIndex(GROUND_RUN);
+	if (m_pModelCom->Get_LastAnimationIndex() == GROUND_RUN_LEFT ||
+		m_pModelCom->Get_LastAnimationIndex() == GROUND_RUN_RIGHT)
+		m_pModelCom->Set_LerpTime(0.3f);
 }
 
 void CSigrid_State::Start_Ground_Run_Left(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_LerpTime(0.3f);
 	m_pModelCom->Set_CurAnimationIndex(GROUND_RUN_LEFT);
 }
 
 void CSigrid_State::Start_Ground_Run_Right(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_LerpTime(0.3f);
 	m_pModelCom->Set_CurAnimationIndex(GROUND_RUN_RIGHT);
 }
 
@@ -2391,14 +2396,17 @@ void CSigrid_State::End_Dash_Into_Idle(_double dTimeDelta)
 
 void CSigrid_State::End_Ground_Run(_double dTimeDelta)
 {
+	m_pModelCom->Set_LerpTime(0.2f);
 }
 
 void CSigrid_State::End_Ground_Run_Left(_double dTimeDelta)
 {
+	m_pModelCom->Set_LerpTime(0.2f);
 }
 
 void CSigrid_State::End_Ground_Run_Right(_double dTimeDelta)
 {
+	m_pModelCom->Set_LerpTime(0.2f);
 }
 
 void CSigrid_State::End_Dash_Into_Run(_double dTimeDelta)

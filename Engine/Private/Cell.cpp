@@ -18,10 +18,23 @@ HRESULT CCell::Initialize(const _float3 * pPoints, _int iIndex)
 #ifdef _DEBUG
 	m_pVIBufferCom = CVIBuffer_Cell::Create(m_pDevice, m_pContext, m_vPoint);
 	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
+
+	m_pVIBufferCircleCom[POINT_A] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[POINT_A]);
+	m_pVIBufferCircleCom[POINT_B] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[POINT_B]);
+	m_pVIBufferCircleCom[POINT_C] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[POINT_C]);
 #endif // _DEBUG
 
 
 	return S_OK;
+}
+
+void CCell::ImGui_RenderProperty()
+{
+	ImGui::InputFloat3("POINT A", &m_vPoint[POINT_A].x);
+	ImGui::InputFloat3("POINT B", &m_vPoint[POINT_B].x);
+	ImGui::InputFloat3("POINT C", &m_vPoint[POINT_C].x);
+	ImGui::NewLine();
+	ImGui::InputInt3("Neighbor", m_iNeighborIndex, ImGuiInputTextFlags_ReadOnly);
 }
 
 _bool CCell::Compare_Point(const _float3 & SourPoint, const _float3 & DestPoint)
@@ -90,6 +103,9 @@ HRESULT CCell::Render(CShader * pShader)
 
 	m_pVIBufferCom->Render();
 
+	for (_uint i = 0; i < (_uint)POINT_END; ++i)
+		m_pVIBufferCircleCom[i]->Render();
+
 	return S_OK;
 }
 #endif
@@ -114,5 +130,8 @@ void CCell::Free()
 
 #ifdef _DEBUG
 	Safe_Release(m_pVIBufferCom);
+
+	for (_uint i = 0; i < (_uint)POINT_END; ++i)
+		Safe_Release(m_pVIBufferCircleCom[i]);
 #endif // _DEBUG
 }

@@ -62,6 +62,11 @@ HRESULT CMainIsland::Render()
 	return S_OK;
 }
 
+pair<_bool, _float3> CMainIsland::Picking_Mesh()
+{
+	return m_pModelCom->Picking(g_hWnd, m_pTransformCom);
+}
+
 HRESULT CMainIsland::SetUp_Component()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);

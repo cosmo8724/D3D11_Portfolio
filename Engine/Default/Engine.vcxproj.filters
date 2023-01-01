@@ -151,6 +151,9 @@
     <Filter Include="01. Utility\03. Component\02. VIBuffer\Cell">
       <UniqueIdentifier>{06feb062-8e5e-4036-b9d4-c9bf28041e49}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\03. Component\02. VIBuffer\Cell\Circle">
+      <UniqueIdentifier>{72f60521-8dda-4ebe-b6e0-3e01037728f0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -320,6 +323,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\StateMachine.cpp">
       <Filter>01. Utility\03. Component\08. State Machine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cell_Circle.cpp">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Cell\Circle</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -524,10 +530,18 @@
     <ClInclude Include="..\Public\StateMachine.h">
       <Filter>01. Utility\03. Component\08. State Machine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cell_Circle.h">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Cell\Circle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Public\HowToUse.txt">
       <Filter>01. Utility\03. Component\08. State Machine</Filter>
     </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\Shader\Shader_Navigation.hlsl">
+      <Filter>01. Utility\03. Component\09. Navigation</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

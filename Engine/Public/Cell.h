@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 
-class CCell final : public CBase
+class ENGINE_DLL CCell final : public CBase
 {
 public:
 	enum POINT { POINT_A, POINT_B, POINT_C, POINT_END };
@@ -14,11 +14,14 @@ private:
 	virtual ~CCell() = default;
 
 public:
+	const _int&				Get_Index() const { return m_iIndex; }
 	_float3					Get_Point(POINT ePoint) { return m_vPoint[ePoint]; }
+	_int*						Get_NeighbotIndex() { return m_iNeighborIndex; }
 	void						Set_Neighbor(NEIGHBOR eNeighbor, CCell* pNeighbor) { m_iNeighborIndex[eNeighbor] = pNeighbor->m_iIndex; }
 
 public:
 	HRESULT					Initialize(const _float3* pPoints, _int iIndex);
+	void						ImGui_RenderProperty();
 
 public:
 	_bool						Compare_Point(const _float3& SourPoint, const _float3& DestPoint);
@@ -42,6 +45,7 @@ private:
 #ifdef _DEBUG
 private:
 	class CVIBuffer_Cell*	m_pVIBufferCom = nullptr;
+	class CVIBuffer_Cell_Circle*	m_pVIBufferCircleCom[POINT_END] = { nullptr, nullptr, nullptr };
 #endif // _DEBUG
 
 

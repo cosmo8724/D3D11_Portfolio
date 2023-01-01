@@ -142,6 +142,9 @@
     <Filter Include="02. GameObject\02. For_MainStage\Islands">
       <UniqueIdentifier>{0e02fc85-c7de-4fbb-84e4-89feed8072dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97. Tool\07. Navigation Editor">
+      <UniqueIdentifier>{854c7cc7-a906-4d73-a3c8-b581c9d9f249}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -258,6 +261,9 @@
     <ClInclude Include="..\Public\MainIsland.h">
       <Filter>02. GameObject\02. For_MainStage\Islands</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Tool_Navigation.h">
+      <Filter>97. Tool\07. Navigation Editor</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -361,6 +367,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\MainIsland.cpp">
       <Filter>02. GameObject\02. For_MainStage\Islands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Navigation.cpp">
+      <Filter>97. Tool\07. Navigation Editor</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,7 @@ class CShader;
 class CRenderer;
 class CStateMachine;
 class CCollider;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -35,6 +36,7 @@ private:
 	CCollider*					m_pSphereCol = nullptr;
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
+	CNavigation*				m_pNavigationCom = nullptr;
 	CStateMachine*			m_pStateMachineCom = nullptr;
 	class CSigrid_State*		m_pSigridState = nullptr;
 

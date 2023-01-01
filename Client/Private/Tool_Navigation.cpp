@@ -1,0 +1,280 @@
+#include "stdafx.h"
+#include "..\Public\Tool_Navigation.h"
+#include "GameInstance.h"
+#include "GameObject.h"
+#include "GameUtility.h"
+#include "Json/json.hpp"
+#include <fstream>
+#include "Cell.h"
+#include "Ocean.h"
+
+CTool_Navigation::CTool_Navigation(DEVICE pDevice, DEVICE_CONTEXT pContext)
+	: m_pDevice(pDevice), m_pContext(pContext)
+{
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
+}
+
+HRESULT CTool_Navigation::Initialize(void * pArg)
+{
+	m_pGameInstance = CGameInstance::GetInstance();
+	m_szWIndowName = "Navigation Editor";
+
+	m_pNavigationCom = CNavigation::Create(m_pDevice, m_pContext);
+
+	return S_OK;
+}
+
+void CTool_Navigation::ImGui_RenderWindow()
+{
+	static _int	iSelectedCell = -1;
+	char**			ppCellTag = nullptr;
+	static _bool	bSave = false;
+	static char	szSaveFileName[MAX_PATH] = "";
+
+	NULL_CHECK_RETURN(m_pNavigationCom, );
+
+#ifdef _DEBUG
+	for (_uint i = 0; i < (_uint)POINT_END; ++i)
+	{
+		if (m_pVIBufferCircleCom[i] != nullptr)
+			Safe_Release(m_pVIBufferCircleCom[i]);
+
+		if (!XMVector3Equal(XMVectorSetW(XMLoadFloat3(&m_vPoint[i]), 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f)))
+			m_pVIBufferCircleCom[i] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[i]);
+	}
+#endif // _DEBUG
+
+	m_iNumCell = m_pNavigationCom->Get_CellCount();
+	ImGui::BulletText("Cell Count : %d", m_iNumCell);
+	ImGui::BulletText("Cell List");
+
+	if (m_iNumCell == 0)
+		ImGui::Text("There is No Cell.");
+	else
+	{
+		ppCellTag = new char*[m_iNumCell];
+		for (_uint i = 0; i < m_iNumCell; ++i)
+		{
+			char		pCellTag[128] = "";
+			sprintf_s(pCellTag, "Cell_%d", i);
+			ppCellTag[i] = new char[strlen(pCellTag) + 1];
+			strcpy_s(ppCellTag[i], strlen(pCellTag) + 1, pCellTag);
+		}
+
+		ImGui::ListBox("Cell List", &iSelectedCell, ppCellTag, m_iNumCell);
+
+		if ((ImGui::Button("Delete") || m_pGameInstance->Key_Down(DIK_DELETE)) && iSelectedCell != -1)
+		{
+			for (_uint i = 0; i < m_iNumCell; ++i)
+				Safe_Delete_Array(ppCellTag[i]);
+			Safe_Delete_Array(ppCellTag);
+
+			m_pNavigationCom->Delete_Cell(iSelectedCell);
+
+			iSelectedCell = -1;
+
+			return;
+		}
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button("Save") && m_iNumCell != 0)
+		bSave = true;
+	ImGui::SameLine();
+	if (ImGui::Button("Load"))
+		ImGuiFileDialog::Instance()->OpenDialog("Load Navigation", "Load Navigation", ".json", "../Bin/Save Data/Navigation", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+
+	if (bSave)
+	{
+		ImGui::InputText("File Name", szSaveFileName, MAX_PATH);
+		ImGui::SameLine();
+		if (ImGui::Button("Confirm"))
+			ImGuiFileDialog::Instance()->OpenDialog("Save Navigation", "Save Navigation", ".json", "../Bin/Save Data/Navigation", strcat(szSaveFileName, ".json"), 0, nullptr, ImGuiFileDialogFlags_Modal);
+
+		if (ImGuiFileDialog::Instance()->Display("Save Navigation"))
+		{
+			if (ImGuiFileDialog::Instance()->IsOk())
+			{
+				string		strSaveFileDirectory = ImGuiFileDialog::Instance()->GetCurrentPath();
+				char	szDash[128] = "\\";
+				strcat_s(szDash, szSaveFileName);
+				strSaveFileDirectory += string(szDash);
+
+				m_pNavigationCom->Save_Cell(strSaveFileDirectory);
+
+				strcpy_s(szSaveFileName, "");
+				bSave = false;
+
+				ImGuiFileDialog::Instance()->Close();
+			}
+			if (!ImGuiFileDialog::Instance()->IsOk())
+				ImGuiFileDialog::Instance()->Close();
+		}
+	}
+
+	if (ImGuiFileDialog::Instance()->Display("Load Navigation"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+			for (_uint i = 0; i < m_iNumCell; ++i)
+				Safe_Delete_Array(ppCellTag[i]);
+			Safe_Delete_Array(ppCellTag);
+
+			Safe_Release(m_pNavigationCom);
+
+			string		strFilePath = ImGuiFileDialog::Instance()->GetFilePathName();;
+			wstring	wstrFilePath = L"";
+			wstrFilePath.assign(strFilePath.begin(), strFilePath.end());
+
+			_splitpath_s(strFilePath.c_str(), nullptr, 0, nullptr, 0, szSaveFileName, MAX_PATH, nullptr, 0);
+
+			m_pNavigationCom = CNavigation::Create(m_pDevice, m_pContext, wstrFilePath);
+
+			iSelectedCell = -1;
+
+			ImGuiFileDialog::Instance()->Close();
+
+			return;
+		}
+		if (!ImGuiFileDialog::Instance()->IsOk())
+			ImGuiFileDialog::Instance()->Close();
+	}
+
+	ImGui::Separator();
+	static _bool	bDrawCell = false;
+	ImGui::Checkbox("Draw Cell", &bDrawCell);
+
+	if (m_pGameInstance->Get_CurLevelIndex() != LEVEL_TESTSTAGE)
+		bDrawCell = false;
+
+	if (bDrawCell && m_pGameInstance->Get_CurLevelIndex() == LEVEL_TESTSTAGE)
+	{
+		// Terrain Picking
+		if (m_pGameInstance->Mouse_Down(DIM_LB) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		{
+			COcean*		pOcean = dynamic_cast<COcean*>(m_pGameInstance->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Ocean")->front());
+			NULL_CHECK_RETURN(pOcean, );
+
+			pair<_bool, _float3>		PickInfo = pOcean->Picking_Terrain();
+
+			if (PickInfo.first == true)
+			{
+				m_vPoint[m_iCurPoint] = PickInfo.second;
+				m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
+				m_iCurPoint++;
+
+				if (m_iCurPoint == (_uint)POINT_END)
+				{
+					CGameUtility::SortPointsByCW(m_vPoint);
+					m_pNavigationCom->Add_Cell(m_vPoint);
+
+					m_iCurPoint = (_uint)POINT_A;
+					ZeroMemory(m_vPoint, sizeof(_float3) * POINT_END);
+				}
+			}
+		}
+		// Mesh Picking
+		else if (m_pGameInstance->Mouse_Down(DIM_RB) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
+		{
+			list<CGameObject*>*	IslandList = m_pGameInstance->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Islands");
+
+			for (auto& pIsland : *IslandList)
+			{
+				pair<_bool, _float3>		PickInfo = pIsland->Picking_Mesh();
+
+				if (PickInfo.first == true)
+				{
+					m_vPoint[m_iCurPoint] = PickInfo.second;
+					m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
+					m_iCurPoint++;
+
+					if (m_iCurPoint == (_uint)POINT_END)
+					{
+						CGameUtility::SortPointsByCW(m_vPoint);
+						m_pNavigationCom->Add_Cell(m_vPoint);
+
+						m_iCurPoint = (_uint)POINT_A;
+						ZeroMemory(m_vPoint, sizeof(_float3) * POINT_END);
+					}
+				}
+			}
+		}
+		// Undo
+		else if (m_pGameInstance->Key_Down(DIK_Z) && m_pGameInstance->Get_DIKeyState(DIK_LCONTROL) & 0x80)
+		{
+			if (m_iCurPoint == (_uint)POINT_A)
+			{
+				CCell*		pCell = m_pNavigationCom->Get_Cell(m_iNumCell - 1);
+				NULL_CHECK_RETURN(pCell, );
+
+				m_vPoint[POINT_A] = pCell->Get_Point(CCell::POINT_A);
+				m_vPoint[POINT_B] = pCell->Get_Point(CCell::POINT_B);
+
+				m_pNavigationCom->Delete_Cell(m_iNumCell - 1);
+
+				m_iCurPoint = (_uint)POINT_C;
+			}
+			else
+				m_iCurPoint--;
+
+			m_vPoint[m_iCurPoint] = { 0.f, 0.f, 0.f };
+		}
+
+		ImGui::InputFloat3("POINT_A", &m_vPoint[POINT_A].x);
+		ImGui::InputFloat3("POINT_B", &m_vPoint[POINT_B].x);
+		ImGui::InputFloat3("POINT_C", &m_vPoint[POINT_C].x);
+	}
+
+	if (iSelectedCell != -1)
+	{
+		ImGui::Separator();
+
+		CCell*		pCell = m_pNavigationCom->Get_Cell(iSelectedCell);
+		NULL_CHECK_RETURN(pCell, );
+
+		pCell->ImGui_RenderProperty();
+	}
+
+	for (_uint i = 0; i < m_iNumCell; ++i)
+		Safe_Delete_Array(ppCellTag[i]);
+	Safe_Delete_Array(ppCellTag);
+}
+
+void CTool_Navigation::Render()
+{
+#ifdef _DEBUG
+	m_pNavigationCom->Render();
+	
+	for (_uint i = 0; i < (_uint)POINT_END; ++i)
+	{
+		if (m_pVIBufferCircleCom[i] != nullptr)
+			m_pVIBufferCircleCom[i]->Render();
+	}
+#endif // _DEBUG
+}
+
+CTool_Navigation * CTool_Navigation::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, void * pArg)
+{
+	CTool_Navigation*	pInstance = new CTool_Navigation(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed to Create : CTool_Navigation");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CTool_Navigation::Free()
+{
+#ifdef _DEBUG
+	for (_uint i = 0; i < (_uint)POINT_END; ++i)
+		Safe_Release(m_pVIBufferCircleCom[i]);
+#endif // _DEBUG
+
+	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pContext);
+	Safe_Release(m_pDevice);
+}

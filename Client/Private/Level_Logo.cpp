@@ -12,6 +12,7 @@
 #include "Tool_PrototypeMgr.h"
 #include "Tool_ModelSave.h"
 #include "Camera.h"
+#include "Tool_Navigation.h"
 
 CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -40,6 +41,7 @@ HRESULT CLevel_Logo::Initialize()
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_MapEditor::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_AnimationManager::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_ModelSave::Create(m_pDevice, m_pContext));
+	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Navigation::Create(m_pDevice, m_pContext));
 
 	return S_OK;
 }
