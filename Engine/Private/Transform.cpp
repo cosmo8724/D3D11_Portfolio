@@ -100,7 +100,7 @@ void CTransform::ImGui_RenderProperty()
 	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_matWorld);
 }
 
-void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta)
+void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_float3		fScale = Get_Scale();
 
@@ -119,7 +119,7 @@ void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta)
 	Set_State(CTransform::STATE_TRANS, vPosition);
 }
 
-void CTransform::Go_Straight(_double dTimeDelta)
+void CTransform::Go_Straight(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_float4	vLook;
@@ -127,10 +127,16 @@ void CTransform::Go_Straight(_double dTimeDelta)
 
 	vPos += XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vPos);
+	else
+	{
+		if (pNavigationCom->IsMoveOnNavigation(vPos))
+			Set_State(CTransform::STATE_TRANS, vPos);
+	}
 }
 
-void CTransform::Go_BackWard(_double dTimeDelta)
+void CTransform::Go_BackWard(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_float4	vLook;
@@ -138,27 +144,45 @@ void CTransform::Go_BackWard(_double dTimeDelta)
 
 	vPos -= XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vPos);
+	else
+	{
+		if (pNavigationCom->IsMoveOnNavigation(vPos))
+			Set_State(CTransform::STATE_TRANS, vPos);
+	}
 }
 
-void CTransform::Go_Left(_double dTimeDelta)
+void CTransform::Go_Left(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
 
 	vPos -= XMVector3Normalize(vRight) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vPos);
+	else
+	{
+		if (pNavigationCom->IsMoveOnNavigation(vPos))
+			Set_State(CTransform::STATE_TRANS, vPos);
+	}
 }
 
-void CTransform::Go_Right(_double dTimeDelta)
+void CTransform::Go_Right(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
 
 	vPos += XMVector3Normalize(vRight) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vPos);
+	else
+	{
+		if (pNavigationCom->IsMoveOnNavigation(vPos))
+			Set_State(CTransform::STATE_TRANS, vPos);
+	}
 }
 
 void CTransform::Go_Up(_double dTimeDelta)
@@ -200,7 +224,7 @@ void CTransform::Jump(_double dTimeDelta, _float & fGravity, _float & fCurJumpSp
 	fCurJumpSpeed -= fGravity;
 }
 
-void CTransform::Dash(_double dTimeDelta, _float & fFriction, _float & fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir)
+void CTransform::Dash(_double dTimeDelta, _float & fFriction, _float & fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir, CNavigation* pNavigationCom)
 {
 	if (fCurDashTickCount < 0.f)
 		return;
@@ -258,7 +282,14 @@ void CTransform::Dash(_double dTimeDelta, _float & fFriction, _float & fCurDashT
 	}
 	
 	vPos += XMVector3Normalize(vLook) * (_float)dTimeDelta * (_float)m_TransformDesc.dSpeedPerSec * 2.f;
-	Set_State(STATE_TRANS, vPos);
+
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vPos);
+	else
+	{
+		if (pNavigationCom->IsMoveOnNavigation(vPos))
+			Set_State(CTransform::STATE_TRANS, vPos);
+	}
 }
 
 void CTransform::Turn(_fvector vAxis, _double dTimeDelta)

@@ -1,5 +1,6 @@
 #pragma once
 #include "Component.h"
+#include "Cell.h"
 
 BEGIN(Engine)
 
@@ -19,6 +20,7 @@ private:
 public:
 	_uint						Get_CellCount() { return (_uint)m_vecCell.size(); }
 	class CCell*				Get_Cell(_int iIndex) { return m_vecCell[iIndex]; }
+	CCell::STATE				Get_CurrentCellState() { return m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_State(); }
 
 public:
 	virtual HRESULT			Initialize_Prototype(const wstring& wstrFilePath);
@@ -34,6 +36,8 @@ public:
 #ifdef _DEBUG
 public:
 	HRESULT					Render();
+	HRESULT					Render_Selected_Cell(_int iIndex);
+	void						Change_Render_HeightColor(const _float& fHeight, const _float4& vColor);
 #endif // _DEBUG
 
 private:

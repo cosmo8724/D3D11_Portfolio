@@ -1,11 +1,11 @@
 #pragma once
 #include "Client_Define.h"
 #include "Tool.h"
+#include "Cell.h"
 
 BEGIN(Engine)
 class CGameInstance;
 class CNavigation;
-class CCell;
 class CVIBuffer_Cell_Circle;
 END
 
@@ -37,6 +37,9 @@ private:
 
 	CNavigation*					m_pNavigationCom = nullptr;
 	_uint							m_iNumCell = 0;
+	_int							m_iSelectedCell = -1;
+
+	char*							m_pStateName[CCell::STATE_END + 1] = { "State_Ocean", "State_Ground", "None" };
 
 #ifdef _DEBUG
 	CVIBuffer_Cell_Circle*		m_pVIBufferCircleCom[POINT_END] = { nullptr, nullptr, nullptr };

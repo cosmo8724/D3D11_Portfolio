@@ -60,7 +60,7 @@ void CDynamic_Camera::Tick(_double dTimeDelta)
 		m_pTransformCom->Go_Right(dTimeDelta);
 	if (GetKeyState(VK_SPACE) & 0x8000)
 		m_pTransformCom->Go_Up(dTimeDelta);
-	if (GetKeyState(VK_LCONTROL) & 0x8000)
+	if (GetKeyState('C') & 0x8000)
 		m_pTransformCom->Go_Down(dTimeDelta);
 
 	m_pTransformCom->Speed_Up(GetKeyState(VK_LSHIFT) & 0x8000);

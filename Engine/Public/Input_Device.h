@@ -45,6 +45,7 @@ private:
 	_bool							m_bPressThisFrame[256];
 	_double						m_dChargeTime[256];
 	_bool							m_bMouseState[3];
+	_bool							m_bPressThisFrameMouse[3];
 
 	_int							m_iClickedCnt = 0;
 

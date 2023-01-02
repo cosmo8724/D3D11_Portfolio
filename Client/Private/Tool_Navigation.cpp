@@ -27,7 +27,6 @@ HRESULT CTool_Navigation::Initialize(void * pArg)
 
 void CTool_Navigation::ImGui_RenderWindow()
 {
-	static _int	iSelectedCell = -1;
 	char**			ppCellTag = nullptr;
 	static _bool	bSave = false;
 	static char	szSaveFileName[MAX_PATH] = "";
@@ -62,17 +61,17 @@ void CTool_Navigation::ImGui_RenderWindow()
 			strcpy_s(ppCellTag[i], strlen(pCellTag) + 1, pCellTag);
 		}
 
-		ImGui::ListBox("Cell List", &iSelectedCell, ppCellTag, m_iNumCell);
+		ImGui::ListBox("Cell List", &m_iSelectedCell, ppCellTag, m_iNumCell);
 
-		if ((ImGui::Button("Delete") || m_pGameInstance->Key_Down(DIK_DELETE)) && iSelectedCell != -1)
+		if ((ImGui::Button("Delete") || m_pGameInstance->Key_Down(DIK_DELETE)) && m_iSelectedCell != -1)
 		{
 			for (_uint i = 0; i < m_iNumCell; ++i)
 				Safe_Delete_Array(ppCellTag[i]);
 			Safe_Delete_Array(ppCellTag);
 
-			m_pNavigationCom->Delete_Cell(iSelectedCell);
+			m_pNavigationCom->Delete_Cell(m_iSelectedCell);
 
-			iSelectedCell = -1;
+			m_iSelectedCell = -1;
 
 			return;
 		}
@@ -131,7 +130,7 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 			m_pNavigationCom = CNavigation::Create(m_pDevice, m_pContext, wstrFilePath);
 
-			iSelectedCell = -1;
+			m_iSelectedCell = -1;
 
 			ImGuiFileDialog::Instance()->Close();
 
@@ -226,14 +225,17 @@ void CTool_Navigation::ImGui_RenderWindow()
 		ImGui::InputFloat3("POINT_C", &m_vPoint[POINT_C].x);
 	}
 
-	if (iSelectedCell != -1)
+	if (m_iSelectedCell != -1)
 	{
 		ImGui::Separator();
 
-		CCell*		pCell = m_pNavigationCom->Get_Cell(iSelectedCell);
+		CCell*		pCell = m_pNavigationCom->Get_Cell(m_iSelectedCell);
 		NULL_CHECK_RETURN(pCell, );
 
 		pCell->ImGui_RenderProperty();
+
+		if (m_pGameInstance->Key_Down(DIK_ESCAPE))
+			m_iSelectedCell = -1;
 	}
 
 	for (_uint i = 0; i < m_iNumCell; ++i)
@@ -245,6 +247,13 @@ void CTool_Navigation::Render()
 {
 #ifdef _DEBUG
 	m_pNavigationCom->Render();
+
+	if (m_iSelectedCell != -1)
+		m_pNavigationCom->Render_Selected_Cell(m_iSelectedCell);
+
+	_float		fHeight = 0.15f;
+	_float4	vColor = { 1.f, 0.4f, 0.f, 1.f };
+	m_pNavigationCom->Change_Render_HeightColor(fHeight, vColor);
 	
 	for (_uint i = 0; i < (_uint)POINT_END; ++i)
 	{

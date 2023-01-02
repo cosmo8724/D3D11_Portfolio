@@ -487,6 +487,8 @@ private:		/* State Changer*/
 	_bool	Camera_Angle_Turn_Right();
 	_bool	Animation_Finish();
 	_bool	Collision_Ground();
+	_bool	IsOnGround();
+	_bool	IsOnOcean();
 
 private:
 	void	Move(_double dTimeDelta, CTransform::DIRECTION eDir, MOVETYPE eType = MOVE_DYNAMIC);

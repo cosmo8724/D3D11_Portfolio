@@ -50,17 +50,17 @@ public:
 	HRESULT			Bind_ShaderResource(class CShader * pShaderCom, const wstring wstrConstantName);
 
 public:
-	void				Go_Direction(_fvector vDirection, _double dTimeDelta);
-	void				Go_Straight(_double dTimeDelta);
-	void				Go_BackWard(_double dTimeDelta);
-	void				Go_Left(_double dTimeDelta);
-	void				Go_Right(_double dTimeDelta);
+	void				Go_Direction(_fvector vDirection, _double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_Straight(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_BackWard(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_Left(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_Right(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
 	void				Go_Up(_double dTimeDelta);
 	void				Go_Down(_double dTimeDelta);
 	void				Speed_Up(_bool bKeyState);
 
 	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
-	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir);
+	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir, class CNavigation* pNavigationCom = nullptr);
 
 	void				Turn(_fvector vAxis, _double dTimeDelta);
 	void				Rotation(_fvector vAxis, _float fRadian);

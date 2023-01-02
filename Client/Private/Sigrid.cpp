@@ -117,6 +117,8 @@ HRESULT CSigrid::Render()
 	m_pSphereCol->Render();
 	m_pOBBCol->Render();
 	m_pNetSphereCol->Render();
+	
+	m_pNavigationCom->Render();
 #endif // _DEBUG
 
 
@@ -152,7 +154,11 @@ HRESULT CSigrid::SetUp_Component()
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_NetSphere", (CComponent**)&m_pNetSphereCol, this, &ColliderDesc), E_FAIL);
 
-	//FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this), E_FAIL);
+	CNavigation::NAVIGATIONDESC		NavigationDesc;
+	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATIONDESC));
+	NavigationDesc.iCurrentIndex = 12;
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NavigationDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_StateMachine", L"Com_StateMachine", (CComponent**)&m_pStateMachineCom, this), E_FAIL);
 
@@ -205,7 +211,8 @@ void CSigrid::SetOn_Terrain()
 
 	m_fGroundHeight = vPlayerPos.y;
 
-	if (m_bOnOcean == true && m_bJump == false)
+	//if (m_bOnOcean == true && m_bJump == false)
+	if (m_bJump == false)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4(&vPlayerPos));
 }
 
@@ -240,6 +247,7 @@ void CSigrid::Free()
 	__super::Free();
 
 	Safe_Release(m_pSigridState);
+	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pSphereCol);

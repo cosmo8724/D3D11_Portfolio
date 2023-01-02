@@ -10,6 +10,24 @@ CCell::CCell(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	Safe_AddRef(m_pContext);
 }
 
+_vector CCell::Get_CellHeight(_float4 vTargetPos)
+{	
+	_float4	vRayPos, vRayDir;
+	vRayPos = vTargetPos;
+	vRayPos.y += 50.f;
+
+	vRayDir = vTargetPos - vRayPos;
+	vRayDir.Normalize();
+
+	_float		fDist = 0.f;
+
+	_vector	vPointA = XMVectorSetW(m_vPoint[POINT_A], 1.f);
+	_vector	vPointB = XMVectorSetW(m_vPoint[POINT_B], 1.f);
+	_vector	vPointC = XMVectorSetW(m_vPoint[POINT_C], 1.f);
+
+	return _vector();
+}
+
 HRESULT CCell::Initialize(const _float3 * pPoints, _int iIndex)
 {
 	memcpy(m_vPoint, pPoints, sizeof(_float3) * POINT_END);
@@ -35,6 +53,10 @@ void CCell::ImGui_RenderProperty()
 	ImGui::InputFloat3("POINT C", &m_vPoint[POINT_C].x);
 	ImGui::NewLine();
 	ImGui::InputInt3("Neighbor", m_iNeighborIndex, ImGuiInputTextFlags_ReadOnly);
+
+	char*		pStateName[STATE_END + 1] = { "State_Ocean", "State_Ground", "None" };
+
+	ImGui::Combo("State", (_int*)&m_eState, pStateName, STATE_END + 1);
 }
 
 _bool CCell::Compare_Point(const _float3 & SourPoint, const _float3 & DestPoint)
