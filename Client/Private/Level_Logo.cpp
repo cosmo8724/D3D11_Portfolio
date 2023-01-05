@@ -12,6 +12,7 @@
 #include "Tool_PrototypeMgr.h"
 #include "Tool_ModelSave.h"
 #include "Camera.h"
+#include "Tool_Navigation.h"
 
 CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -27,6 +28,8 @@ HRESULT CLevel_Logo::Initialize()
 	FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_SkyBox(L"Layer_SkyBox"), E_FAIL);
 	FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Layer_Islands(L"Layer_Islands"), E_FAIL);
 
 	CGameInstance::GetInstance()->Clear_ImGuiObject();
 	//CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
@@ -38,6 +41,7 @@ HRESULT CLevel_Logo::Initialize()
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_MapEditor::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_AnimationManager::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_ModelSave::Create(m_pDevice, m_pContext));
+	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Navigation::Create(m_pDevice, m_pContext));
 
 	return S_OK;
 }
@@ -140,6 +144,16 @@ HRESULT CLevel_Logo::Ready_Layer_Ocean(const wstring & wstrLayerTag)
 {
 	FAILED_CHECK_RETURN(CGameInstance::GetInstance()->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_Ocean"), E_FAIL);
 
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Layer_Player(const wstring & wstrLayerTag)
+{
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Ready_Layer_Islands(const wstring & wstrLayerTag)
+{
 	return S_OK;
 }
 

@@ -24,8 +24,8 @@ public:
 	TRANSFORMDESC&	Get_TransformDesc() { return m_TransformDesc; }
 	const _float4x4&Get_WorldMatrix() const { return m_matWorld; }
 	const _matrix	Get_WorldMatrix_Inverse() { return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matWorld)); }
-	const _vector&	Get_State(STATE eState) const { return XMLoadFloat4x4(&m_matWorld).r[eState]; }
-	const _float3		Get_Scale() const {
+	_vector			Get_State(STATE eState) const { return XMLoadFloat4x4(&m_matWorld).r[eState]; }
+	_float3			Get_Scale() const {
 		return _float3(XMVectorGetX(XMVector3Length(Get_State(STATE_RIGHT))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_UP))),
 			XMVectorGetX(XMVector3Length(Get_State(STATE_LOOK))));
@@ -50,17 +50,17 @@ public:
 	HRESULT			Bind_ShaderResource(class CShader * pShaderCom, const wstring wstrConstantName);
 
 public:
-	void				Go_Direction(_fvector vDirection, _double dTimeDelta);
-	void				Go_Straight(_double dTimeDelta);
-	void				Go_BackWard(_double dTimeDelta);
-	void				Go_Left(_double dTimeDelta);
-	void				Go_Right(_double dTimeDelta);
+	void				Go_Direction(_fvector vDirection, _double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_Straight(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_BackWard(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_Left(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_Right(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
 	void				Go_Up(_double dTimeDelta);
 	void				Go_Down(_double dTimeDelta);
 	void				Speed_Up(_bool bKeyState);
 
 	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
-	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir);
+	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir, class CNavigation* pNavigationCom = nullptr);
 
 	void				Turn(_fvector vAxis, _double dTimeDelta);
 	void				Rotation(_fvector vAxis, _float fRadian);

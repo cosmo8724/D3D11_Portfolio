@@ -18,6 +18,7 @@ public:
 
 	virtual void		ImGui_RenderTap() {}
 	virtual void		ImGui_RenderWindow() {}
+	virtual void		Render() {}
 
 protected:
 	_double			m_dTimeDelta = 0.0;

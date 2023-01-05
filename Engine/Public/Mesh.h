@@ -27,6 +27,8 @@ public:
 	void						SetUp_MeshBones(class CModel* pModel);
 	HRESULT					SetUp_MeshBones(HANDLE& hFile, DWORD& dwByte, class CModel* pModel);
 	void						SetUp_BoneMatrices(_float4x4* pBoneMatrices, _fmatrix matPivot);
+	pair<_bool, _float>		Picking(HWND& hWnd, class CTransform* pTransformCom, _float3& vPickingPoint);
+	_bool						IsInFrustum(_fmatrix matPivot, _fmatrix matWorld);
 
 private:
 	aiMesh*					m_pAIMesh = nullptr;

@@ -2,10 +2,9 @@
 #include "Mesh.h"
 #include "Model.h"
 #include "Bone.h"
-
-#ifdef _DEBUG
-#define new DBG_NEW 
-#endif
+#include "Transform.h"
+#include "GameUtility.h"
+#include "Frustum.h"
 
 CMesh::CMesh(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CVIBuffer(pDevice, pContext)
@@ -272,7 +271,8 @@ void CMesh::SetUp_MeshBones(CModel * pModel)
 	if (m_iNumMeshBone == 0)
 	{
 		CBone*	pBone = pModel->Get_BoneFromEntireBone(m_strName);
-		NULL_CHECK_RETURN(pBone, );
+		if (pBone == nullptr)
+			return;
 
 		m_iNumMeshBone = 1;
 
@@ -315,6 +315,51 @@ void CMesh::SetUp_BoneMatrices(_float4x4 * pBoneMatrices, _fmatrix matPivot)
 
 	for (auto& pBone : m_vecMeshBone)
 		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_matOffset() * pBone->Get_CombindMatrix() * matPivot);
+}
+
+pair<_bool, _float> CMesh::Picking(HWND & hWnd, CTransform * pTransformCom, _float3 & vPickingPoint)
+{
+	pair<_bool, _float>	Result{ false, 0.f };
+
+	D3D11_VIEWPORT		ViewPort;
+	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+	_uint	iNumViewport = 1;
+
+	m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
+
+	Result = CGameUtility::Picking(hWnd, ViewPort.Width, ViewPort.Height, pTransformCom, m_pNonAnimVertices, m_pIndices, m_iNumPrimitive, vPickingPoint);
+
+	return Result;
+}
+
+_bool CMesh::IsInFrustum(_fmatrix matPivot, _fmatrix matWorld)
+{
+	CFrustum*	pFrustum = CFrustum::GetInstance();
+
+	_matrix		matCombind;
+	_bool			bIsIn = false;
+
+	if (m_eType == CModel::MODEL_NONANIM)
+	{
+		matCombind = matWorld;
+
+		pFrustum->TransformToLocalSpace(matCombind);
+
+		bIsIn = pFrustum->IsInFrustum_Local(XMLoadFloat3(&m_pNonAnimVertices[m_iNumVertices / 2].vPosition), 160.f);
+	}
+	else
+	{
+		if (m_iNumMeshBone == 0)
+			matCombind = matPivot * matWorld;
+		else
+			matCombind = m_vecMeshBone.front()->Get_matOffset() * m_vecMeshBone.front()->Get_CombindMatrix() * matPivot * matWorld;
+
+		pFrustum->TransformToLocalSpace(matCombind);
+
+		bIsIn = pFrustum->IsInFrustum_Local(XMLoadFloat3(&m_pAnimVertices[m_iNumVertices / 2].vPosition), 10.f);
+	}
+
+	return bIsIn;
 }
 
 HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh, CModel * pModel)

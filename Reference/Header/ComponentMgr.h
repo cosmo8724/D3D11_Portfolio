@@ -7,6 +7,7 @@
 #include "VIBuffer_Sphere.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Cell.h"
+#include "VIBuffer_Cell_Circle.h"
 #include "Model.h"
 #include "Collider.h"
 #include "StateMachine.h"

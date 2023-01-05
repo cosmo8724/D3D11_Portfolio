@@ -100,7 +100,7 @@ void CTransform::ImGui_RenderProperty()
 	ImGuizmo::Manipulate((_float*)&matView, (_float*)&matProj, CurGuizmoType, ImGuizmo::WORLD, (_float*)&m_matWorld);
 }
 
-void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta)
+void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_float3		fScale = Get_Scale();
 
@@ -115,50 +115,106 @@ void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta)
 	Set_State(CTransform::STATE_UP, vUp);
 	Set_State(CTransform::STATE_LOOK, vLook);
 
-	vPosition += XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
-	Set_State(CTransform::STATE_TRANS, vPosition);
+	_vector	vMovedPos = vPosition + XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	Set_State(CTransform::STATE_TRANS, vMovedPos);
 }
 
-void CTransform::Go_Straight(_double dTimeDelta)
+void CTransform::Go_Straight(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_float4	vLook;
 	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
 
-	vPos += XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	_vector	vMovedPos = vPos + XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vMovedPos);
+	else
+	{
+		_float4	vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4	vBlockedLineNormal = { 0.f, 0.f, 0.f, 0.f };
+
+		if (pNavigationCom->IsMoveOnNavigation(vMovedPos, vBlockedLine, vBlockedLineNormal) || vBlockedLine == _float4(1000.f, 1000.f, 1000.f, 0.f))
+			Set_State(CTransform::STATE_TRANS, vMovedPos);
+		else
+		{
+			_vector	vInDir = vMovedPos - vPos;
+			_vector	vOutDir = vPos - vMovedPos;
+			_float		fLength = XMVectorGetX(XMVector3Dot(vOutDir, vBlockedLineNormal));
+			
+			_vector	vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength;
+
+			vMovedPos = vPos + vSlidingDir;
+
+			if (pNavigationCom->IsMoveOnNavigation(vMovedPos, vBlockedLine, vBlockedLineNormal) || vBlockedLine == _float4(1000.f, 1000.f, 1000.f, 0.f))
+				Set_State(CTransform::STATE_TRANS, vMovedPos);
+			/*else
+			{
+				vSlidingDir = vInDir + XMLoadFloat4(&vBlockedLineNormal) * fLength * 1.02f;
+				vMovedPos = vPos + vSlidingDir;
+				if (pNavigationCom->IsMoveOnNavigation(vMovedPos, vBlockedLine, vBlockedLineNormal) || vBlockedLine == _float4(1000.f, 1000.f, 1000.f, 0.f))
+					Set_State(CTransform::STATE_TRANS, vMovedPos);
+			}*/
+		}
+	}
 }
 
-void CTransform::Go_BackWard(_double dTimeDelta)
+void CTransform::Go_BackWard(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_float4	vLook;
 	XMStoreFloat4(&vLook, Get_State(CTransform::STATE_LOOK));
 
-	vPos -= XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	_vector	vMovedPos = vPos - XMVector3Normalize(XMVectorSet(vLook.x, 0.f, vLook.z, 0.f)) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vMovedPos);
+	else
+	{
+		_float4	vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4	vBlockedLineNormal = { 0.f, 0.f, 0.f, 0.f };
+
+		if (pNavigationCom->IsMoveOnNavigation(vMovedPos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANS, vMovedPos);
+	}
 }
 
-void CTransform::Go_Left(_double dTimeDelta)
+void CTransform::Go_Left(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
 
-	vPos -= XMVector3Normalize(vRight) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	_vector	vMovedPos = vPos - XMVector3Normalize(vRight) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vMovedPos);
+	else
+	{
+		_float4	vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4	vBlockedLineNormal = { 0.f, 0.f, 0.f, 0.f };
+
+		if (pNavigationCom->IsMoveOnNavigation(vMovedPos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANS, vMovedPos);
+	}
 }
 
-void CTransform::Go_Right(_double dTimeDelta)
+void CTransform::Go_Right(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);
 	_vector	vRight = Get_State(CTransform::STATE_RIGHT);
 
-	vPos += XMVector3Normalize(vRight) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	_vector	vMovedPos = vPos + XMVector3Normalize(vRight) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
 
-	Set_State(CTransform::STATE_TRANS, vPos);
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vMovedPos);
+	else
+	{
+		_float4	vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4	vBlockedLineNormal = { 0.f, 0.f, 0.f, 0.f };
+
+		if (pNavigationCom->IsMoveOnNavigation(vMovedPos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANS, vMovedPos);
+	}
 }
 
 void CTransform::Go_Up(_double dTimeDelta)
@@ -200,7 +256,7 @@ void CTransform::Jump(_double dTimeDelta, _float & fGravity, _float & fCurJumpSp
 	fCurJumpSpeed -= fGravity;
 }
 
-void CTransform::Dash(_double dTimeDelta, _float & fFriction, _float & fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir)
+void CTransform::Dash(_double dTimeDelta, _float & fFriction, _float & fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir, CNavigation* pNavigationCom)
 {
 	if (fCurDashTickCount < 0.f)
 		return;
@@ -257,8 +313,22 @@ void CTransform::Dash(_double dTimeDelta, _float & fFriction, _float & fCurDashT
 		Set_State(STATE_LOOK, vLook);
 	}
 	
-	vPos += XMVector3Normalize(vLook) * (_float)dTimeDelta * (_float)m_TransformDesc.dSpeedPerSec * 2.f;
-	Set_State(STATE_TRANS, vPos);
+	_float4	vMovedPos = XMLoadFloat4(&vPos) + XMVector3Normalize(vLook) * (_float)dTimeDelta * (_float)m_TransformDesc.dSpeedPerSec * 2.f;
+
+	if (pNavigationCom == nullptr)
+		Set_State(CTransform::STATE_TRANS, vMovedPos);
+	else
+	{
+		_float4	vBlockedLine = { 0.f, 0.f, 0.f, 0.f };
+		_float4	vBlockedLineNormal = { 0.f, 0.f, 0.f, 0.f };
+
+		if (pNavigationCom->IsMoveOnNavigation(vMovedPos, vBlockedLine, vBlockedLineNormal))
+			Set_State(CTransform::STATE_TRANS, vMovedPos);
+		else
+		{
+			
+		}
+	}
 }
 
 void CTransform::Turn(_fvector vAxis, _double dTimeDelta)

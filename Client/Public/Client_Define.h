@@ -1,9 +1,11 @@
 #pragma once
 #include <process.h>
+#include <ctime>
 
 #ifdef _DEBUG
 #define new DBG_NEW 
 #endif
+
 
 namespace Client
 {

@@ -1,6 +1,8 @@
 #pragma once
 #include "Engine_Define.h"
 
+BEGIN(Engine)
+
 class ENGINE_DLL CGameUtility
 {
 public:
@@ -18,5 +20,10 @@ public:
 	static void		Saturate(int& InValue, int InMax, int InMin);
 	static void		SaturateF(float& InValue, float InMax, float InMin);
 	static void		DecomposePitchYawRollFromXMMatrix(_fmatrix matRotation, _float& fPitch, _float& fYaw, _float& fRoll);
+
+	static pair<_bool, _float>	Picking(HWND& hWnd, _float fScreenWidth, _float fScreenHeight, class CTransform* pTransformCom, _float3* pVertexPos, _uint iNumVerticesX, _uint iNumVerticesZ, _float3& vPickingPoint);
+	static pair<_bool, _float>	Picking(HWND& hWnd, _float fScreenWidth, _float fScreenHeight, class CTransform* pTransformCom, VTXMODEL* pVertices, FACEINDICES32* pIndices, _uint iNumPrimitive, _float3& vPickingPoint);
+	static void		SortPointsByCW(_float3* vPoints);
 };
 
+END

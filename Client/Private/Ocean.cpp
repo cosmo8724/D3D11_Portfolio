@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Ocean.h"
 #include "GameInstance.h"
+#include "GameUtility.h"
 
 COcean::COcean(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -32,8 +33,6 @@ void COcean::Tick(_double dTimeDelta)
 {
 	m_dTimeDelta += dTimeDelta;
 
-	//m_pVIBufferCom->Tick(dTimeDelta);
-
 	__super::Tick(dTimeDelta);
 }
 
@@ -41,8 +40,10 @@ void COcean::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
+	m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix());
+
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
 HRESULT COcean::Render()
@@ -51,11 +52,26 @@ HRESULT COcean::Render()
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResource(), E_FAIL);
 
-	m_pShaderCom->Begin(1);
+	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Render();
 
 	return S_OK;
+}
+
+pair<_bool, _float3> COcean::Picking_Terrain()
+{
+	D3D11_VIEWPORT		ViewPort;
+	ZeroMemory(&ViewPort, sizeof(D3D11_VIEWPORT));
+	_uint	iNumViewport = 1;
+
+	m_pContext->RSGetViewports(&iNumViewport, &ViewPort);
+
+	_float3	vPickingPoint = { 0.f, 0.f, 0.f };
+
+	pair<_bool, _float>	PickInfo = CGameUtility::Picking(g_hWnd, ViewPort.Width, ViewPort.Height, m_pTransformCom, m_pVIBufferCom->Get_TerrainPosition(), m_pVIBufferCom->Get_NumVerticesX(), m_pVIBufferCom->Get_NumVerticesZ(), vPickingPoint);
+
+	return pair<_bool, _float3>{ PickInfo.first, vPickingPoint };
 }
 
 HRESULT COcean::SetUp_Component()

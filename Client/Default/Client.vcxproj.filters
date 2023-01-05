@@ -136,6 +136,27 @@
     <Filter Include="02. GameObject\00. For_Public\Player\Sigrid_State">
       <UniqueIdentifier>{797c049a-40a8-4e9e-897d-26e80d166068}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage">
+      <UniqueIdentifier>{48ba3bfc-d1bb-4d8b-b67e-3e0c8769b1af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands">
+      <UniqueIdentifier>{0e02fc85-c7de-4fbb-84e4-89feed8072dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97. Tool\07. Navigation Editor">
+      <UniqueIdentifier>{854c7cc7-a906-4d73-a3c8-b581c9d9f249}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy">
+      <UniqueIdentifier>{4a56e1a9-9193-486b-8d62-37a987e8da77}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy\00. Critter_Small">
+      <UniqueIdentifier>{2b9a9d87-2dda-45cf-a521-190a294491eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy\00. Critter_Small\Cirtter_Small_State">
+      <UniqueIdentifier>{a26f684e-98fb-4370-ab2a-cfa46a65f3de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Enemy">
+      <UniqueIdentifier>{a753a7b4-348b-46cc-917c-5f8e587a7f2f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -249,6 +270,21 @@
     <ClInclude Include="..\Public\SkyBox.h">
       <Filter>02. GameObject\00. For_Public\SkyBox</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MainIsland.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Tool_Navigation.h">
+      <Filter>97. Tool\07. Navigation Editor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Critter_Small.h">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\00. Critter_Small</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Critter_Small_State.h">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\00. Critter_Small\Cirtter_Small_State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Enemy.h">
+      <Filter>02. GameObject\99. Parent\Enemy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -349,6 +385,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\SkyBox.cpp">
       <Filter>02. GameObject\00. For_Public\SkyBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainIsland.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Tool_Navigation.cpp">
+      <Filter>97. Tool\07. Navigation Editor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Critter_Small.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\00. Critter_Small</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Critter_Small_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\00. Critter_Small\Cirtter_Small_State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Enemy.cpp">
+      <Filter>02. GameObject\99. Parent\Enemy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

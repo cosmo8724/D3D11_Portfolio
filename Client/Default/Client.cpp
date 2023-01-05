@@ -85,6 +85,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			pGameInstance->Update_Timer(L"Timer_Default");
+			srand(unsigned(time(NULL)));
 
 			dTimerAcc += pGameInstance->Get_TimeDelta(L"Timer_Default");	
 

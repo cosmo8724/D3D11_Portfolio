@@ -6,6 +6,7 @@
 #include "ObjectMgr.h"
 #include "TimerMgr.h"
 #include "LightMgr.h"
+#include "Frustum.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -22,6 +23,7 @@ CGameInstance::CGameInstance()
 	, m_pPipeLine(CPipeLine::GetInstance())
 	, m_pTimerMgr(CTimerMgr::GetInstance())
 	, m_pLightMgr(CLightMgr::GetInstance())
+	, m_pFrustum(CFrustum::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
@@ -32,6 +34,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pPipeLine);
 	Safe_AddRef(m_pTimerMgr);
 	Safe_AddRef(m_pLightMgr);
+	Safe_AddRef(m_pFrustum);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
@@ -61,6 +64,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 
 	/* Create Prototype Transform Component */
 	FAILED_CHECK_RETURN(m_pComponentMgr->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pFrustum->Initialize(), E_FAIL);
 	
 	return S_OK;
 }
@@ -71,12 +76,16 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pInputDev, );
 	NULL_CHECK_RETURN(m_pImGuiMgr, );
 	NULL_CHECK_RETURN(m_pObjectMgr, );
+	NULL_CHECK_RETURN(m_pPipeLine, );
+	NULL_CHECK_RETURN(m_pFrustum, );
 
 	m_pInputDev->Invalidate_Input_Device();
 
 	m_pObjectMgr->Tick(dTimeDelta);
 	m_pLevelMgr->Tick(dTimeDelta);
 	m_pPipeLine->Tick();
+
+	m_pFrustum->TransformToWorldSpace();
 
 	m_pObjectMgr->Late_Tick(dTimeDelta);
 	m_pLevelMgr->Late_Tick(dTimeDelta);
@@ -432,12 +441,27 @@ HRESULT CGameInstance::Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const 
 	return m_pLightMgr->Add_Light(pDevice, pContext, LightDesc);
 }
 
+_bool CGameInstance::IsInFrustum_World(_fvector vWorldPos, _float fRange)
+{
+	NULL_CHECK_RETURN(m_pFrustum, false);
+
+	return m_pFrustum->IsInFrustum_World(vWorldPos, fRange);
+}
+
+_bool CGameInstance::IsInFrustum_Local(_fvector vLocalPos, _float fRange)
+{
+	NULL_CHECK_RETURN(m_pFrustum, false);
+
+	return m_pFrustum->IsInFrustum_Local(vLocalPos, fRange);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CTimerMgr::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
 	CImGuiMgr::GetInstance()->DestroyInstance();
 	CObjectMgr::GetInstance()->DestroyInstance();
+	CFrustum::GetInstance()->DestroyInstance();
 	CPipeLine::GetInstance()->DestroyInstance();
 	CComponentMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
@@ -451,6 +475,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pTimerMgr);
 	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pObjectMgr);
+	Safe_Release(m_pFrustum);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);

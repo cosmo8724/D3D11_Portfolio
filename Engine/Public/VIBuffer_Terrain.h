@@ -20,11 +20,17 @@ public:
 	virtual HRESULT				Initialize(class CGameObject* pOwner, void* pArg) override;
 	void							Tick(_double dTimeDelta);
 
+public:
+	void							Culling(_fmatrix matWorld);
+
 private:
 	_uint							m_iNumVerticesX = 0;
 	_uint							m_iNumVerticesZ = 0;
 
 	_float3*						m_pPos = nullptr;
+	FACEINDICES32*				m_pIndices = nullptr;
+
+	class CQuadTree*			m_pQuadTree = nullptr;
 
 public:
 	static	CVIBuffer_Terrain*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrHeightMapFilePath);

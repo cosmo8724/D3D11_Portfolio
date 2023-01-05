@@ -93,6 +93,10 @@ public:		/* For Light Manager */
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
 	HRESULT				Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC& LightDesc);
 
+public:		/* For Frustum */
+	_bool					IsInFrustum_World(_fvector vWorldPos, _float fRange);
+	_bool					IsInFrustum_Local(_fvector vLocalPos, _float fRange);
+
 private:
 	HWND							m_hWnd;
 
@@ -109,6 +113,7 @@ private:
 	class CPipeLine*				m_pPipeLine = nullptr;
 	class CTimerMgr*			m_pTimerMgr = nullptr;
 	class CLightMgr*				m_pLightMgr = nullptr;
+	class CFrustum*				m_pFrustum = nullptr;
 
 public:
 	static void	Release_Engine();
