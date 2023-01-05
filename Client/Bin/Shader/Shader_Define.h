@@ -19,6 +19,13 @@ RasterizerState	RS_Default
 	FrontCounterClockwise = false;
 };
 
+RasterizerState RS_Wireframe
+{
+	FillMode = wireframe;
+	CullMode = Back;
+	FrontCounterClockwise = false;
+};
+
 RasterizerState	RS_CW
 {
 	CullMode = Front;

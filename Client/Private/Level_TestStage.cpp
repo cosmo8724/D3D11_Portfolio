@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Level_TestStage.h"
 #include "GameInstance.h"
+#include "Enemy.h"
+#include "Sigrid.h"
 
 CLevel_TestStage::CLevel_TestStage(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -22,6 +24,8 @@ HRESULT CLevel_TestStage::Initialize()
 	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Islands(L"Layer_Islands"), E_FAIL);
+
+	FAILED_CHECK_RETURN(Ready_Layer_Enemies(L"Layer_Enemies"), E_FAIL);
 
 	return S_OK;
 }
@@ -122,6 +126,24 @@ HRESULT CLevel_TestStage::Ready_Layer_Islands(const wstring & wstrLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_MainIsland"), E_FAIL);
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Layer_Enemies(const wstring & wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	CEnemy*		pEnemy = nullptr;
+	CSigrid*		pPlayer = dynamic_cast<CSigrid*>(pGameInstance->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->front());
+	NULL_CHECK_RETURN(pPlayer, E_FAIL);
+
+	pEnemy = dynamic_cast<CEnemy*>(pGameInstance->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Critter_Small"));
+	NULL_CHECK_RETURN(pEnemy, E_FAIL);
+	pEnemy->Set_Player(pPlayer);
 
 	Safe_Release(pGameInstance);
 

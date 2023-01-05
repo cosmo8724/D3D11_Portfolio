@@ -74,7 +74,10 @@ void CSigrid::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	SetOn_Terrain();
+	if (m_bOnOcean == true)
+		SetOn_Terrain();
+	else
+		SetOn_Navigation();
 
 	m_pSigridState->Tick(dTimeDelta);
 	m_pStateMachineCom->Tick(dTimeDelta);
@@ -118,11 +121,30 @@ HRESULT CSigrid::Render()
 	m_pOBBCol->Render();
 	m_pNetSphereCol->Render();
 	
-	m_pNavigationCom->Render();
+	//m_pNavigationCom->Render();
 #endif // _DEBUG
 
 
 	return S_OK;
+}
+
+_bool CSigrid::Collision_Range(CCollider * pTargetCollider)
+{
+	return m_pSphereCol->Collision(pTargetCollider);
+}
+
+_bool CSigrid::Collision_Body(CCollider * pTargetCollider)
+{
+	return m_pOBBCol->Collision(pTargetCollider);
+}
+
+_bool CSigrid::Collision_Net(CCollider * pTargetCollider)
+{
+	return m_pNetSphereCol->Collision(pTargetCollider);
+}
+
+void CSigrid::Collision_Event(CEnemy * pEnemy)
+{
 }
 
 HRESULT CSigrid::SetUp_Component()
@@ -156,7 +178,7 @@ HRESULT CSigrid::SetUp_Component()
 
 	CNavigation::NAVIGATIONDESC		NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATIONDESC));
-	NavigationDesc.iCurrentIndex = 12;
+	NavigationDesc.iCurrentIndex = 25;
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NavigationDesc), E_FAIL);
 
@@ -212,6 +234,17 @@ void CSigrid::SetOn_Terrain()
 	m_fGroundHeight = vPlayerPos.y;
 
 	//if (m_bOnOcean == true && m_bJump == false)
+	if (m_bJump == false)
+		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4(&vPlayerPos));
+}
+
+void CSigrid::SetOn_Navigation()
+{
+	_float4	vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+
+	vPlayerPos = m_pNavigationCom->Get_CellHeight(vPlayerPos);
+	m_fGroundHeight = vPlayerPos.y;
+
 	if (m_bJump == false)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4(&vPlayerPos));
 }

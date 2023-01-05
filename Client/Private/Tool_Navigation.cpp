@@ -234,6 +234,15 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 		pCell->ImGui_RenderProperty();
 
+		if (m_pGameInstance->Key_Down(DIK_1))
+			pCell->Set_State(CCell::STATE_OCEAN);
+
+		if (m_pGameInstance->Key_Down(DIK_2))
+			pCell->Set_State(CCell::STATE_GROUND);
+
+		if (m_pGameInstance->Key_Down(DIK_3))
+			pCell->Set_State(CCell::STATE_WALL);
+
 		if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 			m_iSelectedCell = -1;
 	}

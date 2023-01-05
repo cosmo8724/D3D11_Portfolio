@@ -8,7 +8,7 @@ class ENGINE_DLL CCell final : public CBase
 public:
 	enum POINT { POINT_A, POINT_B, POINT_C, POINT_END };
 	enum NEIGHBOR { NEIGHBOR_AB, NEIGHBOR_BC, NEIGHBOR_CA, NEIGHBOR_END };
-	enum STATE { STATE_OCEAN, STATE_GROUND, STATE_END };
+	enum STATE { STATE_OCEAN, STATE_GROUND, STATE_WALL, STATE_END };
 
 private:
 	CCell(DEVICE pDevice, DEVICE_CONTEXT pContext);
@@ -20,6 +20,7 @@ public:
 	_int*						Get_NeighbotIndex() { return m_iNeighborIndex; }
 	const STATE&			Get_State() const { return m_eState; }
 	_vector					Get_CellHeight(_float4 vTargetPos);
+	void						Get_BlockedLine(NEIGHBOR eNeighbor, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 	void						Set_Neighbor(NEIGHBOR eNeighbor, CCell* pNeighbor) { m_iNeighborIndex[eNeighbor] = pNeighbor->m_iIndex; }
 	void						Set_State(STATE eState) { m_eState = eState; }
 
@@ -29,7 +30,8 @@ public:
 
 public:
 	_bool						Compare_Point(const _float3& SourPoint, const _float3& DestPoint);
-	_bool						IsIn(_fvector vTargetPos, _int& iNeighborIndex);
+	_bool						Compare_Height(_fvector vTargetPos);
+	_bool						IsIn(_fvector vTargetPos, _int& iNeighborIndex, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 
 #ifdef _DEBUG
 public:

@@ -105,35 +105,35 @@ void CCollider::Update(_fmatrix matTransform)
 
 _bool CCollider::Collision(CCollider * pTargetCollider)
 {
-	m_bIsCollide = false;
+	m_bIsCollide = pTargetCollider->m_bIsCollide = false;;
 
 	switch (m_eType)
 	{
 	case COLLIDER_SPHERE:
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE)
-			m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pSphere);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pSphere);
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB)
-			m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pAABB);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pAABB);
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB)
-			m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pOBB);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pSphere->Intersects(*pTargetCollider->m_pOBB);
 		break;
 
 	case COLLIDER_AABB:
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE)
-			m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pSphere);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pSphere);
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB)
-			m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pAABB);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pAABB);
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB)
-			m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pOBB);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pAABB->Intersects(*pTargetCollider->m_pOBB);
 		break;
 
 	case COLLIDER_OBB:
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_SPHERE)
-			m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pSphere);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pSphere);
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_AABB)
-			m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pAABB);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pAABB);
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB)
-			m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pOBB);
+			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pOBB);
 		break;
 	}
 
@@ -191,7 +191,7 @@ CGameObject * CCollider::CollisionReturnObj(CCollider * pTargetCollider)
 	}
 
 	if (pTarget != nullptr)
-		m_bIsCollide = true;
+		m_bIsCollide = pTargetCollider->m_bIsCollide = true;
 
 	return pTarget;
 }

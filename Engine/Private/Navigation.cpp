@@ -27,6 +27,14 @@ CNavigation::CNavigation(const CNavigation & rhs)
 
 }
 
+_vector CNavigation::Get_CellHeight(_float4 vTargetPos)
+{
+	if (m_tNavigationDesc.iCurrentIndex == -1)
+		return XMLoadFloat4(&vTargetPos);
+
+	return m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_CellHeight(vTargetPos);
+}
+
 HRESULT CNavigation::Initialize_Prototype(const wstring & wstrFilePath)
 {
 	if (wstrFilePath != L"")
@@ -196,14 +204,14 @@ HRESULT CNavigation::Find_NearBy_Point(_float3 & vPoint)
 	return S_OK;
 }
 
-_bool CNavigation::IsMoveOnNavigation(_fvector vTargetPos)
+_bool CNavigation::IsMoveOnNavigation(_fvector vTargetPos, _float4 & vBlockedLine, _float4 & vBlockedLineNormal)
 {
 	if (m_tNavigationDesc.iCurrentIndex == -1)
 		return false;
 
 	_int		iNeighborIndex = -1;
 
-	if (m_vecCell[m_tNavigationDesc.iCurrentIndex]->IsIn(vTargetPos, iNeighborIndex) == true)
+	if (m_vecCell[m_tNavigationDesc.iCurrentIndex]->IsIn(vTargetPos, iNeighborIndex, vBlockedLine, vBlockedLineNormal) == true)
 		return true;
 
 	else
@@ -212,14 +220,45 @@ _bool CNavigation::IsMoveOnNavigation(_fvector vTargetPos)
 		{
 			while (true)
 			{
-				if (iNeighborIndex == -1)
-					return false;
+				if (m_vecCell[iNeighborIndex]->Get_State() != CCell::STATE_WALL)
+					m_tNavigationDesc.iCurrentIndex = iNeighborIndex;
+				else
+				{
+					CCell::NEIGHBOR		eNeighbor = CCell::NEIGHBOR_END;
 
-				if (m_vecCell[iNeighborIndex]->IsIn(vTargetPos, iNeighborIndex) == true)
+					if (m_vecCell[iNeighborIndex]->Compare_Height(vTargetPos))
+					{
+						if (true == m_vecCell[iNeighborIndex]->Compare_Point(m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_Point(CCell::POINT_A), m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_Point(CCell::POINT_B)))
+							eNeighbor = CCell::NEIGHBOR_AB;
+
+						else if (true == m_vecCell[iNeighborIndex]->Compare_Point(m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_Point(CCell::POINT_B), m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_Point(CCell::POINT_C)))
+							eNeighbor = CCell::NEIGHBOR_BC;
+
+						else if (true == m_vecCell[iNeighborIndex]->Compare_Point(m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_Point(CCell::POINT_C), m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_Point(CCell::POINT_A)))
+							eNeighbor = CCell::NEIGHBOR_CA;
+
+						if (eNeighbor != CCell::NEIGHBOR_END)
+							m_vecCell[iNeighborIndex]->Get_BlockedLine(eNeighbor, vBlockedLine, vBlockedLineNormal);
+					}
+					else
+					{
+						vBlockedLine = { 1000.f, 1000.f, 1000.f, 0.f };
+						vBlockedLineNormal = { 1000.f, 1000.f, 1000.f, 0.f };
+
+						m_tNavigationDesc.iCurrentIndex = iNeighborIndex;
+					}
+
+					return false;
+				}
+
+				if (m_vecCell[iNeighborIndex]->IsIn(vTargetPos, iNeighborIndex, vBlockedLine, vBlockedLineNormal) == true)
 				{
 					m_tNavigationDesc.iCurrentIndex = iNeighborIndex;
 					return true;
 				}
+
+				if (iNeighborIndex == -1)
+					return false;
 			}
 		}
 		else

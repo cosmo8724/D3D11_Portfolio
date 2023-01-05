@@ -33,8 +33,6 @@ void COcean::Tick(_double dTimeDelta)
 {
 	m_dTimeDelta += dTimeDelta;
 
-	//m_pVIBufferCom->Tick(dTimeDelta);
-
 	__super::Tick(dTimeDelta);
 }
 
@@ -42,8 +40,10 @@ void COcean::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
+	m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix());
+
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_ALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
 HRESULT COcean::Render()

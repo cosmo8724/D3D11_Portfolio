@@ -105,6 +105,8 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
 
+	Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+
 	return Out;
 
 
@@ -163,7 +165,7 @@ technique11 DefaultTechnique
 {
 	pass Terrain
 	{
-		SetRasterizerState(RS_Default);
+		SetRasterizerState(RS_Wireframe);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

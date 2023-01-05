@@ -45,6 +45,7 @@ public:
 	HRESULT							Bind_Material(class CShader* pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring& wstrConstantName);
 	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"", _uint iPassIndex = 0);
 	pair<_bool, _float3>				Picking(HWND& hWnd, class CTransform* pTransformCom);
+	_bool								IsInFrustum(_uint iMeshIndex, _fmatrix matWorld);
 
 private:
 	const aiScene*					m_pAIScene = nullptr;

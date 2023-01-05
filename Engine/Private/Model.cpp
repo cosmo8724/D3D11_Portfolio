@@ -424,6 +424,11 @@ pair<_bool, _float3> CModel::Picking(HWND & hWnd, CTransform * pTransformCom)
 	return pair<_bool, _float3>{ bIsPicked, vReturnPoint };
 }
 
+_bool CModel::IsInFrustum(_uint iMeshIndex, _fmatrix matWorld)
+{
+	return m_vecMesh[iMeshIndex]->IsInFrustum(m_matPivot, matWorld);
+}
+
 HRESULT CModel::Ready_Bones(aiNode * pAINode, CBone * pParent)
 {
 	CBone*	pBone = CBone::Create(pAINode, pParent, pAINode->mNumChildren);

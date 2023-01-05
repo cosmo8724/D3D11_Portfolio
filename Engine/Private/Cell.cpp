@@ -25,14 +25,26 @@ _vector CCell::Get_CellHeight(_float4 vTargetPos)
 	_vector	vPointB = XMVectorSetW(m_vPoint[POINT_B], 1.f);
 	_vector	vPointC = XMVectorSetW(m_vPoint[POINT_C], 1.f);
 
-	return _vector();
+	if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDist))
+		return vRayPos + vRayDir * fDist;
+
+	return XMLoadFloat4(&vTargetPos);
+}
+
+void CCell::Get_BlockedLine(NEIGHBOR eNeighbor, _float4 & vBlockedLine, _float4 & vBlockedLineNormal)
+{
+	_vector		vLine = XMLoadFloat3(&m_vPoint[(eNeighbor + 1) % NEIGHBOR_END]) - XMLoadFloat3(&m_vPoint[eNeighbor]);
+	_vector		vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
+
+	XMStoreFloat4(&vBlockedLine, vLine);
+	XMStoreFloat4(&vBlockedLineNormal, vNormal);
 }
 
 HRESULT CCell::Initialize(const _float3 * pPoints, _int iIndex)
 {
 	memcpy(m_vPoint, pPoints, sizeof(_float3) * POINT_END);
 	m_iIndex = iIndex;
-
+	 
 #ifdef _DEBUG
 	m_pVIBufferCom = CVIBuffer_Cell::Create(m_pDevice, m_pContext, m_vPoint);
 	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
@@ -54,7 +66,7 @@ void CCell::ImGui_RenderProperty()
 	ImGui::NewLine();
 	ImGui::InputInt3("Neighbor", m_iNeighborIndex, ImGuiInputTextFlags_ReadOnly);
 
-	char*		pStateName[STATE_END + 1] = { "State_Ocean", "State_Ground", "None" };
+	char*		pStateName[STATE_END + 1] = { "State_Ocean", "State_Ground", "State_Wall", "None" };
 
 	ImGui::Combo("State", (_int*)&m_eState, pStateName, STATE_END + 1);
 }
@@ -91,7 +103,22 @@ _bool CCell::Compare_Point(const _float3 & SourPoint, const _float3 & DestPoint)
 	return false;
 }
 
-_bool CCell::IsIn(_fvector vTargetPos, _int & iNeighborIndex)
+_bool CCell::Compare_Height(_fvector vTargetPos)
+{
+	_float		fAvgHeight = 0.f;
+
+	for (_uint i = 0; i < POINT_END; ++i)
+		fAvgHeight += m_vPoint[i].y;
+
+	fAvgHeight /= 3.f;
+
+	if (fAvgHeight > XMVectorGetY(vTargetPos))
+		return true;
+	else
+		return false;
+}
+
+_bool CCell::IsIn(_fvector vTargetPos, _int & iNeighborIndex, _float4 & vBlockedLine, _float4 & vBlockedLineNormal)
 {
 	for (_uint i = 0; i < NEIGHBOR_END; ++i)
 	{
@@ -99,9 +126,16 @@ _bool CCell::IsIn(_fvector vTargetPos, _int & iNeighborIndex)
 		_vector		vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
 		_vector		vDir = XMVector3Normalize(vTargetPos - XMLoadFloat3(&m_vPoint[i]));
 
-		if (0 < XMVectorGetX(XMVector3Dot(vNormal, vDir)))
+		if (0.f < XMVectorGetX(XMVector3Dot(vNormal, vDir)))
 		{
 			iNeighborIndex = m_iNeighborIndex[i];
+
+			if (iNeighborIndex == -1)
+			{
+				XMStoreFloat4(&vBlockedLine, vLine);
+				XMStoreFloat4(&vBlockedLineNormal, vNormal);
+			}
+
 			return false;
 		}
 	}

@@ -172,6 +172,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Bin\Shader\Shader_Define.h" />
+    <ClInclude Include="..\Public\Critter_Small.h" />
+    <ClInclude Include="..\Public\Critter_Small_State.h" />
+    <ClInclude Include="..\Public\Enemy.h" />
     <ClInclude Include="..\Public\MainIsland.h" />
     <ClInclude Include="..\Public\Ocean.h" />
     <ClInclude Include="..\Public\Sigrid.h" />
@@ -221,6 +224,9 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Critter_Small.cpp" />
+    <ClCompile Include="..\Private\Critter_Small_State.cpp" />
+    <ClCompile Include="..\Private\Enemy.cpp" />
     <ClCompile Include="..\Private\MainIsland.cpp" />
     <ClCompile Include="..\Private\Ocean.cpp" />
     <ClCompile Include="..\Private\Sigrid.cpp" />

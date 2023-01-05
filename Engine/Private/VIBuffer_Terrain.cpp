@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\VIBuffer_Terrain.h"
+#include "QuadTree.h"
+#include "Frustum.h"
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CVIBuffer(pDevice, pContext)
@@ -9,10 +11,13 @@ CVIBuffer_Terrain::CVIBuffer_Terrain(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 CVIBuffer_Terrain::CVIBuffer_Terrain(const CVIBuffer_Terrain& rhs)
 	: CVIBuffer(rhs)
-	, m_pPos(rhs.m_pPos)
 	, m_iNumVerticesX(rhs.m_iNumVerticesX)
 	, m_iNumVerticesZ(rhs.m_iNumVerticesZ)
+	, m_pPos(rhs.m_pPos)
+	, m_pIndices(rhs.m_pIndices)
+	, m_pQuadTree(rhs.m_pQuadTree)
 {
+	Safe_AddRef(m_pQuadTree);
 }
 
 HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFilePath)
@@ -54,8 +59,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 
 	/* Initialize Vertex Buffer */
 	VTXNORTEX*		pVertices = new VTXNORTEX[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXNORTEX) * m_iNumVertices);
 	m_pPos = new _float3[m_iNumVertices];
-	ZeroMemory(pVertices, sizeof(VTXNORTEX));
+	ZeroMemory(m_pPos, sizeof(_float3) * m_iNumVertices);
 
 	for (_uint z = 0; z < m_iNumVerticesZ; ++z)
 	{
@@ -63,11 +69,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 		{
 			_uint		iIndex = z * m_iNumVerticesX + x;
 
-			pVertices[iIndex].vPosition = _float3((_float)x, (pPixel[iIndex] & 0x000000ff) / 150.f, (_float)z);
+			pVertices[iIndex].vPosition = m_pPos[iIndex] = _float3((_float)x, (pPixel[iIndex] & 0x000000ff) / 150.f, (_float)z);
 			pVertices[iIndex].vNormal = _float3(0.f, 0.f, 0.f);
 			pVertices[iIndex].vTexUV = _float2(x / (m_iNumVerticesX - 1.f) * 3.f, z / (m_iNumVerticesZ - 1.f) * 3.f);
-
-			m_pPos[iIndex] = pVertices[iIndex].vPosition;
 		}
 	}
 	Safe_Delete_Array(pPixel);
@@ -75,6 +79,9 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	/* Initialize Index Buffer */
 	FACEINDICES32*		pIndices = new FACEINDICES32[m_iNumPrimitive];
 	ZeroMemory(pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
+
+	m_pIndices = new FACEINDICES32[m_iNumPrimitive];
+	ZeroMemory(m_pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
 
 	_uint		iNumFaces = 0;
 	_vector	vSour, vDest, vNormal;
@@ -124,10 +131,10 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
 
 	m_tBufferDesc.ByteWidth = m_iStride * m_iNumVertices;
-	m_tBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_tBufferDesc.StructureByteStride = m_iStride;
-	m_tBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_tBufferDesc.CPUAccessFlags = 0;
 	m_tBufferDesc.MiscFlags = 0;
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
@@ -140,10 +147,10 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 	ZeroMemory(&m_tBufferDesc, sizeof(D3D11_BUFFER_DESC));
 
 	m_tBufferDesc.ByteWidth = m_iIndicesSizePerPrimitive * m_iNumPrimitive;
-	m_tBufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	m_tBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	m_tBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 	m_tBufferDesc.StructureByteStride = 0;
-	m_tBufferDesc.CPUAccessFlags = 0;
+	m_tBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_tBufferDesc.MiscFlags = 0;
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));
@@ -154,7 +161,15 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring wstrHeightMapFileP
 
 	Safe_Delete_Array(pVertices);
 	Safe_Delete_Array(pIndices);
+
+	m_pQuadTree = CQuadTree::Create(
+		m_iNumVerticesX * m_iNumVerticesZ - m_iNumVerticesX,
+		m_iNumVerticesX * m_iNumVerticesZ - 1,
+		m_iNumVerticesX - 1,
+		0);
 	
+	m_pQuadTree->Make_Neighbor();
+
 	return S_OK;
 }
 
@@ -188,6 +203,70 @@ void CVIBuffer_Terrain::Tick(_double dTimeDelta)
 	m_pContext->Unmap(m_pVB, 0);
 }
 
+void CVIBuffer_Terrain::Culling(_fmatrix matWorld)
+{
+	CFrustum*	pFrustum = CFrustum::GetInstance();
+
+	pFrustum->TransformToLocalSpace(matWorld);
+
+	ZeroMemory(m_pIndices, sizeof(FACEINDICES32) * m_iNumPrimitive);
+	_uint	iNumFaces = 0;
+
+#ifdef USE_QUADTREE
+	m_pQuadTree->Culling(pFrustum, m_pPos, m_pIndices, iNumFaces);
+
+#else
+	for (_uint z = 0; z < m_iNumVerticesZ - 1; ++z)
+	{
+		for (_uint x = 0; x < m_iNumVerticesX - 1; ++x)
+		{
+			_uint	iIndex = z * m_iNumVerticesX + x;
+
+			_uint	iIndices[4] = {
+				iIndex + m_iNumVerticesX,
+				iIndex + m_iNumVerticesX + 1,
+				iIndex + 1,
+				iIndex
+			};
+
+			_bool	IsIn[4] = {
+				pFrustum->IsInFrustum_Local(XMLoadFloat3(&m_pPos[iIndices[0]]), 0.f),
+				pFrustum->IsInFrustum_Local(XMLoadFloat3(&m_pPos[iIndices[1]]), 0.f),
+				pFrustum->IsInFrustum_Local(XMLoadFloat3(&m_pPos[iIndices[2]]), 0.f),
+				pFrustum->IsInFrustum_Local(XMLoadFloat3(&m_pPos[iIndices[3]]), 0.f)
+			};
+
+			if (IsIn[0] == true || IsIn[1] == true || IsIn[2] == true)
+			{
+				m_pIndices[iNumFaces]._0 = iIndices[0];
+				m_pIndices[iNumFaces]._1 = iIndices[1];
+				m_pIndices[iNumFaces]._2 = iIndices[2];
+				++iNumFaces;
+			}
+
+			if (IsIn[0] == true || IsIn[2] == true || IsIn[3] == true)
+			{
+				m_pIndices[iNumFaces]._0 = iIndices[0];
+				m_pIndices[iNumFaces]._1 = iIndices[2];
+				m_pIndices[iNumFaces]._2 = iIndices[3];
+				++iNumFaces;
+			}
+		}
+	}
+#endif // USE_QUADTREE
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pIB, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	memcpy(SubResource.pData, m_pIndices, sizeof(FACEINDICES32) * iNumFaces);
+
+	m_pContext->Unmap(m_pIB, 0);
+
+	m_iNumIndices = iNumFaces * 3;
+}
+
 CVIBuffer_Terrain * CVIBuffer_Terrain::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring wstrHeightMapFilePath)
 {
 	CVIBuffer_Terrain*		pInstance = new CVIBuffer_Terrain(pDevice, pContext);
@@ -217,5 +296,10 @@ void CVIBuffer_Terrain::Free()
 	__super::Free();
 
 	if (m_bIsCloned == false)
+	{
 		Safe_Delete_Array(m_pPos);
+		Safe_Delete_Array(m_pIndices);
+	}
+
+	Safe_Release(m_pQuadTree);
 }

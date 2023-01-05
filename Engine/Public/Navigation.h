@@ -21,6 +21,7 @@ public:
 	_uint						Get_CellCount() { return (_uint)m_vecCell.size(); }
 	class CCell*				Get_Cell(_int iIndex) { return m_vecCell[iIndex]; }
 	CCell::STATE				Get_CurrentCellState() { return m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_State(); }
+	_vector					Get_CellHeight(_float4 vTargetPos);
 
 public:
 	virtual HRESULT			Initialize_Prototype(const wstring& wstrFilePath);
@@ -31,7 +32,7 @@ public:
 	HRESULT					Delete_Cell(_int iIndex);
 	HRESULT					Save_Cell(string strSaveFilePath);
 	HRESULT					Find_NearBy_Point(_float3& vPoint);
-	_bool						IsMoveOnNavigation(_fvector vTargetPos);
+	_bool						IsMoveOnNavigation(_fvector vTargetPos, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 
 #ifdef _DEBUG
 public:

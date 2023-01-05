@@ -39,7 +39,11 @@ void CMainIsland::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pRendererCom)
+	_float4		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+	vPos.y = 0.f;
+
+	if (nullptr != m_pRendererCom &&
+		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 200.f))
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
@@ -53,6 +57,9 @@ HRESULT CMainIsland::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
+		//if (m_pModelCom->IsInFrustum(i, XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix())) == false)
+		//	continue;
+
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 

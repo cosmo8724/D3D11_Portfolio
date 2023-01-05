@@ -29,6 +29,12 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
+public:
+	_bool						Collision_Range(CCollider* pTargetCollider);
+	_bool						Collision_Body(CCollider* pTargetCollider);
+	_bool						Collision_Net(CCollider* pTargetCollider);
+	void						Collision_Event(class CEnemy* pEnemy);
+
 private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
@@ -72,6 +78,7 @@ private:
 
 private:
 	void						SetOn_Terrain();
+	void						SetOn_Navigation();
 
 public:
 	static CSigrid*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

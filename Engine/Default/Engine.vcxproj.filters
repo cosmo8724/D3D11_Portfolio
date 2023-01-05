@@ -154,6 +154,12 @@
     <Filter Include="01. Utility\03. Component\02. VIBuffer\Cell\Circle">
       <UniqueIdentifier>{72f60521-8dda-4ebe-b6e0-3e01037728f0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\07. Frustum">
+      <UniqueIdentifier>{6c7f7c66-edee-478c-a317-5662311e6fb9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\03. Component\02. VIBuffer\Terrain\QuadTree">
+      <UniqueIdentifier>{d76c13f8-bb05-48b6-8c2c-fd80944af112}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -326,6 +332,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Cell_Circle.cpp">
       <Filter>01. Utility\03. Component\02. VIBuffer\Cell\Circle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Frustum.cpp">
+      <Filter>01. Utility\07. Frustum</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\QuadTree.cpp">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Terrain\QuadTree</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -532,6 +544,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Cell_Circle.h">
       <Filter>01. Utility\03. Component\02. VIBuffer\Cell\Circle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Frustum.h">
+      <Filter>01. Utility\07. Frustum</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\QuadTree.h">
+      <Filter>01. Utility\03. Component\02. VIBuffer\Terrain\QuadTree</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
