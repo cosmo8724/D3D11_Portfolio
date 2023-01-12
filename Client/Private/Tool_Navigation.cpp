@@ -33,7 +33,7 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 	NULL_CHECK_RETURN(m_pNavigationCom, );
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	for (_uint i = 0; i < (_uint)POINT_END; ++i)
 	{
 		if (m_pVIBufferCircleCom[i] != nullptr)
@@ -42,7 +42,7 @@ void CTool_Navigation::ImGui_RenderWindow()
 		if (!XMVector3Equal(XMVectorSetW(XMLoadFloat3(&m_vPoint[i]), 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f)))
 			m_pVIBufferCircleCom[i] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[i]);
 	}
-#endif // _DEBUG
+//#endif // _DEBUG
 
 	m_iNumCell = m_pNavigationCom->Get_CellCount();
 	ImGui::BulletText("Cell Count : %d", m_iNumCell);
@@ -254,7 +254,7 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 void CTool_Navigation::Render()
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	m_pNavigationCom->Render();
 
 	if (m_iSelectedCell != -1)
@@ -269,7 +269,7 @@ void CTool_Navigation::Render()
 		if (m_pVIBufferCircleCom[i] != nullptr)
 			m_pVIBufferCircleCom[i]->Render();
 	}
-#endif // _DEBUG
+//#endif // _DEBUG
 }
 
 CTool_Navigation * CTool_Navigation::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, void * pArg)
@@ -287,10 +287,10 @@ CTool_Navigation * CTool_Navigation::Create(DEVICE pDevice, DEVICE_CONTEXT pCont
 
 void CTool_Navigation::Free()
 {
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	for (_uint i = 0; i < (_uint)POINT_END; ++i)
 		Safe_Release(m_pVIBufferCircleCom[i]);
-#endif // _DEBUG
+//#endif // _DEBUG
 
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pContext);

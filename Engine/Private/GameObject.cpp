@@ -11,6 +11,8 @@ CGameObject::CGameObject(DEVICE pDevice, DEVICE_CONTEXT pContext)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+
+	ZeroMemory(&m_tStatus, sizeof(STATUS));
 }
 
 CGameObject::CGameObject(const CGameObject & rhs)
@@ -18,6 +20,9 @@ CGameObject::CGameObject(const CGameObject & rhs)
 	, m_pContext(rhs.m_pContext)
 	, m_bIsClone(true)
 	, m_bHasModel(rhs.m_bHasModel)
+	, m_tStatus(rhs.m_tStatus)
+	, m_bDead(rhs.m_bDead)
+	, m_bSpecialAttack(rhs.m_bSpecialAttack)
 {
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
@@ -68,6 +73,9 @@ HRESULT CGameObject::Render()
 
 void CGameObject::ImGui_RenderComponentProperties()
 {
+	ImGui::Separator();
+	ImGui::BulletText("Components");
+
 	for (const auto& Pair : m_mapComponent)
 	{
 		char szName[MAX_PATH];
@@ -76,6 +84,17 @@ void CGameObject::ImGui_RenderComponentProperties()
 		if (ImGui::CollapsingHeader(szName))
 			Pair.second->ImGui_RenderProperty();
 	}
+}
+
+void CGameObject::ImGui_RenderProperty()
+{
+	ImGui::Separator();
+	ImGui::BulletText("Status");
+	ImGui::InputFloat2("HP / MaxHP", (_float*)&_float2((_float)m_tStatus.iHP, (_float)m_tStatus.iMaxHP), 0, ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputFloat("Attack", (_float*)&m_tStatus.iAttack, 0, ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputFloat("Special Attack", (_float*)&m_tStatus.iSpecialAttack, 0, ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputFloat2("Attack Cool Time", (_float*)&_float2((_float)m_tStatus.dCurAttackCoolTime, (_float)m_tStatus.dInitAttackCoolTime), 0, ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputFloat2("Hit Cool Time", (_float*)&_float2((_float)m_tStatus.dCurHitCoolTime, (_float)m_tStatus.dInitHitCoolTime), 0, ImGuiInputTextFlags_ReadOnly);
 }
 
 HRESULT CGameObject::Add_Component(_uint iLevelIndex, const wstring & wstrPrototypeTag, const wstring & wstrComponentTag, CComponent ** ppComponentOut, CGameObject* pOwner, void * pArg)

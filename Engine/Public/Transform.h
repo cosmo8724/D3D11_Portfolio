@@ -61,6 +61,7 @@ public:
 
 	void				Jump(_double dTimeDelta, _float& fGravity, _float& fCurJumpSpeed);
 	void				Dash(_double dTimeDelta, _float& fFriction, _float& fCurDashTickCount, _fmatrix matCamWorld, DIRECTION eDir, class CNavigation* pNavigationCom = nullptr);
+	void				Throw(_fvector vDir, _float fPower, _double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
 
 	void				Turn(_fvector vAxis, _double dTimeDelta);
 	void				Rotation(_fvector vAxis, _float fRadian);
@@ -68,7 +69,8 @@ public:
 	void				Orbit(_fvector vTargetPos, _fvector vAxis, _float fDistance, _double dTimeDelta);
 
 	void				LookAt(_fvector vTargetPos);
-	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit = 0.1f);
+	void				LookAt_NoUpDown(_fvector vTargetPos);
+	void				Chase(_fvector vTargetPos, _double dTimeDelta, _float fLimit = 0.1f, class CNavigation* pNavigationCom = nullptr);
 
 private:
 	_float4x4				m_matWorld;

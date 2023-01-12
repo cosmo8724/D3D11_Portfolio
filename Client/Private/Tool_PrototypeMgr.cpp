@@ -6,6 +6,8 @@
 #include "CustomGameObject.h"
 #include "Json/json.hpp"
 #include <fstream>
+#include "Enemy.h"
+#include "Sigrid.h"
 
 #define	LEVEL_PUBLIC	3
 
@@ -1302,11 +1304,17 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 				file >> jLayers;
 				file.close();
 
+				CSigrid*	pPlayer = nullptr;
+
 				for (auto jLayer : jLayers["Layers"])
 				{
 					string		strLayerTag = "";
 					wstring	wstrLayerTag = L"";
 					jLayer["Layer Tag"].get_to<string>(strLayerTag);
+
+					if (strLayerTag == "Layer_Enemies")
+						continue;
+
 					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
 					
 					for (auto jCloneObj : jLayer["Clone Objects"])
@@ -1314,6 +1322,7 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 						string		strPrototypeObjTag = "";
 						wstring	wstrPrototypeObjTag = L"";
 						jCloneObj["Prototype GameObject Tag"].get_to<string>(strPrototypeObjTag);
+
 						wstrPrototypeObjTag.assign(strPrototypeObjTag.begin(), strPrototypeObjTag.end());
 
 						_float4x4		matWorld;
@@ -1323,7 +1332,42 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 						for (_float fElement : jCloneObj["Transform State"])
 							memcpy(((_float*)&matWorld) + (k++), &fElement, sizeof(_float));
 
-						pGameInstance->Clone_GameObject(m_iCurLevel, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+						CGameObject*	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(m_iCurLevel, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+						if (dynamic_cast<CSigrid*>(pGameObject))
+							pPlayer = dynamic_cast<CSigrid*>(pGameObject);
+					}
+				}
+
+				for (auto jLayer : jLayers["Layers"])
+				{
+					string		strLayerTag = "";
+					wstring	wstrLayerTag = L"";
+					jLayer["Layer Tag"].get_to<string>(strLayerTag);
+
+					if (strLayerTag != "Layer_Enemies")
+						continue;
+
+					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
+
+					for (auto jCloneObj : jLayer["Clone Objects"])
+					{
+						string		strPrototypeObjTag = "";
+						wstring	wstrPrototypeObjTag = L"";
+						jCloneObj["Prototype GameObject Tag"].get_to<string>(strPrototypeObjTag);
+
+						wstrPrototypeObjTag.assign(strPrototypeObjTag.begin(), strPrototypeObjTag.end());
+
+						_float4x4		matWorld;
+						XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
+
+						_uint	k = 0;
+						for (_float fElement : jCloneObj["Transform State"])
+							memcpy(((_float*)&matWorld) + (k++), &fElement, sizeof(_float));
+
+						CGameObject*	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(m_iCurLevel, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+
+						if (CEnemy*	pEnemy = dynamic_cast<CEnemy*>(pGameObject))
+							pEnemy->Set_Player(pPlayer);
 					}
 				}
 
@@ -1348,6 +1392,9 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 			strPrototypeGameObjectTag.assign(wstrPrototypeGameObjectTag.begin(), wstrPrototypeGameObjectTag.end());
 
 			ImGui::BulletText("Prototype GameObject Tag : %s", strPrototypeGameObjectTag.c_str());
+
+			pCloneObject->ImGui_RenderProperty();
+			pCloneObject->ImGui_RenderComponentProperties();
 
 			if (ImGui::Button("Move to"))
 			{

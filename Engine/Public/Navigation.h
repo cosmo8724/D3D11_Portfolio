@@ -34,21 +34,21 @@ public:
 	HRESULT					Find_NearBy_Point(_float3& vPoint);
 	_bool						IsMoveOnNavigation(_fvector vTargetPos, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 public:
 	HRESULT					Render();
 	HRESULT					Render_Selected_Cell(_int iIndex);
 	void						Change_Render_HeightColor(const _float& fHeight, const _float4& vColor);
-#endif // _DEBUG
+//#endif // _DEBUG
 
 private:
 	vector<class CCell*>		m_vecCell;
 	NAVIGATIONDESC		m_tNavigationDesc;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 private:
 	class CShader*			m_pShaderCom = nullptr;
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 private:

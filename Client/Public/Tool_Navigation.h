@@ -41,9 +41,9 @@ private:
 
 	char*							m_pStateName[CCell::STATE_END + 1] = { "State_Ocean", "State_Ground", "None" };
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	CVIBuffer_Cell_Circle*		m_pVIBufferCircleCom[POINT_END] = { nullptr, nullptr, nullptr };
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 public:

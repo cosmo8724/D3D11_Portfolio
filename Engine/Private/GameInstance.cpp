@@ -7,6 +7,7 @@
 #include "TimerMgr.h"
 #include "LightMgr.h"
 #include "Frustum.h"
+#include "RenderTargetMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -24,6 +25,7 @@ CGameInstance::CGameInstance()
 	, m_pTimerMgr(CTimerMgr::GetInstance())
 	, m_pLightMgr(CLightMgr::GetInstance())
 	, m_pFrustum(CFrustum::GetInstance())
+	, m_pRenderTargetMgr(CRenderTargetMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
@@ -35,6 +37,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pTimerMgr);
 	Safe_AddRef(m_pLightMgr);
 	Safe_AddRef(m_pFrustum);
+	Safe_AddRef(m_pRenderTargetMgr);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
@@ -66,6 +69,8 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 	FAILED_CHECK_RETURN(m_pComponentMgr->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pFrustum->Initialize(), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Initialize(*ppDeviceOut, *ppContextOut), E_FAIL);
 	
 	return S_OK;
 }
@@ -78,6 +83,7 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pObjectMgr, );
 	NULL_CHECK_RETURN(m_pPipeLine, );
 	NULL_CHECK_RETURN(m_pFrustum, );
+	NULL_CHECK_RETURN(m_pRenderTargetMgr, );
 
 	m_pInputDev->Invalidate_Input_Device();
 
@@ -89,6 +95,8 @@ void CGameInstance::Tick_Engine(_double dTimeDelta)
 
 	m_pObjectMgr->Late_Tick(dTimeDelta);
 	m_pLevelMgr->Late_Tick(dTimeDelta);
+
+	m_pRenderTargetMgr->Tick(dTimeDelta);
 
 	m_pImGuiMgr->ImGui_NewFrame(dTimeDelta);
 
@@ -343,6 +351,13 @@ CGameObject * CGameInstance::Clone_GameObjectReturnPtr(_uint iLevelIndex, const 
 	return m_pObjectMgr->Clone_GameObjectReturnPtr(iLevelIndex, wstrLayerTag, wstrPrototypeTag, pArg);
 }
 
+CGameObject * CGameInstance::Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring & wstrLayerTag, const wstring & wstrPrototypeTag, _float4x4 matWorld, void * pArg)
+{
+	NULL_CHECK_RETURN(m_pObjectMgr, nullptr);
+
+	return m_pObjectMgr->Clone_GameObjectReturnPtr(iLevelIndex, wstrLayerTag, wstrPrototypeTag, matWorld, pArg);
+}
+
 map<const wstring, class CComponent*>* CGameInstance::Get_PrototypeComponents()
 {
 	NULL_CHECK_RETURN(m_pComponentMgr, nullptr);
@@ -467,11 +482,13 @@ void CGameInstance::Release_Engine()
 	CLevelMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLightMgr::GetInstance()->DestroyInstance();
+	CRenderTargetMgr::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
 
 void CGameInstance::Free()
 {
+	Safe_Release(m_pRenderTargetMgr);
 	Safe_Release(m_pTimerMgr);
 	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pObjectMgr);

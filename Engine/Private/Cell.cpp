@@ -45,14 +45,14 @@ HRESULT CCell::Initialize(const _float3 * pPoints, _int iIndex)
 	memcpy(m_vPoint, pPoints, sizeof(_float3) * POINT_END);
 	m_iIndex = iIndex;
 	 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	m_pVIBufferCom = CVIBuffer_Cell::Create(m_pDevice, m_pContext, m_vPoint);
 	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
 
 	m_pVIBufferCircleCom[POINT_A] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[POINT_A]);
 	m_pVIBufferCircleCom[POINT_B] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[POINT_B]);
 	m_pVIBufferCircleCom[POINT_C] = CVIBuffer_Cell_Circle::Create(m_pDevice, m_pContext, m_vPoint[POINT_C]);
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 	return S_OK;
@@ -143,7 +143,7 @@ _bool CCell::IsIn(_fvector vTargetPos, _int & iNeighborIndex, _float4 & vBlocked
 	return true;
 }
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 HRESULT CCell::Render(CShader * pShader)
 {
 	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
@@ -164,7 +164,7 @@ HRESULT CCell::Render(CShader * pShader)
 
 	return S_OK;
 }
-#endif
+//#endif
 
 CCell * CCell::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const _float3 * pPoints, _int iIndex)
 {
@@ -184,10 +184,10 @@ void CCell::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	Safe_Release(m_pVIBufferCom);
 
 	for (_uint i = 0; i < (_uint)POINT_END; ++i)
 		Safe_Release(m_pVIBufferCircleCom[i]);
-#endif // _DEBUG
+//#endif // _DEBUG
 }

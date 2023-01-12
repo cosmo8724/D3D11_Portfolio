@@ -5,6 +5,7 @@
 #include "Static_Camera.h"
 #include "Sigrid_State.h"
 #include "Ocean.h"
+#include "Enemy.h"
 
 CSigrid::CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -67,12 +68,24 @@ HRESULT CSigrid::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	m_pModelCom->Set_CurAnimationIndex(CSigrid_State::GROUND_IDLE);
 
+	m_tStatus.iMaxHP = 100;
+	m_tStatus.iHP = m_tStatus.iMaxHP;
+	m_tStatus.iAttack = 3;
+	m_tStatus.iSpecialAttack = 5;
+	m_tStatus.dInitHitCoolTime = 2.0;
+	m_tStatus.dCurHitCoolTime = 0.0;
+
 	return S_OK;
 }
 
 void CSigrid::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	if (m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_OCEAN)
+		m_bOnOcean = true;
+	else if (m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_GROUND)
+		m_bOnOcean = false;
 
 	if (m_bOnOcean == true)
 		SetOn_Terrain();
@@ -113,7 +126,7 @@ HRESULT CSigrid::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones");
+		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 1);
 	}
 
 #ifdef _DEBUG
@@ -145,6 +158,24 @@ _bool CSigrid::Collision_Net(CCollider * pTargetCollider)
 
 void CSigrid::Collision_Event(CEnemy * pEnemy)
 {
+	if (m_tStatus.dCurHitCoolTime < m_tStatus.dInitHitCoolTime)
+		m_bHit = false;
+	else
+	{
+		m_bHit = true;
+		m_tStatus.dCurHitCoolTime = 0.0;
+	}
+
+	if (m_bHit == true)
+	{
+		if (pEnemy->Is_SpecialAttack() == false)
+			m_tStatus.iHP -= pEnemy->Get_Status().iAttack;
+		else
+			m_tStatus.iHP -= pEnemy->Get_Status().iSpecialAttack;
+	}
+
+	if (m_tStatus.iHP < 0)
+		m_tStatus.iHP = 0;
 }
 
 HRESULT CSigrid::SetUp_Component()
@@ -197,6 +228,7 @@ HRESULT CSigrid::SetUp_ShaderResource()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_RawValue(L"g_WinSize", &_float2((_float)g_iWinSizeX, (_float)g_iWinSizeY),  sizeof(_float2));
 
 	Safe_Release(pGameInstance);
 

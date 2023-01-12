@@ -27,6 +27,7 @@ public:
 protected:
 	class CSigrid*				m_pPlayer = nullptr;
 	_bool						m_bPlayerDetected = false;
+	_bool						m_bReadyAttack = false;
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;
