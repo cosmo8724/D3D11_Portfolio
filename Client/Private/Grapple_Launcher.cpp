@@ -107,9 +107,14 @@ void CGrapple_Launcher::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 2.f))
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+	if (nullptr != m_pRendererCom)
+	{
+		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 2.f))
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
+		m_pRendererCom->Add_DebugRenderGroup(m_pGrapplePointCol);
+	}
 }
 
 HRESULT CGrapple_Launcher::Render()
@@ -127,11 +132,6 @@ HRESULT CGrapple_Launcher::Render()
 
 		m_pModelCom->Render(m_pShaderCom, i);
 	}
-
-#ifdef _DEBUG
-	m_pRangeCol->Render();
-	m_pGrapplePointCol->Render();
-#endif // _DEBUG
 
 	return S_OK;
 }

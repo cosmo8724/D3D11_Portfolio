@@ -11,6 +11,7 @@ private:
 
 public:
 	ID3D11RenderTargetView*		Get_RenderTargetView() const { return m_pRenderTargetView; }
+	ID3D11ShaderResourceView*		Get_ShaderResourceView() const { return m_pShaderResourceView; }
 
 public:
 	HRESULT							Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);

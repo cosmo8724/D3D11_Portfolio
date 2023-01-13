@@ -597,16 +597,36 @@ void CTool_PrototypeMgr::Component_Editor()
 				}
 
 				/* 툴은 동적이기 때문에 Level_Public 쪽은 건들지 않아줌. */
-				if (iLevelIndex == 1000 || iLevelIndex == m_iCurLevel || iLevelIndex == LEVEL_PUBLIC)
+				if (iLevelIndex == 1000 || iLevelIndex == LEVEL_PUBLIC)
 				{
 					ImGuiFileDialog::Instance()->Close();
 					ImGui::EndTabItem();
 					return;
 				}
 
-				for (auto& Pair : m_mapProtoComponenets[iLevelIndex])
+				/*for (auto& Pair : m_mapProtoComponenets[iLevelIndex])
+				{
+					COMPONENTTYPE eType = CheckComponentType(Pair.second);
+					
+					if (eType == COMPONENTTYPE_END)
+						continue;
+
 					Safe_Release(Pair.second);
-				m_mapProtoComponenets[iLevelIndex].clear();
+				}
+				m_mapProtoComponenets[iLevelIndex].clear();*/
+
+				for (auto iter = m_mapProtoComponenets[iLevelIndex].begin(); iter != m_mapProtoComponenets[iLevelIndex].end();)
+				{
+					COMPONENTTYPE eType = CheckComponentType(iter->second);
+					if (eType == COM_COLLIDER || eType == COMPONENTTYPE_END)
+					{
+						iter++;
+						continue;
+					}
+
+					Safe_Release(iter->second);
+					iter = m_mapProtoComponenets[iLevelIndex].erase(iter);
+				}
 
 				for (auto& Com : jLevel["Components"])
 				{
@@ -685,9 +705,9 @@ void CTool_PrototypeMgr::Component_Editor()
 						wstrModelType.assign(strModelType.begin(), strModelType.end());
 
 						if (strModelType == "NonAnim")
-							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, strFilePath.c_str()));
+							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, strFilePath.c_str(), XMMatrixIdentity()));
 						else if (strModelType == "Anim")
-							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, strFilePath.c_str()));
+							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, strFilePath.c_str(), XMMatrixIdentity()));
 						else
 							continue;
 					}

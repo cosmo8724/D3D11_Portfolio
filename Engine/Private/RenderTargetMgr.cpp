@@ -6,6 +6,22 @@
 
 IMPLEMENT_SINGLETON(CRenderTargetMgr)
 
+ID3D11RenderTargetView * CRenderTargetMgr::Get_RenderTargetView(const wstring & wstrTargetTag)
+{
+	CRenderTarget*		pRenderTarget = Find_RenderTarget(wstrTargetTag);
+	NULL_CHECK_RETURN(pRenderTarget, nullptr);
+
+	return pRenderTarget->Get_RenderTargetView();
+}
+
+ID3D11ShaderResourceView * CRenderTargetMgr::Get_ShaderResourceView(const wstring & wstrTargetTag)
+{
+	CRenderTarget*		pRenderTarget = Find_RenderTarget(wstrTargetTag);
+	NULL_CHECK_RETURN(pRenderTarget, nullptr);
+
+	return pRenderTarget->Get_ShaderResourceView();
+}
+
 HRESULT CRenderTargetMgr::Initialize(DEVICE pDevice, DEVICE_CONTEXT pContext)
 {
 	m_pContext = pContext;

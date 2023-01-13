@@ -218,6 +218,13 @@ _bool CGameInstance::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 	return m_pInputDev->Mouse_DoubleClick(MouseButton);
 }
 
+_bool CGameInstance::Mouse_Pressing(MOUSEKEYSTATE MouseButton)
+{
+	NULL_CHECK_RETURN(m_pInputDev, false);
+
+	return m_pInputDev->Mouse_Pressing(MouseButton);
+}
+
 _bool CGameInstance::Key_Pressing(_ubyte byKeyID)
 {
 	NULL_CHECK_RETURN(m_pInputDev, false);
@@ -426,6 +433,13 @@ const _double CGameInstance::Get_TimeDelta(const wstring wstrTimerTag)
 	NULL_CHECK_RETURN(m_pTimerMgr, 0.0);
 
 	return m_pTimerMgr->Get_TimeDelta(wstrTimerTag);
+}
+
+void CGameInstance::Set_TimeScale(const wstring & wstrTimerTag, _double dTimeScale)
+{
+	NULL_CHECK_RETURN(m_pTimerMgr, );
+
+	return m_pTimerMgr->Set_TimeScale(wstrTimerTag, dTimeScale);
 }
 
 HRESULT CGameInstance::Ready_Timer(const wstring wstrTimerTag)

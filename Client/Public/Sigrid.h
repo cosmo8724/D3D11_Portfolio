@@ -73,6 +73,7 @@ private:
 	class CStatic_Camera*	m_pCamera = nullptr;
 
 private:	/* State */
+	_double					m_dTimeScale = 1.0;
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;
 
 	_bool						m_bOnOcean = false;

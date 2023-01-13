@@ -157,6 +157,7 @@ private:
 	HRESULT					SetUp_State_Damaged();
 	HRESULT					SetUp_State_Grapple_Ground();
 	HRESULT					SetUp_State_Grapple_Air();
+	HRESULT					SetUp_State_Grapple_Aim();
 	HRESULT					SetUp_State_Grapple_Hang();
 	HRESULT					SetUp_State_Grapple_Launch();
 
@@ -290,6 +291,12 @@ private:		/* State Start */
 	void	Start_Grapple_Air_Fire_Slow_90(_double dTimeDelta);
 	void	Start_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta);
 	void	Start_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta);
+	void	Start_Grapple_Ground_Aim(_double dTImeDelta);
+	void	Start_Grapple_Ground_Aim_Down(_double dTimeDelta);
+	void	Start_Grapple_Ground_Aim_Up(_double dTimeDelta);
+	void	Start_Grapple_Air_Aim(_double dTimeDelta);
+	void	Start_Grapple_Air_Aim_Down(_double dTimeDelta);
+	void	Start_Grapple_Air_Aim_Up(_double dTimeDelta);
 	void	Start_Grapple_Hang_Intro(_double dTimeDelta);
 	void	Start_Grapple_Hang(_double dTimeDelta);
 	void	Start_Grapple_Launch_Flip(_double dTimeDelta);
@@ -416,6 +423,12 @@ private:		/* State Tick */
 	void	Tick_Grapple_Air_Fire_Slow_90(_double dTimeDelta);
 	void	Tick_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta);
 	void	Tick_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta);
+	void	Tick_Grapple_Ground_Aim(_double dTImeDelta);
+	void	Tick_Grapple_Ground_Aim_Down(_double dTimeDelta);
+	void	Tick_Grapple_Ground_Aim_Up(_double dTimeDelta);
+	void	Tick_Grapple_Air_Aim(_double dTimeDelta);
+	void	Tick_Grapple_Air_Aim_Down(_double dTimeDelta);
+	void	Tick_Grapple_Air_Aim_Up(_double dTimeDelta);
 	void	Tick_Grapple_Hang_Intro(_double dTimeDelta);
 	void	Tick_Grapple_Hang(_double dTimeDelta);
 	void	Tick_Grapple_Launch_Flip(_double dTimeDelta);
@@ -543,6 +556,12 @@ private:		/* State End */
 	void	End_Grapple_Air_Fire_Slow_90(_double dTimeDelta);
 	void	End_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta);
 	void	End_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta);
+	void	End_Grapple_Ground_Aim(_double dTImeDelta);
+	void	End_Grapple_Ground_Aim_Down(_double dTimeDelta);
+	void	End_Grapple_Ground_Aim_Up(_double dTimeDelta);
+	void	End_Grapple_Air_Aim(_double dTimeDelta);
+	void	End_Grapple_Air_Aim_Down(_double dTimeDelta);
+	void	End_Grapple_Air_Aim_Up(_double dTimeDelta);
 	void	End_Grapple_Hang_Intro(_double dTimeDelta);
 	void	End_Grapple_Hang(_double dTimeDelta);
 	void	End_Grapple_Launch_Flip(_double dTimeDelta);

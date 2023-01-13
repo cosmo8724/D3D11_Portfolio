@@ -11,6 +11,7 @@ private:
 
 public:
 	const _double	&	Get_TimeDelta() const { return m_dTimeDelta; }
+	void				Set_TimeScale(_double dTimeScale) { m_dTimeScale = dTimeScale; }
 
 public:
 	HRESULT			Ready_Timer();
@@ -23,6 +24,7 @@ private:
 	LARGE_INTEGER		m_CpuTick;
 
 	_double				m_dTimeDelta = 0.0;
+	_double				m_dTimeScale = 1.0;
 
 public:
 	static CTimer*	Create();

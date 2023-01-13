@@ -36,7 +36,7 @@ public:
 
 //#ifdef _DEBUG
 public:
-	HRESULT					Render();
+	virtual HRESULT			Render() override;
 	HRESULT					Render_Selected_Cell(_int iIndex);
 	void						Change_Render_HeightColor(const _float& fHeight, const _float4& vColor);
 //#endif // _DEBUG

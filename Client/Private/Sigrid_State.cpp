@@ -50,6 +50,7 @@ HRESULT CSigrid_State::Initialize(CSigrid * pPlayer, CStateMachine * pStateMachi
 	FAILED_CHECK_RETURN(SetUp_State_Damaged(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Grapple_Ground(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Grapple_Air(), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_State_Grapple_Aim(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Grapple_Hang(), E_FAIL);
 	FAILED_CHECK_RETURN(SetUp_State_Grapple_Launch(), E_FAIL);
 
@@ -1697,6 +1698,43 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Air()
 	return S_OK;
 }
 
+HRESULT CSigrid_State::SetUp_State_Grapple_Aim()
+{
+	m_pStateMachine->Add_State(L"GRAPPLE_GROUND_AIM")
+		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Aim)
+		.Init_Tick(this, &CSigrid_State::Tick_Grapple_Ground_Aim)
+		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Aim)
+
+		.Add_State(L"GRAPPLE_GROUND_AIM_DOWN")
+		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Aim_Down)
+		.Init_Tick(this, &CSigrid_State::Tick_Grapple_Ground_Aim_Down)
+		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Aim_Down)
+
+		.Add_State(L"GRAPPLE_GROUND_AIM_UP")
+		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Aim_Up)
+		.Init_Tick(this, &CSigrid_State::Tick_Grapple_Ground_Aim_Up)
+		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Aim_Up)
+
+		.Add_State(L"GRAPPLE_AIR_AIM")
+		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Aim)
+		.Init_Tick(this, &CSigrid_State::Tick_Grapple_Air_Aim)
+		.Init_End(this, &CSigrid_State::End_Grapple_Air_Aim)
+
+		.Add_State(L"GRAPPLE_AIR_AIM_DOWN")
+		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Aim_Down)
+		.Init_Tick(this, &CSigrid_State::Tick_Grapple_Air_Aim_Down)
+		.Init_End(this, &CSigrid_State::End_Grapple_Air_Aim_Down)
+
+		.Add_State(L"GRAPPLE_AIR_AIM_UP")
+		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Aim_Up)
+		.Init_Tick(this, &CSigrid_State::Tick_Grapple_Air_Aim_Up)
+		.Init_End(this, &CSigrid_State::End_Grapple_Air_Aim_Up)
+
+		.Finish_Setting();
+
+	return S_OK;
+}
+
 HRESULT CSigrid_State::SetUp_State_Grapple_Hang()
 {
 	m_pStateMachine->Add_State(L"GRAPPLE_HANG_INTRO")
@@ -2866,6 +2904,54 @@ void CSigrid_State::Start_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
 }
 
+void CSigrid_State::Start_Grapple_Ground_Aim(_double dTImeDelta)
+{
+	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_AIM);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pPlayer->m_dTimeScale = 0.2;
+}
+
+void CSigrid_State::Start_Grapple_Ground_Aim_Down(_double dTimeDelta)
+{
+	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_AIM_DOWN);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pPlayer->m_dTimeScale = 0.2;
+}
+
+void CSigrid_State::Start_Grapple_Ground_Aim_Up(_double dTimeDelta)
+{
+	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_AIM_UP);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pPlayer->m_dTimeScale = 0.2;
+}
+
+void CSigrid_State::Start_Grapple_Air_Aim(_double dTimeDelta)
+{
+	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pPlayer->m_dTimeScale = 0.2;
+}
+
+void CSigrid_State::Start_Grapple_Air_Aim_Down(_double dTimeDelta)
+{
+	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM_DOWN);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pPlayer->m_dTimeScale = 0.2;
+}
+
+void CSigrid_State::Start_Grapple_Air_Aim_Up(_double dTimeDelta)
+{
+	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM_UP);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pPlayer->m_dTimeScale = 0.2;
+}
+
 void CSigrid_State::Start_Grapple_Hang_Intro(_double dTimeDelta)
 {
 	m_pPlayer->m_bDoubleJump = false;
@@ -3825,6 +3911,30 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 		m_pPlayer->m_bReadyLaunch = true;
 }
 
+void CSigrid_State::Tick_Grapple_Ground_Aim(_double dTImeDelta)
+{
+}
+
+void CSigrid_State::Tick_Grapple_Ground_Aim_Down(_double dTimeDelta)
+{
+}
+
+void CSigrid_State::Tick_Grapple_Ground_Aim_Up(_double dTimeDelta)
+{
+}
+
+void CSigrid_State::Tick_Grapple_Air_Aim(_double dTimeDelta)
+{
+}
+
+void CSigrid_State::Tick_Grapple_Air_Aim_Down(_double dTimeDelta)
+{
+}
+
+void CSigrid_State::Tick_Grapple_Air_Aim_Up(_double dTimeDelta)
+{
+}
+
 void CSigrid_State::Tick_Grapple_Hang_Intro(_double dTimeDelta)
 {
 }
@@ -4427,6 +4537,42 @@ void CSigrid_State::End_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta)
 
 void CSigrid_State::End_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 {
+}
+
+void CSigrid_State::End_Grapple_Ground_Aim(_double dTImeDelta)
+{
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pPlayer->m_dTimeScale = 1.0;
+}
+
+void CSigrid_State::End_Grapple_Ground_Aim_Down(_double dTimeDelta)
+{
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pPlayer->m_dTimeScale = 1.0;
+}
+
+void CSigrid_State::End_Grapple_Ground_Aim_Up(_double dTimeDelta)
+{
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pPlayer->m_dTimeScale = 1.0;
+}
+
+void CSigrid_State::End_Grapple_Air_Aim(_double dTimeDelta)
+{
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pPlayer->m_dTimeScale = 1.0;
+}
+
+void CSigrid_State::End_Grapple_Air_Aim_Down(_double dTimeDelta)
+{
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pPlayer->m_dTimeScale = 1.0;
+}
+
+void CSigrid_State::End_Grapple_Air_Aim_Up(_double dTimeDelta)
+{
+	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pPlayer->m_dTimeScale = 1.0;
 }
 
 void CSigrid_State::End_Grapple_Hang_Intro(_double dTimeDelta)

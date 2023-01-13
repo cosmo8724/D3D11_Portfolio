@@ -79,9 +79,15 @@ void CCritter_Small::Late_Tick(_double dTimeDelta)
 
 	m_pCritterSmall_State->Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 2.f))
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+	if (nullptr != m_pRendererCom)
+	{
+		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 2.f))
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
+		m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+	}
 }
 
 HRESULT CCritter_Small::Render()
@@ -99,13 +105,6 @@ HRESULT CCritter_Small::Render()
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones");
 	}
-
-#ifdef _DEBUG
-	m_pRangeCol->Render();
-	m_pSphereCol->Render();
-
-	//m_pNavigationCom->Render();
-#endif // _DEBUG
 
 	return S_OK;
 }
@@ -160,7 +159,7 @@ HRESULT CCritter_Small::SetUp_Component()
 
 	CNavigation::NAVIGATIONDESC		NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATIONDESC));
-	NavigationDesc.iCurrentIndex = 208;
+	NavigationDesc.iCurrentIndex = 0;
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NavigationDesc), E_FAIL);
 

@@ -17,6 +17,7 @@ public:
 public:
 	virtual HRESULT			Initialize_Prototype();
 	virtual HRESULT			Initialize(class CGameObject* pOwner, void* pArg);
+	virtual HRESULT			Render() { return S_OK; }
 
 public:
 	virtual void				ImGui_RenderProperty() {}

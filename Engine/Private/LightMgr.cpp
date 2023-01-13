@@ -27,6 +27,15 @@ HRESULT CLightMgr::Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGH
 	return S_OK;
 }
 
+void CLightMgr::Render_Light(CVIBuffer_Rect * pVIBufferCom, CShader * pShaderCom)
+{
+	for (auto& pLight : m_vecLight)
+	{
+		if (nullptr != pLight)
+			pLight->Render(pVIBufferCom, pShaderCom);
+	}
+}
+
 void CLightMgr::Clear()
 {
 	for (auto& pLight : m_vecLight)

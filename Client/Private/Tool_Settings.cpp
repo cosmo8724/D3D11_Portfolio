@@ -7,6 +7,7 @@ HRESULT CTool_Settings::Initialize(void * pArg)
 {
 	m_szWIndowName = "ImGui Setting";
 	m_pAlpha = &ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w;
+	*m_pAlpha = 0.1f;
 
 	return S_OK;
 }

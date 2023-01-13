@@ -95,7 +95,9 @@ void CSigrid::Tick(_double dTimeDelta)
 	m_pSigridState->Tick(dTimeDelta);
 	m_pStateMachineCom->Tick(dTimeDelta);
 
+	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", 1.0);
 	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType);
+	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", m_dTimeScale);
 
 	m_pOBBCol->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
 	m_pSphereCol->Update(m_pTransformCom->Get_WorldMatrix());
@@ -111,7 +113,14 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 	m_pSigridState->Late_Tick(dTimeDelta);
 
 	if (nullptr != m_pRendererCom)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+		m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol);
+		m_pRendererCom->Add_DebugRenderGroup(m_pOBBCol);
+		m_pRendererCom->Add_DebugRenderGroup(m_pNetSphereCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+	}
 }
 
 HRESULT CSigrid::Render()
@@ -128,15 +137,6 @@ HRESULT CSigrid::Render()
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 1);
 	}
-
-#ifdef _DEBUG
-	m_pSphereCol->Render();
-	m_pOBBCol->Render();
-	m_pNetSphereCol->Render();
-	
-	//m_pNavigationCom->Render();
-#endif // _DEBUG
-
 
 	return S_OK;
 }

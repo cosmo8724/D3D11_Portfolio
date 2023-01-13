@@ -12,6 +12,10 @@ private:
 	virtual ~CRenderTargetMgr() = default;
 
 public:
+	ID3D11RenderTargetView*		Get_RenderTargetView(const wstring& wstrTargetTag);
+	ID3D11ShaderResourceView*		Get_ShaderResourceView(const wstring& wstrTargetTag);
+
+public:
 	HRESULT							Initialize(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	void								Tick(_double dTimeDelta);
 	HRESULT							Add_RenderTarget(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring& wstrTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);

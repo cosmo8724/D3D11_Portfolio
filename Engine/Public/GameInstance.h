@@ -47,6 +47,7 @@ public:		/* For InputDevice */
 	_bool					Mouse_Down(MOUSEKEYSTATE MouseButton);
 	_bool					Mouse_Up(MOUSEKEYSTATE MouseButton);
 	_bool					Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
+	_bool					Mouse_Pressing(MOUSEKEYSTATE MouseButton);
 	_bool					Key_Pressing(_ubyte byKeyID);
 	_bool					Key_Down(_ubyte byKeyID);
 	_bool					Key_DoubleDown(_ubyte byKeyID);
@@ -87,6 +88,7 @@ public:		/* For PipeLine */
 
 public:		/* For Timer Manager */
 	const _double			Get_TimeDelta(const wstring wstrTimerTag);
+	void					Set_TimeScale(const wstring& wstrTimerTag, _double dTimeScale);
 	HRESULT				Ready_Timer(const wstring wstrTimerTag);
 	void					Update_Timer(const wstring wstrTimerTag);
 
