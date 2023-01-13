@@ -872,6 +872,7 @@ HRESULT CSigrid_State::SetUp_State_Air()
 		.Init_Changer(L"AIR_GLIDING", this, &CSigrid_State::KeyCharge_Space)
 		.Init_Changer(L"JUMP_DOUBLE", this, &CSigrid_State::KeyDoubleDown_Space)
 		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::KeyDown_F)
+		.Init_Changer(L"GRAPPLE_AIR_AIM", this, &CSigrid_State::MousePressing_RB)
 		//.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Collision_Ground)
 		.Init_Changer(L"LANDING_GROUND_INTO_IDLE", this, &CSigrid_State::Collision_Ground_KeyInput_None)
 		.Init_Changer(L"LANDING_GROUND_INTO_RUN", this, &CSigrid_State::Collision_Ground_KeyInput_Direction)
@@ -892,6 +893,7 @@ HRESULT CSigrid_State::SetUp_State_Air()
 		.Init_Changer(L"AIR_GLIDING", this, &CSigrid_State::KeyCharge_Space)
 		.Init_Changer(L"JUMP_DOUBLE", this, &CSigrid_State::KeyDoubleDown_Space)
 		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::KeyDown_F)
+		.Init_Changer(L"GRAPPLE_AIR_AIM", this, &CSigrid_State::MousePressing_RB)
 		//.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Collision_Ground)
 		.Init_Changer(L"LANDING_GROUND_INTO_IDLE", this, &CSigrid_State::Collision_Ground_KeyInput_None)
 		.Init_Changer(L"LANDING_GROUND_INTO_RUN", this, &CSigrid_State::Collision_Ground_KeyInput_Direction)
@@ -912,6 +914,7 @@ HRESULT CSigrid_State::SetUp_State_Air()
 		.Init_Changer(L"AIR_GLIDING", this, &CSigrid_State::KeyCharge_Space)
 		.Init_Changer(L"JUMP_DOUBLE", this, &CSigrid_State::KeyDoubleDown_Space)
 		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::KeyDown_F)
+		.Init_Changer(L"GRAPPLE_AIR_AIM", this, &CSigrid_State::MousePressing_RB)
 		//.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Collision_Ground)
 		.Init_Changer(L"LANDING_GROUND_INTO_IDLE", this, &CSigrid_State::Collision_Ground_KeyInput_None)
 		.Init_Changer(L"LANDING_GROUND_INTO_RUN", this, &CSigrid_State::Collision_Ground_KeyInput_Direction)
@@ -932,6 +935,7 @@ HRESULT CSigrid_State::SetUp_State_Air()
 		.Init_Changer(L"AIR_GLIDING", this, &CSigrid_State::KeyCharge_Space)
 		.Init_Changer(L"JUMP_DOUBLE", this, &CSigrid_State::KeyDoubleDown_Space)
 		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::KeyDown_F)
+		.Init_Changer(L"GRAPPLE_AIR_AIM", this, &CSigrid_State::MousePressing_RB)
 		//.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Collision_Ground)
 		.Init_Changer(L"LANDING_GROUND_INTO_IDLE", this, &CSigrid_State::Collision_Ground_KeyInput_None)
 		.Init_Changer(L"LANDING_GROUND_INTO_RUN", this, &CSigrid_State::Collision_Ground_KeyInput_Direction)
@@ -952,6 +956,7 @@ HRESULT CSigrid_State::SetUp_State_Air()
 		.Init_Changer(L"AIR_GLIDING", this, &CSigrid_State::KeyCharge_Space)
 		.Init_Changer(L"JUMP_DOUBLE", this, &CSigrid_State::KeyDoubleDown_Space)
 		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::KeyDown_F)
+		.Init_Changer(L"GRAPPLE_AIR_AIM", this, &CSigrid_State::MousePressing_RB)
 		//.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Collision_Ground)
 		.Init_Changer(L"LANDING_GROUND_INTO_IDLE", this, &CSigrid_State::Collision_Ground_KeyInput_None)
 		.Init_Changer(L"LANDING_GROUND_INTO_RUN", this, &CSigrid_State::Collision_Ground_KeyInput_Direction)
@@ -972,6 +977,7 @@ HRESULT CSigrid_State::SetUp_State_Air()
 		.Init_Changer(L"AIR_GLIDING", this, &CSigrid_State::KeyCharge_Space)
 		.Init_Changer(L"JUMP_DOUBLE", this, &CSigrid_State::KeyDoubleDown_Space)
 		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::KeyDown_F)
+			.Init_Changer(L"GRAPPLE_AIR_AIM", this, &CSigrid_State::MousePressing_RB)
 		//.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Collision_Ground)
 		.Init_Changer(L"LANDING_GROUND_INTO_IDLE", this, &CSigrid_State::Collision_Ground_KeyInput_None)
 		.Init_Changer(L"LANDING_GROUND_INTO_RUN", this, &CSigrid_State::Collision_Ground_KeyInput_Direction)
@@ -992,6 +998,7 @@ HRESULT CSigrid_State::SetUp_State_Air()
 		.Init_Changer(L"AIR_GLIDING", this, &CSigrid_State::KeyCharge_Space)
 		.Init_Changer(L"JUMP_DOUBLE", this, &CSigrid_State::KeyDoubleDown_Space)
 		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::KeyDown_F)
+			.Init_Changer(L"GRAPPLE_AIR_AIM", this, &CSigrid_State::MousePressing_RB)
 		//.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Collision_Ground)
 		.Init_Changer(L"LANDING_GROUND_INTO_IDLE", this, &CSigrid_State::Collision_Ground_KeyInput_None)
 		.Init_Changer(L"LANDING_GROUND_INTO_RUN", this, &CSigrid_State::Collision_Ground_KeyInput_Direction)
@@ -1719,6 +1726,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Aim()
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Aim)
 		.Init_Tick(this, &CSigrid_State::Tick_Grapple_Air_Aim)
 		.Init_End(this, &CSigrid_State::End_Grapple_Air_Aim)
+		.Init_Changer(L"AIR", this, &CSigrid_State::MouseUp_RB)
 
 		.Add_State(L"GRAPPLE_AIR_AIM_DOWN")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Aim_Down)
@@ -2904,52 +2912,58 @@ void CSigrid_State::Start_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
 }
 
-void CSigrid_State::Start_Grapple_Ground_Aim(_double dTImeDelta)
+void CSigrid_State::Start_Grapple_Ground_Aim(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_AIM);
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
+	m_pPlayer->m_pCamera->Set_TimeScale(0.2);
 }
 
 void CSigrid_State::Start_Grapple_Ground_Aim_Down(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_AIM_DOWN);
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
+	m_pPlayer->m_pCamera->Set_TimeScale(0.2);
 }
 
 void CSigrid_State::Start_Grapple_Ground_Aim_Up(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_AIM_UP);
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
+	m_pPlayer->m_pCamera->Set_TimeScale(0.2);
 }
 
 void CSigrid_State::Start_Grapple_Air_Aim(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM);
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
+	m_pPlayer->m_pCamera->Set_TimeScale(0.2);
 }
 
 void CSigrid_State::Start_Grapple_Air_Aim_Down(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM_DOWN);
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
+	m_pPlayer->m_pCamera->Set_TimeScale(0.2);
 }
 
 void CSigrid_State::Start_Grapple_Air_Aim_Up(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM_UP);
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 0.2);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
+	m_pPlayer->m_pCamera->Set_TimeScale(0.2);
 }
 
 void CSigrid_State::Start_Grapple_Hang_Intro(_double dTimeDelta)
@@ -3911,7 +3925,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 		m_pPlayer->m_bReadyLaunch = true;
 }
 
-void CSigrid_State::Tick_Grapple_Ground_Aim(_double dTImeDelta)
+void CSigrid_State::Tick_Grapple_Ground_Aim(_double dTimeDelta)
 {
 }
 
@@ -4539,40 +4553,45 @@ void CSigrid_State::End_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 {
 }
 
-void CSigrid_State::End_Grapple_Ground_Aim(_double dTImeDelta)
+void CSigrid_State::End_Grapple_Ground_Aim(_double dTimeDelta)
 {
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
 }
 
 void CSigrid_State::End_Grapple_Ground_Aim_Down(_double dTimeDelta)
 {
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
+	m_pPlayer->m_pCamera->Set_TimeScale(1.0);
 }
 
 void CSigrid_State::End_Grapple_Ground_Aim_Up(_double dTimeDelta)
 {
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
+	m_pPlayer->m_pCamera->Set_TimeScale(1.0);
 }
 
 void CSigrid_State::End_Grapple_Air_Aim(_double dTimeDelta)
 {
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
+	m_pPlayer->m_pCamera->Set_TimeScale(1.0);
 }
 
 void CSigrid_State::End_Grapple_Air_Aim_Down(_double dTimeDelta)
 {
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
+	m_pPlayer->m_pCamera->Set_TimeScale(1.0);
 }
 
 void CSigrid_State::End_Grapple_Air_Aim_Up(_double dTimeDelta)
 {
-	m_pGameInstance->Set_TimeScale(L"Timer_165", 1.0);
+	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
+	m_pPlayer->m_pCamera->Set_TimeScale(1.0);
 }
 
 void CSigrid_State::End_Grapple_Hang_Intro(_double dTimeDelta)
@@ -4925,9 +4944,25 @@ _bool CSigrid_State::MouseDown_LB()
 	return false;
 }
 
+_bool CSigrid_State::MousePressing_RB()
+{
+	if (m_pGameInstance->Mouse_Pressing(DIM_RB))
+		return true;
+
+	return false;
+}
+
 _bool CSigrid_State::MouseDown_RB()
 {
 	if (m_pGameInstance->Mouse_Down(DIM_RB))
+		return true;
+
+	return false;
+}
+
+_bool CSigrid_State::MouseUp_RB()
+{
+	if (m_pGameInstance->Mouse_Up(DIM_RB))
 		return true;
 
 	return false;

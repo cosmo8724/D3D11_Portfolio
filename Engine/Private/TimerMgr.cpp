@@ -17,12 +17,12 @@ const _double CTimerMgr::Get_TimeDelta(const wstring wstrTimerTag)
 	return pTimer->Get_TimeDelta();
 }
 
-void CTimerMgr::Set_TimeScale(const wstring & wstrTimerTag, _double dTimeScale)
+void CTimerMgr::Set_TimeScale(const wstring & wstrTimerTag, _double & dTimeDelta, _double dTimeScale)
 {
 	CTimer*	pTimer = Find_Timer(wstrTimerTag);
 	NULL_CHECK_RETURN(pTimer, );
 
-	pTimer->Set_TimeScale(dTimeScale);
+	pTimer->Set_TimeScale(dTimeDelta, dTimeScale);
 }
 
 HRESULT CTimerMgr::Ready_Timer(const wstring wstrTimerTag)

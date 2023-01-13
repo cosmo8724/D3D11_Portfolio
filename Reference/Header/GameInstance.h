@@ -88,7 +88,7 @@ public:		/* For PipeLine */
 
 public:		/* For Timer Manager */
 	const _double			Get_TimeDelta(const wstring wstrTimerTag);
-	void					Set_TimeScale(const wstring& wstrTimerTag, _double dTimeScale);
+	void					Set_TimeScale(const wstring& wstrTimerTag, _double& dTimeDelta, _double dTimeScale);
 	HRESULT				Ready_Timer(const wstring wstrTimerTag);
 	void					Update_Timer(const wstring wstrTimerTag);
 

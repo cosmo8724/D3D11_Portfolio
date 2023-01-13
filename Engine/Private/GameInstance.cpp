@@ -435,11 +435,11 @@ const _double CGameInstance::Get_TimeDelta(const wstring wstrTimerTag)
 	return m_pTimerMgr->Get_TimeDelta(wstrTimerTag);
 }
 
-void CGameInstance::Set_TimeScale(const wstring & wstrTimerTag, _double dTimeScale)
+void CGameInstance::Set_TimeScale(const wstring & wstrTimerTag, _double & dTimeDelta, _double dTimeScale)
 {
 	NULL_CHECK_RETURN(m_pTimerMgr, );
 
-	return m_pTimerMgr->Set_TimeScale(wstrTimerTag, dTimeScale);
+	return m_pTimerMgr->Set_TimeScale(wstrTimerTag, dTimeDelta, dTimeScale);
 }
 
 HRESULT CGameInstance::Ready_Timer(const wstring wstrTimerTag)

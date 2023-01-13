@@ -291,7 +291,7 @@ private:		/* State Start */
 	void	Start_Grapple_Air_Fire_Slow_90(_double dTimeDelta);
 	void	Start_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta);
 	void	Start_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta);
-	void	Start_Grapple_Ground_Aim(_double dTImeDelta);
+	void	Start_Grapple_Ground_Aim(_double dTimeDelta);
 	void	Start_Grapple_Ground_Aim_Down(_double dTimeDelta);
 	void	Start_Grapple_Ground_Aim_Up(_double dTimeDelta);
 	void	Start_Grapple_Air_Aim(_double dTimeDelta);
@@ -423,7 +423,7 @@ private:		/* State Tick */
 	void	Tick_Grapple_Air_Fire_Slow_90(_double dTimeDelta);
 	void	Tick_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta);
 	void	Tick_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta);
-	void	Tick_Grapple_Ground_Aim(_double dTImeDelta);
+	void	Tick_Grapple_Ground_Aim(_double dTimeDelta);
 	void	Tick_Grapple_Ground_Aim_Down(_double dTimeDelta);
 	void	Tick_Grapple_Ground_Aim_Up(_double dTimeDelta);
 	void	Tick_Grapple_Air_Aim(_double dTimeDelta);
@@ -556,7 +556,7 @@ private:		/* State End */
 	void	End_Grapple_Air_Fire_Slow_90(_double dTimeDelta);
 	void	End_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta);
 	void	End_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta);
-	void	End_Grapple_Ground_Aim(_double dTImeDelta);
+	void	End_Grapple_Ground_Aim(_double dTimeDelta);
 	void	End_Grapple_Ground_Aim_Down(_double dTimeDelta);
 	void	End_Grapple_Ground_Aim_Up(_double dTimeDelta);
 	void	End_Grapple_Air_Aim(_double dTimeDelta);
@@ -610,7 +610,9 @@ private:		/* State Changer*/
 	_bool	KeyCharge_Space_Progress();
 
 	_bool	MouseDown_LB();
+	_bool	MousePressing_RB();
 	_bool	MouseDown_RB();
+	_bool	MouseUp_RB();
 
 	_bool	KeyDown_Space_While_Dash_Into_Air();
 	_bool	KeyCharge_Space_Jump_Charge_00();

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Critter_Small.h"
 #include "Sigrid.h"
+#include "GameUtility.h"
 
 CCritter_Small_State::CCritter_Small_State()
 {
@@ -49,6 +50,16 @@ void CCritter_Small_State::Tick(_double dTimeDelta)
 
 void CCritter_Small_State::Late_Tick(_double dTimeDelta)
 {
+	_float4	fDir;
+	if (CGameUtility::CollisionSphereSphere(m_pCritter->m_pPlayer->m_pSphereCol, m_pCritter->m_pRangeCol, fDir))
+	{
+		_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+		fDir.y = 0.f;
+		vPos += fDir;
+		
+		m_pTransformCom->Set_State(CTransform::STATE_TRANS, vPos);
+	}
+
 	if (m_pCritter->m_pPlayer->Collision_Body(m_pCritter->m_pRangeCol))
 		m_pCritter->m_bPlayerDetected = true;
 	else

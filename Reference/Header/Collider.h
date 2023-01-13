@@ -23,6 +23,7 @@ private:
 public:
 	const COLLIDERTYPE&	Get_ColliderType() const { return m_eType; }
 	_vector					Get_ColliderPos();
+	void*						Get_Collider(COLLIDERTYPE eType);
 
 public:
 	virtual HRESULT			Initialize_Prototype(COLLIDERTYPE eType);

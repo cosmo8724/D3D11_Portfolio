@@ -95,9 +95,12 @@ void CSigrid::Tick(_double dTimeDelta)
 	m_pSigridState->Tick(dTimeDelta);
 	m_pStateMachineCom->Tick(dTimeDelta);
 
-	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", 1.0);
+	if (m_dTimeScale == 0.2)
+		int a = 3;
+
+	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType);
-	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", m_dTimeScale);
+	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, m_dTimeScale);
 
 	m_pOBBCol->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
 	m_pSphereCol->Update(m_pTransformCom->Get_WorldMatrix());

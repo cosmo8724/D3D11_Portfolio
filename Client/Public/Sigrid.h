@@ -59,11 +59,14 @@ public:
 	_bool						Collision_Net(CCollider* pTargetCollider);
 	void						Collision_Event(class CEnemy* pEnemy);
 
+public:
+	CCollider*					m_pSphereCol = nullptr;
+
 private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-	CCollider*					m_pSphereCol = nullptr;
+	
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;

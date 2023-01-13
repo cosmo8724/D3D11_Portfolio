@@ -19,6 +19,7 @@ private:
 public:
 	const _long&					Get_MouseMoveX() const { return m_MouseMoveX; }
 	void							Set_OwnerTransform(CTransform* pTransformCom) { m_pOwnerTransform = pTransformCom; }
+	void							Set_TimeScale(_double dTimeDelta) { m_dTimeScale = dTimeDelta; }
 	void							Init_Position();
 
 public:
@@ -32,6 +33,7 @@ private:
 	CTransform*					m_pOwnerTransform = nullptr;
 	_float							m_fDistanceFromTarget = 5.f;
 
+	_double						m_dTimeScale = 1.0;
 	_bool							m_bMouseFix = true;
 
 	_long							m_MouseMoveX = 0;

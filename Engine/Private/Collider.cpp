@@ -45,6 +45,20 @@ _vector CCollider::Get_ColliderPos()
 	return vPos;
 }
 
+void * CCollider::Get_Collider(COLLIDERTYPE eType)
+{
+	if (eType == CCollider::COLLIDER_SPHERE && m_pSphere != nullptr)
+		return m_pSphere;
+
+	else if (eType == CCollider::COLLIDER_AABB && m_pAABB != nullptr)
+		return m_pAABB;
+
+	else if (eType == CCollider::COLLIDER_OBB && m_pOBB != nullptr)
+		return m_pOBB;
+
+	return nullptr;
+}
+
 HRESULT CCollider::Initialize_Prototype(COLLIDERTYPE eType)
 {
 	m_eType = eType;
