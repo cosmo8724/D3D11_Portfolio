@@ -57,7 +57,7 @@ HRESULT CSigrid_State::Initialize(CSigrid * pPlayer, CStateMachine * pStateMachi
 	return S_OK;
 }
 
-void CSigrid_State::Tick(_double dTimeDelta)
+void CSigrid_State::Tick(_double & dTimeDelta)
 {
 	m_eDir = DetectDirectionInput();
 
@@ -124,7 +124,7 @@ void CSigrid_State::Tick(_double dTimeDelta)
  		m_pPlayer->m_bJump = true;
 }
 
-void CSigrid_State::Late_Tick(_double dTimeDelta)
+void CSigrid_State::Late_Tick(_double & dTimeDelta)
 {
 	m_eLastDir = m_eDir;
 }
@@ -2942,6 +2942,7 @@ void CSigrid_State::Start_Grapple_Ground_Aim_Up(_double dTimeDelta)
 void CSigrid_State::Start_Grapple_Air_Aim(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pPlayer->m_fGravity /= 40.f;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM);
 	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
@@ -2951,6 +2952,7 @@ void CSigrid_State::Start_Grapple_Air_Aim(_double dTimeDelta)
 void CSigrid_State::Start_Grapple_Air_Aim_Down(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pPlayer->m_fGravity /= 40.f;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM_DOWN);
 	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
@@ -2960,6 +2962,7 @@ void CSigrid_State::Start_Grapple_Air_Aim_Down(_double dTimeDelta)
 void CSigrid_State::Start_Grapple_Air_Aim_Up(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	m_pPlayer->m_fGravity /= 40.f;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_AIM_UP);
 	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 0.2);
 	m_pPlayer->m_dTimeScale = 0.2;
@@ -3939,6 +3942,8 @@ void CSigrid_State::Tick_Grapple_Ground_Aim_Up(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Air_Aim(_double dTimeDelta)
 {
+	m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
+	Move(dTimeDelta, m_eDir);
 }
 
 void CSigrid_State::Tick_Grapple_Air_Aim_Down(_double dTimeDelta)
@@ -4575,6 +4580,7 @@ void CSigrid_State::End_Grapple_Ground_Aim_Up(_double dTimeDelta)
 
 void CSigrid_State::End_Grapple_Air_Aim(_double dTimeDelta)
 {
+	m_pPlayer->m_fGravity *= 40.f;
 	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
 	m_pPlayer->m_pCamera->Set_TimeScale(1.0);
@@ -4582,6 +4588,7 @@ void CSigrid_State::End_Grapple_Air_Aim(_double dTimeDelta)
 
 void CSigrid_State::End_Grapple_Air_Aim_Down(_double dTimeDelta)
 {
+	m_pPlayer->m_fGravity *= 40.f;
 	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
 	m_pPlayer->m_pCamera->Set_TimeScale(1.0);
@@ -4589,6 +4596,7 @@ void CSigrid_State::End_Grapple_Air_Aim_Down(_double dTimeDelta)
 
 void CSigrid_State::End_Grapple_Air_Aim_Up(_double dTimeDelta)
 {
+	m_pPlayer->m_fGravity *= 40.f;
 	m_pGameInstance->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pPlayer->m_dTimeScale = 1.0;
 	m_pPlayer->m_pCamera->Set_TimeScale(1.0);

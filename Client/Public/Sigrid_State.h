@@ -133,8 +133,8 @@ private:
 
 public:
 	HRESULT					Initialize(class CSigrid* pPlayer, CStateMachine* pStateMachineCom, CModel* pModel, CTransform* pTransform, class CStatic_Camera* pCamera);
-	void						Tick(_double dTimeDelta);
-	void						Late_Tick(_double dTimeDelta);
+	void						Tick(_double& dTimeDelta);
+	void						Late_Tick(_double& dTimeDelta);
 
 private:
 	HRESULT					SetUp_State_Ground_Idle();

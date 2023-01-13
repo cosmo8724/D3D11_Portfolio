@@ -48,7 +48,7 @@ HRESULT CStateMachine::Initialize(CGameObject * pOwner, void * pArg)
 	return S_OK;
 }
 
-void CStateMachine::Tick(_double dTimeDelta)
+void CStateMachine::Tick(_double & dTimeDelta)
 {
 	auto	CurState = find_if(m_mapState.begin(), m_mapState.end(), CTag_Finder(m_wstrCurrentStateName));
 
