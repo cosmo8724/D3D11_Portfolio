@@ -1,5 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Light.h"
+#include "VIBuffer_Rect.h"
+#include "Shader.h"
 
 CLight::CLight(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: m_pDevice(pDevice)
@@ -12,6 +14,16 @@ CLight::CLight(DEVICE pDevice, DEVICE_CONTEXT pContext)
 HRESULT CLight::Initialize(const LIGHTDESC & LightDesc)
 {
 	m_LightDesc = LightDesc;
+
+	return S_OK;
+}
+
+HRESULT CLight::Render(CVIBuffer_Rect * pVIBufferCom, CShader * pShaderCom)
+{
+	FAILED_CHECK_RETURN(pShaderCom->Set_RawValue(L"g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4)), E_FAIL);
+
+	pShaderCom->Begin(1);
+	pVIBufferCom->Render();
 
 	return S_OK;
 }

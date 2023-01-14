@@ -160,6 +160,12 @@
     <Filter Include="01. Utility\03. Component\02. VIBuffer\Terrain\QuadTree">
       <UniqueIdentifier>{d76c13f8-bb05-48b6-8c2c-fd80944af112}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\08. RenderTarget">
+      <UniqueIdentifier>{fbd26d8d-2745-4b01-92bc-9f07c4a52250}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\08. RenderTarget\Manager">
+      <UniqueIdentifier>{8ce42d59-cff5-4af1-b443-f2b690c5b6c9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -338,6 +344,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\QuadTree.cpp">
       <Filter>01. Utility\03. Component\02. VIBuffer\Terrain\QuadTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RenderTarget.cpp">
+      <Filter>01. Utility\08. RenderTarget</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RenderTargetMgr.cpp">
+      <Filter>01. Utility\08. RenderTarget\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -551,6 +563,12 @@
     <ClInclude Include="..\Public\QuadTree.h">
       <Filter>01. Utility\03. Component\02. VIBuffer\Terrain\QuadTree</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RenderTarget.h">
+      <Filter>01. Utility\08. RenderTarget</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RenderTargetMgr.h">
+      <Filter>01. Utility\08. RenderTarget\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Text Include="..\Public\HowToUse.txt">
@@ -560,6 +578,9 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\Shader\Shader_Navigation.hlsl">
       <Filter>01. Utility\03. Component\09. Navigation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Shader_Deferred.hlsl">
+      <Filter>01. Utility\08. RenderTarget</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

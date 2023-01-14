@@ -13,6 +13,18 @@ namespace Engine
 		HWND			hWnd;
 	} GRAPHIC_DESC;
 
+	typedef struct tagStatus
+	{
+		_int			iHP;
+		_int			iMaxHP;
+		_int			iAttack;
+		_int			iSpecialAttack;
+		_double		dInitAttackCoolTime;
+		_double		dCurAttackCoolTime;
+		_double		dInitHitCoolTime;
+		_double		dCurHitCoolTime;
+	} STATUS;
+
 	typedef struct tagVertexPosition
 	{
 		XMFLOAT3	vPosition;

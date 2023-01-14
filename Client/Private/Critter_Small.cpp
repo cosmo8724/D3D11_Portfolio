@@ -32,7 +32,7 @@ HRESULT CCritter_Small::Initialize(const wstring & wstrPrototypeTag, void * pArg
 		memcpy(&TransformDesc, pArg, sizeof(CTransform::TRANSFORMDESC));
 	else
 	{
-		TransformDesc.dSpeedPerSec = 5.0;
+		TransformDesc.dSpeedPerSec = 3.0;
 		TransformDesc.dRotationPerSec = (_double)XMConvertToRadians(90.f);
 	}
 
@@ -45,6 +45,15 @@ HRESULT CCritter_Small::Initialize(const wstring & wstrPrototypeTag, void * pArg
 	m_pCritterSmall_State = CCritter_Small_State::Create(this, m_pStateMachineCom, m_pModelCom, m_pTransformCom);
 
 	m_pModelCom->Set_CurAnimationIndex(CCritter_Small_State::IDLE_STILL_LOOP);
+
+	m_tStatus.iMaxHP = 20;
+	m_tStatus.iHP = m_tStatus.iMaxHP;
+	m_tStatus.iAttack = 5;
+	m_tStatus.iSpecialAttack = 10;
+	m_tStatus.dInitAttackCoolTime = 3.0;
+	m_tStatus.dCurAttackCoolTime = 0.0;
+	m_tStatus.dInitHitCoolTime = 1.5;
+	m_tStatus.dCurHitCoolTime = 0.0;
 
 	return S_OK;
 }
@@ -70,9 +79,15 @@ void CCritter_Small::Late_Tick(_double dTimeDelta)
 
 	m_pCritterSmall_State->Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 2.f))
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+	if (nullptr != m_pRendererCom)
+	{
+		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 2.f))
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
+		m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
+	}
 }
 
 HRESULT CCritter_Small::Render()
@@ -91,18 +106,32 @@ HRESULT CCritter_Small::Render()
 		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones");
 	}
 
-#ifdef _DEBUG
-	m_pRangeCol->Render();
-	m_pSphereCol->Render();
-
-	//m_pNavigationCom->Render();
-#endif // _DEBUG
-
 	return S_OK;
 }
 
 void CCritter_Small::Collision_Event(CSigrid * pPlayer)
 {
+	if (pPlayer == nullptr)
+		return;
+
+	if (m_tStatus.dCurHitCoolTime < m_tStatus.dInitHitCoolTime)
+		m_bHit = false;
+	else
+	{
+		m_bHit = true;
+		m_tStatus.dCurHitCoolTime = 0.0;
+	}
+
+	if (m_bHit == true)
+	{
+		if (m_pPlayer->Is_SpecialAttack() == false)
+			m_tStatus.iHP -= pPlayer->Get_Status().iAttack;
+		else
+			m_tStatus.iHP -= pPlayer->Get_Status().iSpecialAttack;
+	}
+
+	if (m_tStatus.iHP < 0)
+		m_tStatus.iHP = 0;
 }
 
 HRESULT CCritter_Small::SetUp_Component()
@@ -130,7 +159,7 @@ HRESULT CCritter_Small::SetUp_Component()
 
 	CNavigation::NAVIGATIONDESC		NavigationDesc;
 	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATIONDESC));
-	NavigationDesc.iCurrentIndex = 208;
+	NavigationDesc.iCurrentIndex = 0;
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NavigationDesc), E_FAIL);
 

@@ -1,10 +1,18 @@
 #include "stdafx.h"
 #include "..\Public\Renderer.h"
 #include "GameObject.h"
+#include "RenderTargetMgr.h"
+#include "LightMgr.h"
+#include "VIBuffer_Rect.h"
+#include "Shader.h"
 
 CRenderer::CRenderer(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
+	, m_pRenderTargetMgr(CRenderTargetMgr::GetInstance())
+	, m_pLightMgr(CLightMgr::GetInstance())
 {
+	Safe_AddRef(m_pRenderTargetMgr);
+	Safe_AddRef(m_pLightMgr);
 }
 
 HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pGameObject)
@@ -18,13 +26,39 @@ HRESULT CRenderer::Add_RenderGroup(RENDERGROUP eRenderGroup, CGameObject * pGame
 	return S_OK;
 }
 
+HRESULT CRenderer::Add_DebugRenderGroup(CComponent * pComponent)
+{
+	NULL_CHECK_RETURN(pComponent, E_FAIL);
+
+	m_DebugObjectList.push_back(pComponent);
+	Safe_AddRef(pComponent);
+
+	return S_OK;
+}
+
 HRESULT CRenderer::Draw_RenderGroup()
 {
 	FAILED_CHECK_RETURN(Render_Priority(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlphaBlend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_LightAcc(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Blend(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonLight(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_AlphaBlend(), E_FAIL);
+	FAILED_CHECK_RETURN(Render_DebugObject(), E_FAIL);
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
+
+#ifdef _DEBUG
+
+	if (m_pRenderTargetMgr != nullptr)
+	{
+		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f), E_FAIL);
+		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Normal", 100.f, 300.f, 200.f, 200.f), E_FAIL);
+		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f), E_FAIL);
+
+		m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
+		m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
+	}
+#endif // _DEBUG
 
 	return S_OK;
 }
@@ -32,6 +66,37 @@ HRESULT CRenderer::Draw_RenderGroup()
 HRESULT CRenderer::Initialize_Prototype()
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
+
+	D3D11_VIEWPORT	ViewportDesc;
+	ZeroMemory(&ViewportDesc, sizeof(D3D11_VIEWPORT));
+
+	_uint	iNumViewport = 1;
+
+	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Diffuse", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Normal", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Shade", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Diffuse"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Normal"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_LightAcc", L"Target_Shade"), E_FAIL);
+
+	m_pVIBufferCom = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
+	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
+
+	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Deferred.hlsl", CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements);
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	XMStoreFloat4x4(&m_matWorld, XMMatrixScaling(ViewportDesc.Width, ViewportDesc.Height, 1.f));
+	XMStoreFloat4x4(&m_matView, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_matProj, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+
+#ifdef _DEBUG
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Normal", 100.f, 300.f, 200.f, 200.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f), E_FAIL);
+#endif // _DEBUG
 
 	return S_OK;
 }
@@ -60,6 +125,10 @@ HRESULT CRenderer::Render_Priority()
 
 HRESULT CRenderer::Render_NonAlphaBlend()
 {
+	NULL_CHECK_RETURN(m_pRenderTargetMgr, E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Begin_MultiRenderTarget(m_pContext, L"MRT_Deferred"), E_FAIL);
+
 	for (auto& pGameObject : m_RenderObjectList[RENDER_NONALPHABLEND])
 	{
 		if (nullptr != pGameObject)
@@ -69,6 +138,65 @@ HRESULT CRenderer::Render_NonAlphaBlend()
 	}
 
 	m_RenderObjectList[RENDER_NONALPHABLEND].clear();
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->End_MultiRenderTarget(m_pContext, L"MRT_Deferred"), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_LightAcc()
+{
+	NULL_CHECK_RETURN(m_pRenderTargetMgr, E_FAIL);
+
+	D3D11_VIEWPORT	ViewportDesc;
+	ZeroMemory(&ViewportDesc, sizeof(D3D11_VIEWPORT));
+
+	_uint	iNumViewport = 1;
+
+	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
+
+	XMStoreFloat4x4(&m_matWorld, XMMatrixScaling(ViewportDesc.Width, ViewportDesc.Height, 1.f));
+	XMStoreFloat4x4(&m_matProj, XMMatrixOrthographicLH(ViewportDesc.Width, ViewportDesc.Height, 0.f, 1.f));
+
+	m_pRenderTargetMgr->Begin_MultiRenderTarget(m_pContext, L"MRT_LightAcc");
+	
+	m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matWorld);
+	m_pShaderCom->Set_Matrix(L"g_matView", &m_matView);
+	m_pShaderCom->Set_Matrix(L"g_matProj", &m_matProj);
+	m_pShaderCom->Set_ShaderResourceView(L"g_NormalTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Normal"));
+
+	m_pLightMgr->Render_Light(m_pVIBufferCom, m_pShaderCom);
+
+	m_pRenderTargetMgr->End_MultiRenderTarget(m_pContext, L"MRT_LightAcc");
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Blend()
+{
+	m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matWorld);
+	m_pShaderCom->Set_Matrix(L"g_matView", &m_matView);
+	m_pShaderCom->Set_Matrix(L"g_matProj", &m_matProj);
+	m_pShaderCom->Set_ShaderResourceView(L"g_DiffuseTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Diffuse"));
+	m_pShaderCom->Set_ShaderResourceView(L"g_ShadeTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Shade"));
+
+	m_pShaderCom->Begin(3);
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_DebugObject()
+{
+	for (auto& pComponent : m_DebugObjectList)
+	{
+		if (nullptr != pComponent)
+			pComponent->Render();
+
+		Safe_Release(pComponent);
+	}
+
+	m_DebugObjectList.clear();
 
 	return S_OK;
 }
@@ -141,4 +269,20 @@ CComponent * CRenderer::Clone(CGameObject * pOwner, void * pArg)
 void CRenderer::Free()
 {
 	__super::Free();
+
+	for (_uint i = 0; i < RENDERGROUP_END; ++i)
+	{
+		for (auto& pGameObject : m_RenderObjectList[i])
+			Safe_Release(pGameObject);
+		m_RenderObjectList[i].clear();
+	}
+
+	for (auto& pComponent : m_DebugObjectList)
+		Safe_Release(pComponent);
+	m_DebugObjectList.clear();
+
+	Safe_Release(m_pRenderTargetMgr);
+	Safe_Release(m_pLightMgr);
+	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pShaderCom);
 }

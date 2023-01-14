@@ -21,6 +21,9 @@ public:
 	const wstring&			Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
 	const _bool&				Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldMatrix() const { return m_pTransformCom->Get_WorldMatrix(); }
+	const STATUS&			Get_Status() const { return m_tStatus; }
+	const _bool&				Is_Attack() const { return m_bAttack; }
+	const _bool&				Is_SpecialAttack() const { return m_bSpecialAttack; }
 	void						Set_WorldMatrix(_float4x4 matWorld) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(matWorld); }
 	class CComponent*		Find_Component(const wstring& wstrComponentTag);
 
@@ -36,7 +39,7 @@ public:
 
 public:
 	void						ImGui_RenderComponentProperties();
-	virtual void				ImGui_RenderProperty() {}
+	virtual void				ImGui_RenderProperty();
 	virtual pair<_bool, _float3>		Picking_Mesh() { return pair<_bool, _float3>{false, _float3(0.f, 0.f, 0.f)}; }
 
 protected:
@@ -50,6 +53,12 @@ protected:
 	_bool						m_bIsClone = false;
 	_bool						m_bHasModel = false;
 	wstring					m_wstrPrototypeGameObjectTag = L"";
+
+	STATUS					m_tStatus;
+	_bool						m_bDead = false;
+	_bool						m_bAttack = false;
+	_bool						m_bSpecialAttack = false;
+	_bool						m_bHit = false;
 
 protected:
 	HRESULT					Add_Component(_uint iLevelIndex, const wstring& wstrPrototypeTag, const wstring& wstrComponentTag, class CComponent** ppComponentOut, CGameObject* pOwner, void* pArg = nullptr);

@@ -319,6 +319,10 @@ void CModel::ImGui_RenderAnimation()
 		ImGui::SameLine();
 		if (ImGui::Button("Reset"))
 			dTickPerSecond = 25.0;
+
+		ImGui::Text("Animation Progress");
+		_float	fProgress = m_vecAnimation[iSelectAnimation]->Get_AnimationProgress();
+		ImGui::InputFloat("Progress", &fProgress, 0.f, 0.f, "%.3f", ImGuiInputTextFlags_ReadOnly);
 	}
 
 	for (_uint i = 0; i < m_iNumAnimations; ++i)
@@ -403,7 +407,7 @@ pair<_bool, _float3> CModel::Picking(HWND & hWnd, CTransform * pTransformCom)
 	_float3	vPickingPoint = { 0.f, 0.f, 0.f };
 	_float3	vReturnPoint = { 0.f, 0.f, 0.f };
 	pair<_bool, _float>	PickInfo;
-	_float		fMinDist = 1000.f;
+	_float		fMinDist = 10000.f;
 
 	for (auto& pMesh : m_vecMesh)
 	{

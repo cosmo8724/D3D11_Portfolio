@@ -1,3 +1,11 @@
+float3x3 Kx = { -1, 0, 1,
+-2, 0, 2,
+-1, 0, 1 };
+
+float3x3 Ky = { 1, 2, 1,
+0, 0, 0,
+-1,-2,-1 };
+
 sampler	LinearSampler = sampler_state
 {
 	filter = min_mag_mip_Linear;

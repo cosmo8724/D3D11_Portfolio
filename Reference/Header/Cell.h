@@ -33,10 +33,10 @@ public:
 	_bool						Compare_Height(_fvector vTargetPos);
 	_bool						IsIn(_fvector vTargetPos, _int& iNeighborIndex, _float4& vBlockedLine, _float4& vBlockedLineNormal);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 public:
 	HRESULT					Render(class CShader* pShader);
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 private:
@@ -49,11 +49,11 @@ private:
 	_int						m_iNeighborIndex[NEIGHBOR_END] = { -1, -1, -1 };
 	STATE						m_eState = STATE_END;
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 private:
 	class CVIBuffer_Cell*	m_pVIBufferCom = nullptr;
 	class CVIBuffer_Cell_Circle*	m_pVIBufferCircleCom[POINT_END] = { nullptr, nullptr, nullptr };
-#endif // _DEBUG
+//#endif // _DEBUG
 
 
 public:

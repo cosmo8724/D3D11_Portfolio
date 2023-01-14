@@ -16,6 +16,7 @@ public:
 
 public:
 	HRESULT				Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC& LightDesc);
+	void					Render_Light(class CVIBuffer_Rect* pVIBufferCom, class CShader* pShaderCom);
 	void					Clear();
 
 private:

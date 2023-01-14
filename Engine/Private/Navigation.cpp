@@ -14,16 +14,16 @@ CNavigation::CNavigation(const CNavigation & rhs)
 	: CComponent(rhs)
 	, m_vecCell(rhs.m_vecCell)
 	, m_tNavigationDesc(rhs.m_tNavigationDesc)
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	, m_pShaderCom(rhs.m_pShaderCom)
-#endif // _DEBUG
+//#endif // _DEBUG
 {
 	for (auto& pCell : m_vecCell)
 		Safe_AddRef(pCell);
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	Safe_AddRef(m_pShaderCom);
-#endif // _DEBUG
+//#endif // _DEBUG
 
 }
 
@@ -80,10 +80,10 @@ HRESULT CNavigation::Initialize_Prototype(const wstring & wstrFilePath)
 	
 	FAILED_CHECK_RETURN(Ready_Neighbor(), E_FAIL);
 	
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Navigation.hlsl", CShader::DECLARATION_VTXPOS, VTXPOS_DECLARATION::Elements, VTXPOS_DECLARATION::iNumElements);
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
-#endif // _DEBUG
+//#endif // _DEBUG
 
 	return S_OK;
 }
@@ -266,7 +266,7 @@ _bool CNavigation::IsMoveOnNavigation(_fvector vTargetPos, _float4 & vBlockedLin
 	}
 }
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 HRESULT CNavigation::Render()
 {
 	_float		fHeight = 0.f;
@@ -344,7 +344,7 @@ void CNavigation::Change_Render_HeightColor(const _float & fHeight, const _float
 
 	m_pShaderCom->Begin(0);
 }
-#endif //_DEBUG
+//#endif //_DEBUG
 
 HRESULT CNavigation::Ready_Neighbor()
 {
@@ -403,7 +403,7 @@ void CNavigation::Free()
 		Safe_Release(pCell);
 	m_vecCell.clear();
 
-#ifdef _DEBUG
+//#ifdef _DEBUG
 	Safe_Release(m_pShaderCom);
-#endif // _DEBUG
+//#endif // _DEBUG
 }

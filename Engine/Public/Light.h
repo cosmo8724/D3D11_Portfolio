@@ -14,6 +14,7 @@ public:
 
 public:
 	HRESULT				Initialize(const LIGHTDESC& LightDesc);
+	HRESULT				Render(class CVIBuffer_Rect* pVIBufferCom, class CShader* pShaderCom);
 
 private:
 	DEVICE				m_pDevice = nullptr;

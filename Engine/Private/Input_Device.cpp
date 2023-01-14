@@ -46,6 +46,21 @@ _bool CInput_Device::Mouse_DoubleClick(MOUSEKEYSTATE MouseButton)
 	return _bool();
 }
 
+_bool CInput_Device::Mouse_Pressing(MOUSEKEYSTATE MouseButton)
+{
+	if (m_bMouseState[MouseButton] == true)
+		return true;
+
+	if (Get_DIMouseState(MouseButton) & 0x80)
+	{
+		m_bMouseState[MouseButton] = true;
+		m_bPressThisFrameMouse[MouseButton] = true;
+		return true;
+	}
+
+	return false;
+}
+
 _bool CInput_Device::Key_Pressing(_ubyte byKeyID)
 {
 	if (m_bKeyState[byKeyID] == true)

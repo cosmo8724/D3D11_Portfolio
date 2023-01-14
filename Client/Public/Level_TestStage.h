@@ -24,6 +24,7 @@ private:
 	HRESULT						Ready_Layer_Player(const wstring wstrLayerTag);
 	HRESULT						Ready_Layer_Islands(const wstring& wstrLayerTag);
 	HRESULT						Ready_Layer_Enemies(const wstring& wstrLayerTag);
+	HRESULT						Ready_Layer_Objects(const wstring& wstrLayerTag);
 
 public:
 	static CLevel_TestStage*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

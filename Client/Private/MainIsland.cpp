@@ -71,6 +71,15 @@ HRESULT CMainIsland::Render()
 
 pair<_bool, _float3> CMainIsland::Picking_Mesh()
 {
+	_vector	vCamPos = CGameInstance::GetInstance()->Get_CameraPosition();
+	_vector	vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+	vPos = XMVectorSetY(vPos, 10.f);
+
+	_float		fDist = XMVectorGetX(XMVector3Length(vPos - vCamPos));
+
+	if (fDist > 100.f)
+		return pair<_bool, _float3>(false, _float3(0.f, 0.f, 0.f));
+
 	return m_pModelCom->Picking(g_hWnd, m_pTransformCom);
 }
 

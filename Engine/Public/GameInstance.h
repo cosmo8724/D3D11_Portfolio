@@ -47,6 +47,7 @@ public:		/* For InputDevice */
 	_bool					Mouse_Down(MOUSEKEYSTATE MouseButton);
 	_bool					Mouse_Up(MOUSEKEYSTATE MouseButton);
 	_bool					Mouse_DoubleClick(MOUSEKEYSTATE MouseButton);
+	_bool					Mouse_Pressing(MOUSEKEYSTATE MouseButton);
 	_bool					Key_Pressing(_ubyte byKeyID);
 	_bool					Key_Down(_ubyte byKeyID);
 	_bool					Key_DoubleDown(_ubyte byKeyID);
@@ -70,6 +71,7 @@ public:		/* For Object Manager */
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
 	HRESULT				Clone_GameObject(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld, void* pArg = nullptr);
 	class CGameObject*		Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, void* pArg = nullptr);
+	class CGameObject*		Clone_GameObjectReturnPtr(_uint iLevelIndex, const wstring& wstrLayerTag, const wstring& wstrPrototypeTag, _float4x4 matWorld, void* pArg = nullptr);
 
 public:		/* For Component Manager */
 	map<const wstring, class CComponent*>*		Get_PrototypeComponents();
@@ -86,6 +88,7 @@ public:		/* For PipeLine */
 
 public:		/* For Timer Manager */
 	const _double			Get_TimeDelta(const wstring wstrTimerTag);
+	void					Set_TimeScale(const wstring& wstrTimerTag, _double& dTimeDelta, _double dTimeScale);
 	HRESULT				Ready_Timer(const wstring wstrTimerTag);
 	void					Update_Timer(const wstring wstrTimerTag);
 
@@ -114,6 +117,7 @@ private:
 	class CTimerMgr*			m_pTimerMgr = nullptr;
 	class CLightMgr*				m_pLightMgr = nullptr;
 	class CFrustum*				m_pFrustum = nullptr;
+	class CRenderTargetMgr*	m_pRenderTargetMgr = nullptr;
 
 public:
 	static void	Release_Engine();

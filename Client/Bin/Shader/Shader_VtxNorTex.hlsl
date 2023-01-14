@@ -1,20 +1,9 @@
 #include "Shader_Define.h"
 
 matrix			g_matWorld, g_matView, g_matProj;
-vector			g_vCamPosition;
-
-/* Light Info */
-vector			g_vLightDir;
-vector			g_vLightPos;
-float			g_fLightRange;
-vector			g_vLightDiffuse;
-vector			g_vLightAmbient;
-vector			g_vLightSpecular;
 
 /* Material Info */
 texture2D		g_DiffuseTexture[2];
-vector			g_vMaterialAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
-vector			g_vMaterialSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 /* Terrain Shading */
 texture2D		g_BrushTexture;
@@ -50,7 +39,7 @@ VS_OUT	VS_MAIN(VS_IN In)
 	Out.vTexUV = In.vTexUV;
 
 	Out.vWorldPos = mul(float4(In.vPosition, 1.f), g_matWorld);
-	Out.vNormal = mul(float4(In.vNormal, 0.f), g_matWorld);
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_matWorld));
 
 	return Out;
 }
@@ -65,7 +54,8 @@ struct PS_IN
 
 struct PS_OUT
 {
-	float4		vColor		: SV_TARGET0;
+	float4		vDiffuse		: SV_TARGET0;
+	float4		vNormal		: SV_TARGET1;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -89,7 +79,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 		vBrush = g_BrushTexture.Sample(LinearSampler, vUV);
 	}
 
-	vector		vMaterialDiffuse = vSourDiffuse * (1.f - vFilter.r) + vDestDiffuse * vFilter.r + vBrush;
+	/*vector		vMaterialDiffuse = vSourDiffuse * (1.f - vFilter.r) + vDestDiffuse * vFilter.r + vBrush;
 
 	vector		vDiffuse = g_vLightDiffuse * vMaterialDiffuse;
 
@@ -100,7 +90,11 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	float		fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
 
-	Out.vColor = vDiffuse * saturate(fShade + (g_vLightAmbient * g_vMaterialAmbient)) + fSpecular * (g_vLightSpecular * g_vMaterialSpecular);
+	Out.vColor = vDiffuse * saturate(fShade + (g_vLightAmbient * g_vMaterialAmbient)) + fSpecular * (g_vLightSpecular * g_vMaterialSpecular);*/
+
+	Out.vDiffuse = vSourDiffuse * vFilter.r + vDestDiffuse * (1.f - vFilter.r) + vBrush;
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	return Out;
 }

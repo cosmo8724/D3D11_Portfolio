@@ -2,20 +2,9 @@
 
 matrix			g_matWorld, g_matView, g_matProj;
 matrix			g_matViewInverse, g_matProjInverse;
-vector			g_vCamPosition;
-
-/* Light Info */
-vector			g_vLightDir;
-vector			g_vLightPos;
-float			g_fLightRange;
-vector			g_vLightDiffuse;
-vector			g_vLightAmbient;
-vector			g_vLightSpecular;
 
 /* Material Info */
 texture2D		g_DiffuseTexture;
-vector			g_vMaterialAmbient = vector(0.4f, 0.4f, 0.4f, 1.f);
-vector			g_vMaterialSpecular = vector(1.f, 1.f, 1.f, 1.f);
 
 /* UV Moving */
 texture2D		g_HeightTexture;
@@ -27,8 +16,6 @@ float			g_UVSpeed;
 
 /* Brush Shading */
 texture2D		g_BrushTexture;
-
-float			g_WorldHeight;
 
 struct VS_IN
 {
@@ -56,7 +43,7 @@ VS_OUT	VS_MAIN(VS_IN In)
 	matWVP = mul(matWV, g_matProj);
 
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
-	Out.vNormal = mul(float4(In.vNormal, 0.f), g_matWorld);
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_matWorld));
 	Out.vTexUV = In.vTexUV;
 	Out.vTangent = (vector)0.f;
 
@@ -79,7 +66,7 @@ VS_OUT	VS_MAIN_UVMOVE(VS_IN In)
 	matWVP = mul(matWV, g_matProj);
 
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
-	Out.vNormal = mul(float4(In.vNormal, 0.f), g_matWorld);
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_matWorld));
 	Out.vTexUV = In.vTexUV + float2(0.f, g_Time * g_UVSpeed * -1.f);
 	Out.vTangent = (vector)0.f;
 
@@ -96,16 +83,22 @@ struct PS_IN
 
 struct PS_OUT
 {
-	float4		vColor			: SV_TARGET0;
+	float4		vDiffuse		: SV_TARGET0;
+	float4		vNormal		: SV_TARGET1;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
 {
 	PS_OUT         Out = (PS_OUT)0;
 
-	Out.vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
 
-	Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+	Out.vDiffuse = vDiffuse;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+
+	//Out.vDiffuse = vector(1.f, 1.f, 1.f, 1.f);
 
 	return Out;
 
@@ -128,16 +121,8 @@ PS_OUT   PS_MAIN_UVMOVE(PS_IN In)
 {
 	PS_OUT   Out = (PS_OUT)0;
 
-	float      fShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(In.vNormal)));
-
-	vector      vReflect = reflect(normalize(g_vLightDir), normalize(In.vNormal));
-
 	vector      vPos = mul(In.vPosition, g_matProjInverse);
 	vPos = mul(vPos, g_matViewInverse);
-
-	vector      vLook = vPos - g_vCamPosition;
-
-	float      fSpecular = pow(saturate(dot(normalize(vReflect) * -1.f, normalize(vLook))), 30.f);
 
 	vector      vBrush = (vector)1.f;
 
@@ -149,15 +134,14 @@ PS_OUT   PS_MAIN_UVMOVE(PS_IN In)
 
 	vector      vMaterialDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV * 30.f) * vBrush;
 
-	vector      vDiffuse = (g_vLightDiffuse * vMaterialDiffuse);
+	Out.vDiffuse = vMaterialDiffuse;
 
-	Out.vColor = vDiffuse * saturate(fShade + (g_vLightAmbient * g_vMaterialAmbient)) + fSpecular * (g_vLightSpecular * g_vMaterialSpecular - 0.5f);
-
-	float4      vMixBlue = Out.vColor + float4(0.2f, 0.2f, 0.9f, 1.f);
+	float4      vMixBlue = Out.vDiffuse + float4(0.2f, 0.2f, 0.9f, 1.f);
 
 	//vMixBlue.a = 1.f;
 
-	Out.vColor = vMixBlue;
+	Out.vDiffuse = vMixBlue;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
 
 	return Out;
 }
@@ -165,7 +149,7 @@ technique11 DefaultTechnique
 {
 	pass Terrain
 	{
-		SetRasterizerState(RS_Wireframe);
+		SetRasterizerState(RS_Default);
 		SetDepthStencilState(DS_Default, 0);
 		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

@@ -23,6 +23,42 @@ CCollider::CCollider(const CCollider & rhs)
 #endif
 }
 
+_vector CCollider::Get_ColliderPos()
+{
+	_vector	vPos;
+
+	switch (m_eType)
+	{
+	case COLLIDER_SPHERE:
+		vPos = XMVectorSetW(XMLoadFloat3(&m_pSphere_Original->Center), 1.f);
+		break;
+
+	case COLLIDER_AABB:
+		vPos = XMVectorSetW(XMLoadFloat3(&m_pAABB_Original->Center), 1.f);
+		break;
+
+	case COLLIDER_OBB:
+		vPos = XMVectorSetW(XMLoadFloat3(&m_pOBB_Original->Center), 1.f);
+		break;
+	}
+
+	return vPos;
+}
+
+void * CCollider::Get_Collider(COLLIDERTYPE eType)
+{
+	if (eType == CCollider::COLLIDER_SPHERE && m_pSphere != nullptr)
+		return m_pSphere;
+
+	else if (eType == CCollider::COLLIDER_AABB && m_pAABB != nullptr)
+		return m_pAABB;
+
+	else if (eType == CCollider::COLLIDER_OBB && m_pOBB != nullptr)
+		return m_pOBB;
+
+	return nullptr;
+}
+
 HRESULT CCollider::Initialize_Prototype(COLLIDERTYPE eType)
 {
 	m_eType = eType;
@@ -134,6 +170,28 @@ _bool CCollider::Collision(CCollider * pTargetCollider)
 			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pAABB);
 		if (pTargetCollider->Get_ColliderType() == COLLIDER_OBB)
 			m_bIsCollide = pTargetCollider->m_bIsCollide = m_pOBB->Intersects(*pTargetCollider->m_pOBB);
+		break;
+	}
+
+	return m_bIsCollide;
+}
+
+_bool CCollider::Collision_Ray(_fvector vRayPos, _fvector vRayDir, _float & fDist)
+{
+	m_bIsCollide = false;
+
+	switch (m_eType)
+	{
+	case COLLIDER_SPHERE:
+		m_bIsCollide = m_pSphere->Intersects(vRayPos, vRayDir, fDist);
+		break;
+
+	case COLLIDER_AABB:
+		m_bIsCollide = m_pAABB->Intersects(vRayPos, vRayDir, fDist);
+		break;
+
+	case COLLIDER_OBB:
+		m_bIsCollide = m_pOBB->Intersects(vRayPos, vRayDir, fDist);
 		break;
 	}
 

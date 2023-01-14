@@ -22,6 +22,8 @@ private:
 
 public:
 	const COLLIDERTYPE&	Get_ColliderType() const { return m_eType; }
+	_vector					Get_ColliderPos();
+	void*						Get_Collider(COLLIDERTYPE eType);
 
 public:
 	virtual HRESULT			Initialize_Prototype(COLLIDERTYPE eType);
@@ -30,11 +32,12 @@ public:
 public:
 	void						Update(_fmatrix matTransform);
 	_bool						Collision(CCollider* pTargetCollider);
+	_bool						Collision_Ray(_fvector vRayPos, _fvector vRayDir, _float& fDist);
 	class CGameObject*		CollisionReturnObj(CCollider* pTargetCollider);
 
 #ifdef _DEBUG
 public:
-	HRESULT					Render();
+	virtual HRESULT			Render() override;
 #endif
 
 private:

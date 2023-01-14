@@ -391,7 +391,11 @@ HRESULT CMesh::Ready_VertexBuffer_NonAnimModel(aiMesh * pAIMesh, CModel * pModel
 			memcpy(&m_pNonAnimVertices[i].vTexUV, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));
 		else
 			m_pNonAnimVertices[i].vTexUV = _float2(0.f, 0.f);
-		memcpy(&m_pNonAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+
+		if (pAIMesh->mTangents != nullptr)
+			memcpy(&m_pNonAnimVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+		else
+			m_pNonAnimVertices[i].vTangent = _float3(0.f, 0.f, 0.f);
 	}
 
 	ZeroMemory(&m_tSubResourceData, sizeof(D3D11_SUBRESOURCE_DATA));

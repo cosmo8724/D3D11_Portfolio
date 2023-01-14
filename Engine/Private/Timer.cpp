@@ -29,7 +29,8 @@ void CTimer::Update_Timer()
 		m_OriginTime = m_CurrentTime;
 	}
 
-	m_dTimeDelta = (_double)(m_CurrentTime.QuadPart - m_OldTime.QuadPart) / (_double)(m_CpuTick.QuadPart);
+	m_dTimeDelta = (_double)(m_CurrentTime.QuadPart - m_OldTime.QuadPart) / (_double)(m_CpuTick.QuadPart) * m_dTimeScale;
+	m_OldTimeQuadpart = m_OldTime.QuadPart;
 
 	m_OldTime = m_CurrentTime;
 }

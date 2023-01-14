@@ -35,7 +35,7 @@ public:
 public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(class CGameObject* pOwner, void* pArg) override;
-	virtual void				Tick(_double dTimeDelta);
+	virtual void				Tick(_double& dTimeDelta);
 
 public:
 	template<typename T>

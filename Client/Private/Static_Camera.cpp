@@ -65,6 +65,8 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 	if (!m_bRender)
 		return;
 
+	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
+
 	if (CGameInstance::GetInstance()->Key_Down(DIK_F1))
 		m_bMouseFix = !m_bMouseFix;
 
@@ -101,6 +103,8 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 		m_pTransformCom->Orbit(vTargetPos, XMVectorSet(0.f, 0.f, 0.f, 0.f), m_fDistanceFromTarget, 0.0);
 
 	__super::Tick(dTimeDelta);
+
+	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, m_dTimeScale);
 }
 
 void CStatic_Camera::Late_Tick(_double dTimeDelta)

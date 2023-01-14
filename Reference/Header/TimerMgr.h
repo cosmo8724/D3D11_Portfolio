@@ -13,6 +13,7 @@ private:
 
 public:
 	const _double		Get_TimeDelta(const wstring wstrTimerTag);
+	void				Set_TimeScale(const wstring& wstrTimerTag, _double& dTImeDelta, _double dTimeScale);
 
 public:
 	HRESULT			Ready_Timer(const wstring wstrTimerTag);

@@ -27,6 +27,8 @@ HRESULT CLevel_TestStage::Initialize()
 
 	FAILED_CHECK_RETURN(Ready_Layer_Enemies(L"Layer_Enemies"), E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Layer_Objects(L"Layer_Objects"), E_FAIL);
+
 	return S_OK;
 }
 
@@ -126,6 +128,14 @@ HRESULT CLevel_TestStage::Ready_Layer_Islands(const wstring & wstrLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_MainIsland"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Portal_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Hellheim_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Fantasy_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Mystic_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_River_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Stylized_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Shop_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Temple_Island"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 
@@ -144,6 +154,24 @@ HRESULT CLevel_TestStage::Ready_Layer_Enemies(const wstring & wstrLayerTag)
 	pEnemy = dynamic_cast<CEnemy*>(pGameInstance->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Critter_Small"));
 	NULL_CHECK_RETURN(pEnemy, E_FAIL);
 	pEnemy->Set_Player(pPlayer);
+
+	/*pEnemy = dynamic_cast<CEnemy*>(pGameInstance->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Shinobi"));
+	NULL_CHECK_RETURN(pEnemy, E_FAIL);
+	pEnemy->Set_Player(pPlayer);*/
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Layer_Objects(const wstring & wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Grapple_Launcher"), E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Grapple_Hang"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 

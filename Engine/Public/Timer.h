@@ -11,6 +11,10 @@ private:
 
 public:
 	const _double	&	Get_TimeDelta() const { return m_dTimeDelta; }
+	void				Set_TimeScale(_double& dTimeDelta, _double dTimeScale) {
+		m_dTimeScale = dTimeScale;
+		dTimeDelta = (_double)(m_CurrentTime.QuadPart - m_OldTimeQuadpart) / (_double)(m_CpuTick.QuadPart) * m_dTimeScale;
+	}
 
 public:
 	HRESULT			Ready_Timer();
@@ -23,6 +27,8 @@ private:
 	LARGE_INTEGER		m_CpuTick;
 
 	_double				m_dTimeDelta = 0.0;
+	_double				m_dTimeScale = 1.0;
+	LONGLONG			m_OldTimeQuadpart = 0;
 
 public:
 	static CTimer*	Create();

@@ -157,6 +157,45 @@
     <Filter Include="02. GameObject\99. Parent\Enemy">
       <UniqueIdentifier>{a753a7b4-348b-46cc-917c-5f8e587a7f2f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy\01. Shinobi">
+      <UniqueIdentifier>{acc37e66-4390-4eb1-91d0-8a7144c01d50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Objects">
+      <UniqueIdentifier>{f0889a9b-f675-42f9-9744-c880ee28bed6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Objects\00. Grapple Launcher">
+      <UniqueIdentifier>{fd5af2cb-97d0-4c90-94c5-e4330832badf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Objects\01. Grapple Hang">
+      <UniqueIdentifier>{70973688-6fe2-4cd6-84a8-5235b0ac815b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Portal Island">
+      <UniqueIdentifier>{bc3430e3-64a7-405f-a122-5ff910d9225a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Main Island">
+      <UniqueIdentifier>{03fa82cd-5ec2-4b3e-a608-eace3e55f85b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Hellheim">
+      <UniqueIdentifier>{0a376df7-75f2-4a1e-84ad-29bcac7f44b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Mystic Island">
+      <UniqueIdentifier>{f8fa63fa-12ac-43fc-a65d-e69d7a28e1c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Fantasy Island">
+      <UniqueIdentifier>{bba4d07e-82fe-4181-8865-f54afb976a05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\River_Island">
+      <UniqueIdentifier>{cf2493a8-47ce-4ae3-853e-7b12537142c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Stylized Island">
+      <UniqueIdentifier>{694b1bcf-b5dc-4da8-9fbf-166173efacb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Shop Island">
+      <UniqueIdentifier>{bef987e8-0ab4-40a1-b0fd-373fbd2d34f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Islands\Temple Island">
+      <UniqueIdentifier>{e9311647-d950-45f2-924f-4d010d505f57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -270,9 +309,6 @@
     <ClInclude Include="..\Public\SkyBox.h">
       <Filter>02. GameObject\00. For_Public\SkyBox</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MainIsland.h">
-      <Filter>02. GameObject\02. For_MainStage\Islands</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Tool_Navigation.h">
       <Filter>97. Tool\07. Navigation Editor</Filter>
     </ClInclude>
@@ -284,6 +320,42 @@
     </ClInclude>
     <ClInclude Include="..\Public\Enemy.h">
       <Filter>02. GameObject\99. Parent\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shinobi.h">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Shinobi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grapple_Launcher.h">
+      <Filter>02. GameObject\02. For_MainStage\Objects\00. Grapple Launcher</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grapple_Hang.h">
+      <Filter>02. GameObject\02. For_MainStage\Objects\01. Grapple Hang</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainIsland.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Main Island</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Portal_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Portal Island</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hellheim_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Hellheim</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fantasy_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Fantasy Island</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mystic_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Mystic Island</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\River_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\River_Island</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Stylized_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Stylized Island</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Shop Island</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Temple_Island.h">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Temple Island</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -386,9 +458,6 @@
     <ClCompile Include="..\Private\SkyBox.cpp">
       <Filter>02. GameObject\00. For_Public\SkyBox</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MainIsland.cpp">
-      <Filter>02. GameObject\02. For_MainStage\Islands</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Tool_Navigation.cpp">
       <Filter>97. Tool\07. Navigation Editor</Filter>
     </ClCompile>
@@ -400,6 +469,42 @@
     </ClCompile>
     <ClCompile Include="..\Private\Enemy.cpp">
       <Filter>02. GameObject\99. Parent\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shinobi.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Shinobi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grapple_Launcher.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Objects\00. Grapple Launcher</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grapple_Hang.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Objects\01. Grapple Hang</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainIsland.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Main Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Portal_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Portal Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hellheim_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Hellheim</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Fantasy_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Fantasy Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mystic_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Mystic Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\River_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\River_Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Stylized_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Stylized Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Shop Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Temple_Island.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Islands\Temple Island</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

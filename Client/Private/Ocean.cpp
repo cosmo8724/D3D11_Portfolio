@@ -52,7 +52,7 @@ HRESULT COcean::Render()
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResource(), E_FAIL);
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(1);
 
 	m_pVIBufferCom->Render();
 
@@ -111,15 +111,6 @@ HRESULT COcean::SetUp_ShaderResource()
 	m_pTextureCom->Bind_ShaderResources(m_pShaderCom, L"g_DiffuseTexture");
 	m_pFoamTextureCom->Bind_ShaderResources(m_pShaderCom, L"g_BrushTexture");
 	m_pHeightTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_HeightTexture");
-
-	const LIGHTDESC*	pLightDesc = pGameInstance->Get_LightDesc(0);
-	NULL_CHECK_RETURN(pLightDesc, E_FAIL);
-
-	m_pShaderCom->Set_RawValue(L"g_vLightDir", &pLightDesc->vDirection, sizeof(_float4));
-	m_pShaderCom->Set_RawValue(L"g_vLightDiffuse", &pLightDesc->vDiffuse, sizeof(_float4));
-	m_pShaderCom->Set_RawValue(L"g_vLightAmbient", &pLightDesc->vAmbient, sizeof(_float4));
-	m_pShaderCom->Set_RawValue(L"g_vLightSpecular", &pLightDesc->vSpecular, sizeof(_float4));
-	m_pShaderCom->Set_RawValue(L"g_vCamPosition", &pGameInstance->Get_CameraPosition(), sizeof(_float4));
 
 	_float		fTimeDelta = (_float)m_dTimeDelta;
 	_float		fWaveHeight = 0.7f;

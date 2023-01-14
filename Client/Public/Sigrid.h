@@ -23,6 +23,30 @@ private:
 	virtual ~CSigrid() = default;
 
 public:
+	void						Set_GrappleLauncher() { m_bGrappleLauncher = true; m_bGrappleHang = false; }
+	void						Set_GrappleHang() { m_bGrappleLauncher = false; m_bGrappleHang = true; }
+	void						Set_SnapGrappleFast(_float fGrabAngle, _float fLaunchAngle, _fvector vGrapplePos, _fmatrix matWorld) {
+		m_bSnapGrappleFast = true;
+		m_bSnapGrappleSlow = false;
+		m_fSnapGrappleAngle = fGrabAngle;
+		m_fLauncherAngle = fLaunchAngle;
+		m_vSnapGrapplePos = vGrapplePos;
+		m_vSnapGrappleLook = matWorld.r[2];
+		m_vSnapGrappleRight = matWorld.r[0];
+	}
+	void						Set_SnapGrappleSlow(_float fGrabAngle, _float fLaunchAngle, _fvector vGrapplePos, _fmatrix matWorld) {
+		m_bSnapGrappleFast = false;
+		m_bSnapGrappleSlow = true;
+		m_fSnapGrappleAngle = fGrabAngle;
+		m_fLauncherAngle = fLaunchAngle;
+		m_vSnapGrapplePos = vGrapplePos;
+		m_vSnapGrappleLook = matWorld.r[2];
+		m_vSnapGrappleRight = matWorld.r[0];
+	}
+	const _bool&				Is_GrappleHang() const { return m_bGrappleHang; }
+	const _bool&				Is_GrappleLauncher() const { return m_bGrappleLauncher; }
+
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
@@ -35,11 +59,14 @@ public:
 	_bool						Collision_Net(CCollider* pTargetCollider);
 	void						Collision_Event(class CEnemy* pEnemy);
 
+public:
+	CCollider*					m_pSphereCol = nullptr;
+
 private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
-	CCollider*					m_pSphereCol = nullptr;
+	
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
 	CNavigation*				m_pNavigationCom = nullptr;
@@ -49,6 +76,7 @@ private:
 	class CStatic_Camera*	m_pCamera = nullptr;
 
 private:	/* State */
+	_double					m_dTimeScale = 1.0;
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;
 
 	_bool						m_bOnOcean = false;
@@ -69,6 +97,17 @@ private:	/* State */
 	_float						m_fFriction;
 	_float						m_fMaxDashTickCount;
 	_float						m_fCurDashTickCount;
+
+	_bool						m_bGrappleLauncher = false;
+	_bool						m_bGrappleHang = false;
+	_bool						m_bReadyLaunch = false;
+	_bool						m_bSnapGrappleFast = false;
+	_bool						m_bSnapGrappleSlow = false;
+	_float						m_fSnapGrappleAngle = 0.f;
+	_float						m_fLauncherAngle = 0.f;
+	_vector					m_vSnapGrapplePos;
+	_vector					m_vSnapGrappleLook;
+	_vector					m_vSnapGrappleRight;
 
 	_float						m_fGroundHeight = 0.f;
 
