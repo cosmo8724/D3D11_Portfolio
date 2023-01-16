@@ -50,6 +50,8 @@ void CDynamic_Camera::Tick(_double dTimeDelta)
 	if (!m_bRender)
 		return;
 
+	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
+
 	if (GetKeyState('W') & 0x8000)
 		m_pTransformCom->Go_Straight(dTimeDelta);
 	if (GetKeyState('S') & 0x8000)

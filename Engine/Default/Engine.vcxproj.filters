@@ -166,6 +166,15 @@
     <Filter Include="01. Utility\08. RenderTarget\Manager">
       <UniqueIdentifier>{8ce42d59-cff5-4af1-b443-f2b690c5b6c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00. System\00. Device\Sound">
+      <UniqueIdentifier>{9c9c73f6-d4c1-430e-a038-b98aecde5971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\00. Device\Sound\Fmod">
+      <UniqueIdentifier>{3939575e-c14c-4130-afb2-2c08d5b0d53b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00. System\00. Device\Sound\Manager">
+      <UniqueIdentifier>{fcaf17ab-ba75-42ad-8106-29d994b89bfa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -350,6 +359,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\RenderTargetMgr.cpp">
       <Filter>01. Utility\08. RenderTarget\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sound.cpp">
+      <Filter>00. System\00. Device\Sound</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoundMgr.cpp">
+      <Filter>00. System\00. Device\Sound\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -568,6 +583,36 @@
     </ClInclude>
     <ClInclude Include="..\Public\RenderTargetMgr.h">
       <Filter>01. Utility\08. RenderTarget\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod.h">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod.hpp">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod_codec.h">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod_common.h">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod_dsp.h">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod_dsp_effects.h">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod_errors.h">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Fmod\fmod_output.h">
+      <Filter>00. System\00. Device\Sound\Fmod</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sound.h">
+      <Filter>00. System\00. Device\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SoundMgr.h">
+      <Filter>00. System\00. Device\Sound\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

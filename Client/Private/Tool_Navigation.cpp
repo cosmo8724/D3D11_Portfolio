@@ -158,10 +158,18 @@ void CTool_Navigation::ImGui_RenderWindow()
 			pair<_bool, _float3>		PickInfo = pOcean->Picking_Terrain();
 
 			if (PickInfo.first == true)
-			{
-				m_vPoint[m_iCurPoint] = PickInfo.second;
-				m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
-				m_iCurPoint++;
+			{				
+				if (m_iCurPoint != (_uint)POINT_A)
+				{
+					m_pNavigationCom->Find_NearBy_Point(PickInfo.second);
+
+					if (PickInfo.second != m_vPoint[m_iCurPoint - 1])
+					{
+						m_vPoint[m_iCurPoint] = PickInfo.second;
+						//m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
+						m_iCurPoint++;
+					}					
+				}
 
 				if (m_iCurPoint == (_uint)POINT_END)
 				{
@@ -184,9 +192,21 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 				if (PickInfo.first == true)
 				{
-					m_vPoint[m_iCurPoint] = PickInfo.second;
+					if (m_iCurPoint != (_uint)POINT_A)
+					{
+						m_pNavigationCom->Find_NearBy_Point(PickInfo.second);
+
+						if (PickInfo.second != m_vPoint[m_iCurPoint - 1])
+						{
+							m_vPoint[m_iCurPoint] = PickInfo.second;
+							//m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
+							m_iCurPoint++;
+						}
+					}
+
+					/*m_vPoint[m_iCurPoint] = PickInfo.second;
 					m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
-					m_iCurPoint++;
+					m_iCurPoint++;*/
 
 					if (m_iCurPoint == (_uint)POINT_END)
 					{

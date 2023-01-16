@@ -8,6 +8,7 @@
 #include <fstream>
 #include "Enemy.h"
 #include "Sigrid.h"
+#include "NPC.h"
 
 #define	LEVEL_PUBLIC	3
 
@@ -1332,7 +1333,7 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 					wstring	wstrLayerTag = L"";
 					jLayer["Layer Tag"].get_to<string>(strLayerTag);
 
-					if (strLayerTag == "Layer_Enemies")
+					if (strLayerTag == "Layer_Enemies" || strLayerTag == "Layer_NPCs")
 						continue;
 
 					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
@@ -1364,7 +1365,7 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 					wstring	wstrLayerTag = L"";
 					jLayer["Layer Tag"].get_to<string>(strLayerTag);
 
-					if (strLayerTag != "Layer_Enemies")
+					if (strLayerTag != "Layer_Enemies" || strLayerTag != "Layer_NPCs")
 						continue;
 
 					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
@@ -1386,8 +1387,16 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 
 						CGameObject*	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(m_iCurLevel, wstrLayerTag, wstrPrototypeObjTag, matWorld);
 
-						if (CEnemy*	pEnemy = dynamic_cast<CEnemy*>(pGameObject))
-							pEnemy->Set_Player(pPlayer);
+						if (strLayerTag == "Layer_Enemies")
+						{
+							if (CEnemy*	pEnemy = dynamic_cast<CEnemy*>(pGameObject))
+								pEnemy->Set_Player(pPlayer);
+						}
+						else if (strLayerTag == "Layer_NPCs")
+						{
+							if (CNPC*		pNPC = dynamic_cast<CNPC*>(pGameObject))
+								pNPC->Set_Player(pPlayer);
+						}
 					}
 				}
 

@@ -172,6 +172,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Bin\Shader\Shader_Define.h" />
+    <ClInclude Include="..\Public\Baine.h" />
+    <ClInclude Include="..\Public\Baine_State.h" />
     <ClInclude Include="..\Public\Critter_Small.h" />
     <ClInclude Include="..\Public\Critter_Small_State.h" />
     <ClInclude Include="..\Public\Enemy.h" />
@@ -181,6 +183,7 @@
     <ClInclude Include="..\Public\Hellheim_Island.h" />
     <ClInclude Include="..\Public\MainIsland.h" />
     <ClInclude Include="..\Public\Mystic_Island.h" />
+    <ClInclude Include="..\Public\NPC.h" />
     <ClInclude Include="..\Public\Ocean.h" />
     <ClInclude Include="..\Public\Portal_Island.h" />
     <ClInclude Include="..\Public\River_Island.h" />
@@ -235,6 +238,8 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Baine.cpp" />
+    <ClCompile Include="..\Private\Baine_State.cpp" />
     <ClCompile Include="..\Private\Critter_Small.cpp" />
     <ClCompile Include="..\Private\Critter_Small_State.cpp" />
     <ClCompile Include="..\Private\Enemy.cpp" />
@@ -244,6 +249,7 @@
     <ClCompile Include="..\Private\Hellheim_Island.cpp" />
     <ClCompile Include="..\Private\MainIsland.cpp" />
     <ClCompile Include="..\Private\Mystic_Island.cpp" />
+    <ClCompile Include="..\Private\NPC.cpp" />
     <ClCompile Include="..\Private\Ocean.cpp" />
     <ClCompile Include="..\Private\Portal_Island.cpp" />
     <ClCompile Include="..\Private\River_Island.cpp" />

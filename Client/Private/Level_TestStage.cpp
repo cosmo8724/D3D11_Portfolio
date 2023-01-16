@@ -23,6 +23,8 @@ HRESULT CLevel_TestStage::Initialize()
 
 	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Layer_NPCs(L"Layer_NPCs"), E_FAIL);
+
 	FAILED_CHECK_RETURN(Ready_Layer_Islands(L"Layer_Islands"), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Enemies(L"Layer_Enemies"), E_FAIL);
@@ -73,7 +75,7 @@ HRESULT CLevel_TestStage::Ready_Light()
 	return S_OK;
 }
 
-HRESULT CLevel_TestStage::Ready_Layer_Ocean(const wstring wstrLayerTag)
+HRESULT CLevel_TestStage::Ready_Layer_Ocean(const wstring & wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -85,7 +87,7 @@ HRESULT CLevel_TestStage::Ready_Layer_Ocean(const wstring wstrLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_TestStage::Ready_Layer_Camera(const wstring wstrLayerTag)
+HRESULT CLevel_TestStage::Ready_Layer_Camera(const wstring & wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -98,7 +100,7 @@ HRESULT CLevel_TestStage::Ready_Layer_Camera(const wstring wstrLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_TestStage::Ready_Layer_SkyBox(const wstring wstrLayerTag)
+HRESULT CLevel_TestStage::Ready_Layer_SkyBox(const wstring & wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
@@ -110,12 +112,24 @@ HRESULT CLevel_TestStage::Ready_Layer_SkyBox(const wstring wstrLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_TestStage::Ready_Layer_Player(const wstring wstrLayerTag)
+HRESULT CLevel_TestStage::Ready_Layer_Player(const wstring & wstrLayerTag)
 {
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Sigrid"), E_FAIL);
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Ready_Layer_NPCs(const wstring & wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_NPC_Baine"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 

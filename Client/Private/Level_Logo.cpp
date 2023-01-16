@@ -49,6 +49,8 @@ HRESULT CLevel_Logo::Initialize()
 void CLevel_Logo::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Menu_Music.wav", 0.5f, true);
 }
 
 void CLevel_Logo::Late_Tick(_double dTimeDelta)
@@ -172,5 +174,7 @@ CLevel_Logo * CLevel_Logo::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 void CLevel_Logo::Free()
 {
+	CGameInstance::GetInstance()->Stop_All_Sound();
+
 	__super::Free();
 }

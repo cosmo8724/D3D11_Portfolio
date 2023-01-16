@@ -48,7 +48,6 @@ HRESULT CRenderer::Draw_RenderGroup()
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
-
 	if (m_pRenderTargetMgr != nullptr)
 	{
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f), E_FAIL);
