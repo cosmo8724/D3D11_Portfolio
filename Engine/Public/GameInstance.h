@@ -1,6 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Input_Device.h"
+#include "SoundMgr.h"
 #include "ComponentMgr.h"
 #include "PipeLine.h"
 #include "Tool.h"
@@ -54,6 +55,14 @@ public:		/* For InputDevice */
 	_bool					Key_Up(_ubyte byKeyID);
 	_bool					Key_Charge(_ubyte byKeyID, _double dTime);
 	void					Reset_EveryKey(_double dTimeDelta);
+
+public:		/* For Sound Manager */
+	void					Play_Sound(const wstring& pSoundKey, _float fVolume, _bool bIsBGM = false, _bool bRefresh = false, _int iManualChannelIndex = -1);
+	void					Stop_Sound(_uint iManualChannelIndex);
+	void					Stop_All_Sound();
+	void					Set_Volume(_uint iManualChannelIndex, _float fVolume);
+	void					Set_MasterVolume(_float fVolume);
+	void					Set_SoundDesc(const wstring& wstrSoundKey, CSound::SOUND_DESC& SoundDesc);
 
 public:		/* For Level Manager */
 	HRESULT				Open_Level(_uint iLevelIndelx, class CLevel* pNewLevel);
@@ -110,6 +119,7 @@ private:
 	class CGraphic_Device*		m_pGraphicDev = nullptr;
 	class CImGuiMgr*			m_pImGuiMgr = nullptr;
 	class CInput_Device*		m_pInputDev = nullptr;
+	class CSoundMgr*			m_pSoundMgr = nullptr;
 	class CLevelMgr*				m_pLevelMgr = nullptr;
 	class CObjectMgr*			m_pObjectMgr = nullptr;
 	class CComponentMgr*		m_pComponentMgr = nullptr;

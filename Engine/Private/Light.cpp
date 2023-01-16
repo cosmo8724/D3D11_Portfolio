@@ -21,6 +21,8 @@ HRESULT CLight::Initialize(const LIGHTDESC & LightDesc)
 HRESULT CLight::Render(CVIBuffer_Rect * pVIBufferCom, CShader * pShaderCom)
 {
 	FAILED_CHECK_RETURN(pShaderCom->Set_RawValue(L"g_vLightDir", &m_LightDesc.vDirection, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(pShaderCom->Set_RawValue(L"g_vLightDiffuse", &m_LightDesc.vDiffuse, sizeof(_float4)), E_FAIL);
+	FAILED_CHECK_RETURN(pShaderCom->Set_RawValue(L"g_vLightAmbient", &m_LightDesc.vAmbient, sizeof(_float4)), E_FAIL);
 
 	pShaderCom->Begin(1);
 	pVIBufferCom->Render();

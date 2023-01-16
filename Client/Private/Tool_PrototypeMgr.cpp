@@ -8,6 +8,7 @@
 #include <fstream>
 #include "Enemy.h"
 #include "Sigrid.h"
+#include "NPC.h"
 
 #define	LEVEL_PUBLIC	3
 
@@ -642,9 +643,20 @@ void CTool_PrototypeMgr::Component_Editor()
 						CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CRenderer::Create(m_pDevice, m_pContext));
 						continue;
 					}
-					else if (strComponentType == "VIBuffer")
+					else if (strComponentType == "VIBuffer_Sphere")
 					{
-						CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CVIBuffer_Rect::Create(m_pDevice, m_pContext));
+						CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CVIBuffer_Sphere::Create(m_pDevice, m_pContext));
+						continue;
+					}
+					else if (strComponentType == "VIBuffer_Terrain")
+					{
+						string		strFilePath = "";
+						wstring	wstrFilePath = L"";
+
+						Com["File Path"].get_to<string>(strFilePath);
+						wstrFilePath.assign(strFilePath.begin(), strFilePath.end());
+
+						CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, wstrFilePath));
 						continue;
 					}
 					else if (strComponentType == "Shader")
@@ -667,6 +679,8 @@ void CTool_PrototypeMgr::Component_Editor()
 							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXTEX, VTXTEX_DECLARATION::Elements, VTXTEX_DECLARATION::iNumElements));
 						else if (strDeclarationType == "Vtx_NormalTexture")
 							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXNORTEX, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));
+						else if (strDeclarationType == "Vtx_NormalTexture_Ocean")
+							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXNORTEX, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
 						else if (strDeclarationType == "Vtx_NonAnimModel")
 							CGameInstance::GetInstance()->Add_Prototype(iLevelIndex, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXMODEL, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
 						else if (strDeclarationType == "Vtx_AnimModel")
@@ -1332,7 +1346,7 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 					wstring	wstrLayerTag = L"";
 					jLayer["Layer Tag"].get_to<string>(strLayerTag);
 
-					if (strLayerTag == "Layer_Enemies")
+					if (strLayerTag == "Layer_Enemies" || strLayerTag == "Layer_NPCs")
 						continue;
 
 					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
@@ -1364,7 +1378,7 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 					wstring	wstrLayerTag = L"";
 					jLayer["Layer Tag"].get_to<string>(strLayerTag);
 
-					if (strLayerTag != "Layer_Enemies")
+					if (strLayerTag != "Layer_Enemies" || strLayerTag != "Layer_NPCs")
 						continue;
 
 					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
@@ -1386,8 +1400,16 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 
 						CGameObject*	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(m_iCurLevel, wstrLayerTag, wstrPrototypeObjTag, matWorld);
 
-						if (CEnemy*	pEnemy = dynamic_cast<CEnemy*>(pGameObject))
-							pEnemy->Set_Player(pPlayer);
+						if (strLayerTag == "Layer_Enemies")
+						{
+							if (CEnemy*	pEnemy = dynamic_cast<CEnemy*>(pGameObject))
+								pEnemy->Set_Player(pPlayer);
+						}
+						else if (strLayerTag == "Layer_NPCs")
+						{
+							if (CNPC*		pNPC = dynamic_cast<CNPC*>(pGameObject))
+								pNPC->Set_Player(pPlayer);
+						}
 					}
 				}
 

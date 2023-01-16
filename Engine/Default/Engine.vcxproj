@@ -118,7 +118,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib;assimp-vc140-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11d.lib;DirectXTKd.lib;assimp-vc140-mtd.lib;fmod_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibrary/</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -165,7 +165,7 @@ call Copy.bat</Command>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <LargeAddressAware>true</LargeAddressAware>
-      <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11.lib;DirectXTK.lib;assimp-vc140-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>Shlwapi.lib;d3d11.lib;dinput8.lib;dxguid.lib;Effects11.lib;DirectXTK.lib;assimp-vc140-mt.lib;fmodL_vc.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>../ThirdPartyLibrary/</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
@@ -214,6 +214,14 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\Engine_Macro.h" />
     <ClInclude Include="..\Public\Engine_Struct.h" />
     <ClInclude Include="..\Public\Engine_Typedef.h" />
+    <ClInclude Include="..\Public\Fmod\fmod.h" />
+    <ClInclude Include="..\Public\Fmod\fmod.hpp" />
+    <ClInclude Include="..\Public\Fmod\fmod_codec.h" />
+    <ClInclude Include="..\Public\Fmod\fmod_common.h" />
+    <ClInclude Include="..\Public\Fmod\fmod_dsp.h" />
+    <ClInclude Include="..\Public\Fmod\fmod_dsp_effects.h" />
+    <ClInclude Include="..\Public\Fmod\fmod_errors.h" />
+    <ClInclude Include="..\Public\Fmod\fmod_output.h" />
     <ClInclude Include="..\Public\Frustum.h" />
     <ClInclude Include="..\Public\GameInstance.h" />
     <ClInclude Include="..\Public\GameObject.h" />
@@ -238,6 +246,8 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\RenderTarget.h" />
     <ClInclude Include="..\Public\RenderTargetMgr.h" />
     <ClInclude Include="..\Public\Shader.h" />
+    <ClInclude Include="..\Public\Sound.h" />
+    <ClInclude Include="..\Public\SoundMgr.h" />
     <ClInclude Include="..\Public\StateMachine.h" />
     <ClInclude Include="..\Public\Texture.h" />
     <ClInclude Include="..\Public\Timer.h" />
@@ -342,6 +352,8 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\RenderTarget.cpp" />
     <ClCompile Include="..\Private\RenderTargetMgr.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
+    <ClCompile Include="..\Private\Sound.cpp" />
+    <ClCompile Include="..\Private\SoundMgr.cpp" />
     <ClCompile Include="..\Private\StateMachine.cpp" />
     <ClCompile Include="..\Private\Texture.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />

@@ -18,6 +18,7 @@ CGameInstance::CGameInstance()
 	: m_pGraphicDev(CGraphic_Device::GetInstance())
 	, m_pImGuiMgr(CImGuiMgr::GetInstance())
 	, m_pInputDev(CInput_Device::GetInstance())
+	, m_pSoundMgr(CSoundMgr::GetInstance())
 	, m_pLevelMgr(CLevelMgr::GetInstance())
 	, m_pObjectMgr(CObjectMgr::GetInstance())
 	, m_pComponentMgr(CComponentMgr::GetInstance())
@@ -30,6 +31,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
 	Safe_AddRef(m_pInputDev);
+	Safe_AddRef(m_pSoundMgr);
 	Safe_AddRef(m_pLevelMgr);
 	Safe_AddRef(m_pObjectMgr);
 	Safe_AddRef(m_pComponentMgr);
@@ -45,6 +47,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 	NULL_CHECK_RETURN(m_pGraphicDev, E_FAIL);
 	NULL_CHECK_RETURN(m_pImGuiMgr, E_FAIL);
 	NULL_CHECK_RETURN(m_pInputDev, E_FAIL);
+	NULL_CHECK_RETURN(m_pSoundMgr, E_FAIL);
 	NULL_CHECK_RETURN(m_pObjectMgr, E_FAIL);
 	NULL_CHECK_RETURN(m_pComponentMgr, E_FAIL);
 
@@ -65,11 +68,16 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 
 	FAILED_CHECK_RETURN(m_pComponentMgr->Reserve_Manager(iNumLevels + 1), E_FAIL);
 
+	/* Initialize FMOD */
+	FAILED_CHECK_RETURN(m_pSoundMgr->Reserve_Manager("../Bin/Resource/Sound/"), E_FAIL);
+
 	/* Create Prototype Transform Component */
 	FAILED_CHECK_RETURN(m_pComponentMgr->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);
 
+	/* Initialize Frustum */
 	FAILED_CHECK_RETURN(m_pFrustum->Initialize(), E_FAIL);
 
+	/* Initialize RenderTarget */
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Initialize(*ppDeviceOut, *ppContextOut), E_FAIL);
 	
 	return S_OK;
@@ -265,6 +273,48 @@ void CGameInstance::Reset_EveryKey(_double dTimeDelta)
 	NULL_CHECK_RETURN(m_pInputDev, );
 
 	m_pInputDev->Reset_EveryKey(dTimeDelta);
+}
+
+void CGameInstance::Play_Sound(const wstring & pSoundKey, _float fVolume, _bool bIsBGM, _bool bRefresh, _int iManualChannelIndex)
+{
+	NULL_CHECK_RETURN(m_pSoundMgr, );
+
+	m_pSoundMgr->Play_Sound(pSoundKey, fVolume, bIsBGM, bRefresh, iManualChannelIndex);
+}
+
+void CGameInstance::Stop_Sound(_uint iManualChannelIndex)
+{
+	NULL_CHECK_RETURN(m_pSoundMgr, );
+
+	m_pSoundMgr->Stop_Sound(iManualChannelIndex);
+}
+
+void CGameInstance::Stop_All_Sound()
+{
+	NULL_CHECK_RETURN(m_pSoundMgr, );
+
+	m_pSoundMgr->Stop_All();
+}
+
+void CGameInstance::Set_Volume(_uint iManualChannelIndex, _float fVolume)
+{
+	NULL_CHECK_RETURN(m_pSoundMgr, );
+
+	m_pSoundMgr->Set_Volume(iManualChannelIndex, fVolume);
+}
+
+void CGameInstance::Set_MasterVolume(_float fVolume)
+{
+	NULL_CHECK_RETURN(m_pSoundMgr, );
+
+	m_pSoundMgr->Set_MasterVolume(fVolume);
+}
+
+void CGameInstance::Set_SoundDesc(const wstring & wstrSoundKey, CSound::SOUND_DESC & SoundDesc)
+{
+	NULL_CHECK_RETURN(m_pSoundMgr, );
+
+	m_pSoundMgr->Set_SoundDesc(wstrSoundKey, SoundDesc);
 }
 
 HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel * pNewLevel)
@@ -494,6 +544,7 @@ void CGameInstance::Release_Engine()
 	CPipeLine::GetInstance()->DestroyInstance();
 	CComponentMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
+	CSoundMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLightMgr::GetInstance()->DestroyInstance();
 	CRenderTargetMgr::GetInstance()->DestroyInstance();
@@ -502,7 +553,6 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
-	Safe_Release(m_pRenderTargetMgr);
 	Safe_Release(m_pTimerMgr);
 	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pObjectMgr);
@@ -510,7 +560,9 @@ void CGameInstance::Free()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);
+	Safe_Release(m_pSoundMgr);
 	Safe_Release(m_pInputDev);
+	Safe_Release(m_pRenderTargetMgr);
 	Safe_Release(m_pLightMgr);
 	Safe_Release(m_pGraphicDev);
 }

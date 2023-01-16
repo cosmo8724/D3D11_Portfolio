@@ -18,10 +18,11 @@ public:
 
 private:
 	HRESULT						Ready_Light();
-	HRESULT						Ready_Layer_Ocean(const wstring wstrLayerTag);
-	HRESULT						Ready_Layer_Camera(const wstring wstrLayerTag);
-	HRESULT						Ready_Layer_SkyBox(const wstring wstrLayerTag);
-	HRESULT						Ready_Layer_Player(const wstring wstrLayerTag);
+	HRESULT						Ready_Layer_Ocean(const wstring& wstrLayerTag);
+	HRESULT						Ready_Layer_Camera(const wstring& wstrLayerTag);
+	HRESULT						Ready_Layer_SkyBox(const wstring &wstrLayerTag);
+	HRESULT						Ready_Layer_Player(const wstring& wstrLayerTag);
+	HRESULT						Ready_Layer_NPCs(const wstring& wstrLayerTag);
 	HRESULT						Ready_Layer_Islands(const wstring& wstrLayerTag);
 	HRESULT						Ready_Layer_Enemies(const wstring& wstrLayerTag);
 	HRESULT						Ready_Layer_Objects(const wstring& wstrLayerTag);

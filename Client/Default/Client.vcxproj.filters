@@ -196,6 +196,24 @@
     <Filter Include="02. GameObject\02. For_MainStage\Islands\Temple Island">
       <UniqueIdentifier>{e9311647-d950-45f2-924f-4d010d505f57}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs">
+      <UniqueIdentifier>{55d65a1d-0f42-4efd-bffc-2b5a319e7ff6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Baine">
+      <UniqueIdentifier>{a5756318-8d2a-4aac-ad9c-7b9d92bf3bf5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\NPC">
+      <UniqueIdentifier>{e3f87b10-a3e4-4414-b28c-d917d4546964}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Baine\Baine State">
+      <UniqueIdentifier>{d8016866-177f-441c-bd49-512a4fe43f7c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. For_Logo\01. Sigrid">
+      <UniqueIdentifier>{ea7cabf2-b379-4d3f-ac59-42fdd7523dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State">
+      <UniqueIdentifier>{476fadc2-8f73-4224-92a9-066198aeb63c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -357,6 +375,21 @@
     <ClInclude Include="..\Public\Temple_Island.h">
       <Filter>02. GameObject\02. For_MainStage\Islands\Temple Island</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NPC.h">
+      <Filter>02. GameObject\99. Parent\NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Baine_State.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Baine\Baine State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Baine.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Baine</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sigrid_CutScn.h">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SigridCutScn_State.h">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -505,6 +538,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Temple_Island.cpp">
       <Filter>02. GameObject\02. For_MainStage\Islands\Temple Island</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC.cpp">
+      <Filter>02. GameObject\99. Parent\NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Baine_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Baine\Baine State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Baine.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Baine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sigrid_CutScn.cpp">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SigridCutScn_State.cpp">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

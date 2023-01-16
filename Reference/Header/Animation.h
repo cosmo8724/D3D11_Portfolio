@@ -23,8 +23,8 @@ public:
 
 public:
 	HRESULT						Initialize(aiAnimation* pAIAnimation, class CModel* pModel);
-	void							Update_Bones(_double dTimeDelta);
-	void							Update_Lerp(_double dTimeDelta, _float fRatio);
+	void							Update_Bones(_double dTimeDelta, const wstring& wstrRootBoneName);
+	void							Update_Lerp(_double dTimeDelta, _float fRatio, const wstring& wstrRootBoneName);
 
 private:
 	class CModel*					m_pModel = nullptr;
