@@ -16,8 +16,8 @@ public:
 
 public:
 	HRESULT				Initialize(aiNodeAnim* pAIChannel, class CModel* pModel);
-	void					Update_matTransform(_double dPlayTime);
-	void					Update_Lerp(_double dPlayTime, _float fRatio);
+	void					Update_matTransform(_double dPlayTime, const wstring& wstrRootBoneName);
+	void					Update_Lerp(_double dPlayTime, _float fRatio, const wstring& wstrRootBoneName);
 	void					Reset_KeyFrameIndex() { m_iCurKeyFrameIndex = 0; }
 
 private:

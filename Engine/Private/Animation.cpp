@@ -112,7 +112,7 @@ HRESULT CAnimation::Initialize(aiAnimation * pAIAnimation, CModel * pModel)
 }
 
 
-void CAnimation::Update_Bones(_double dTimeDelta)
+void CAnimation::Update_Bones(_double dTimeDelta, const wstring & wstrRootBoneName)
 {
 	if (m_bIsFinish)
 	{
@@ -136,14 +136,14 @@ void CAnimation::Update_Bones(_double dTimeDelta)
 		if (m_bIsFinish == true)
 			m_vecChannel[i]->Reset_KeyFrameIndex();
 
-		m_vecChannel[i]->Update_matTransform(m_dPlayTime);
+		m_vecChannel[i]->Update_matTransform(m_dPlayTime, wstrRootBoneName);
 	}
 
 	if (m_bIsFinish && m_bIsLoop)
 		m_dPlayTime = 0.0;
 }
 
-void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
+void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio, const wstring & wstrRootBoneName)
 {
 	if (m_bIsFinish)
 	{
@@ -168,7 +168,7 @@ void CAnimation::Update_Lerp(_double dTimeDelta, _float fRatio)
 		if (m_bIsFinish == true)
 			m_vecChannel[i]->Reset_KeyFrameIndex();
 
-		m_vecChannel[i]->Update_Lerp(m_dPlayTime, fRatio);
+		m_vecChannel[i]->Update_Lerp(m_dPlayTime, fRatio, wstrRootBoneName);
 	}
 }
 

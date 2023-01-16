@@ -114,7 +114,7 @@ HRESULT CChannel::Initialize(aiNodeAnim * pAIChannel, CModel * pModel)
 	return S_OK;
 }
 
-void CChannel::Update_matTransform(_double dPlayTime)
+void CChannel::Update_matTransform(_double dPlayTime, const wstring & wstrRootBoneName)
 {
 	_vector	vScale;
 	_vector	vRotation;
@@ -140,22 +140,26 @@ void CChannel::Update_matTransform(_double dPlayTime)
 		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_vecKeyFrame[m_iCurKeyFrameIndex].vRotation), XMLoadFloat4(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vRotation), fRatio);
 		vPosition = XMVectorLerp(XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex].vPosition), XMLoadFloat3(&m_vecKeyFrame[m_iCurKeyFrameIndex + 1].vPosition), fRatio);
 		vPosition = XMVectorSetW(vPosition, 1.f);
+
+		if (wstrRootBoneName != L"")
+		{
+			string	strRootBoneName = "";
+			strRootBoneName.assign(wstrRootBoneName.begin(), wstrRootBoneName.end());
+
+			if (m_pBone->Get_Name() == strRootBoneName)
+			{
+				vPosition = XMVectorSet(0.f, XMVectorGetY(vPosition), 0.f, 1.f);
+				//vRotation = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+			}
+		}
 	}
 
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 
-	/*if (m_strName == "head")
-	{
-		matTransform = XMMatrixRotationQuaternion(XMVectorSetW(vRotation, XMVectorGetW(vRotation) * -1.f))
-			* XMMatrixRotationX(XMConvertToRadians(40.f))
-			* XMMatrixRotationY(XMConvertToRadians(240.f))
-			* XMMatrixRotationZ(XMConvertToRadians(60.f)) * matTransform;
-	}*/
-
 	m_pBone->Set_matTransform(matTransform);
 }
 
-void CChannel::Update_Lerp(_double dPlayTime, _float fRatio)
+void CChannel::Update_Lerp(_double dPlayTime, _float fRatio, const wstring & wstrRootBoneName)
 {
 	_vector	vBaseScale, vBaseRotation, vBasePosition;
 	_vector	vScale, vRotation, vPosition;
@@ -188,6 +192,18 @@ void CChannel::Update_Lerp(_double dPlayTime, _float fRatio)
 	vRotation = XMQuaternionSlerp(vBaseRotation, vRotation, fRatio);
 	vPosition = XMVectorLerp(vBasePosition, vPosition, fRatio);
 	vPosition = XMVectorSetW(vPosition, 1.f);
+
+	if (wstrRootBoneName != L"")
+	{
+		string	strRootBoneName = "";
+		strRootBoneName.assign(wstrRootBoneName.begin(), wstrRootBoneName.end());
+
+		if (m_pBone->Get_Name() == strRootBoneName)
+		{
+			vPosition = XMVectorSet(0.f, XMVectorGetY(vPosition), 0.f, 1.f);
+			//vRotation = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+		}
+	}
 
 	matTransform = XMMatrixAffineTransformation(vScale, XMVectorSet(0.f, 0.f, 0.f, 1.f), vRotation, vPosition);
 

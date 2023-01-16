@@ -8,6 +8,7 @@
 
 /* Player */
 #include "Sigrid.h"
+#include "Sigrid_CutScn.h"
 
 /* NPCs */
 #include "Baine.h"
@@ -91,14 +92,24 @@ HRESULT CLoader::Loading_ForLogo()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Terrain", CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Scene_Public/Caustics/HeightMap2.bmp")), E_FAIL);
 
 	m_wstrLoadingText = L"Loading Models...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Model_Sigrid_CutScene", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/Sigrid_CutScn/Sigrid_CutScene.model", XMMatrixIdentity())), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Model_Portal_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Portal Island/Portal_Island.model", XMMatrixIdentity())), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Model_Mystic_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Mystic Stones Of The Sky/Mystic_Stones_Of_The_Sky.model", XMMatrixIdentity())), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Model_River_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/River Island/River_Island.model", XMMatrixIdentity())), E_FAIL);
 
 	m_wstrLoadingText = L"Loading Shader...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_NonAnim", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_VtxNonAnim.hlsl", CShader::DECLARATION_VTXMODEL, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_Anim", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_VtxAnimModel.hlsl", CShader::DECLARATION_VTXANIMMODEL, VTXANIMMODEL_DECLARATION::Elements, VTXANIMMODEL_DECLARATION::iNumElements)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_Terrain", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_VtxNorTex.hlsl", CShader::DECLARATION_VTXNORTEX, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_Ocean", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_VtxNorTex_Ocean.hlsl", CShader::DECLARATION_VTXNORTEX, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements)), E_FAIL);
 
 	m_wstrLoadingText = L"Create Prototype Objects...";
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sigrid_CutScene", CSigrid_CutScn::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Logo", CLogo::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_SkyBox", CSkyBox::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Portal_Island", CPortal_Island::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Mystic_Island", CMystic_Island::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_River_Island", CRiver_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	m_wstrLoadingText = L"Complete Loading!";
 
@@ -122,11 +133,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Sigrid", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/Sigrid/Sigrid.model", XMMatrixIdentity())), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_NPC_Baine", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/NPCs/Baine/Baine.model", XMMatrixIdentity())), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_MainIsland", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Main Island/MainIsland.model", XMMatrixIdentity())), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Portal_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Portal Island/Portal_Island.model", XMMatrixIdentity())), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hellheim_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Hellheim/Hellheim.model", XMMatrixIdentity())), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Fantasy_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Fantasy Islands/Fantasy_Island.model", XMMatrixIdentity())), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Mystic_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Mystic Stones Of The Sky/Mystic_Stones_Of_The_Sky.model", XMMatrixIdentity())), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_River_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/River Island/River_Island.model", XMMatrixIdentity())), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Stylized_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Stylized Island/Stylized_Island.model", XMMatrixIdentity())), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Shop_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Destiny Island/Destiny_Island.model", XMMatrixIdentity())), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Temple_Island", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Islands/Temple Island/Temple_Island.model", XMMatrixIdentity())), E_FAIL);
@@ -151,11 +159,8 @@ HRESULT CLoader::Loading_ForGamePlay()
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sigrid", CSigrid::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NPC_Baine", CBaine::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MainIsland", CMainIsland::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Portal_Island", CPortal_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hellheim_Island", CHellheim_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Fantasy_Island", CFantasy_Island::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Mystic_Island", CMystic_Island::Create(m_pDevice, m_pContext)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_River_Island", CRiver_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Stylized_Island", CStylized_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Shop_Island", CShop_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Temple_Island", CTemple_Island::Create(m_pDevice, m_pContext)), E_FAIL);

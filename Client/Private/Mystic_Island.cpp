@@ -45,7 +45,7 @@ void CMystic_Island::Late_Tick(_double dTimeDelta)
 	vPos.y = 0.f;
 
 	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 200.f))
+		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 220.f))
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
@@ -89,9 +89,9 @@ HRESULT CMystic_Island::SetUp_Component()
 {
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Renderer", L"Com_Renderer", (CComponent**)&m_pRendererCom, this), E_FAIL);
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Shader_NonAnim", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_LOGO, L"Prototype_Component_Shader_NonAnim", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Mystic_Island", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_LOGO, L"Prototype_Component_Model_Mystic_Island", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
 
 	return S_OK;
 }

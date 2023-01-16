@@ -24,14 +24,14 @@ HRESULT CLogo::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	m_fSizeX = 1039.f;
 	m_fSizeY = 307.f;
 	m_fX = m_fSizeX * 0.5f;
-	m_fY = m_fSizeY * 0.5f;
+	m_fY = m_fSizeY * 0.5f;  
 
 	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, pArg), E_FAIL);
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
 	m_pTransformCom->Set_Scale(_float3(m_fX, m_fY, 1.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - m_fSizeX * 0.5f, -m_fY + m_fSizeY * 0.5f, 0.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - m_fSizeX * 0.5f + (_float)g_iWinSizeX * 0.25f, -m_fY + m_fSizeY * 0.5f + (_float)g_iWinSizeY * 0.3f, 0.f, 1.f));
 
 	return S_OK;
 }

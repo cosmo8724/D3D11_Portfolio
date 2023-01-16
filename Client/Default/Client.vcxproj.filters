@@ -208,6 +208,12 @@
     <Filter Include="02. GameObject\02. For_MainStage\NPCs\Baine\Baine State">
       <UniqueIdentifier>{d8016866-177f-441c-bd49-512a4fe43f7c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\01. For_Logo\01. Sigrid">
+      <UniqueIdentifier>{ea7cabf2-b379-4d3f-ac59-42fdd7523dc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State">
+      <UniqueIdentifier>{476fadc2-8f73-4224-92a9-066198aeb63c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -378,6 +384,12 @@
     <ClInclude Include="..\Public\Baine.h">
       <Filter>02. GameObject\02. For_MainStage\NPCs\Baine</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sigrid_CutScn.h">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SigridCutScn_State.h">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -535,6 +547,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Baine.cpp">
       <Filter>02. GameObject\02. For_MainStage\NPCs\Baine</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sigrid_CutScn.cpp">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SigridCutScn_State.cpp">
+      <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

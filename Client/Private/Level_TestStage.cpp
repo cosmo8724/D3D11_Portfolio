@@ -13,7 +13,7 @@ HRESULT CLevel_TestStage::Initialize()
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
 	
-	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
+	//FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
 
@@ -65,7 +65,7 @@ HRESULT CLevel_TestStage::Ready_Light()
 	LightDesc.bIsLightOn = true;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);

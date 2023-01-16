@@ -52,7 +52,7 @@ HRESULT COcean::Render()
 
 	FAILED_CHECK_RETURN(SetUp_ShaderResource(), E_FAIL);
 
-	m_pShaderCom->Begin(0);
+	m_pShaderCom->Begin(1);
 
 	m_pVIBufferCom->Render();
 

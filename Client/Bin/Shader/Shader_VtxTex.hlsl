@@ -47,6 +47,9 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
+	if (Out.vColor.a == 0.f)
+		discard;
+
 	//Out.vColor = (vector)0;
 
 	return Out;

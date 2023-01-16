@@ -553,7 +553,6 @@ void CGameInstance::Release_Engine()
 
 void CGameInstance::Free()
 {
-	Safe_Release(m_pRenderTargetMgr);
 	Safe_Release(m_pTimerMgr);
 	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pObjectMgr);
@@ -563,6 +562,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevelMgr);
 	Safe_Release(m_pSoundMgr);
 	Safe_Release(m_pInputDev);
+	Safe_Release(m_pRenderTargetMgr);
 	Safe_Release(m_pLightMgr);
 	Safe_Release(m_pGraphicDev);
 }

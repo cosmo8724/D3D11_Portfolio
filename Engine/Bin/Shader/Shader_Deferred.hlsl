@@ -1,7 +1,19 @@
 matrix			g_matWorld, g_matView, g_matProj;
+matrix			g_matViewInv, g_matProjInv;
+
 vector			g_vLightDir;
+vector			g_vLightDiffuse;
+vector			g_vLightAmbient;
+vector			g_vLightSpecular;
+
+vector			g_vCamPosition;
+
+vector			g_vMaterialAmbient = (vector)1.f;
+vector			g_vMaterialSpecular = (vector)1.f;
+
 texture2D		g_Texture;
 texture2D		g_NormalTexture;
+texture2D		g_DepthTexture;
 texture2D		g_DiffuseTexture;
 texture2D		g_ShadeTexture;
 
@@ -104,7 +116,7 @@ PS_OUT_LIGHT	PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector		vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
-	Out.vShade = saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)));
+	Out.vShade = g_vLightDiffuse * saturate(saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal))) + (g_vLightAmbient * g_vMaterialAmbient));
 	Out.vShade.a = 1.f;
 
 	return Out;

@@ -50,7 +50,7 @@ void CLevel_Logo::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	CGameInstance::GetInstance()->Play_Sound(L"SFX_Menu_Music.wav", 0.5f, true);
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Menu_Music.wav", 1.f, true);
 }
 
 void CLevel_Logo::Late_Tick(_double dTimeDelta)
@@ -87,7 +87,7 @@ HRESULT CLevel_Logo::Ready_Light()
 	LightDesc.bIsLightOn = true;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
@@ -151,11 +151,27 @@ HRESULT CLevel_Logo::Ready_Layer_Ocean(const wstring & wstrLayerTag)
 
 HRESULT CLevel_Logo::Ready_Layer_Player(const wstring & wstrLayerTag)
 {
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_Sigrid_CutScene"), E_FAIL);
+
+	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 
 HRESULT CLevel_Logo::Ready_Layer_Islands(const wstring & wstrLayerTag)
 {
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_Portal_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_Mystic_Island"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_River_Island"), E_FAIL);
+
+	Safe_Release(pGameInstance);
+
 	return S_OK;
 }
 

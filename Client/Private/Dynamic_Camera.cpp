@@ -47,10 +47,23 @@ HRESULT CDynamic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pAr
 
 void CDynamic_Camera::Tick(_double dTimeDelta)
 {
-	if (!m_bRender)
-		return;
-
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
+
+	if (CGameInstance::GetInstance()->Get_CurLevelIndex() == LEVEL_LOGO)
+	{
+		m_bRender = true;
+
+		//m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(9.532f));
+		//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-2.858f));
+		//m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(655.f, 278.431f, 219.429f, 1.f));
+
+		__super::Tick(dTimeDelta);
+
+		return;
+	}
+
+	if (!m_bRender)
+		return;	
 
 	if (GetKeyState('W') & 0x8000)
 		m_pTransformCom->Go_Straight(dTimeDelta);

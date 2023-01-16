@@ -1,0 +1,195 @@
+{
+    "Components": [
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Mesh/Islands/Mystic Stones Of The Sky/Mystic_Stones_Of_The_Sky.model",
+            "Model Type": "NonAnim",
+            "Tag": "Prototype_Component_Model_Mystic_Island",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Mesh/Islands/Portal Island/Portal_Island.model",
+            "Model Type": "NonAnim",
+            "Tag": "Prototype_Component_Model_Portal_Island",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Mesh/Islands/River Island/River_Island.model",
+            "Model Type": "NonAnim",
+            "Tag": "Prototype_Component_Model_River_Island",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Mesh/Sigrid_CutScn/Sigrid_CutScene.model",
+            "Model Type": "Anim",
+            "Tag": "Prototype_Component_Model_Sigrid_CutScene",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "..\\Bin\\Resource\\Mesh\\Stones\\Big_1.model",
+            "Model Type": "NonAnim",
+            "Tag": "Prototype_Component_Model_Stone_Big_1",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "..\\Bin\\Resource\\Mesh\\Stones\\Big_2.model",
+            "Model Type": "NonAnim",
+            "Tag": "Prototype_Component_Model_Stone_Big_2",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "..\\Bin\\Resource\\Mesh\\Stones\\Big_3.model",
+            "Model Type": "NonAnim",
+            "Tag": "Prototype_Component_Model_Stone_Big_3",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "..\\Bin\\Resource\\Mesh\\Stones\\Big_5.model",
+            "Model Type": "NonAnim",
+            "Tag": "Prototype_Component_Model_Stone_Big_5",
+            "Texture Count": 0,
+            "Type": "Model",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Shader/Shader_VtxAnimModel.hlsl",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Shader_Anim",
+            "Texture Count": 0,
+            "Type": "Shader",
+            "Vertex Declaration": "Vtx_AnimModel",
+            "Vertex Elements Count": 6
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Shader/Shader_VtxNonAnim.hlsl",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Shader_NonAnim",
+            "Texture Count": 0,
+            "Type": "Shader",
+            "Vertex Declaration": "Vtx_NonAnimModel",
+            "Vertex Elements Count": 4
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Shader/Shader_VtxNorTex_Ocean.hlsl",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Shader_Ocean",
+            "Texture Count": 0,
+            "Type": "Shader",
+            "Vertex Declaration": "Vtx_NormalTexture_Ocean",
+            "Vertex Elements Count": 3
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Shader/Shader_VtxNorTex.hlsl",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Shader_Terrain",
+            "Texture Count": 0,
+            "Type": "Shader",
+            "Vertex Declaration": "Vtx_NormalTexture",
+            "Vertex Elements Count": 3
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Texture/Scene_Logo/Logo/MainMenu_Logo.png",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Texture_Logo",
+            "Texture Count": 1,
+            "Type": "Texture",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Texture/Scene_Public/Caustics/Caustics_tex_color.png",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Texture_Ocean",
+            "Texture Count": 1,
+            "Type": "Texture",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Texture/Scene_Public/Caustics/Foam_Red.png",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Texture_Ocean_Foam",
+            "Texture Count": 1,
+            "Type": "Texture",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Texture/Scene_Public/Caustics/HeightMap2.bmp",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Texture_Ocean_Height",
+            "Texture Count": 1,
+            "Type": "Texture",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Texture/Scene_Public/SkyBox/Skybox_01.png",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_Texture_SkyBox",
+            "Texture Count": 1,
+            "Type": "Texture",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_VIBuffer_Sphere",
+            "Texture Count": 0,
+            "Type": "VIBuffer_Sphere",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        },
+        {
+            "Collider Type": "None",
+            "File Path": "../Bin/Resource/Texture/Scene_Public/Caustics/HeightMap2.bmp",
+            "Model Type": "None",
+            "Tag": "Prototype_Component_VIBuffer_Terrain",
+            "Texture Count": 0,
+            "Type": "VIBuffer_Terrain",
+            "Vertex Declaration": "None",
+            "Vertex Elements Count": 0
+        }
+    ],
+    "Level": "Logo"
+}

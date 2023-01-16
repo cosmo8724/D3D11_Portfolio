@@ -192,6 +192,8 @@
     <ClInclude Include="..\Public\Sigrid.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Logo.h" />
+    <ClInclude Include="..\Public\SigridCutScn_State.h" />
+    <ClInclude Include="..\Public\Sigrid_CutScn.h" />
     <ClInclude Include="..\Public\Sigrid_State.h" />
     <ClInclude Include="..\Public\SkyBox.h" />
     <ClInclude Include="..\Public\Stylized_Island.h" />
@@ -258,6 +260,8 @@
     <ClCompile Include="..\Private\Sigrid.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />
+    <ClCompile Include="..\Private\SigridCutScn_State.cpp" />
+    <ClCompile Include="..\Private\Sigrid_CutScn.cpp" />
     <ClCompile Include="..\Private\Sigrid_State.cpp" />
     <ClCompile Include="..\Private\SkyBox.cpp" />
     <ClCompile Include="..\Private\Stylized_Island.cpp" />
