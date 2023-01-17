@@ -537,6 +537,7 @@ _bool CGameInstance::IsInFrustum_Local(_fvector vLocalPos, _float fRange)
 void CGameInstance::Release_Engine()
 {
 	CTimerMgr::GetInstance()->DestroyInstance();
+	CRenderTargetMgr::GetInstance()->DestroyInstance();
 	CGameInstance::GetInstance()->DestroyInstance();
 	CImGuiMgr::GetInstance()->DestroyInstance();
 	CObjectMgr::GetInstance()->DestroyInstance();
@@ -547,7 +548,6 @@ void CGameInstance::Release_Engine()
 	CSoundMgr::GetInstance()->DestroyInstance();
 	CInput_Device::GetInstance()->DestroyInstance();
 	CLightMgr::GetInstance()->DestroyInstance();
-	CRenderTargetMgr::GetInstance()->DestroyInstance();
 	CGraphic_Device::GetInstance()->DestroyInstance();
 }
 

@@ -108,6 +108,10 @@ HRESULT CLevel_Logo::Ready_Layer_Camera(const wstring & wstrLayerTag)
 	CameraDesc.vEye = _float4(30.f, 10.f, 0.f, 1.f);
 	CameraDesc.vAt = _float4(50.f, 0.f, 30.f, 1.f);
 	CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
+	CameraDesc.fFov = XMConvertToRadians(75.f);
+	CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 3000.f;
 	CameraDesc.TransformDesc.dSpeedPerSec = 15.0;
 	CameraDesc.TransformDesc.dRotationPerSec = (_double)XMConvertToRadians(90.f);
 

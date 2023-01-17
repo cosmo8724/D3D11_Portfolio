@@ -82,9 +82,9 @@ void CSigrid::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_OCEAN)
+	if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_OCEAN)
 		m_bOnOcean = true;
-	else if (m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_GROUND)
+	else if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_GROUND)
 		m_bOnOcean = false;
 
 	if (m_bOnOcean == true)
@@ -211,7 +211,7 @@ HRESULT CSigrid::SetUp_Component()
 	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATIONDESC));
 	NavigationDesc.iCurrentIndex = 25;
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NavigationDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom[NAVI_DEFAULT], this, &NavigationDesc), E_FAIL);
 
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_StateMachine", L"Com_StateMachine", (CComponent**)&m_pStateMachineCom, this), E_FAIL);
 

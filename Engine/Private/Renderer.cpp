@@ -5,6 +5,7 @@
 #include "LightMgr.h"
 #include "VIBuffer_Rect.h"
 #include "Shader.h"
+#include "PipeLine.h"
 
 CRenderer::CRenderer(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
@@ -52,7 +53,10 @@ HRESULT CRenderer::Draw_RenderGroup()
 	{
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Normal", 100.f, 300.f, 200.f, 200.f), E_FAIL);
+		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Depth", 100.f, 500.f, 200.f, 200.f), E_FAIL);
+
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f), E_FAIL);
+		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Specular", 300.f, 300.f, 200.f, 200.f), E_FAIL);
 
 		m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
 		m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
@@ -75,11 +79,16 @@ HRESULT CRenderer::Initialize_Prototype()
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Diffuse", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Normal", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Depth", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Shade", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Specular", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Diffuse"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Normal"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Depth"), E_FAIL);
+
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_LightAcc", L"Target_Shade"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_LightAcc", L"Target_Specular"), E_FAIL);
 
 	m_pVIBufferCom = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	NULL_CHECK_RETURN(m_pVIBufferCom, E_FAIL);
@@ -94,7 +103,10 @@ HRESULT CRenderer::Initialize_Prototype()
 #ifdef _DEBUG
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Normal", 100.f, 300.f, 200.f, 200.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Depth", 100.f, 500.f, 200.f, 200.f), E_FAIL);
+
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Specular", 300.f, 300.f, 200.f, 200.f), E_FAIL);
 #endif // _DEBUG
 
 	return S_OK;
@@ -162,7 +174,13 @@ HRESULT CRenderer::Render_LightAcc()
 	m_pShaderCom->Set_Matrix(L"g_matWorld", &m_matWorld);
 	m_pShaderCom->Set_Matrix(L"g_matView", &m_matView);
 	m_pShaderCom->Set_Matrix(L"g_matProj", &m_matProj);
+	m_pShaderCom->Set_Matrix(L"g_matViewInv", &CPipeLine::GetInstance()->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_VIEW));
+	m_pShaderCom->Set_Matrix(L"g_matProjInv", &CPipeLine::GetInstance()->Get_TransformFloat4x4_Inverse(CPipeLine::D3DTS_PROJ));
+
+	m_pShaderCom->Set_RawValue(L"g_vCamPosition", &CPipeLine::GetInstance()->Get_CameraPosition(), sizeof(_float4));
+
 	m_pShaderCom->Set_ShaderResourceView(L"g_NormalTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Normal"));
+	m_pShaderCom->Set_ShaderResourceView(L"g_DepthTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Depth"));
 
 	m_pLightMgr->Render_Light(m_pVIBufferCom, m_pShaderCom);
 
@@ -178,6 +196,7 @@ HRESULT CRenderer::Render_Blend()
 	m_pShaderCom->Set_Matrix(L"g_matProj", &m_matProj);
 	m_pShaderCom->Set_ShaderResourceView(L"g_DiffuseTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Diffuse"));
 	m_pShaderCom->Set_ShaderResourceView(L"g_ShadeTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Shade"));
+	m_pShaderCom->Set_ShaderResourceView(L"g_SpecularTexture", m_pRenderTargetMgr->Get_ShaderResourceView(L"Target_Specular"));
 
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Render();

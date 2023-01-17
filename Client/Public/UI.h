@@ -32,6 +32,8 @@ protected:
 	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
 
 protected:
+	_uint					m_iLastWinSizeX = 0, m_iLastWinSizeY = 0;
+	_float					m_fAspectRatioX = 1.f, m_fAspectRatioY = 1.f;
 	_float					m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4				m_matView;
 	_float4x4				m_matProj;

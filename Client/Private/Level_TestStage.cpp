@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Enemy.h"
 #include "Sigrid.h"
+#include "Camera.h"
 
 CLevel_TestStage::CLevel_TestStage(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
@@ -92,8 +93,21 @@ HRESULT CLevel_TestStage::Ready_Layer_Camera(const wstring & wstrLayerTag)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Dynamic"), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Static"), E_FAIL);
+	CCamera::CAMERADESC		CameraDesc;
+	ZeroMemory(&CameraDesc, sizeof(CCamera::CAMERADESC));
+
+	CameraDesc.vEye = _float4(30.f, 10.f, 0.f, 1.f);
+	CameraDesc.vAt = _float4(50.f, 0.f, 30.f, 1.f);
+	CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
+	CameraDesc.fFov = XMConvertToRadians(75.f);
+	CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 3000.f;
+	CameraDesc.TransformDesc.dSpeedPerSec = 15.0;
+	CameraDesc.TransformDesc.dRotationPerSec = (_double)XMConvertToRadians(90.f);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Dynamic", &CameraDesc), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Camera_Static", &CameraDesc), E_FAIL);
 
 	Safe_Release(pGameInstance);
 

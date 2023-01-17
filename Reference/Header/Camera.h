@@ -9,6 +9,7 @@ public:
 	typedef struct tagCameraDesc : public CGameObject::GAMEOBJECTDESC
 	{
 		_float4	vEye, vAt, vUp;
+		_float		fFov, fAspect, fNear, fFar;
 	} CAMERADESC;
 
 protected:

@@ -147,9 +147,9 @@ void CSigrid_CutScn::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pSigridState);
 	Safe_Release(m_pStateMachineCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pRendererCom);
 }

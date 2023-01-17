@@ -17,6 +17,9 @@ class CSigrid final : public CGameObject
 {
 	friend	class CSigrid_State;
 
+public:
+	enum NAVIGATIONTYPE { NAVI_DEFAULT, NAVI_ROOF, NAVI_END };
+
 private:
 	CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	CSigrid(const CSigrid& rhs);
@@ -69,7 +72,8 @@ private:
 	
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
-	CNavigation*				m_pNavigationCom = nullptr;
+	CNavigation*				m_pNavigationCom[NAVI_END] = { nullptr };
+	NAVIGATIONTYPE		m_eCurNavigation = NAVI_END;
 	CStateMachine*			m_pStateMachineCom = nullptr;
 	class CSigrid_State*		m_pSigridState = nullptr;
 

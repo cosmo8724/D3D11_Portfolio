@@ -178,6 +178,11 @@ list<class CRenderTarget*> * CRenderTargetMgr::Find_MultiRenderTarget(const wstr
 
 void CRenderTargetMgr::Free()
 {
+#ifdef _DEBUG
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pVIBufferCom);
+#endif // _DEBUG
+
 	for (auto& Pair : m_mapMultiRenderTarget)
 	{
 		for (auto& pRenderTarget : Pair.second)
@@ -194,10 +199,4 @@ void CRenderTargetMgr::Free()
 	m_mapRenderTarget.clear();
 
 	Safe_Release(m_pContext);
-
-#ifdef _DEBUG
-	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pVIBufferCom);
-#endif // _DEBUG
-
 }

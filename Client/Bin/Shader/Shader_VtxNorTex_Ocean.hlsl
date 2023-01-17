@@ -30,6 +30,7 @@ struct VS_OUT
 	float4		vPosition		: SV_POSITION;
 	float4		vNormal		: NORMAL;
 	float2		vTexUV		: TEXCOORD0;
+	float4		vProjPos		: TEXCOORD1;
 	float4		vTangent		: TANGENT;
 };
 
@@ -45,6 +46,7 @@ VS_OUT	VS_MAIN(VS_IN In)
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_matWorld));
 	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
 	Out.vTangent = (vector)0.f;
 
 	return Out;
@@ -68,6 +70,7 @@ VS_OUT	VS_MAIN_UVMOVE(VS_IN In)
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_matWorld));
 	Out.vTexUV = In.vTexUV + float2(0.f, g_Time * g_UVSpeed * -1.f);
+	Out.vProjPos = Out.vPosition;
 	Out.vTangent = (vector)0.f;
 
 	return Out;
@@ -78,6 +81,7 @@ struct PS_IN
 	float4		vPosition		: SV_POSITION;
 	float4		vNormal		: NORMAL;
 	float2		vTexUV		: TEXCOORD0;
+	float4		vProjPos		: TEXCOORD1;
 	float4		vTangent		: TANGENT;
 };
 
@@ -85,6 +89,7 @@ struct PS_OUT
 {
 	float4		vDiffuse		: SV_TARGET0;
 	float4		vNormal		: SV_TARGET1;
+	float4		vDepth		: SV_TARGET2;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -97,6 +102,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	Out.vDiffuse = vDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
 
 	//Out.vDiffuse = vector(1.f, 1.f, 1.f, 1.f);
 
@@ -142,6 +148,7 @@ PS_OUT   PS_MAIN_UVMOVE(PS_IN In)
 
 	Out.vDiffuse = vMixBlue;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
 
 	return Out;
 }

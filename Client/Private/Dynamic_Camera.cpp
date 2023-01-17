@@ -34,6 +34,10 @@ HRESULT CDynamic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pAr
 		CameraDesc.vEye = _float4(0.f, 20.f, -30.f, 1.f);
 		CameraDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 		CameraDesc.vUp = _float4(0.f, 1.f, 0.f, 0.f);
+		CameraDesc.fFov = XMConvertToRadians(75.f);
+		CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;
+		CameraDesc.fNear = 0.1f;
+		CameraDesc.fFar = 3000.f;
 		CameraDesc.TransformDesc.dSpeedPerSec = 15.0;
 		CameraDesc.TransformDesc.dRotationPerSec = (_double)XMConvertToRadians(90.f);
 	}
@@ -47,6 +51,8 @@ HRESULT CDynamic_Camera::Initialize(const wstring & wstrPrototypeTag, void * pAr
 
 void CDynamic_Camera::Tick(_double dTimeDelta)
 {
+	m_CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;
+
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 
 	if (CGameInstance::GetInstance()->Get_CurLevelIndex() == LEVEL_LOGO)
