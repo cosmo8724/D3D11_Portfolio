@@ -14,6 +14,13 @@ BEGIN(Client)
 
 class CLeviathan final : public CEnemy
 {
+	friend class CLeviathan_State;
+
+public:
+	enum HITBOX {
+		HEAD, BODY_A, BODY_B, BODY_C, BODY_D, BODY_E, BODY_F, BODY_G, BODY_H, BODY_I, BODY_J, BODY_K, BODY_L, TAIL, LWING_A, LWING_B, RWING_A, RWING_B, HITBOX_END
+	};
+
 private:
 	CLeviathan(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	CLeviathan(const CLeviathan& rhs);
@@ -32,7 +39,7 @@ private:
 	CShader*					m_pShaderCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
 	CCollider*					m_pRangeCol = nullptr;
-	CCollider*					m_pSphereCol = nullptr;
+	CCollider*					m_pSphereCol[HITBOX_END] = { nullptr };
 	CNavigation*				m_pNavigationCom = nullptr;
 	CStateMachine*			m_pStateMachineCom = nullptr;
 	class CLeviathan_State*	m_pLeviathan_State = nullptr;

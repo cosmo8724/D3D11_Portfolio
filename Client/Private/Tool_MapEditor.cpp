@@ -4,6 +4,9 @@
 #include "Layer.h"
 #include "GameUtility.h"
 #include "CustomGameObject.h"
+#include "Sigrid.h"
+#include "Enemy.h"
+#include "NPC.h"
 
 CTool_MapEditor::CTool_MapEditor()
 {
@@ -103,7 +106,19 @@ void CTool_MapEditor::ImGui_RenderWindow()
 				CGameUtility::ctwc(ppLayerTags[iSelectLayer], wszBuff);
 				wstring	wstrLayerTag = wszBuff;
 
-				CGameInstance::GetInstance()->Clone_GameObject(m_iCurLevel, wstrLayerTag, wstrPrototypeTag);
+				CGameObject*	pGameObject = CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(m_iCurLevel, wstrLayerTag, wstrPrototypeTag);
+
+				if (CEnemy* pEnemy = dynamic_cast<CEnemy*>(pGameObject))
+				{
+					CSigrid*	pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, L"Layer_Player")->back());
+					pEnemy->Set_Player(pPlayer);
+				}
+
+				if (CNPC*		pNPC = dynamic_cast<CNPC*>(pGameObject))
+				{
+					CSigrid*	pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, L"Layer_Player")->back());
+					pNPC->Set_Player(pPlayer);
+				}
 			}
 
 			ImGui::Separator();

@@ -40,7 +40,7 @@ HRESULT CLeviathan::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Component(), E_FAIL);
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(190.f, 0.f, 767.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(190.f, -2.f, 767.f, 1.f));
 
 	m_pLeviathan_State = CLeviathan_State::Create(m_pDevice, m_pContext, this, m_pStateMachineCom, m_pModelCom, m_pTransformCom);
 
@@ -65,12 +65,69 @@ void CLeviathan::Tick(_double dTimeDelta)
 	SetOn_Navigation();
 
 	m_pLeviathan_State->Tick(dTimeDelta);
-	//m_pStateMachineCom->Tick(dTimeDelta);
+	m_pStateMachineCom->Tick(dTimeDelta);
 
-	m_pModelCom->Play_Animation(dTimeDelta);
+	if (m_bPlayerDetected)
+		m_pModelCom->Play_Animation(dTimeDelta);
+	else
+		m_pModelCom->Play_Animation(0.0);
 
-	m_pRangeCol->Update(m_pTransformCom->Get_WorldMatrix());
-	m_pSphereCol->Update(m_pTransformCom->Get_WorldMatrix());
+	_matrix	matSocket = m_pModelCom->Get_BoneMatrix("C_CharaA_a");
+	m_pRangeCol->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tongue_b");
+	m_pSphereCol[HEAD]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_c");
+	m_pSphereCol[BODY_A]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_e");
+	m_pSphereCol[BODY_B]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_g");
+	m_pSphereCol[BODY_C]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_i");
+	m_pSphereCol[BODY_D]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_k");
+	m_pSphereCol[BODY_E]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_m");
+	m_pSphereCol[BODY_F]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_o");
+	m_pSphereCol[BODY_G]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_q");
+	m_pSphereCol[BODY_H]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_s");
+	m_pSphereCol[BODY_I]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_u");
+	m_pSphereCol[BODY_J]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_x");
+	m_pSphereCol[BODY_K]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_z");
+	m_pSphereCol[BODY_L]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("C_TailfinA_c");
+	m_pSphereCol[TAIL]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("L_FfinB_Spo");
+	m_pSphereCol[LWING_A]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("L_Farm_b_Phy");
+	m_pSphereCol[LWING_B]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("R_FfinB_Spo");
+	m_pSphereCol[RWING_A]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	matSocket = m_pModelCom->Get_BoneMatrix("R_Farm_b_Phy");
+	m_pSphereCol[RWING_B]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
 }
 
 void CLeviathan::Late_Tick(_double dTimeDelta)
@@ -85,7 +142,9 @@ void CLeviathan::Late_Tick(_double dTimeDelta)
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
-		m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol);
+
+		for (_uint i = 0; i < (_uint)HITBOX_END; ++i)
+			m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol[i]);
 		//m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 	}
 }
@@ -147,14 +206,36 @@ HRESULT CLeviathan::SetUp_Component()
 
 	CCollider::COLLIDERDESC	ColliderDesc;
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3((Xmax - Xmin) * 0.5f, Ymax - Ymin, (Zmax - Zmin) * 0.9f);
-	ColliderDesc.vPosition = _float3(0.f, 0.9f, 0.f);
-	ColliderDesc.vRotation = _float3(XMConvertToRadians(-90.f), 0.f, 0.f);
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere", (CComponent**)&m_pSphereCol, this, &ColliderDesc), E_FAIL);
+	ColliderDesc.vSize = _float3(2.f, 2.f, 2.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Head", (CComponent**)&m_pSphereCol[HEAD], this, &ColliderDesc), E_FAIL);
+
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_A", (CComponent**)&m_pSphereCol[BODY_A], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_B", (CComponent**)&m_pSphereCol[BODY_B], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_C", (CComponent**)&m_pSphereCol[BODY_C], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_D", (CComponent**)&m_pSphereCol[BODY_D], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_E", (CComponent**)&m_pSphereCol[BODY_E], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_F", (CComponent**)&m_pSphereCol[BODY_F], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_G", (CComponent**)&m_pSphereCol[BODY_G], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_H", (CComponent**)&m_pSphereCol[BODY_H], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_I", (CComponent**)&m_pSphereCol[BODY_I], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_J", (CComponent**)&m_pSphereCol[BODY_J], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_K", (CComponent**)&m_pSphereCol[BODY_K], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Body_L", (CComponent**)&m_pSphereCol[BODY_L], this, &ColliderDesc), E_FAIL);
+
+	ColliderDesc.vSize = _float3(4.f, 0.5f, 2.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_Tail", (CComponent**)&m_pSphereCol[TAIL], this, &ColliderDesc), E_FAIL);
+	ColliderDesc.vSize = _float3(2.f, 0.5f, 4.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_LWing_A", (CComponent**)&m_pSphereCol[LWING_A], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_RWing_A", (CComponent**)&m_pSphereCol[RWING_A], this, &ColliderDesc), E_FAIL);
+	ColliderDesc.vSize = _float3(3.f, 0.5f, 6.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_LWing_B", (CComponent**)&m_pSphereCol[LWING_B], this, &ColliderDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere_RWing_B", (CComponent**)&m_pSphereCol[RWING_B], this, &ColliderDesc), E_FAIL);
 
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3(30.f, 30.f, 30.f);
-	ColliderDesc.vPosition = _float3(0.f, 1.f, 0.f);
+	ColliderDesc.vSize = _float3(50.f, 50.f, 50.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Range", (CComponent**)&m_pRangeCol, this, &ColliderDesc), E_FAIL);
 
 	CNavigation::NAVIGATIONDESC		NavigationDesc;
@@ -226,7 +307,10 @@ void CLeviathan::Free()
 	Safe_Release(m_pLeviathan_State);
 	Safe_Release(m_pStateMachineCom);
 	Safe_Release(m_pNavigationCom);
-	Safe_Release(m_pSphereCol);
+
+	for (_uint i = 0; i < (_uint)HITBOX_END; ++i)
+		Safe_Release(m_pSphereCol[i]);
+
 	Safe_Release(m_pRangeCol);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);

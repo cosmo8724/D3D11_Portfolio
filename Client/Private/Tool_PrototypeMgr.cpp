@@ -1381,7 +1381,7 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 					wstring	wstrLayerTag = L"";
 					jLayer["Layer Tag"].get_to<string>(strLayerTag);
 
-					if (strLayerTag != "Layer_Enemies" || strLayerTag != "Layer_NPCs")
+					if (strLayerTag != "Layer_Enemies" && strLayerTag != "Layer_NPCs")
 						continue;
 
 					wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());

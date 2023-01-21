@@ -1,7 +1,7 @@
 #include "Shader_Define.h"
 
 matrix			g_matWorld, g_matView, g_matProj;
-matrix			g_matBones[512];
+matrix			g_matBones[600];
 
 float2			g_WinSize = { 0.f, 0.f };
 
