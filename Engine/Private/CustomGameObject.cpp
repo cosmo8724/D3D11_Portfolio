@@ -181,6 +181,19 @@ HRESULT CCustomGameObject::Render()
 	return S_OK;
 }
 
+pair<_bool, _float3> CCustomGameObject::Picking_Mesh(HWND & hWnd)
+{
+	_vector	vCamPos = CGameInstance::GetInstance()->Get_CameraPosition();
+	_vector	vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+
+	_float		fDist = XMVectorGetX(XMVector3Length(vPos - vCamPos));
+
+	if (fDist > 200.f)
+		return pair<_bool, _float3>(false, _float3(0.f, 0.f, 0.f));
+
+	return m_pModelCom->Picking(hWnd, m_pTransformCom);
+}
+
 HRESULT CCustomGameObject::SetUp_Component()
 {
 	if (m_wstrRendererComTag != L"")

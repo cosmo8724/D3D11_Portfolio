@@ -181,6 +181,8 @@
     <ClInclude Include="..\Public\Grapple_Hang.h" />
     <ClInclude Include="..\Public\Grapple_Launcher.h" />
     <ClInclude Include="..\Public\Hellheim_Island.h" />
+    <ClInclude Include="..\Public\Leviathan.h" />
+    <ClInclude Include="..\Public\Leviathan_State.h" />
     <ClInclude Include="..\Public\MainIsland.h" />
     <ClInclude Include="..\Public\Mystic_Island.h" />
     <ClInclude Include="..\Public\NPC.h" />
@@ -249,6 +251,8 @@
     <ClCompile Include="..\Private\Grapple_Hang.cpp" />
     <ClCompile Include="..\Private\Grapple_Launcher.cpp" />
     <ClCompile Include="..\Private\Hellheim_Island.cpp" />
+    <ClCompile Include="..\Private\Leviathan.cpp" />
+    <ClCompile Include="..\Private\Leviathan_State.cpp" />
     <ClCompile Include="..\Private\MainIsland.cpp" />
     <ClCompile Include="..\Private\Mystic_Island.cpp" />
     <ClCompile Include="..\Private\NPC.cpp" />

@@ -197,6 +197,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
+	//case WM_ACTIVATE:
+	//	{
+	//	if (LOWORD(wParam) == WA_INACTIVE)
+	//		g_bMinimization = true;
+	//	else if (HIWORD(wParam) != 0)
+	//		g_bMinimization = true;
+	//	else
+	//		g_bMinimization = false;
+	//	}
+	//break;
     case WM_COMMAND:
         {
             int wmId = LOWORD(wParam);
@@ -224,7 +234,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
         break;
 	case WM_SIZE:
 	{
-		if (!g_bFullScreen)
+		if (wParam != SIZE_MINIMIZED && !g_bFullScreen)
 		{
 			RECT	rt;
 			GetClientRect(hWnd, &rt);

@@ -386,11 +386,11 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & w
 	{
 		if (wstrBoneConstantName != L"")
 		{
-			_float4x4		matBones[256];
+			_float4x4		matBones[512];
 
 			m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, XMLoadFloat4x4(&m_matPivot));
 
-			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 256);
+			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 512);
 		}
 
 		pShaderCom->Begin(iPassIndex);

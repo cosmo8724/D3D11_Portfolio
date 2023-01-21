@@ -78,7 +78,9 @@ void CSigrid_State::Tick(_double & dTimeDelta)
 	{
 		if (m_pPlayer->m_bBoost == false)
 		{
-			m_pTransformCom->Set_Speed(15.0);
+			if (m_pPlayer->m_bJump == false)
+				m_pTransformCom->Set_Speed(15.0);
+
 			m_pPlayer->m_fInertia = 5.f;
 
 			if (m_pModelCom->Get_CurAnimationIndex() == AIR_GLIDING ||
@@ -88,7 +90,9 @@ void CSigrid_State::Tick(_double & dTimeDelta)
 		}
 		else
 		{
-			m_pTransformCom->Set_Speed(25.0);
+			if (m_pPlayer->m_bJump == false)
+				m_pTransformCom->Set_Speed(25.0);
+			
 			m_pPlayer->m_fInertia = 1.5f;
 		}
 
@@ -102,17 +106,24 @@ void CSigrid_State::Tick(_double & dTimeDelta)
 				m_pModelCom->Get_CurAnimationIndex() == GROUND_RUN_RIGHT)
 			{
 				m_pPlayer->m_dSurfTime = 0.0;
-				m_pTransformCom->Set_Speed(12.5);
+
+				if (m_pPlayer->m_bJump == false)
+					m_pTransformCom->Set_Speed(12.5);
 			}
 
 			if (m_pPlayer->m_dSurfTime > 3.0 && m_pPlayer->m_bBoost == false)
 			{
-				m_pTransformCom->Set_Speed(20.0);
+				if (m_pPlayer->m_bJump == false)
+					m_pTransformCom->Set_Speed(20.0);
+
 				m_pPlayer->m_fInertia = 2.f;
 			}
 
-			_double&	dSpeed = m_pTransformCom->Get_Speed();
-			dSpeed *= 1.5;
+			if (m_pPlayer->m_bJump == false)
+			{
+				_double&	dSpeed = m_pTransformCom->Get_Speed();
+				dSpeed *= 1.5;
+			}
 
 			m_pPlayer->m_fInertia *= 0.7f;
 		}
@@ -143,6 +154,7 @@ HRESULT CSigrid_State::SetUp_State_Ground_Idle()
 		.Init_Changer(L"WATER_IDLE", this, &CSigrid_State::IsOnOcean)
 		.Init_Changer(L"DASH_INTO_IDLE", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_IDLE", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_IDLE", this, &CSigrid_State::KeyDown_LCTRL)
 
@@ -168,6 +180,7 @@ HRESULT CSigrid_State::SetUp_State_Ground_Run()
 		.Init_Changer(L"SNAP_TURN_GROUND_RUN", this, &CSigrid_State::Turn_Back)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_RUN", this, &CSigrid_State::KeyDown_LCTRL)
 
@@ -185,6 +198,7 @@ HRESULT CSigrid_State::SetUp_State_Ground_Run()
 		.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::KeyInput_None)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_RUN", this, &CSigrid_State::KeyDown_LCTRL)
 
@@ -202,6 +216,7 @@ HRESULT CSigrid_State::SetUp_State_Ground_Run()
 		.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::KeyInput_None)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_RUN", this, &CSigrid_State::KeyDown_LCTRL)
 
@@ -223,8 +238,10 @@ HRESULT CSigrid_State::SetUp_State_Ground_Boost()
 		.Init_Changer(L"GROUND_BOOST_STOP", this, &CSigrid_State::KeyInput_None)
 		.Init_Changer(L"GROUND_BOOST_LEFT", this, &CSigrid_State::Camera_Angle_Turn_Left)
 		.Init_Changer(L"GROUND_BOOST_RIGHT", this, &CSigrid_State::Camera_Angle_Turn_Right)
+		.Init_Changer(L"SURF_FAST_INTRO", this, &CSigrid_State::IsOnOcean)
 		.Init_Changer(L"SNAP_TURN_GROUND_BOOST", this, &CSigrid_State::Turn_Back)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"DASH_INTO_SURF", this, &CSigrid_State::KeyDown_F)
 
 		.Add_State(L"GROUND_BOOST_LEFT")
@@ -237,8 +254,10 @@ HRESULT CSigrid_State::SetUp_State_Ground_Boost()
 		.Init_Changer(L"GROUND_BOOST", this, &CSigrid_State::Camera_Angle_Coincide)
 		.Init_Changer(L"GROUND_BOOST_STOP", this, &CSigrid_State::KeyInput_None)
 		.Init_Changer(L"GROUND_BOOST_RIGHT", this, &CSigrid_State::Camera_Angle_Turn_Right)
+		.Init_Changer(L"SURF_FAST_INTRO", this, &CSigrid_State::IsOnOcean)
 		.Init_Changer(L"SNAP_TURN_GROUND_BOOST", this, &CSigrid_State::Turn_Back)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"DASH_INTO_SURF", this, &CSigrid_State::KeyDown_F)
 
 		.Add_State(L"GROUND_BOOST_RIGHT")
@@ -251,8 +270,10 @@ HRESULT CSigrid_State::SetUp_State_Ground_Boost()
 		.Init_Changer(L"GROUND_BOOST", this, &CSigrid_State::Camera_Angle_Coincide)
 		.Init_Changer(L"GROUND_BOOST_STOP", this, &CSigrid_State::KeyInput_None)
 		.Init_Changer(L"GROUND_BOOST_LEFT", this, &CSigrid_State::Camera_Angle_Turn_Left)
+		.Init_Changer(L"SURF_FAST_INTRO", this, &CSigrid_State::IsOnOcean)
 		.Init_Changer(L"SNAP_TURN_GROUND_BOOST", this, &CSigrid_State::Turn_Back)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"DASH_INTO_SURF", this, &CSigrid_State::KeyDown_F)
 
 		.Add_State(L"GROUND_BOOST_STOP")
@@ -263,7 +284,9 @@ HRESULT CSigrid_State::SetUp_State_Ground_Boost()
 		.Init_Changer(L"DAMAGE_HIT_IDLE", this, &CSigrid_State::Damaged)
 		.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Animation_Finish)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::KeyInput_Direction)
+		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::IsOnOcean)
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"DASH_INTO_IDLE", this, &CSigrid_State::KeyDown_F)
 
 		.Finish_Setting();
@@ -376,6 +399,7 @@ HRESULT CSigrid_State::SetUp_State_Surf()
 		.Init_Changer(L"SURF_FAST", this, &CSigrid_State::Check_SurfTime)
 		.Init_Changer(L"SURF_BOOST", this, &CSigrid_State::KeyInput_Shift)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_SURF", this, &CSigrid_State::KeyDown_LCTRL)
 		.Init_Changer(L"DASH_INTO_SURF", this, &CSigrid_State::KeyDown_F)
@@ -392,6 +416,7 @@ HRESULT CSigrid_State::SetUp_State_Surf()
 		.Init_Changer(L"SURF_FAST_LEFT", this, &CSigrid_State::Check_SurfTime)
 		.Init_Changer(L"SURF_BOOST_LEFT", this, &CSigrid_State::KeyInput_Shift)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_RUN_LEFT", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_SURF", this, &CSigrid_State::KeyDown_LCTRL)
 		.Init_Changer(L"DASH_INTO_SURF", this, &CSigrid_State::KeyDown_F)
@@ -408,6 +433,7 @@ HRESULT CSigrid_State::SetUp_State_Surf()
 		.Init_Changer(L"SURF_FAST_RIGHT", this, &CSigrid_State::Check_SurfTime)
 		.Init_Changer(L"SURF_BOOST_RIGHT", this, &CSigrid_State::KeyInput_Shift)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_RUN_RIGHT", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_SURF", this, &CSigrid_State::KeyDown_LCTRL)
 		.Init_Changer(L"DASH_INTO_SURF", this, &CSigrid_State::KeyDown_F)
@@ -436,6 +462,7 @@ HRESULT CSigrid_State::SetUp_State_Surf()
 		.Init_Changer(L"SURF_FAST_RIGHT", this, &CSigrid_State::Camera_Angle_Turn_Right)
 		.Init_Changer(L"SURF_BOOST", this, &CSigrid_State::KeyInput_Shift)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_LCTRL)
 		.Init_Changer(L"DASH_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_F)
@@ -451,6 +478,7 @@ HRESULT CSigrid_State::SetUp_State_Surf()
 		.Init_Changer(L"SURF_FAST_RIGHT", this, &CSigrid_State::Camera_Angle_Turn_Right)
 		.Init_Changer(L"SURF_BOOST_LEFT", this, &CSigrid_State::KeyInput_Shift)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_RUN_LEFT", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_LCTRL)
 		.Init_Changer(L"DASH_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_F)
@@ -460,12 +488,13 @@ HRESULT CSigrid_State::SetUp_State_Surf()
 		.Init_Start(this, &CSigrid_State::Start_Surf_Fast_Right)
 		.Init_Tick(this, &CSigrid_State::Tick_Surf_Fast_Right)
 		.Init_End(this, &CSigrid_State::End_Surf_Fast_Right)
-			.Init_Changer(L"GRAPPLE_GROUND_FIRE", this, &CSigrid_State::SnapGrapple)
+		.Init_Changer(L"GRAPPLE_GROUND_FIRE", this, &CSigrid_State::SnapGrapple)
 		.Init_Changer(L"DAMAGE_HIT_IDLE", this, &CSigrid_State::Damaged)
 		.Init_Changer(L"SURF_FAST", this, &CSigrid_State::Camera_Angle_Coincide)
 		.Init_Changer(L"SURF_FAST_LEFT", this, &CSigrid_State::Camera_Angle_Turn_Left)
 		.Init_Changer(L"SURF_BOOST_RIGHT", this, &CSigrid_State::KeyInput_Shift)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_RUN_RIGHT", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"COMBAT_CHARGE_ATTACK_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_LCTRL)
 		.Init_Changer(L"DASH_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_F)
@@ -489,6 +518,7 @@ HRESULT CSigrid_State::SetUp_State_Surf_Boost()
 		.Init_Changer(L"SURF_BOOST_LEFT", this, &CSigrid_State::Camera_Angle_Turn_Left)
 		.Init_Changer(L"SURF_BOOST_RIGHT", this, &CSigrid_State::Camera_Angle_Turn_Right)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_BOOST", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"DASH_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"JUMP_CHARGING", this, &CSigrid_State::KeyInput_Space)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
@@ -504,6 +534,7 @@ HRESULT CSigrid_State::SetUp_State_Surf_Boost()
 		.Init_Changer(L"SURF_BOOST", this, &CSigrid_State::Camera_Angle_Coincide)
 		.Init_Changer(L"SURF_BOOST_RIGHT", this, &CSigrid_State::Camera_Angle_Turn_Right)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_BOOST_LEFT", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"DASH_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"JUMP_CHARGING", this, &CSigrid_State::KeyInput_Space)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
@@ -519,6 +550,7 @@ HRESULT CSigrid_State::SetUp_State_Surf_Boost()
 		.Init_Changer(L"SURF_BOOST", this, &CSigrid_State::Camera_Angle_Coincide)
 		.Init_Changer(L"SURF_BOOST_LEFT", this, &CSigrid_State::Camera_Angle_Turn_Left)
 		.Init_Changer(L"WATER_BRAKING", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"GROUND_BOOST_RIGHT", this, &CSigrid_State::IsOnGround)
 		.Init_Changer(L"DASH_INTO_SURF_FAST", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"JUMP_CHARGING", this, &CSigrid_State::KeyInput_Space)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_SURF", this, &CSigrid_State::MouseDown_LB)
@@ -540,6 +572,7 @@ HRESULT CSigrid_State::SetUp_State_Dash()
 		.Init_Changer(L"GROUND_IDLE", this, &CSigrid_State::Animation_Finish)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::KeyInput_Direction_Progress)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyInput_Direction)
+		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 
 		.Add_State(L"DASH_INTO_RUN")
@@ -548,6 +581,7 @@ HRESULT CSigrid_State::SetUp_State_Dash()
 		.Init_End(this, &CSigrid_State::End_Dash_Into_Run)
 		.Init_Changer(L"DAMAGE_HIT_IDLE", this, &CSigrid_State::Damaged)
 		.Init_Changer(L"DASH_INTO_IDLE", this, &CSigrid_State::KeyInput_None)
+		.Init_Changer(L"DASH_INTO_AIR", this, &CSigrid_State::IsOnAir)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::Animation_Finish)
 		.Init_Changer(L"COMBAT_COMBO1_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 
@@ -1206,6 +1240,7 @@ HRESULT CSigrid_State::SetUp_State_Combat_Combo()
 		.Init_Changer(L"COMBAT_COMBO2_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::Animation_Finish)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 
 		.Add_State(L"COMBAT_COMBO1_AIR")
 		.Init_Start(this, &CSigrid_State::Start_Combat_Combo1_Air)
@@ -1255,6 +1290,7 @@ HRESULT CSigrid_State::SetUp_State_Combat_Combo()
 		.Init_Changer(L"COMBAT_COMBO3_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::Animation_Finish)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 
 		.Add_State(L"COMBAT_COMBO2_AIR")
 		.Init_Start(this, &CSigrid_State::Start_Combat_Combo2_Air)
@@ -1304,6 +1340,7 @@ HRESULT CSigrid_State::SetUp_State_Combat_Combo()
 		.Init_Changer(L"COMBAT_COMBO4_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::Animation_Finish)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 
 		.Add_State(L"COMBAT_COMBO3_AIR")
 		.Init_Start(this, &CSigrid_State::Start_Combat_Combo3_Air)
@@ -1353,6 +1390,7 @@ HRESULT CSigrid_State::SetUp_State_Combat_Combo()
 		.Init_Changer(L"COMBAT_COMBO1_INTO_RUN", this, &CSigrid_State::MouseDown_LB)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::Animation_Finish)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 
 		.Add_State(L"COMBAT_COMBO4_AIR")
 		.Init_Start(this, &CSigrid_State::Start_Combat_Combo4_Air)
@@ -1408,6 +1446,7 @@ HRESULT CSigrid_State::SetUp_State_Combat_Charge_Attack()
 		.Init_Changer(L"JUMP", this, &CSigrid_State::KeyDown_Space_Progress)
 		.Init_Changer(L"DASH_INTO_RUN", this, &CSigrid_State::KeyDown_F)
 		.Init_Changer(L"GROUND_RUN", this, &CSigrid_State::Animation_Finish)
+		.Init_Changer(L"AIR", this, &CSigrid_State::IsOnAir)
 
 		.Add_State(L"COMBAT_CHARGE_ATTACK_INTO_WATER_IDLE")
 		.Init_Start(this, &CSigrid_State::Start_Combat_Charge_Attack_Into_Water_Idle)
@@ -2190,7 +2229,10 @@ void CSigrid_State::Start_Jump_Charged2_90(_double dTimeDelta)
 
 void CSigrid_State::Start_Dash_Into_Air(_double dTimeDelta)
 {
-	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+	if (m_pModelCom->Get_LastAnimationIndex() == DASH_INTO_IDLE || m_pModelCom->Get_LastAnimationIndex() == DASH_INTO_RUN)
+		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
+	else
+		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pPlayer->m_bDash = true;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(DASH_INTO_AIR);
@@ -3137,7 +3179,7 @@ void CSigrid_State::Tick_Ground_Idle(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
-		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 }
 
 void CSigrid_State::Tick_Ground_Run(_double dTimeDelta)
@@ -3158,7 +3200,7 @@ void CSigrid_State::Tick_Ground_Run_Right(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Run(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
-		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 		Move(dTimeDelta, m_eDir);
@@ -3378,7 +3420,7 @@ void CSigrid_State::Tick_Jump_Charged2_90(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Air(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
-		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 	{
@@ -3390,13 +3432,13 @@ void CSigrid_State::Tick_Dash_Into_Air(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Water_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
-		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 }
 
 void CSigrid_State::Tick_Dash_Into_Surf(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
-		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 		Move(dTimeDelta, m_eDir);
 }
@@ -3404,7 +3446,7 @@ void CSigrid_State::Tick_Dash_Into_Surf(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Surf_Fast(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
-		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 		Move(dTimeDelta, m_eDir);
 }
@@ -3740,7 +3782,7 @@ void CSigrid_State::Tick_Damage_Hit_Idle(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3749,7 +3791,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_45(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3758,7 +3800,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_45(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_90(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3767,7 +3809,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_90(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_45(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3776,7 +3818,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_45(_double dTimeDelta
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_90(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3786,7 +3828,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_90(_double dTimeDelta
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3796,7 +3838,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Slow(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3806,7 +3848,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_45(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3816,7 +3858,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_90(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_Negative_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3826,7 +3868,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_Negative_45(_double dTimeDelta
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_Negative_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3835,7 +3877,7 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_Negative_90(_double dTimeDelta
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3844,7 +3886,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_45(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3853,7 +3895,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_45(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_90(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3862,7 +3904,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_90(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_45(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3871,7 +3913,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_45(_double dTimeDelta)
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_90(_double dTimeDelta)
 {
-	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+	m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3881,7 +3923,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_90(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3891,7 +3933,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Slow(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3901,7 +3943,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Slow_45(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3911,7 +3953,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Slow_90(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3921,7 +3963,7 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
-		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
@@ -3969,7 +4011,7 @@ void CSigrid_State::Tick_Grapple_Launch_Flip(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Launch(_double dTimeDelta)
 {
 	//if (m_pModelCom->Get_AnimationProgress() < 0.6f)
-		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	//else
 	//	m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 }
@@ -3977,7 +4019,7 @@ void CSigrid_State::Tick_Grapple_Launch(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Launch_45(_double dTimeDelta)
 {
 	//if (m_pModelCom->Get_AnimationProgress() < 0.6f)
-		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	//else
 	//	m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 }
@@ -3985,7 +4027,7 @@ void CSigrid_State::Tick_Grapple_Launch_45(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Launch_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.6f)
-		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	else
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 }
@@ -3993,7 +4035,7 @@ void CSigrid_State::Tick_Grapple_Launch_90(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Launch_Negative_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.6f)
-		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	else
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 }
@@ -4001,7 +4043,7 @@ void CSigrid_State::Tick_Grapple_Launch_Negative_45(_double dTimeDelta)
 void CSigrid_State::Tick_Grapple_Launch_Negative_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.6f)
-		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Throw(m_pPlayer->m_vSnapGrappleLook, 1.f, dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	else
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 }
@@ -5887,16 +5929,17 @@ _bool CSigrid_State::Collision_Ground_KeyInput_None()
 {
 	_float4		vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() != CCell::STATE_GROUND)
-		return false;
-
-	if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_None())
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_GROUND ||
+		m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_ROOF)
 	{
-		m_pPlayer->m_bBoost = false;
-		m_pPlayer->m_bJump = false;
-		m_pPlayer->m_bDoubleJump = false;
-		m_pPlayer->m_bDash = false;
-		return true;
+		if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_None())
+		{
+			m_pPlayer->m_bBoost = false;
+			m_pPlayer->m_bJump = false;
+			m_pPlayer->m_bDoubleJump = false;
+			m_pPlayer->m_bDash = false;
+			return true;
+		}
 	}
 
 	return false;
@@ -5906,16 +5949,17 @@ _bool CSigrid_State::Collision_Ground_KeyInput_Direction()
 {
 	_float4		vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() != CCell::STATE_GROUND)
-		return false;
-
-	if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_Direction())
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_GROUND ||
+		m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_ROOF)
 	{
-		m_pPlayer->m_bBoost = false;
-		m_pPlayer->m_bJump = false;
-		m_pPlayer->m_bDoubleJump = false;
-		m_pPlayer->m_bDash = false;
-		return true;
+		if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_Direction())
+		{
+			m_pPlayer->m_bBoost = false;
+			m_pPlayer->m_bJump = false;
+			m_pPlayer->m_bDoubleJump = false;
+			m_pPlayer->m_bDash = false;
+			return true;
+		}
 	}
 
 	return false;
@@ -5925,7 +5969,7 @@ _bool CSigrid_State::Collision_Ocean_KeyInput_None()
 {
 	_float4		vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() != CCell::STATE_OCEAN)
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() != CCell::STATE_OCEAN)
 		return false;
 
 	if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_None())
@@ -5944,7 +5988,7 @@ _bool CSigrid_State::Collision_Ocean_KeyInput_Direction()
 {
 	_float4		vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() != CCell::STATE_OCEAN)
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() != CCell::STATE_OCEAN)
 		return false;
 
 	if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_Direction() && m_pPlayer->m_dSurfTime <= 3.0 && m_pPlayer->m_bBoost == false)
@@ -5962,7 +6006,7 @@ _bool CSigrid_State::Collision_Ocean_KeyInput_Direction_SurfTime()
 {
 	_float4		vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() != CCell::STATE_OCEAN)
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() != CCell::STATE_OCEAN)
 		return false;
 
 	if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_Direction() && m_pPlayer->m_dSurfTime > 3.0 && m_pPlayer->m_bBoost == false)
@@ -5980,7 +6024,7 @@ _bool CSigrid_State::Collision_Ocean_Boost()
 {
 	_float4		vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() != CCell::STATE_OCEAN)
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() != CCell::STATE_OCEAN)
 		return false;
 
 	if (vPlayerPos.y < m_pPlayer->m_fGroundHeight && KeyInput_Direction() && m_pPlayer->m_bBoost == true)
@@ -5996,7 +6040,8 @@ _bool CSigrid_State::Collision_Ocean_Boost()
 
 _bool CSigrid_State::IsOnGround()
 {
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_GROUND)
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_GROUND ||
+		m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_ROOF)
 		return true;
 
 	return false;
@@ -6004,8 +6049,22 @@ _bool CSigrid_State::IsOnGround()
 
 _bool CSigrid_State::IsOnOcean()
 {
-	if (m_pPlayer->m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_OCEAN)
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_OCEAN)
 		return true;
+
+	return false;
+}
+
+_bool CSigrid_State::IsOnAir()
+{
+	if (m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_AIR)
+	{
+		m_pPlayer->m_bJump = true;
+		m_pPlayer->m_bDoubleJump = false;
+		m_pPlayer->m_bDash = false;
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		return true;
+	}
 
 	return false;
 }
@@ -6017,7 +6076,7 @@ void CSigrid_State::Move(_double dTimeDelta, CTransform::DIRECTION eDir, MOVETYP
 
 	if (eDir == CTransform::DIR_LOOK)
 	{
-		m_pTransformCom->Go_Straight(dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Go_Straight(dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 		return;
 	}
 
@@ -6086,7 +6145,7 @@ void CSigrid_State::Move(_double dTimeDelta, CTransform::DIRECTION eDir, MOVETYP
 		_float		fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(vDir), XMVector3Normalize(vPlayerLook))));;
 		if (isnan(fAngle) != 0)
 		{
-			m_pTransformCom->Go_Straight(dTimeDelta, m_pPlayer->m_pNavigationCom);
+			m_pTransformCom->Go_Straight(dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 			return;
 		}
 
@@ -6298,9 +6357,9 @@ void CSigrid_State::Move(_double dTimeDelta, CTransform::DIRECTION eDir, MOVETYP
 	}
 
 	if (eType == MOVE_TURNBACK)
-		m_pTransformCom->Go_BackWard(dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Go_BackWard(dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 	else
-		m_pTransformCom->Go_Straight(dTimeDelta, m_pPlayer->m_pNavigationCom);
+		m_pTransformCom->Go_Straight(dTimeDelta, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
 }
 
 CTransform::DIRECTION CSigrid_State::DetectDirectionInput()

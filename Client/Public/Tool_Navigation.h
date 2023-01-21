@@ -38,8 +38,9 @@ private:
 	CNavigation*					m_pNavigationCom = nullptr;
 	_uint							m_iNumCell = 0;
 	_int							m_iSelectedCell = -1;
+	_int							m_iPickingCell = -1;
 
-	char*							m_pStateName[CCell::STATE_END + 1] = { "State_Ocean", "State_Ground", "None" };
+	char*							m_pStateName[CCell::STATE_END + 1] = { "State_Ocean", "State_Ground", "State_Wall", "State_Roof", "None" };
 
 //#ifdef _DEBUG
 	CVIBuffer_Cell_Circle*		m_pVIBufferCircleCom[POINT_END] = { nullptr, nullptr, nullptr };

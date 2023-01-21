@@ -187,6 +187,10 @@ HRESULT CLevel_TestStage::Ready_Layer_Enemies(const wstring & wstrLayerTag)
 	NULL_CHECK_RETURN(pEnemy, E_FAIL);
 	pEnemy->Set_Player(pPlayer);*/
 
+	pEnemy = dynamic_cast<CEnemy*>(pGameInstance->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_Leviathan"));
+	NULL_CHECK_RETURN(pEnemy, E_FAIL);
+	pEnemy->Set_Player(pPlayer);
+
 	Safe_Release(pGameInstance);
 
 	return S_OK;

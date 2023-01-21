@@ -339,7 +339,7 @@ void CTool_PrototypeMgr::Component_Editor()
 					_tchar		wszPrototypeTag[MAX_PATH] = L"";
 					CGameUtility::ctwc(szPrototypeTag, wszPrototypeTag);
 
-					CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CModel::Create(m_pDevice, m_pContext, eModelType, szFilePath));
+					CGameInstance::GetInstance()->Add_Prototype(iTargetLevel, wstring(wszPrototypeTag), CModel::Create(m_pDevice, m_pContext, eModelType, szFilePath, XMMatrixIdentity()));
 
 					break;
 					}
@@ -1318,6 +1318,9 @@ void CTool_PrototypeMgr::CloneObject_Editor()
 		{
 			if (ImGuiFileDialog::Instance()->IsOk())
 			{
+				iSelectLayer = 0;
+				iSelectObject = -1;
+
 				for (size_t i = 0; i < CloneObjectsList->size(); ++i)
 					Safe_Delete_Array(ppCloneObjectsTag[i]);
 				Safe_Delete_Array(ppCloneObjectsTag);

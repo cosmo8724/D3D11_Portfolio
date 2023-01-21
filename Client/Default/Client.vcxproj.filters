@@ -214,6 +214,12 @@
     <Filter Include="02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State">
       <UniqueIdentifier>{476fadc2-8f73-4224-92a9-066198aeb63c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy\01. Leviathan">
+      <UniqueIdentifier>{a66b021f-5f7a-41e0-8847-d005808e3863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy\01. Leviathan\Leviathan_State">
+      <UniqueIdentifier>{73b66bad-934f-4180-a05c-8131ac5d624d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -390,6 +396,12 @@
     <ClInclude Include="..\Public\SigridCutScn_State.h">
       <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Leviathan.h">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Leviathan_State.h">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan\Leviathan_State</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -553,6 +565,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\SigridCutScn_State.cpp">
       <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Leviathan.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Leviathan_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan\Leviathan_State</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

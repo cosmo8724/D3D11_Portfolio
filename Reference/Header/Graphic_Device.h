@@ -17,6 +17,7 @@ public:
 	HRESULT Clear_DepthStencil_View();
 	HRESULT Update_SwapChain(HWND hWnd, _uint iWinCX, _uint iWinCY, _bool bIsFullScreen, _bool bNeedUpdate);
 	HRESULT Present();
+
 private:	
 
 	/* 메모리 할당. (정점버퍼, 인덱스버퍼, 텍스쳐로드) */

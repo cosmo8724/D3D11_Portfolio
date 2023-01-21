@@ -29,10 +29,36 @@ CNavigation::CNavigation(const CNavigation & rhs)
 
 _vector CNavigation::Get_CellHeight(_float4 vTargetPos)
 {
-	if (m_tNavigationDesc.iCurrentIndex == -1)
+	if (m_tNavigationDesc.iCurrentIndex == -1 || m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_State() == CCell::STATE_AIR)
 		return XMLoadFloat4(&vTargetPos);
 
 	return m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_CellHeight(vTargetPos);
+}
+
+_float CNavigation::IsOnNavigation(_fvector vTargetPos, _int & iIndex)
+{
+	_vector	vRayPos, vRayDir;
+	_float		fDist = 0.f;
+	_float		fMinDist = 10000.f;
+	
+	vRayPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) + 1.f);
+	vRayDir = XMVector3Normalize(vTargetPos - vRayPos);
+
+	for (auto& pCell : m_vecCell)
+	{
+		fDist = 0.f;
+
+		if (pCell->IsIn(vRayPos, vRayDir, fDist) == true)
+		{
+			if (fMinDist > fDist && fDist > 0.f)
+			{
+				iIndex = pCell->Get_Index();
+				fMinDist = fDist;
+			}
+		}
+	}
+
+	return fMinDist;
 }
 
 HRESULT CNavigation::Initialize_Prototype(const wstring & wstrFilePath)
@@ -209,6 +235,9 @@ _bool CNavigation::IsMoveOnNavigation(_fvector vTargetPos, _float4 & vBlockedLin
 	if (m_tNavigationDesc.iCurrentIndex == -1)
 		return false;
 
+	if (m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_State() == CCell::STATE_AIR)
+		return true;
+
 	_int		iNeighborIndex = -1;
 
 	if (m_vecCell[m_tNavigationDesc.iCurrentIndex]->IsIn(vTargetPos, iNeighborIndex, vBlockedLine, vBlockedLineNormal) == true)
@@ -306,24 +335,30 @@ HRESULT CNavigation::Render()
 		fHeight = 0.1f;
 
 		m_pShaderCom->Set_RawValue(L"g_fHeight", &fHeight, sizeof(_float));
-		m_pShaderCom->Set_RawValue(L"g_vColor", &_float4(0.f, 1.f, 0.f, 1.f), sizeof(_float4));
 
 		for (auto& pCell : m_vecCell)
 		{
 			if (pCell != nullptr)
+			{
+				if (pCell->Get_State() == CCell::STATE_ROOF)
+					m_pShaderCom->Set_RawValue(L"g_vColor", &_float4(0.3f, 0.3f, 1.f, 1.f), sizeof(_float4));
+				else
+					m_pShaderCom->Set_RawValue(L"g_vColor", &_float4(0.f, 1.f, 0.f, 1.f), sizeof(_float4));
+
 				pCell->Render(m_pShaderCom);
+			}
 		}
 	}
 
 	return S_OK;
 }
 
-HRESULT CNavigation::Render_Selected_Cell(_int iIndex)
+HRESULT CNavigation::Render_Selected_Cell(_int iIndex, const _float4 & vColor)
 {
 	_float		fHeight = 0.15f;
 
 	m_pShaderCom->Set_RawValue(L"g_fHeight", &fHeight, sizeof(_float));
-	m_pShaderCom->Set_RawValue(L"g_vColor", &_float4(1.f, 0.4f, 0.f, 1.f), sizeof(_float4));
+	m_pShaderCom->Set_RawValue(L"g_vColor", &vColor, sizeof(_float4));
 
 	m_vecCell[iIndex]->Render(m_pShaderCom);
 

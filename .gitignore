@@ -51,6 +51,7 @@ Client/Bin/*
 !Client/Bin/Resource
 Client/Bin/Resource/Mesh/Islands/Main Island/MainIsland.model
 Client/Bin/Resource/Mesh/Islands/Main Island/MainIsland_Test.fbx
+Client/Bin/Resource/Mesh/Enemy/Leviathan/Leviathan.fbx
 !Client/Bin/Save Data
 Client/Bin/Resource/Game
 Engine/Default/Debug

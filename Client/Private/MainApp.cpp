@@ -54,7 +54,8 @@ HRESULT CMainApp::Render()
 	m_pRenderer->Draw_RenderGroup();
 	m_pGameInstance->ImGui_Render_Update();
 	m_pGameInstance->Render_Level();
-	m_pGameInstance->Present();
+	
+	return m_pGameInstance->Present();
 
 	return S_OK;
 }

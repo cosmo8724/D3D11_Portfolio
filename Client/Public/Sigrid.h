@@ -18,7 +18,7 @@ class CSigrid final : public CGameObject
 	friend	class CSigrid_State;
 
 public:
-	enum NAVIGATIONTYPE { NAVI_DEFAULT, NAVI_ROOF, NAVI_END };
+	enum NAVIGATIONTYPE { NAVI_DEFAULT, NAVI_ROOF, NAVI_SKY, NAVI_FANTASY, NAVI_END };
 
 private:
 	CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext);
@@ -55,6 +55,7 @@ public:
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
+	virtual void				ImGui_RenderProperty() override;
 
 public:
 	_bool						Collision_Range(CCollider* pTargetCollider);
@@ -73,7 +74,7 @@ private:
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
 	CNavigation*				m_pNavigationCom[NAVI_END] = { nullptr };
-	NAVIGATIONTYPE		m_eCurNavigation = NAVI_END;
+	NAVIGATIONTYPE		m_eCurNavigation = NAVI_DEFAULT;
 	CStateMachine*			m_pStateMachineCom = nullptr;
 	class CSigrid_State*		m_pSigridState = nullptr;
 
@@ -122,6 +123,7 @@ private:
 private:
 	void						SetOn_Terrain();
 	void						SetOn_Navigation();
+	NAVIGATIONTYPE		Check_CurrentNavigation();
 
 public:
 	static CSigrid*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext);
