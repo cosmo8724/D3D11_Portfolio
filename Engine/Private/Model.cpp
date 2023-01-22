@@ -97,6 +97,12 @@ void CModel::Set_CurAnimationSpeed(_double dAnimSpeed)
 	m_vecAnimation[m_iCurAnimationIndex]->Set_AnimationTickPerSecond(dAnimSpeed);
 }
 
+void CModel::Set_WholeAnimationSpeed(_double dAnimSpeed)
+{
+	for (auto& pAnimation : m_vecAnimation)
+		pAnimation->Set_AnimationTickPerSecond(dAnimSpeed);
+}
+
 void CModel::Reset_Animation()
 {
 	m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();

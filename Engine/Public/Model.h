@@ -29,8 +29,10 @@ public:
 	_bool								Get_AnimationFinish();
 	_float								Get_AnimationProgress();
 	void								Set_CurAnimationIndex(_uint iAnimationIndex);
+	void								Set_PivotMatrix(_fmatrix matPivot) { m_matPivot = matPivot; }
 	void								Set_LerpTime(_float fLerpTime) { m_fAnimChangeTime = fLerpTime; }
 	void								Set_CurAnimationSpeed(_double dAnimSpeed);
+	void								Set_WholeAnimationSpeed(_double dAnimSpeed);
 	void								Reset_Animation();
 	HRESULT							Check_MeshSize(const string& strMeshName, _float& Xmin, _float& Xmax, _float& Ymin, _float& Ymax, _float& Zmin, _float& Zmax);
 

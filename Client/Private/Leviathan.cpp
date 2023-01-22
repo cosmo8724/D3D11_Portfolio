@@ -44,13 +44,14 @@ HRESULT CLeviathan::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	m_pLeviathan_State = CLeviathan_State::Create(m_pDevice, m_pContext, this, m_pStateMachineCom, m_pModelCom, m_pTransformCom);
 
+	m_pModelCom->Set_PivotMatrix(XMMatrixRotationY(XMConvertToRadians(-90.f)));
 	m_pModelCom->Set_CurAnimationIndex(0);
 
 	m_tStatus.iMaxHP = 100;
 	m_tStatus.iHP = m_tStatus.iMaxHP;
 	m_tStatus.iAttack = 10;
 	m_tStatus.iSpecialAttack = 20;
-	m_tStatus.dInitAttackCoolTime = 3.0;
+	m_tStatus.dInitAttackCoolTime = 6.0;
 	m_tStatus.dCurAttackCoolTime = 0.0;
 	m_tStatus.dInitHitCoolTime = 1.5;
 	m_tStatus.dCurHitCoolTime = 0.0;
@@ -138,7 +139,7 @@ void CLeviathan::Late_Tick(_double dTimeDelta)
 
 	if (nullptr != m_pRendererCom)
 	{
-		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 20.f))
+		//if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 20.f))
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
