@@ -18,7 +18,7 @@ class CSigrid final : public CGameObject
 	friend	class CSigrid_State;
 
 public:
-	enum NAVIGATIONTYPE { NAVI_DEFAULT, NAVI_ROOF, NAVI_SKY, NAVI_FANTASY, NAVI_END };
+	enum NAVIGATIONTYPE { NAVI_DEFAULT, NAVI_ROOF, NAVI_SKY, NAVI_FANTASY, NAVI_HELLHEIM, NAVI_END };
 
 private:
 	CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext);
@@ -46,6 +46,7 @@ public:
 		m_vSnapGrappleLook = matWorld.r[2];
 		m_vSnapGrappleRight = matWorld.r[0];
 	}
+	void						Set_BossBattle(_bool bBossBattle) { m_bBossBattle = bBossBattle; }
 	const _bool&				Is_GrappleHang() const { return m_bGrappleHang; }
 	const _bool&				Is_GrappleLauncher() const { return m_bGrappleLauncher; }
 
@@ -97,6 +98,7 @@ private:	/* State */
 	_float						m_fGravity;
 	_float						m_fInitJumpSpeed;
 	_float						m_fCurJumpSpeed;
+	_double					m_dPauseTime = 0.0;
 
 	_bool						m_bDash = false;
 	_float						m_fFriction;
@@ -114,6 +116,7 @@ private:	/* State */
 	_vector					m_vSnapGrappleLook;
 	_vector					m_vSnapGrappleRight;
 
+	_bool						m_bBossBattle = false;
 	_float						m_fGroundHeight = 0.f;
 
 private:

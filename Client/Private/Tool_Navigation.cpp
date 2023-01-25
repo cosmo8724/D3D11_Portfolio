@@ -234,6 +234,9 @@ void CTool_Navigation::ImGui_RenderWindow()
 								m_iCurPoint++;
 							}
 						}
+
+						if (m_iCurPoint == (_uint)POINT_END)
+							break;
 					}
 				}
 			}

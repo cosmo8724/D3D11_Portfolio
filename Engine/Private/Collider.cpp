@@ -12,6 +12,7 @@ CCollider::CCollider(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CCollider::CCollider(const CCollider & rhs)
 	: CComponent(rhs)
 	, m_eType(rhs.m_eType)
+	, m_ColliderDesc(rhs.m_ColliderDesc)
 #ifdef _DEBUG
 	, m_pBatch(rhs.m_pBatch)
 	, m_pEffect(rhs.m_pEffect)
@@ -83,37 +84,36 @@ HRESULT CCollider::Initialize(CGameObject * pOwner, void * pArg)
 {
 	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
 
-	COLLIDERDESC		ColliderDesc;
-	memcpy(&ColliderDesc, pArg, sizeof(COLLIDERDESC));
+	memcpy(&m_ColliderDesc, pArg, sizeof(m_ColliderDesc));
 
 	switch (m_eType)
 	{
 	case COLLIDER_SPHERE:
 		m_pSphere_Original = new BoundingSphere(_float3(0.f, 0.f, 0.f), 0.5f);
 		m_pSphere_Original->Transform(*m_pSphere_Original,
-			XMMatrixScaling(ColliderDesc.vSize.x, ColliderDesc.vSize.y, ColliderDesc.vSize.z) *
-			XMMatrixRotationX(ColliderDesc.vRotation.x) *
-			XMMatrixRotationY(ColliderDesc.vRotation.y) *
-			XMMatrixRotationZ(ColliderDesc.vRotation.z) *
-			XMMatrixTranslation(ColliderDesc.vPosition.x, ColliderDesc.vPosition.y, ColliderDesc.vPosition.z));
+			XMMatrixScaling(m_ColliderDesc.vSize.x, m_ColliderDesc.vSize.y, m_ColliderDesc.vSize.z) *
+			XMMatrixRotationX(m_ColliderDesc.vRotation.x) *
+			XMMatrixRotationY(m_ColliderDesc.vRotation.y) *
+			XMMatrixRotationZ(m_ColliderDesc.vRotation.z) *
+			XMMatrixTranslation(m_ColliderDesc.vPosition.x, m_ColliderDesc.vPosition.y, m_ColliderDesc.vPosition.z));
 		m_pSphere = new BoundingSphere(*m_pSphere_Original);
 		break;
 
 	case COLLIDER_AABB:
 		m_pAABB_Original = new BoundingBox(_float3(0.f, 0.f, 0.f), _float3(0.5f, 0.5f, 0.5f));
 		m_pAABB_Original->Transform(*m_pAABB_Original,
-			XMMatrixScaling(ColliderDesc.vSize.x, ColliderDesc.vSize.y, ColliderDesc.vSize.z) *
-			XMMatrixTranslation(ColliderDesc.vPosition.x, ColliderDesc.vPosition.y, ColliderDesc.vPosition.z));
+			XMMatrixScaling(m_ColliderDesc.vSize.x, m_ColliderDesc.vSize.y, m_ColliderDesc.vSize.z) *
+			XMMatrixTranslation(m_ColliderDesc.vPosition.x, m_ColliderDesc.vPosition.y, m_ColliderDesc.vPosition.z));
 		m_pAABB = new BoundingBox(*m_pAABB_Original);
 		break;
 
 	case COLLIDER_OBB:
-		m_pOBB_Original = new BoundingOrientedBox(_float3(0.f, 0.f, 0.f), _float3(ColliderDesc.vSize.x * 0.5f, ColliderDesc.vSize.y * 0.5f, ColliderDesc.vSize.z * 0.5f), _float4(0.f, 0.f, 0.f, 1.f));
+		m_pOBB_Original = new BoundingOrientedBox(_float3(0.f, 0.f, 0.f), _float3(m_ColliderDesc.vSize.x * 0.5f, m_ColliderDesc.vSize.y * 0.5f, m_ColliderDesc.vSize.z * 0.5f), _float4(0.f, 0.f, 0.f, 1.f));
 		m_pOBB_Original->Transform(*m_pOBB_Original,
-			XMMatrixRotationX(ColliderDesc.vRotation.x) *
-			XMMatrixRotationY(ColliderDesc.vRotation.y) *
-			XMMatrixRotationZ(ColliderDesc.vRotation.z) *
-			XMMatrixTranslation(ColliderDesc.vPosition.x, ColliderDesc.vPosition.y, ColliderDesc.vPosition.z));
+			XMMatrixRotationX(m_ColliderDesc.vRotation.x) *
+			XMMatrixRotationY(m_ColliderDesc.vRotation.y) *
+			XMMatrixRotationZ(m_ColliderDesc.vRotation.z) *
+			XMMatrixTranslation(m_ColliderDesc.vPosition.x, m_ColliderDesc.vPosition.y, m_ColliderDesc.vPosition.z));
 		m_pOBB = new BoundingOrientedBox(*m_pOBB_Original);
 		break;
 	}
@@ -135,6 +135,25 @@ void CCollider::Update(_fmatrix matTransform)
 
 	case COLLIDER_OBB:
 		m_pOBB_Original->Transform(*m_pOBB, matTransform);
+		break;
+	}
+}
+
+void CCollider::Resize(_float fSizeX, _float fSizeY, _float fSizeZ)
+{
+	switch (m_eType)
+	{
+	case COLLIDER_SPHERE:
+		m_pSphere_Original->Transform(*m_pSphere_Original, XMMatrixScaling(m_ColliderDesc.vSize.x * fSizeX, m_ColliderDesc.vSize.y * fSizeY, m_ColliderDesc.vSize.z * fSizeZ)  *
+			XMMatrixRotationX(m_ColliderDesc.vRotation.x) *
+			XMMatrixRotationY(m_ColliderDesc.vRotation.y) *
+			XMMatrixRotationZ(m_ColliderDesc.vRotation.z) *
+			XMMatrixTranslation(m_ColliderDesc.vPosition.x, m_ColliderDesc.vPosition.y, m_ColliderDesc.vPosition.z));
+		break;
+
+	case COLLIDER_AABB:
+		m_pAABB_Original->Transform(*m_pAABB_Original, XMMatrixScaling(fSizeX, fSizeY, fSizeZ) *
+			XMMatrixTranslation(m_ColliderDesc.vPosition.x, m_ColliderDesc.vPosition.y, m_ColliderDesc.vPosition.z));
 		break;
 	}
 }

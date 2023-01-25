@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Fantasy_Island.h"
 #include "GameInstance.h"
+#include "Sigrid.h"
 
 CFantasy_Island::CFantasy_Island(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -35,17 +36,32 @@ HRESULT CFantasy_Island::Initialize(const wstring & wstrPrototypeTag, void * pAr
 void CFantasy_Island::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	m_pPortalRangeCom->Update(XMMatrixTranslation(454.240f, 14.35f, 590.116f));
 }
 
 void CFantasy_Island::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
+	CSigrid*	pSigrid = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back());
+
+	if (m_pPortalRangeCom->Collision(dynamic_cast<CCollider*>(pSigrid->Get_Component(L"Com_OBB"))))
+	{
+		if (CGameInstance::GetInstance()->Key_Down(DIK_E))
+		{
+			dynamic_cast<CTransform*>(pSigrid->Get_Component(L"Com_Transform"))->Set_State(CTransform::STATE_TRANS, XMVectorSet(160.f, 761.2f, 522.669f, 1.f));
+		}
+	}
+
 	_float4		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 200.f))
+	if (nullptr != m_pRendererCom /*&&
+		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 200.f)*/)
+	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_DebugRenderGroup(m_pPortalRangeCom);
+	}
 }
 
 HRESULT CFantasy_Island::Render()
@@ -78,8 +94,8 @@ pair<_bool, _float3> CFantasy_Island::Picking_Mesh()
 
 	_float		fDist = XMVectorGetX(XMVector3Length(vPos - vCamPos));
 
-	if (fDist > 500.f)
-		return pair<_bool, _float3>(false, _float3(0.f, 0.f, 0.f));
+	//if (fDist > 500.f)
+	//	return pair<_bool, _float3>(false, _float3(0.f, 0.f, 0.f));
 
 	return m_pModelCom->Picking(g_hWnd, m_pTransformCom);
 }
@@ -91,6 +107,13 @@ HRESULT CFantasy_Island::SetUp_Component()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Shader_NonAnim", L"Com_Shader", (CComponent**)&m_pShaderCom, this), E_FAIL);
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Fantasy_Island", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
+
+	CCollider::COLLIDERDESC	ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(5.f, 5.f, 5.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere", (CComponent**)&m_pPortalRangeCom, this, &ColliderDesc), E_FAIL);
 
 	return S_OK;
 }
@@ -142,4 +165,5 @@ void CFantasy_Island::Free()
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pPortalRangeCom);
 }

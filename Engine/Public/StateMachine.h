@@ -25,7 +25,9 @@ protected:
 	virtual ~CStateMachine() = default;
 
 public:
+	const wstring&			Get_LastState() { return m_wstrLastStateName; }
 	const wstring&			Get_CurrentState() { return m_wstrCurrentStateName; }
+	const wstring&			Get_NextState() { return m_wstrNextStateName; }
 
 public:
 	CStateMachine&			Set_Root(const wstring& wstrStateName);

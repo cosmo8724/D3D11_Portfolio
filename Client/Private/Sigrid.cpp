@@ -228,6 +228,7 @@ HRESULT CSigrid::SetUp_Component()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Roof", L"Com_Navigation_Roof", (CComponent**)&m_pNavigationCom[NAVI_ROOF], this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Sky", L"Com_Navigation_Sky", (CComponent**)&m_pNavigationCom[NAVI_SKY], this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Fantasy_Island", L"Com_Navigation_Fantasy_Island", (CComponent**)&m_pNavigationCom[NAVI_FANTASY], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Hellheim", L"Com_Navigation_Hellheim", (CComponent**)&m_pNavigationCom[NAVI_HELLHEIM], this), E_FAIL);
 
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_StateMachine", L"Com_StateMachine", (CComponent**)&m_pStateMachineCom, this), E_FAIL);
 

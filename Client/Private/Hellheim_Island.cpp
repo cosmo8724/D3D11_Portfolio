@@ -27,7 +27,7 @@ HRESULT CHellheim_Island::Initialize(const wstring & wstrPrototypeTag, void * pA
 
 	m_pTransformCom->Set_Scale(_float3(0.15f, 0.15f, 0.15f));
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -XMConvertToRadians(90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(1200.f, 450.f, 1670.f, 1.f));
+	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(880.f, 800.f, 1100.f, 1.f));
 
 	return S_OK;
 }
@@ -45,8 +45,8 @@ void CHellheim_Island::Late_Tick(_double dTimeDelta)
 	vPos.x -= 400.f;
 	vPos.z -= 600.f;
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 200.f))
+	if (nullptr != m_pRendererCom /*&&
+		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 200.f)*/)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
@@ -81,7 +81,7 @@ pair<_bool, _float3> CHellheim_Island::Picking_Mesh()
 
 	_float		fDist = XMVectorGetX(XMVector3Length(vPos - vCamPos));
 
-	if (fDist > 300.f)
+	if (fDist > 1000.f)
 		return pair<_bool, _float3>(false, _float3(0.f, 0.f, 0.f));
 
 	return m_pModelCom->Picking(g_hWnd, m_pTransformCom);

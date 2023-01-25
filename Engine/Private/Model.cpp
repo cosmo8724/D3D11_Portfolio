@@ -384,7 +384,7 @@ HRESULT CModel::Bind_Material(CShader * pShaderCom, _uint iMeshIndex, aiTextureT
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName, _uint iPassIndex)
+HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName, _uint iPassIndex, _fmatrix matPivot)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 
@@ -394,7 +394,10 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & w
 		{
 			_float4x4		matBones[600];
 
-			m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, XMLoadFloat4x4(&m_matPivot));
+			if (XMVectorGetX(XMVectorEqual(matPivot.r[0], XMVectorSet(1.f, 0.f, 0.f, 0.f))))
+				m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, XMLoadFloat4x4(&m_matPivot));
+			else
+				m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, matPivot);
 
 			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 600);
 		}

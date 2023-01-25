@@ -31,6 +31,7 @@ public:
 
 public:
 	void						Update(_fmatrix matTransform);
+	void						Resize(_float fSizeX, _float fSizeY, _float fSizeZ);
 	_bool						Collision(CCollider* pTargetCollider);
 	_bool						Collision_Ray(_fvector vRayPos, _fvector vRayDir, _float& fDist);
 	class CGameObject*		CollisionReturnObj(CCollider* pTargetCollider);
@@ -42,6 +43,7 @@ public:
 
 private:
 	COLLIDERTYPE			m_eType = COLLIDERTYPE_END;
+	COLLIDERDESC			m_ColliderDesc;
 	_bool						m_bIsCollide = false;
 
 	BoundingSphere*			m_pSphere_Original = nullptr;

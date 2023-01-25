@@ -45,7 +45,7 @@ public:
 public:
 	void								Play_Animation(_double dTimeDelta, LERPTYPE eType = LERP_BEGIN, const wstring& wstrRootBoneName = L"");
 	HRESULT							Bind_Material(class CShader* pShaderCom, _uint iMeshIndex, aiTextureType eType, const wstring& wstrConstantName);
-	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"", _uint iPassIndex = 0);
+	HRESULT							Render(class CShader* pShaderCom, _uint iMeshIndex, const wstring& wstrBoneConstantName = L"", _uint iPassIndex = 0, _fmatrix matPivot = XMMatrixIdentity());
 	pair<_bool, _float3>				Picking(HWND& hWnd, class CTransform* pTransformCom);
 	_bool								IsInFrustum(_uint iMeshIndex, _fmatrix matWorld);
 

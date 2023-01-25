@@ -649,6 +649,7 @@ private:		/* State Changer*/
 	_bool	GrappleLaunchAngle90();
 	_bool	GrappleLaunchAngleNeg45();
 	_bool	GrappleLaunchAngleNeg90();
+	_bool	Grapple_Done();
 	_bool	ReadyLaunch();
 	_bool	ReadyHang();
 	_bool	Turn_Back();

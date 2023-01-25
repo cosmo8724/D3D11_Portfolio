@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Leviathan_State.h"
 #include "Sigrid.h"
+#include "Static_Camera.h"
 
 CLeviathan::CLeviathan(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CEnemy(pDevice, pContext)
@@ -78,6 +79,41 @@ void CLeviathan::Tick(_double dTimeDelta)
 
 	matSocket = m_pModelCom->Get_BoneMatrix("C_Tongue_b");
 	m_pSphereCol[HEAD]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	CStatic_Camera*	pCamera = dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back());
+	CSigrid*				pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back());
+
+	_vector	vRayPos, vRayDir;
+	_float		fDist = 0.f;
+
+	vRayPos = XMLoadFloat4x4(&pCamera->Get_WorldMatrix()).r[3];
+	vRayDir = XMVector3Normalize(XMLoadFloat4x4(&pCamera->Get_WorldMatrix()).r[2]);
+
+	if (m_pSphereCol[HEAD]->Collision_Ray(vRayPos, vRayDir, fDist) && fDist < 30.f && fDist > 5.f)
+	{
+		if (CGameInstance::GetInstance()->Key_Down(DIK_E) && pPlayer->Is_GrappleLauncher() == false)
+		{
+			_vector		vPlayerPos = XMLoadFloat4x4(&pPlayer->Get_WorldMatrix()).r[3];
+			_vector		vPlayerLook = XMLoadFloat4x4(&pPlayer->Get_WorldMatrix()).r[2];
+			vPlayerLook = XMVectorSetY(vPlayerLook, 0.f);
+			_vector		vHeadPos = (matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix())).r[3];
+			_vector		vDir = XMVector3Normalize(vPlayerPos - vHeadPos);
+
+			_float			fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(vPlayerLook), XMVector3Normalize(vHeadPos - vPlayerPos))));
+
+			if (fAngle < XMConvertToRadians(25.f))
+				fAngle = 0.f;
+			else if (fAngle > XMConvertToRadians(25.f) && fAngle < XMConvertToRadians(75.f))
+				fAngle = XMConvertToRadians(45.f);
+			else
+				fAngle = XMConvertToRadians(90.f);
+
+			if (XMVectorGetY(vPlayerPos) > XMVectorGetY(vHeadPos))
+				fAngle *= -1.f;
+
+			pPlayer->Set_SnapGrappleFast(fAngle, 0.f, vHeadPos + XMVector3Normalize(XMVectorSetY(vDir, 0.f)) * 10.f, matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+		}
+	}
 
 	matSocket = m_pModelCom->Get_BoneMatrix("C_Tail_c");
 	m_pSphereCol[BODY_A]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));

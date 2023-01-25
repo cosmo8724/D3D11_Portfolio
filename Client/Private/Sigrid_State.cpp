@@ -61,6 +61,8 @@ void CSigrid_State::Tick(_double & dTimeDelta)
 {
 	m_eDir = DetectDirectionInput();
 
+	m_pPlayer->m_dPauseTime += dTimeDelta;
+
 	m_pPlayer->m_tStatus.dCurHitCoolTime += dTimeDelta;
 
 	if (m_pPlayer->m_tStatus.dCurHitCoolTime > m_pPlayer->m_tStatus.dInitHitCoolTime)
@@ -1585,6 +1587,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Ground()
 		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Fire_Fast)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_GROUND_FIRE_FAST_45")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Fire_Fast_45)
@@ -1592,6 +1595,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Ground()
 		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Fire_Fast_45)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_GROUND_FIRE_FAST_90")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Fire_Fast_90)
@@ -1599,6 +1603,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Ground()
 		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Fire_Fast_90)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_GROUND_FIRE_FAST_NEGATIVE_45")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Fire_Fast_Negative_45)
@@ -1606,6 +1611,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Ground()
 		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Fire_Fast_Negative_45)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_GROUND_FIRE_FAST_NEGATIVE_90")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Fire_Fast_Negative_90)
@@ -1613,6 +1619,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Ground()
 		.Init_End(this, &CSigrid_State::End_Grapple_Ground_Fire_Fast_Negative_90)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_GROUND_FIRE_SLOW")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Ground_Fire_Slow)
@@ -1675,6 +1682,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Air()
 		.Init_End(this, &CSigrid_State::End_Grapple_Air_Fire_Fast)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_AIR_FIRE_FAST_45")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Fire_Fast_45)
@@ -1682,6 +1690,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Air()
 		.Init_End(this, &CSigrid_State::End_Grapple_Air_Fire_Fast_45)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_AIR_FIRE_FAST_90")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Fire_Fast_90)
@@ -1689,6 +1698,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Air()
 		.Init_End(this, &CSigrid_State::End_Grapple_Air_Fire_Fast_90)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_AIR_FIRE_FAST_NEGATIVE_45")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Fire_Fast_Negative_45)
@@ -1696,6 +1706,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Air()
 		.Init_End(this, &CSigrid_State::End_Grapple_Air_Fire_Fast_Negative_45)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_AIR_FIRE_FAST_NEGATIVE_90")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Fire_Fast_Negative_90)
@@ -1703,6 +1714,7 @@ HRESULT CSigrid_State::SetUp_State_Grapple_Air()
 		.Init_End(this, &CSigrid_State::End_Grapple_Air_Fire_Fast_Negative_90)
 		.Init_Changer(L"GRAPPLE_LAUNCH_READY", this, &CSigrid_State::ReadyLaunch)
 		.Init_Changer(L"GRAPPLE_HANG_INTRO", this, &CSigrid_State::ReadyHang)
+		.Init_Changer(L"AIR", this, &CSigrid_State::Grapple_Done)
 
 		.Add_State(L"GRAPPLE_AIR_FIRE_SLOW")
 		.Init_Start(this, &CSigrid_State::Start_Grapple_Air_Fire_Slow)
@@ -3453,6 +3465,9 @@ void CSigrid_State::Tick_Dash_Into_Surf_Fast(_double dTimeDelta)
 
 void CSigrid_State::Tick_Air(_double dTimeDelta)
 {
+	if (m_pPlayer->m_dPauseTime < 1.0)
+		return;
+
 	m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 	Move(dTimeDelta, m_eDir);
 }
@@ -4516,42 +4531,112 @@ void CSigrid_State::End_Grapple_Ground_Fire(_double dTimeDelta)
 
 void CSigrid_State::End_Grapple_Ground_Fire_Fast(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Fast_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Fast_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Fast_Negative_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Fast_Negative_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Slow(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Slow_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Slow_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Slow_Negative_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Slow_Negative_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire(_double dTimeDelta)
@@ -4562,42 +4647,112 @@ void CSigrid_State::End_Grapple_Air_Fire(_double dTimeDelta)
 
 void CSigrid_State::End_Grapple_Air_Fire_Fast(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Fast_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Fast_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Fast_Negative_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Fast_Negative_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Slow(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Slow_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Slow_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 {
+	if (m_pStateMachine->Get_NextState() == L"AIR")
+	{
+		m_pPlayer->m_fCurJumpSpeed = 0.f;
+		m_pPlayer->m_dPauseTime = 0.0;
+	}
+
+	m_pPlayer->m_bReadyLaunch = false;
 }
 
 void CSigrid_State::End_Grapple_Ground_Aim(_double dTimeDelta)
@@ -5336,7 +5491,7 @@ _bool CSigrid_State::SnapGrappleSlowNeg90()
 
 _bool CSigrid_State::GrappleLaunchAngle0()
 {
-	if (m_pPlayer->m_bReadyLaunch)
+	//if (m_pPlayer->m_bReadyLaunch)
 	{
 		if (m_pPlayer->m_fLauncherAngle == XMConvertToRadians(0.f))
 			return true;
@@ -5347,7 +5502,7 @@ _bool CSigrid_State::GrappleLaunchAngle0()
 
 _bool CSigrid_State::GrappleLaunchAngle45()
 {
-	if (m_pPlayer->m_bReadyLaunch)
+	//if (m_pPlayer->m_bReadyLaunch)
 	{
 		if (m_pPlayer->m_fLauncherAngle == XMConvertToRadians(45.f))
 			return true;
@@ -5358,7 +5513,7 @@ _bool CSigrid_State::GrappleLaunchAngle45()
 
 _bool CSigrid_State::GrappleLaunchAngle90()
 {
-	if (m_pPlayer->m_bReadyLaunch)
+	//if (m_pPlayer->m_bReadyLaunch)
 	{
 		if (m_pPlayer->m_fLauncherAngle == XMConvertToRadians(90.f))
 			return true;
@@ -5369,7 +5524,7 @@ _bool CSigrid_State::GrappleLaunchAngle90()
 
 _bool CSigrid_State::GrappleLaunchAngleNeg45()
 {
-	if (m_pPlayer->m_bReadyLaunch)
+	//if (m_pPlayer->m_bReadyLaunch)
 	{
 		if (m_pPlayer->m_fLauncherAngle == -XMConvertToRadians(45.f))
 			return true;
@@ -5380,13 +5535,18 @@ _bool CSigrid_State::GrappleLaunchAngleNeg45()
 
 _bool CSigrid_State::GrappleLaunchAngleNeg90()
 {
-	if (m_pPlayer->m_bReadyLaunch)
+	//if (m_pPlayer->m_bReadyLaunch)
 	{
 		if (m_pPlayer->m_fLauncherAngle == -XMConvertToRadians(90.f))
 			return true;
 	}
 
 	return false;
+}
+
+_bool CSigrid_State::Grapple_Done()
+{
+	return m_pPlayer->m_bReadyLaunch && !m_pPlayer->m_bGrappleLauncher && !m_pPlayer->m_bGrappleHang;
 }
 
 _bool CSigrid_State::ReadyLaunch()

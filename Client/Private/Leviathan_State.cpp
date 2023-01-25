@@ -65,7 +65,22 @@ void CLeviathan_State::Tick(_double dTimeDelta)
 void CLeviathan_State::Late_Tick(_double dTimeDelta)
 {
 	if (m_pLeviathan->m_pPlayer->Collision_Body(m_pLeviathan->m_pRangeCol))
+	{
 		m_pLeviathan->m_bPlayerDetected = true;
+		m_pLeviathan->m_pPlayer->Set_BossBattle(true);
+	}
+
+	for (auto& pSphereCollider : m_pLeviathan->m_pSphereCol)
+	{
+		if (m_pLeviathan->m_pPlayer->Collision_Body(pSphereCollider))
+			m_pLeviathan->m_pPlayer->Collision_Event(m_pLeviathan);
+
+		if (m_pLeviathan->m_pPlayer->Is_Attack() == true && m_pLeviathan->m_tStatus.dCurHitCoolTime >= m_pLeviathan->m_tStatus.dInitHitCoolTime)
+		{
+			if (m_pLeviathan->m_pPlayer->Collision_Net(pSphereCollider))
+				m_pLeviathan->Collision_Event(m_pLeviathan->m_pPlayer);
+		}
+	}
 
 	/* Debug */
 	if (m_pGameInstance->Key_Down(DIK_F6))
