@@ -21,7 +21,8 @@ public:
 	const wstring&			Get_PrototypeGameObjectTag() { return m_wstrPrototypeGameObjectTag; }
 	const _bool&				Get_HasModel() { return m_bHasModel; }
 	const _float4x4&		Get_WorldMatrix() const { return m_pTransformCom->Get_WorldMatrix(); }
-	const STATUS&			Get_Status() const { return m_tStatus; }
+	STATUS&					Get_Status() { return m_tStatus; }
+	const _bool&				Is_Dead() const { return m_bDead; }
 	const _bool&				Is_Attack() const { return m_bAttack; }
 	const _bool&				Is_SpecialAttack() const { return m_bSpecialAttack; }
 	void						Set_WorldMatrix(_float4x4 matWorld) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(matWorld); }

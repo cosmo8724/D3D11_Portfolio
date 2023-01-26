@@ -184,6 +184,11 @@
     <ClInclude Include="..\Public\Leviathan.h" />
     <ClInclude Include="..\Public\Leviathan_State.h" />
     <ClInclude Include="..\Public\MainIsland.h" />
+    <ClInclude Include="..\Public\MonsterDrink.h" />
+    <ClInclude Include="..\Public\Monster_Black.h" />
+    <ClInclude Include="..\Public\Monster_Orange.h" />
+    <ClInclude Include="..\Public\Monster_Pink.h" />
+    <ClInclude Include="..\Public\Monster_White.h" />
     <ClInclude Include="..\Public\Mystic_Island.h" />
     <ClInclude Include="..\Public\NPC.h" />
     <ClInclude Include="..\Public\Ocean.h" />
@@ -254,6 +259,11 @@
     <ClCompile Include="..\Private\Leviathan.cpp" />
     <ClCompile Include="..\Private\Leviathan_State.cpp" />
     <ClCompile Include="..\Private\MainIsland.cpp" />
+    <ClCompile Include="..\Private\MonsterDrink.cpp" />
+    <ClCompile Include="..\Private\Monster_Black.cpp" />
+    <ClCompile Include="..\Private\Monster_Orange.cpp" />
+    <ClCompile Include="..\Private\Monster_Pink.cpp" />
+    <ClCompile Include="..\Private\Monster_White.cpp" />
     <ClCompile Include="..\Private\Mystic_Island.cpp" />
     <ClCompile Include="..\Private\NPC.cpp" />
     <ClCompile Include="..\Private\Ocean.cpp" />

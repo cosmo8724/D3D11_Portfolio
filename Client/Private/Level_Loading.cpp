@@ -10,13 +10,14 @@ CLevel_Loading::CLevel_Loading(DEVICE pDevice, DEVICE_CONTEXT pContext)
 {
 }
 
-HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
+HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel, const wstring & wstrProtoComFilePath, const wstring & wstrProtoObjFilePath, const wstring & wstrCloneObjFilePath)
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
 
 	m_eNextLevel = eNextLevel;
+	m_wstrCloneObjFilePath = wstrCloneObjFilePath;
 
-	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel);
+	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel, wstrProtoComFilePath, wstrProtoObjFilePath);
 	NULL_CHECK_RETURN(m_pLoader, E_FAIL);
 
 	return S_OK;
@@ -43,11 +44,11 @@ void CLevel_Loading::Late_Tick(_double dTimeDelta)
 			switch (m_eNextLevel)
 			{
 			case LEVEL_LOGO:
-				pLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+				pLevel = CLevel_Logo::Create(m_pDevice, m_pContext, m_wstrCloneObjFilePath);
 				break;
 
 			case LEVEL_TESTSTAGE:
-				pLevel = CLevel_TestStage::Create(m_pDevice, m_pContext);
+				pLevel = CLevel_TestStage::Create(m_pDevice, m_pContext, m_wstrCloneObjFilePath);
 				break;
 			}
 
@@ -70,11 +71,11 @@ HRESULT CLevel_Loading::Render()
 	return S_OK;
 }
 
-CLevel_Loading * CLevel_Loading::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, LEVEL eNextLevel)
+CLevel_Loading * CLevel_Loading::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, LEVEL eNextLevel, const wstring & wstrProtoComFilePath, const wstring & wstrProtoObjFilePath, const wstring & wstrCloneObjFilePath)
 {
 	CLevel_Loading*		pInstance = new CLevel_Loading(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eNextLevel)))
+	if (FAILED(pInstance->Initialize(eNextLevel, wstrProtoComFilePath, wstrProtoObjFilePath, wstrCloneObjFilePath)))
 	{
 		MSG_BOX("Failed to Create : CLevel_Loading");
 		Safe_Release(pInstance);

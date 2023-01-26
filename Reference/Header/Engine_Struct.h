@@ -17,6 +17,7 @@ namespace Engine
 	{
 		_int			iHP;
 		_int			iMaxHP;
+		_int			iCoin;
 		_int			iAttack;
 		_int			iSpecialAttack;
 		_double		dInitAttackCoolTime;

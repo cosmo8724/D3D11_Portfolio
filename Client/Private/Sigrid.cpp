@@ -102,7 +102,7 @@ void CSigrid::Tick(_double dTimeDelta)
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, m_dTimeScale);
 
 	m_pOBBCol->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
-	m_pSphereCol->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pSphereCol->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
 
 	_matrix	matNetRing = m_pModelCom->Get_BoneMatrix("NetRing DEF 1");
 	m_pNetSphereCol->Update(matNetRing * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
@@ -147,6 +147,7 @@ void CSigrid::ImGui_RenderProperty()
 {
 	__super::ImGui_RenderProperty();
 
+	ImGui::InputInt("Coin", &m_tStatus.iCoin, 0, 0, ImGuiInputTextFlags_ReadOnly);
 	ImGui::InputInt("Navigation", (_int*)&m_eCurNavigation, 1, 1);
 
 	_int	iCurNavigation = (_int)m_eCurNavigation;

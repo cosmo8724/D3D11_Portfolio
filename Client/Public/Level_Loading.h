@@ -11,7 +11,7 @@ private:
 	virtual ~CLevel_Loading() = default;
 
 public:
-	virtual HRESULT	Initialize(LEVEL eNextLevel);	/* Only For LoadingLevel */
+	virtual HRESULT	Initialize(LEVEL eNextLevel, const wstring& wstrProtoComFilePath, const wstring& wstrProtoObjFilePath, const wstring& wstrCloneObjFilePath);	/* Only For LoadingLevel */
 	virtual void		Tick(_double dTimeDelta) override;
 	virtual void		Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT	Render() override;
@@ -19,9 +19,10 @@ public:
 private:
 	class CLoader*	m_pLoader = nullptr;
 	LEVEL				m_eNextLevel = LEVEL_END;
+	wstring			m_wstrCloneObjFilePath = L"";
 
 public:
-	static CLevel_Loading*		Create(DEVICE pDevice, DEVICE_CONTEXT pContext, LEVEL eNextLevel);
+	static CLevel_Loading*		Create(DEVICE pDevice, DEVICE_CONTEXT pContext, LEVEL eNextLevel, const wstring& wstrProtoComFilePath = L"", const wstring& wstrProtoObjFilePath = L"", const wstring& wstrCloneObjFilePath = L"");
 	virtual void					Free() override;
 };
 

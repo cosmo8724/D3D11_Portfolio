@@ -13,13 +13,15 @@ private:
 public:
 	const LEVEL&			Get_NextLevel() const		{ return m_eNextLevel; }
 	const wstring&		Get_LoadingText() const	{ return m_wstrLoadingText; }
+	const wstring&		Get_ProtoComFilePath() const { return m_wstrProtoComFilePath; }
+	const wstring&		Get_ProtoObjFilePath() const { return m_wstrProtoObjFilePath; }
 	CRITICAL_SECTION	Get_CriticalSection() const { return m_CriticalSection; }
 	const _bool&			IsFinished() const			{ return m_bIsFinished; }
 
 public:
-	HRESULT			Initialize(LEVEL eNextLevel);
-	HRESULT			Loading_ForLogo();
-	HRESULT			Loading_ForGamePlay();
+	HRESULT			Initialize(LEVEL eNextLevel, const wstring& wstrProtoComFilePath, const wstring& wstrProtoObjFilePath);
+	HRESULT			Loading_ForLogo(const wstring& wstrProtoComFilePath, const wstring& wstrProtoObjFilePath);
+	HRESULT			Loading_ForGamePlay(const wstring& wstrProtoComFilePath, const wstring& wstrProtoObjFilePath);
 
 private:
 	DEVICE				m_pDevice = nullptr;
@@ -32,8 +34,11 @@ private:
 	_bool					m_bIsFinished = false;
 	wstring				m_wstrLoadingText = L"";
 
+	wstring				m_wstrProtoComFilePath = L"";
+	wstring				m_wstrProtoObjFilePath = L"";
+
 public:
-	static	CLoader*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, LEVEL eNextLevel);
+	static	CLoader*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, LEVEL eNextLevel, const wstring& wstrProtoComFilePath, const wstring& wstrProtoObjFilePath);
 	virtual void		Free() override;
 };
 

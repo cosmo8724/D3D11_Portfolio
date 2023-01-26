@@ -1,36 +1,45 @@
 #include "stdafx.h"
 #include "..\Public\Level_TestStage.h"
 #include "GameInstance.h"
+#include "Json/json.hpp"
+#include <fstream>
 #include "Enemy.h"
 #include "Sigrid.h"
 #include "Camera.h"
+#include "NPC.h"
+#include "MonsterDrink.h"
 
 CLevel_TestStage::CLevel_TestStage(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CLevel(pDevice, pContext)
 {
 }
 
-HRESULT CLevel_TestStage::Initialize()
+HRESULT CLevel_TestStage::Initialize(const wstring & wstrCloneObjFilePath)
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
 	
 	//FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
+	if (wstrCloneObjFilePath == L"")
+	{
+		FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_SkyBox(L"Layer_SkyBox"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_SkyBox(L"Layer_SkyBox"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_NPCs(L"Layer_NPCs"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_NPCs(L"Layer_NPCs"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Islands(L"Layer_Islands"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Islands(L"Layer_Islands"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Enemies(L"Layer_Enemies"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Enemies(L"Layer_Enemies"), E_FAIL);
 
-	FAILED_CHECK_RETURN(Ready_Layer_Objects(L"Layer_Objects"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Objects(L"Layer_Objects"), E_FAIL);
+	}
+	else
+		FAILED_CHECK_RETURN(Load_CloneObjects(wstrCloneObjFilePath), E_FAIL);
 
 	return S_OK;
 }
@@ -50,6 +59,104 @@ HRESULT CLevel_TestStage::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	SetWindowText(g_hWnd, L"Level : Test Stage");
+
+	return S_OK;
+}
+
+HRESULT CLevel_TestStage::Load_CloneObjects(const wstring & wstrCloneObjFilePath)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	Json		jLayers;
+
+	ifstream	file(wstrCloneObjFilePath.c_str());
+	file >> jLayers;
+	file.close();
+
+	CSigrid*	pPlayer = nullptr;
+
+	for (auto jLayer : jLayers["Layers"])
+	{
+		string		strLayerTag = "";
+		wstring	wstrLayerTag = L"";
+		jLayer["Layer Tag"].get_to<string>(strLayerTag);
+
+		if (strLayerTag == "Layer_Enemies" || strLayerTag == "Layer_NPCs" || strLayerTag == "Layer_Coins")
+			continue;
+
+		wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
+
+		for (auto jCloneObj : jLayer["Clone Objects"])
+		{
+			string		strPrototypeObjTag = "";
+			wstring	wstrPrototypeObjTag = L"";
+			jCloneObj["Prototype GameObject Tag"].get_to<string>(strPrototypeObjTag);
+
+			wstrPrototypeObjTag.assign(strPrototypeObjTag.begin(), strPrototypeObjTag.end());
+
+			_float4x4		matWorld;
+			XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
+
+			_uint	k = 0;
+			for (_float fElement : jCloneObj["Transform State"])
+				memcpy(((_float*)&matWorld) + (k++), &fElement, sizeof(_float));
+
+			CGameObject*	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+			if (dynamic_cast<CSigrid*>(pGameObject))
+				pPlayer = dynamic_cast<CSigrid*>(pGameObject);
+		}
+	}
+
+	for (auto jLayer : jLayers["Layers"])
+	{
+		string		strLayerTag = "";
+		wstring	wstrLayerTag = L"";
+		jLayer["Layer Tag"].get_to<string>(strLayerTag);
+
+		if (strLayerTag != "Layer_Enemies" && strLayerTag != "Layer_NPCs" && strLayerTag != "Layer_Coins")
+			continue;
+
+		wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
+
+		for (auto jCloneObj : jLayer["Clone Objects"])
+		{
+			string		strPrototypeObjTag = "";
+			wstring	wstrPrototypeObjTag = L"";
+			jCloneObj["Prototype GameObject Tag"].get_to<string>(strPrototypeObjTag);
+
+			wstrPrototypeObjTag.assign(strPrototypeObjTag.begin(), strPrototypeObjTag.end());
+
+			_float4x4		matWorld;
+			XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
+
+			_uint	k = 0;
+			for (_float fElement : jCloneObj["Transform State"])
+				memcpy(((_float*)&matWorld) + (k++), &fElement, sizeof(_float));
+
+			CGameObject*	pGameObject = pGameInstance->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+
+			if (strLayerTag == "Layer_Enemies")
+			{
+				if (CEnemy*	pEnemy = dynamic_cast<CEnemy*>(pGameObject))
+					pEnemy->Set_Player(pPlayer);
+			}
+			else if (strLayerTag == "Layer_NPCs")
+			{
+				if (CNPC*		pNPC = dynamic_cast<CNPC*>(pGameObject))
+					pNPC->Set_Player(pPlayer);
+			}
+			else if (strLayerTag == "Layer_Coins")
+			{
+				if (CMonsterDrink*	pCoin = dynamic_cast<CMonsterDrink*>(pGameObject))
+					pCoin->Set_Player(pPlayer);
+			}
+		}
+	}
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
 
 	return S_OK;
 }
@@ -119,7 +226,7 @@ HRESULT CLevel_TestStage::Ready_Layer_SkyBox(const wstring & wstrLayerTag)
 	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
 	Safe_AddRef(pGameInstance);
 
-	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, L"Prototype_GameObject_SkyBox"), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_SkyBox"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 
@@ -210,11 +317,11 @@ HRESULT CLevel_TestStage::Ready_Layer_Objects(const wstring & wstrLayerTag)
 	return S_OK;
 }
 
-CLevel_TestStage * CLevel_TestStage::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
+CLevel_TestStage * CLevel_TestStage::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrCloneObjFilePath)
 {
 	CLevel_TestStage*		pInstance = new CLevel_TestStage(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize()))
+	if (FAILED(pInstance->Initialize(wstrCloneObjFilePath)))
 	{
 		MSG_BOX("Failed to Create : CLevel_GamePlay");
 		Safe_Release(pInstance);

@@ -325,7 +325,7 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 	if (bPickingCell)
 	{
-		pair<_bool, _int>		Result = CGameUtility::Cell_Picking(g_hWnd, g_iWinSizeX, g_iWinSizeY, m_pNavigationCom);
+		pair<_bool, _int>		Result = CGameUtility::Cell_Picking(g_hWnd, (_float)g_iWinSizeX, (_float)g_iWinSizeY, m_pNavigationCom);
 
 		if (Result.first == true)
 		{

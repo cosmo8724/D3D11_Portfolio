@@ -7,6 +7,7 @@
 #include "Sigrid.h"
 #include "Enemy.h"
 #include "NPC.h"
+#include "MonsterDrink.h"
 
 CTool_MapEditor::CTool_MapEditor()
 {
@@ -118,6 +119,12 @@ void CTool_MapEditor::ImGui_RenderWindow()
 				{
 					CSigrid*	pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, L"Layer_Player")->back());
 					pNPC->Set_Player(pPlayer);
+				}
+
+				if (CMonsterDrink*	pCoin = dynamic_cast<CMonsterDrink*>(pGameObject))
+				{
+					CSigrid*	pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(m_iCurLevel, L"Layer_Player")->back());
+					pCoin->Set_Player(pPlayer);
 				}
 			}
 

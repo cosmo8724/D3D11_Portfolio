@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Level_Logo.h"
 #include "GameInstance.h"
+#include "Json/json.hpp"
+#include <fstream>
 #include "Level_Loading.h"
 #include "Tool_Property.h"
 #include "Tool_Settings.h"
@@ -19,17 +21,23 @@ CLevel_Logo::CLevel_Logo(DEVICE pDevice, DEVICE_CONTEXT pContext)
 {
 }
 
-HRESULT CLevel_Logo::Initialize()
+HRESULT CLevel_Logo::Initialize(const wstring & wstrCloneObjFilePath)
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_SkyBox(L"Layer_SkyBox"), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
-	FAILED_CHECK_RETURN(Ready_Layer_Islands(L"Layer_Islands"), E_FAIL);
+
+	if (wstrCloneObjFilePath == L"")
+	{
+		FAILED_CHECK_RETURN(Ready_Layer_Camera(L"Layer_Camera"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_SkyBox(L"Layer_SkyBox"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Player(L"Layer_Player"), E_FAIL);
+		FAILED_CHECK_RETURN(Ready_Layer_Islands(L"Layer_Islands"), E_FAIL);
+	}
+	else
+		FAILED_CHECK_RETURN(Load_CloneObjects(wstrCloneObjFilePath), E_FAIL);
 
 	CGameInstance::GetInstance()->Clear_ImGuiObject();
 	//CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
@@ -61,7 +69,7 @@ void CLevel_Logo::Late_Tick(_double dTimeDelta)
 	Safe_AddRef(pGameInstance);
 	
 	if (pGameInstance->Key_Down(DIK_RETURN))
-		FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TESTSTAGE)), );
+		FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TESTSTAGE, L"../Bin/Save Data/Level_Stage_Prototype_Components_230127.json", L"../Bin/Save Data/Level_Stage_Prototype_GameObjects_230112.json", L"../Bin/Save Data/Level_Stage_CloneObjects_230127.json")), );
 
 	Safe_Release(pGameInstance);
 }
@@ -71,6 +79,52 @@ HRESULT CLevel_Logo::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	SetWindowText(g_hWnd, L"Level : Logo");
+
+	return S_OK;
+}
+
+HRESULT CLevel_Logo::Load_CloneObjects(const wstring & wstrCloneObjFilePath)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	Json		jLayers;
+
+	ifstream	file(wstrCloneObjFilePath.c_str());
+	file >> jLayers;
+	file.close();
+
+	for (auto jLayer : jLayers["Layers"])
+	{
+		string		strLayerTag = "";
+		wstring	wstrLayerTag = L"";
+		jLayer["Layer Tag"].get_to<string>(strLayerTag);
+
+		if (strLayerTag == "Layer_Enemies" || strLayerTag == "Layer_NPCs")
+			continue;
+
+		wstrLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
+
+		for (auto jCloneObj : jLayer["Clone Objects"])
+		{
+			string		strPrototypeObjTag = "";
+			wstring	wstrPrototypeObjTag = L"";
+			jCloneObj["Prototype GameObject Tag"].get_to<string>(strPrototypeObjTag);
+
+			wstrPrototypeObjTag.assign(strPrototypeObjTag.begin(), strPrototypeObjTag.end());
+
+			_float4x4		matWorld;
+			XMStoreFloat4x4(&matWorld, XMMatrixIdentity());
+
+			_uint	k = 0;
+			for (_float fElement : jCloneObj["Transform State"])
+				memcpy(((_float*)&matWorld) + (k++), &fElement, sizeof(_float));
+
+			pGameInstance->Clone_GameObject(LEVEL_LOGO, wstrLayerTag, wstrPrototypeObjTag, matWorld);
+		}
+	}
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -179,11 +233,11 @@ HRESULT CLevel_Logo::Ready_Layer_Islands(const wstring & wstrLayerTag)
 	return S_OK;
 }
 
-CLevel_Logo * CLevel_Logo::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
+CLevel_Logo * CLevel_Logo::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrCloneObjFilePath)
 {
 	CLevel_Logo*		pInstance = new CLevel_Logo(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize()))
+	if (FAILED(pInstance->Initialize(wstrCloneObjFilePath)))
 	{
 		MSG_BOX("Failed to Create : CLevel_Logo");
 		Safe_Release(pInstance);
