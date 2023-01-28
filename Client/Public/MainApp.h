@@ -34,6 +34,7 @@ private:
 
 private:
 	HRESULT	Start_Level(LEVEL eLevel);
+	HRESULT	Ready_Font();
 	HRESULT	Ready_Prototype_Component();
 	HRESULT	Ready_Prototype_GameObject();
 

@@ -32,6 +32,8 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 
+	pair<_bool, _float3>		Picking_Mesh(HWND& hWnd);
+
 private:
 	_uint						m_iRendererComLevel = 1000;
 	_uint						m_iVIBufferComLevel = 1000;

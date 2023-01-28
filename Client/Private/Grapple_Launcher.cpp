@@ -78,7 +78,6 @@ void CGrapple_Launcher::Tick(_double dTimeDelta)
 
 			// 위 아래 각도 구해야함
 			_float			fAngle = acosf(XMVectorGetX(XMVector3Dot(XMVector3Normalize(vPlayerLook), XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_TRANS) - vPlayerPos))));
-			_float			fTest = XMConvertToDegrees(fAngle);
 
 			if (fAngle < XMConvertToRadians(25.f))
 				fAngle = 0.f;

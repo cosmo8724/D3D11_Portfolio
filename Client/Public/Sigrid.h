@@ -17,6 +17,9 @@ class CSigrid final : public CGameObject
 {
 	friend	class CSigrid_State;
 
+public:
+	enum NAVIGATIONTYPE { NAVI_DEFAULT, NAVI_ROOF, NAVI_SKY, NAVI_FANTASY, NAVI_HELLHEIM, NAVI_END };
+
 private:
 	CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext);
 	CSigrid(const CSigrid& rhs);
@@ -43,6 +46,7 @@ public:
 		m_vSnapGrappleLook = matWorld.r[2];
 		m_vSnapGrappleRight = matWorld.r[0];
 	}
+	void						Set_BossBattle(_bool bBossBattle) { m_bBossBattle = bBossBattle; }
 	const _bool&				Is_GrappleHang() const { return m_bGrappleHang; }
 	const _bool&				Is_GrappleLauncher() const { return m_bGrappleLauncher; }
 
@@ -52,6 +56,7 @@ public:
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
+	virtual void				ImGui_RenderProperty() override;
 
 public:
 	_bool						Collision_Range(CCollider* pTargetCollider);
@@ -69,7 +74,8 @@ private:
 	
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
-	CNavigation*				m_pNavigationCom = nullptr;
+	CNavigation*				m_pNavigationCom[NAVI_END] = { nullptr };
+	NAVIGATIONTYPE		m_eCurNavigation = NAVI_DEFAULT;
 	CStateMachine*			m_pStateMachineCom = nullptr;
 	class CSigrid_State*		m_pSigridState = nullptr;
 
@@ -92,6 +98,7 @@ private:	/* State */
 	_float						m_fGravity;
 	_float						m_fInitJumpSpeed;
 	_float						m_fCurJumpSpeed;
+	_double					m_dPauseTime = 0.0;
 
 	_bool						m_bDash = false;
 	_float						m_fFriction;
@@ -109,6 +116,7 @@ private:	/* State */
 	_vector					m_vSnapGrappleLook;
 	_vector					m_vSnapGrappleRight;
 
+	_bool						m_bBossBattle = false;
 	_float						m_fGroundHeight = 0.f;
 
 private:
@@ -118,6 +126,7 @@ private:
 private:
 	void						SetOn_Terrain();
 	void						SetOn_Navigation();
+	NAVIGATIONTYPE		Check_CurrentNavigation();
 
 public:
 	static CSigrid*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

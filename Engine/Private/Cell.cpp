@@ -66,7 +66,7 @@ void CCell::ImGui_RenderProperty()
 	ImGui::NewLine();
 	ImGui::InputInt3("Neighbor", m_iNeighborIndex, ImGuiInputTextFlags_ReadOnly);
 
-	char*		pStateName[STATE_END + 1] = { "State_Ocean", "State_Ground", "State_Wall", "None" };
+	char*		pStateName[STATE_END + 1] = { "State_Ocean", "State_Ground", "State_Wall", "State_Roof", "State_Air", "None" };
 
 	ImGui::Combo("State", (_int*)&m_eState, pStateName, STATE_END + 1);
 }
@@ -116,6 +116,46 @@ _bool CCell::Compare_Height(_fvector vTargetPos)
 		return true;
 	else
 		return false;
+}
+
+_bool CCell::IsIn(_fvector vTargetPos)
+{
+	for (_uint i = 0; i < NEIGHBOR_END; ++i)
+	{
+		_vector		vLine = XMLoadFloat3(&m_vPoint[(i + 1) % NEIGHBOR_END]) - XMLoadFloat3(&m_vPoint[i]);
+		_vector		vNormal = XMVector3Normalize(XMVectorSet(XMVectorGetZ(vLine) * -1.f, 0.f, XMVectorGetX(vLine), 0.f));
+		_vector		vDir = XMVector3Normalize(vTargetPos - XMLoadFloat3(&m_vPoint[i]));
+
+		if (0.f < XMVectorGetX(XMVector3Dot(vNormal, vDir)))
+			return false;
+	}
+
+	return true;
+}
+
+_bool CCell::IsIn(_fvector vRayPos, _fvector vRayDir, _float & fDist)
+{
+	_vector	vPointA = XMVectorSetW(m_vPoint[POINT_A], 1.f);
+	_vector	vPointB = XMVectorSetW(m_vPoint[POINT_B], 1.f);
+	_vector	vPointC = XMVectorSetW(m_vPoint[POINT_C], 1.f);
+
+	if (m_eState == CCell::STATE_AIR)
+	{
+		if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDist))
+		{
+			if (XMVectorGetY(vRayPos + vRayDir * fDist) > 3.f)
+				return true;
+		}
+	}
+	else
+	{
+		if (TriangleTests::Intersects(vRayPos, vRayDir, vPointA, vPointB, vPointC, fDist))
+			return true;
+	}
+
+	fDist = 0.f;
+
+	return false;
 }
 
 _bool CCell::IsIn(_fvector vTargetPos, _int & iNeighborIndex, _float4 & vBlockedLine, _float4 & vBlockedLineNormal)

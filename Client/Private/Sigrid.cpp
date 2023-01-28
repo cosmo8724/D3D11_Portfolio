@@ -82,9 +82,11 @@ void CSigrid::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	if (m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_OCEAN)
+	Check_CurrentNavigation();
+
+	if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_OCEAN)
 		m_bOnOcean = true;
-	else if (m_pNavigationCom->Get_CurrentCellState() == CCell::STATE_GROUND)
+	else if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_GROUND || m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_ROOF)
 		m_bOnOcean = false;
 
 	if (m_bOnOcean == true)
@@ -100,7 +102,7 @@ void CSigrid::Tick(_double dTimeDelta)
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, m_dTimeScale);
 
 	m_pOBBCol->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
-	m_pSphereCol->Update(m_pTransformCom->Get_WorldMatrix());
+	m_pSphereCol->Update(XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
 
 	_matrix	matNetRing = m_pModelCom->Get_BoneMatrix("NetRing DEF 1");
 	m_pNetSphereCol->Update(matNetRing * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
@@ -139,6 +141,18 @@ HRESULT CSigrid::Render()
 	}
 
 	return S_OK;
+}
+
+void CSigrid::ImGui_RenderProperty()
+{
+	__super::ImGui_RenderProperty();
+
+	ImGui::InputInt("Coin", &m_tStatus.iCoin, 0, 0, ImGuiInputTextFlags_ReadOnly);
+	ImGui::InputInt("Navigation", (_int*)&m_eCurNavigation, 1, 1);
+
+	_int	iCurNavigation = (_int)m_eCurNavigation;
+	CGameUtility::Saturate(iCurNavigation, (_int)NAVI_END, 0);
+	m_eCurNavigation = (NAVIGATIONTYPE)iCurNavigation;
 }
 
 _bool CSigrid::Collision_Range(CCollider * pTargetCollider)
@@ -211,7 +225,11 @@ HRESULT CSigrid::SetUp_Component()
 	ZeroMemory(&NavigationDesc, sizeof(CNavigation::NAVIGATIONDESC));
 	NavigationDesc.iCurrentIndex = 25;
 
-	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation", (CComponent**)&m_pNavigationCom, this, &NavigationDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", L"Com_Navigation_Default", (CComponent**)&m_pNavigationCom[NAVI_DEFAULT], this, &NavigationDesc), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Roof", L"Com_Navigation_Roof", (CComponent**)&m_pNavigationCom[NAVI_ROOF], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Sky", L"Com_Navigation_Sky", (CComponent**)&m_pNavigationCom[NAVI_SKY], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Fantasy_Island", L"Com_Navigation_Fantasy_Island", (CComponent**)&m_pNavigationCom[NAVI_FANTASY], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Hellheim", L"Com_Navigation_Hellheim", (CComponent**)&m_pNavigationCom[NAVI_HELLHEIM], this), E_FAIL);
 
 	FAILED_CHECK_RETURN(__super::Add_Component(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_StateMachine", L"Com_StateMachine", (CComponent**)&m_pStateMachineCom, this), E_FAIL);
 
@@ -274,11 +292,42 @@ void CSigrid::SetOn_Navigation()
 {
 	_float4	vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 
-	vPlayerPos = m_pNavigationCom->Get_CellHeight(vPlayerPos);
+	vPlayerPos = m_pNavigationCom[m_eCurNavigation]->Get_CellHeight(vPlayerPos);
 	m_fGroundHeight = vPlayerPos.y;
 
 	if (m_bJump == false)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4(&vPlayerPos));
+}
+
+CSigrid::NAVIGATIONTYPE CSigrid::Check_CurrentNavigation()
+{
+	NAVIGATIONTYPE	eType = NAVI_END;
+	_float					fMinDist = 10000.f;
+
+	_vector	vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+	_int		iIndex = -1;
+
+	for (_uint i = 0; i < (_uint)NAVI_END; ++i) 
+	{
+		if (m_pNavigationCom[i] != nullptr)
+		{
+			_float		fDist = m_pNavigationCom[i]->IsOnNavigation(vPos, iIndex);
+
+			if (fDist != 0.f && fMinDist > fDist)
+			{
+				fMinDist = fDist;
+				eType = (NAVIGATIONTYPE)i;
+			}
+		}
+	}
+
+	if (iIndex != -1 && eType != NAVI_END)
+	{
+		m_eCurNavigation = eType;
+		m_pNavigationCom[m_eCurNavigation]->Set_CurrentCellIndex(iIndex);
+	}
+
+	return eType;
 }
 
 CSigrid * CSigrid::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
@@ -312,7 +361,10 @@ void CSigrid::Free()
 	__super::Free();
 
 	Safe_Release(m_pSigridState);
-	Safe_Release(m_pNavigationCom);
+
+	for (_uint i = 0; i < (_uint)NAVI_END; ++i)
+		Safe_Release(m_pNavigationCom[i]);
+
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pSphereCol);

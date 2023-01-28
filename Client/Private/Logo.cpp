@@ -39,14 +39,9 @@ HRESULT CLogo::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 void CLogo::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
-
-	/*if (g_bNeedResizeSwapChain)
-	{
-		m_fX = 300.f;
-		m_fY = 300.f;
-
-		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - m_fSizeX * 0.5f, -m_fY + m_fSizeY * 0.5f, 0.f, 1.f));
-	}*/
+	
+	if (g_bNeedResizeSwapChain)
+		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - m_fSizeX * 0.5f + (_float)g_iWinSizeX * 0.25f, -m_fY + m_fSizeY * 0.5f + (_float)g_iWinSizeY * 0.3f, 0.f, 1.f));
 }
 
 void CLogo::Late_Tick(_double dTimeDelta)

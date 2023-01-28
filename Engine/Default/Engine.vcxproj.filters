@@ -175,6 +175,12 @@
     <Filter Include="00. System\00. Device\Sound\Manager">
       <UniqueIdentifier>{fcaf17ab-ba75-42ad-8106-29d994b89bfa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01. Utility\09. Font">
+      <UniqueIdentifier>{4b829072-0957-4155-9b24-c914158987df}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01. Utility\09. Font\Manager">
+      <UniqueIdentifier>{55336e85-563f-41bf-891d-875b489b639f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\GameInstance.cpp">
@@ -365,6 +371,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\SoundMgr.cpp">
       <Filter>00. System\00. Device\Sound\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CustomFont.cpp">
+      <Filter>01. Utility\09. Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FontMgr.cpp">
+      <Filter>01. Utility\09. Font\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -613,6 +625,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\SoundMgr.h">
       <Filter>00. System\00. Device\Sound\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CustomFont.h">
+      <Filter>01. Utility\09. Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FontMgr.h">
+      <Filter>01. Utility\09. Font\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

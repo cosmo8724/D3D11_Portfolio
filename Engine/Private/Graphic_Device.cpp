@@ -85,7 +85,7 @@ HRESULT CGraphic_Device::Present()
 	if (nullptr == m_pSwapChain)
 		return E_FAIL;
 
-	return m_pSwapChain->Present(0, 0);
+	//return m_pSwapChain->Present(0, 0);
 
 	static _bool	bStandByMode = false;
 	HRESULT		hr;
@@ -107,7 +107,6 @@ HRESULT CGraphic_Device::Present()
 
 	return hr;	
 }
-
 
 HRESULT CGraphic_Device::Ready_SwapChain(HWND hWnd, GRAPHIC_DESC::WINMODE eWinMode, _uint iWinCX, _uint iWinCY)
 {

@@ -312,9 +312,10 @@ void CMesh::SetUp_BoneMatrices(_float4x4 * pBoneMatrices, _fmatrix matPivot)
 	}
 
 	_uint	iNumBones = 0;
+	_matrix	matPivotDesc = matPivot;
 
 	for (auto& pBone : m_vecMeshBone)
-		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_matOffset() * pBone->Get_CombindMatrix() * matPivot);
+		XMStoreFloat4x4(&pBoneMatrices[iNumBones++], pBone->Get_matOffset() * pBone->Get_CombindMatrix() * matPivotDesc);
 }
 
 pair<_bool, _float> CMesh::Picking(HWND & hWnd, CTransform * pTransformCom, _float3 & vPickingPoint)

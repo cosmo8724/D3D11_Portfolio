@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\Tool_Navigation.h"
 #include "GameInstance.h"
-#include "GameObject.h"
+#include "CustomGameObject.h"
 #include "GameUtility.h"
 #include "Json/json.hpp"
 #include <fstream>
@@ -72,6 +72,7 @@ void CTool_Navigation::ImGui_RenderWindow()
 			m_pNavigationCom->Delete_Cell(m_iSelectedCell);
 
 			m_iSelectedCell = -1;
+			m_iPickingCell = -1;
 
 			return;
 		}
@@ -142,13 +143,27 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 	ImGui::Separator();
 	static _bool	bDrawCell = false;
+	static _bool	bPickingCell = false;
 	ImGui::Checkbox("Draw Cell", &bDrawCell);
+	ImGui::SameLine();
+	ImGui::Checkbox("Picking Cell", &bPickingCell);
 
 	if (m_pGameInstance->Get_CurLevelIndex() != LEVEL_TESTSTAGE)
 		bDrawCell = false;
 
+	if (m_pNavigationCom == nullptr || m_iNumCell == 0)
+		bPickingCell = false;
+
 	if (bDrawCell && m_pGameInstance->Get_CurLevelIndex() == LEVEL_TESTSTAGE)
 	{
+		static _bool	bMeshType = true;
+		ImGui::BulletText("Mesh Type");
+		if (ImGui::RadioButton("Island", bMeshType))
+			bMeshType = true;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Stone", !bMeshType))
+			bMeshType = false;
+
 		// Terrain Picking
 		if (m_pGameInstance->Mouse_Down(DIM_LB) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 		{
@@ -159,16 +174,23 @@ void CTool_Navigation::ImGui_RenderWindow()
 
 			if (PickInfo.first == true)
 			{				
-				if (m_iCurPoint != (_uint)POINT_A)
-				{
-					m_pNavigationCom->Find_NearBy_Point(PickInfo.second);
+				m_pNavigationCom->Find_NearBy_Point(PickInfo.second);
 
+				if (m_iCurPoint == (_uint)POINT_A)
+				{
+					if (PickInfo.second != m_vPoint[POINT_C])
+					{
+						m_vPoint[m_iCurPoint] = PickInfo.second;
+						m_iCurPoint++;
+					}
+				}
+				else
+				{
 					if (PickInfo.second != m_vPoint[m_iCurPoint - 1])
 					{
 						m_vPoint[m_iCurPoint] = PickInfo.second;
-						//m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
 						m_iCurPoint++;
-					}					
+					}
 				}
 
 				if (m_iCurPoint == (_uint)POINT_END)
@@ -184,39 +206,86 @@ void CTool_Navigation::ImGui_RenderWindow()
 		// Mesh Picking
 		else if (m_pGameInstance->Mouse_Down(DIM_RB) && m_pGameInstance->Key_Pressing(DIK_LCONTROL))
 		{
-			list<CGameObject*>*	IslandList = m_pGameInstance->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Islands");
-
-			for (auto& pIsland : *IslandList)
+			if (bMeshType == true)
 			{
-				pair<_bool, _float3>		PickInfo = pIsland->Picking_Mesh();
+				list<CGameObject*>*	IslandList = m_pGameInstance->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Islands");
 
-				if (PickInfo.first == true)
+				for (auto& pIsland : *IslandList)
 				{
-					if (m_iCurPoint != (_uint)POINT_A)
+					pair<_bool, _float3>		PickInfo = pIsland->Picking_Mesh();
+
+					if (PickInfo.first == true)
 					{
 						m_pNavigationCom->Find_NearBy_Point(PickInfo.second);
 
-						if (PickInfo.second != m_vPoint[m_iCurPoint - 1])
+						if (m_iCurPoint == (_uint)POINT_A)
 						{
-							m_vPoint[m_iCurPoint] = PickInfo.second;
-							//m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
-							m_iCurPoint++;
+							if (PickInfo.second != m_vPoint[POINT_C])
+							{
+								m_vPoint[m_iCurPoint] = PickInfo.second;
+								m_iCurPoint++;
+							}
 						}
-					}
+						else
+						{
+							if (PickInfo.second != m_vPoint[m_iCurPoint - 1])
+							{
+								m_vPoint[m_iCurPoint] = PickInfo.second;
+								m_iCurPoint++;
+							}
+						}
 
-					/*m_vPoint[m_iCurPoint] = PickInfo.second;
-					m_pNavigationCom->Find_NearBy_Point(m_vPoint[m_iCurPoint]);
-					m_iCurPoint++;*/
-
-					if (m_iCurPoint == (_uint)POINT_END)
-					{
-						CGameUtility::SortPointsByCW(m_vPoint);
-						m_pNavigationCom->Add_Cell(m_vPoint);
-
-						m_iCurPoint = (_uint)POINT_A;
-						ZeroMemory(m_vPoint, sizeof(_float3) * POINT_END);
+						if (m_iCurPoint == (_uint)POINT_END)
+							break;
 					}
 				}
+			}
+			else if (bMeshType == false)
+			{
+				list<CGameObject*>*	StoneList = m_pGameInstance->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Stones");
+
+				for (auto& pObj : *StoneList)
+				{
+					CCustomGameObject*	pStone = dynamic_cast<CCustomGameObject*>(pObj);
+					if (pStone == nullptr)
+						continue;
+
+					pair<_bool, _float3>		PickInfo = pStone->Picking_Mesh(g_hWnd);
+
+					if (PickInfo.first == true)
+					{
+						m_pNavigationCom->Find_NearBy_Point(PickInfo.second);
+
+						if (m_iCurPoint == (_uint)POINT_A)
+						{
+							if (PickInfo.second != m_vPoint[POINT_C])
+							{
+								m_vPoint[m_iCurPoint] = PickInfo.second;
+								m_iCurPoint++;
+							}
+						}
+						else
+						{
+							if (PickInfo.second != m_vPoint[m_iCurPoint - 1])
+							{
+								m_vPoint[m_iCurPoint] = PickInfo.second;
+								m_iCurPoint++;
+							}
+						}
+
+						if (m_iCurPoint == (_uint)POINT_END)
+							break;
+					}
+				}
+			}
+
+			if (m_iCurPoint >= (_uint)POINT_END)
+			{
+				CGameUtility::SortPointsByCW(m_vPoint);
+				m_pNavigationCom->Add_Cell(m_vPoint);
+
+				m_iCurPoint = (_uint)POINT_A;
+				ZeroMemory(m_vPoint, sizeof(_float3) * POINT_END);
 			}
 		}
 		// Undo
@@ -224,15 +293,24 @@ void CTool_Navigation::ImGui_RenderWindow()
 		{
 			if (m_iCurPoint == (_uint)POINT_A)
 			{
-				CCell*		pCell = m_pNavigationCom->Get_Cell(m_iNumCell - 1);
-				NULL_CHECK_RETURN(pCell, );
+				if (m_iNumCell != 0)
+				{
+					if (m_iSelectedCell == m_iNumCell - 1)
+						m_iSelectedCell = -1;
 
-				m_vPoint[POINT_A] = pCell->Get_Point(CCell::POINT_A);
-				m_vPoint[POINT_B] = pCell->Get_Point(CCell::POINT_B);
+					if (bPickingCell ==  true)
+						m_iPickingCell = -1;
 
-				m_pNavigationCom->Delete_Cell(m_iNumCell - 1);
+					CCell*		pCell = m_pNavigationCom->Get_Cell(m_iNumCell - 1);
+					NULL_CHECK_RETURN(pCell, );
 
-				m_iCurPoint = (_uint)POINT_C;
+					m_vPoint[POINT_A] = pCell->Get_Point(CCell::POINT_A);
+					m_vPoint[POINT_B] = pCell->Get_Point(CCell::POINT_B);
+
+					m_pNavigationCom->Delete_Cell(m_iNumCell - 1);
+
+					m_iCurPoint = (_uint)POINT_C;
+				}
 			}
 			else
 				m_iCurPoint--;
@@ -244,6 +322,21 @@ void CTool_Navigation::ImGui_RenderWindow()
 		ImGui::InputFloat3("POINT_B", &m_vPoint[POINT_B].x);
 		ImGui::InputFloat3("POINT_C", &m_vPoint[POINT_C].x);
 	}
+
+	if (bPickingCell)
+	{
+		pair<_bool, _int>		Result = CGameUtility::Cell_Picking(g_hWnd, (_float)g_iWinSizeX, (_float)g_iWinSizeY, m_pNavigationCom);
+
+		if (Result.first == true)
+		{
+			m_iPickingCell = Result.second;
+
+			if (m_pGameInstance->GetInstance()->Mouse_Down(DIM_LB))
+				m_iSelectedCell = Result.second;
+		}
+	}
+	else
+		m_iPickingCell = -1;
 
 	if (m_iSelectedCell != -1)
 	{
@@ -263,6 +356,12 @@ void CTool_Navigation::ImGui_RenderWindow()
 		if (m_pGameInstance->Key_Down(DIK_3))
 			pCell->Set_State(CCell::STATE_WALL);
 
+		if (m_pGameInstance->Key_Down(DIK_4))
+			pCell->Set_State(CCell::STATE_ROOF);
+
+		if (m_pGameInstance->Key_Down(DIK_5))
+			pCell->Set_State(CCell::STATE_AIR);
+
 		if (m_pGameInstance->Key_Down(DIK_ESCAPE))
 			m_iSelectedCell = -1;
 	}
@@ -278,7 +377,10 @@ void CTool_Navigation::Render()
 	m_pNavigationCom->Render();
 
 	if (m_iSelectedCell != -1)
-		m_pNavigationCom->Render_Selected_Cell(m_iSelectedCell);
+		m_pNavigationCom->Render_Selected_Cell(m_iSelectedCell, _float4(1.f, 0.4f, 0.f, 1.f));
+
+	if (m_iPickingCell != -1)
+		m_pNavigationCom->Render_Selected_Cell(m_iPickingCell, _float4(0.3f, 0.3f, 0.3f, 1.f));
 
 	_float		fHeight = 0.15f;
 	_float4	vColor = { 1.f, 0.4f, 0.f, 1.f };

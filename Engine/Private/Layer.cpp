@@ -34,19 +34,55 @@ HRESULT CLayer::Initialize()
 
 void CLayer::Tick(_double dTimeDelta)
 {
-	for (auto& pGameObject : m_GameObjectList)
+	/*for (auto& pGameObject : m_GameObjectList)
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Tick(dTimeDelta);
+	}*/
+
+	for (auto iter = m_GameObjectList.begin(); iter != m_GameObjectList.end();)
+	{
+		if ((*iter) != nullptr)
+		{
+			(*iter)->Tick(dTimeDelta);
+
+			if ((*iter)->Is_Dead() == true)
+			{
+				Safe_Release(*iter);
+				iter = m_GameObjectList.erase(iter);
+			}
+			else
+				++iter;
+		}
+		else
+			++iter;
 	}
 }
 
 void CLayer::Late_Tick(_double dTimeDelta)
 {
-	for (auto& pGameObject : m_GameObjectList)
+	//for (auto& pGameObject : m_GameObjectList)
+	//{
+	//	if (nullptr != pGameObject)
+	//		pGameObject->Late_Tick(dTimeDelta);
+	//}
+
+	for (auto iter = m_GameObjectList.begin(); iter != m_GameObjectList.end();)
 	{
-		if (nullptr != pGameObject)
-			pGameObject->Late_Tick(dTimeDelta);
+		if ((*iter) != nullptr)
+		{
+			(*iter)->Late_Tick(dTimeDelta);
+
+			if ((*iter)->Is_Dead() == true)
+			{
+				Safe_Release(*iter);
+				iter = m_GameObjectList.erase(iter);
+			}
+			else
+				++iter;
+		}
+		else
+			++iter;
 	}
 }
 

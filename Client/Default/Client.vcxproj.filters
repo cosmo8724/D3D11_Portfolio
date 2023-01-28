@@ -214,6 +214,36 @@
     <Filter Include="02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State">
       <UniqueIdentifier>{476fadc2-8f73-4224-92a9-066198aeb63c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy\01. Leviathan">
+      <UniqueIdentifier>{a66b021f-5f7a-41e0-8847-d005808e3863}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Enemy\01. Leviathan\Leviathan_State">
+      <UniqueIdentifier>{73b66bad-934f-4180-a05c-8131ac5d624d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Objects\02. Monster Black">
+      <UniqueIdentifier>{f97aca84-19c1-40d1-b6d8-02a18e10ac70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Objects\03. Monster Orange">
+      <UniqueIdentifier>{80b3beef-d53a-4c4b-849d-d2181c4af6c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Objects\04. Monster_Pink">
+      <UniqueIdentifier>{15ea49e9-74b8-4e53-93b1-baeae6368f70}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Objects\05. Monster_White">
+      <UniqueIdentifier>{1fedddac-0b80-4c87-ad40-d6abef1bce15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Monster Drink">
+      <UniqueIdentifier>{2e58440c-c8a8-4dc0-a408-049de0b55873}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI">
+      <UniqueIdentifier>{98202830-657c-4fea-b8a8-dd51e88466a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Health Bar">
+      <UniqueIdentifier>{92801fa5-57b1-46a6-8b27-0c34d772fab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\MonsterDrink Icon">
+      <UniqueIdentifier>{ea9db8eb-7ffb-4b9d-95fc-d71b95879290}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -390,6 +420,36 @@
     <ClInclude Include="..\Public\SigridCutScn_State.h">
       <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Leviathan.h">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Leviathan_State.h">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan\Leviathan_State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Black.h">
+      <Filter>02. GameObject\02. For_MainStage\Objects\02. Monster Black</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Orange.h">
+      <Filter>02. GameObject\02. For_MainStage\Objects\03. Monster Orange</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_Pink.h">
+      <Filter>02. GameObject\02. For_MainStage\Objects\04. Monster_Pink</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster_White.h">
+      <Filter>02. GameObject\02. For_MainStage\Objects\05. Monster_White</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterDrink.h">
+      <Filter>02. GameObject\99. Parent\Monster Drink</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HPBar.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterDrink_Icon.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterDrink_Frame.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -553,6 +613,36 @@
     </ClCompile>
     <ClCompile Include="..\Private\SigridCutScn_State.cpp">
       <Filter>02. GameObject\01. For_Logo\01. Sigrid\SigridCutScn State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Leviathan.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Leviathan_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Enemy\01. Leviathan\Leviathan_State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Black.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Objects\02. Monster Black</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Orange.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Objects\03. Monster Orange</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_Pink.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Objects\04. Monster_Pink</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster_White.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Objects\05. Monster_White</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterDrink.cpp">
+      <Filter>02. GameObject\99. Parent\Monster Drink</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HPBar.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterDrink_Icon.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterDrink_Frame.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

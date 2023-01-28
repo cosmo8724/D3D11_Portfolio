@@ -97,6 +97,12 @@ void CModel::Set_CurAnimationSpeed(_double dAnimSpeed)
 	m_vecAnimation[m_iCurAnimationIndex]->Set_AnimationTickPerSecond(dAnimSpeed);
 }
 
+void CModel::Set_WholeAnimationSpeed(_double dAnimSpeed)
+{
+	for (auto& pAnimation : m_vecAnimation)
+		pAnimation->Set_AnimationTickPerSecond(dAnimSpeed);
+}
+
 void CModel::Reset_Animation()
 {
 	m_vecAnimation[m_iCurAnimationIndex]->Reset_Animation();
@@ -378,7 +384,7 @@ HRESULT CModel::Bind_Material(CShader * pShaderCom, _uint iMeshIndex, aiTextureT
 	return S_OK;
 }
 
-HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName, _uint iPassIndex)
+HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & wstrBoneConstantName, _uint iPassIndex, _fmatrix matPivot)
 {
 	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
 
@@ -386,11 +392,14 @@ HRESULT CModel::Render(CShader * pShaderCom, _uint iMeshIndex, const wstring & w
 	{
 		if (wstrBoneConstantName != L"")
 		{
-			_float4x4		matBones[256];
+			_float4x4		matBones[600];
 
-			m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, XMLoadFloat4x4(&m_matPivot));
+			if (XMVectorGetX(XMVectorEqual(matPivot.r[0], XMVectorSet(1.f, 0.f, 0.f, 0.f))))
+				m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, XMLoadFloat4x4(&m_matPivot));
+			else
+				m_vecMesh[iMeshIndex]->SetUp_BoneMatrices(matBones, matPivot);
 
-			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 256);
+			pShaderCom->Set_MatrixArray(wstrBoneConstantName, matBones, 600);
 		}
 
 		pShaderCom->Begin(iPassIndex);

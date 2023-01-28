@@ -649,6 +649,7 @@ private:		/* State Changer*/
 	_bool	GrappleLaunchAngle90();
 	_bool	GrappleLaunchAngleNeg45();
 	_bool	GrappleLaunchAngleNeg90();
+	_bool	Grapple_Done();
 	_bool	ReadyLaunch();
 	_bool	ReadyHang();
 	_bool	Turn_Back();
@@ -684,6 +685,7 @@ private:		/* State Changer*/
 	_bool	Collision_Ocean_Boost();
 	_bool	IsOnGround();
 	_bool	IsOnOcean();
+	_bool	IsOnAir();
 
 private:
 	void	Move(_double dTimeDelta, CTransform::DIRECTION eDir, MOVETYPE eType = MOVE_DYNAMIC);

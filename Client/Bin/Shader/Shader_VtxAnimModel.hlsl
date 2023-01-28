@@ -1,7 +1,7 @@
 #include "Shader_Define.h"
 
 matrix			g_matWorld, g_matView, g_matProj;
-matrix			g_matBones[256];
+matrix			g_matBones[600];
 
 float2			g_WinSize = { 0.f, 0.f };
 
@@ -24,6 +24,7 @@ struct VS_OUT
 	float4		vPosition		: SV_POSITION;
 	float4		vNormal		: NORMAL;
 	float2		vTexUV		: TEXCOORD0;
+	float4		vProjPos		: TEXCOORD1;
 	float4		vTangent		: TANGENT;
 };
 
@@ -49,6 +50,7 @@ VS_OUT	VS_MAIN(VS_IN In)
 	Out.vPosition = mul(vPosition, matWVP);
 	Out.vNormal = normalize(mul(vNormal, g_matWorld));
 	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
 	Out.vTangent = (vector)0.f;
 
 	return Out;
@@ -59,6 +61,7 @@ struct PS_IN
 	float4		vPosition		: SV_POSITION;
 	float4		vNormal		: NORMAL;
 	float2		vTexUV		: TEXCOORD0;
+	float4		vProjPos		: TEXCOORD1;
 	float4		vTangent		: TANGENT;
 };
 
@@ -66,6 +69,7 @@ struct PS_OUT
 {
 	float4		vDiffuse		: SV_TARGET0;
 	float4		vNormal		: SV_TARGET1;
+	float4		vDepth		: SV_TARGET2;
 };
 
 PS_OUT	PS_MAIN(PS_IN In)
@@ -79,6 +83,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	Out.vDiffuse = vDiffuse;
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -121,7 +126,7 @@ PS_OUT	PS_MAIN_OUTLINE(PS_IN In)
 	}
 
 	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
 
 	return Out;
 }

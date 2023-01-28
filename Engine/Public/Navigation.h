@@ -20,8 +20,11 @@ private:
 public:
 	_uint						Get_CellCount() { return (_uint)m_vecCell.size(); }
 	class CCell*				Get_Cell(_int iIndex) { return m_vecCell[iIndex]; }
+	vector<class CCell*>*	Get_Cells() { return &m_vecCell; }
 	CCell::STATE				Get_CurrentCellState() { return m_vecCell[m_tNavigationDesc.iCurrentIndex]->Get_State(); }
 	_vector					Get_CellHeight(_float4 vTargetPos);
+	void						Set_CurrentCellIndex(_int iIndex) { m_tNavigationDesc.iCurrentIndex = iIndex; }
+	_float						IsOnNavigation(_fvector vTargetPos, _int& iIndex);
 
 public:
 	virtual HRESULT			Initialize_Prototype(const wstring& wstrFilePath);
@@ -37,7 +40,7 @@ public:
 //#ifdef _DEBUG
 public:
 	virtual HRESULT			Render() override;
-	HRESULT					Render_Selected_Cell(_int iIndex);
+	HRESULT					Render_Selected_Cell(_int iIndex, const _float4& vColor);
 	void						Change_Render_HeightColor(const _float& fHeight, const _float4& vColor);
 //#endif // _DEBUG
 

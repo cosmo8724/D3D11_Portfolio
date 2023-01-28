@@ -44,11 +44,14 @@ ipch/
 
 Client/Bin/*
 !Client/Bin/Debug/assimp-vc140-mtd.dll
+!Client/Bin/Debug/fmod.dll
 !Client/Bin/Release/assimp-vc140-mt.dll
+!Client/Bin/Release/fmodL.dll
 !Client/Bin/Shader
 !Client/Bin/Resource
 Client/Bin/Resource/Mesh/Islands/Main Island/MainIsland.model
 Client/Bin/Resource/Mesh/Islands/Main Island/MainIsland_Test.fbx
+Client/Bin/Resource/Mesh/Enemy/Leviathan/Leviathan.fbx
 !Client/Bin/Save Data
 Client/Bin/Resource/Game
 Engine/Default/Debug
