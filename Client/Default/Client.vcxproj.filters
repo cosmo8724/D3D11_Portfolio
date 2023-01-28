@@ -235,6 +235,15 @@
     <Filter Include="02. GameObject\99. Parent\Monster Drink">
       <UniqueIdentifier>{2e58440c-c8a8-4dc0-a408-049de0b55873}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI">
+      <UniqueIdentifier>{98202830-657c-4fea-b8a8-dd51e88466a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Health Bar">
+      <UniqueIdentifier>{92801fa5-57b1-46a6-8b27-0c34d772fab3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\MonsterDrink Icon">
+      <UniqueIdentifier>{ea9db8eb-7ffb-4b9d-95fc-d71b95879290}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -432,6 +441,15 @@
     <ClInclude Include="..\Public\MonsterDrink.h">
       <Filter>02. GameObject\99. Parent\Monster Drink</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HPBar.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterDrink_Icon.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterDrink_Frame.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -616,6 +634,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterDrink.cpp">
       <Filter>02. GameObject\99. Parent\Monster Drink</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HPBar.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterDrink_Icon.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MonsterDrink_Frame.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

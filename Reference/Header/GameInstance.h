@@ -109,6 +109,10 @@ public:		/* For Frustum */
 	_bool					IsInFrustum_World(_fvector vWorldPos, _float fRange);
 	_bool					IsInFrustum_Local(_fvector vLocalPos, _float fRange);
 
+public:		/* For Font Manager */
+	HRESULT				Add_Font(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring& wstrFontTag, const wstring& wstrFontFilePath);
+	HRESULT				Render_Font(const wstring& wstrFontTag, const wstring& wstrText, const _float2& vPos, _float fRadian, _float2 vScale, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f));
+
 private:
 	HWND							m_hWnd;
 
@@ -128,6 +132,7 @@ private:
 	class CLightMgr*				m_pLightMgr = nullptr;
 	class CFrustum*				m_pFrustum = nullptr;
 	class CRenderTargetMgr*	m_pRenderTargetMgr = nullptr;
+	class CFontMgr*				m_pFontMgr = nullptr;
 
 public:
 	static void	Release_Engine();

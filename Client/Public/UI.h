@@ -18,6 +18,10 @@ protected:
 	CUI(const CUI& rhs);
 	virtual ~CUI() = default;
 
+public:
+	const wstring&			Get_UITag() const { return m_wstrUITag; }
+	void						Set_Player(class CSigrid* pPlayer) { m_pPlayer = pPlayer; }
+
 protected:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
@@ -26,10 +30,19 @@ protected:
 	virtual HRESULT			Render() override;
 
 protected:
+	CUI*						Find_UI(_uint iLevelIndex, const wstring& wstrUITag);
+
+protected:
 	CRenderer*				m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
 	CTexture*					m_pTextureCom = nullptr;
 	CVIBuffer_Rect*			m_pVIBufferCom = nullptr;
+
+protected:
+	CUI*						m_pParent = nullptr;
+	class CSigrid*				m_pPlayer = nullptr;
+	wstring					m_wstrUITag = L"";
+	_float4x4					m_matWorldmulParent;
 
 protected:
 	_uint					m_iLastWinSizeX = 0, m_iLastWinSizeY = 0;

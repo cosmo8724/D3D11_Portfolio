@@ -367,6 +367,29 @@ pair<_bool, _int> CGameUtility::Cell_Picking(HWND & hWnd, _float fScreenWidth, _
 	return Result;
 }
 
+_bool CGameUtility::Rect_Picking(HWND & hWnd, const RECT & Rect)
+{
+	POINT		pt;
+	GetCursorPos(&pt);
+	ScreenToClient(hWnd, &pt);
+
+	/*_vector	vLT = XMVectorSet(Rect.left, Rect.top, 0.f, 1.f);
+	_vector	vRB = XMVectorSet(Rect.right, Rect.bottom, 0.f, 1.f);
+
+	vLT = XMVector3TransformCoord(vLT, CPipeLine::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+	vRB = XMVector3TransformCoord(vRB, CPipeLine::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_VIEW));
+
+	vLT = XMVector3TransformCoord(vLT, CPipeLine::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+	vRB = XMVector3TransformCoord(vRB, CPipeLine::GetInstance()->Get_TransformMatrix(CPipeLine::D3DTS_PROJ));
+
+	RECT		rt = {_long(XMVectorGetX(vLT)), _long(XMVectorGetY(vLT)), _long(XMVectorGetX(vRB)), _long(XMVectorGetY(vRB)) };*/
+
+	if (PtInRect(&Rect, pt))
+		return true;
+
+	return false;
+}
+
 void CGameUtility::SortPointsByCW(_float3 * vPoints)
 {
 	_float3	vSortedPoints[3];

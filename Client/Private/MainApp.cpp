@@ -28,6 +28,8 @@ HRESULT CMainApp::Initialize()
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Initialize_Engine(LEVEL_END, tGraphicDesc, &m_pGraphicDev, &m_pDeviceContext), E_FAIL);
 	
+	FAILED_CHECK_RETURN(Ready_Font(), E_FAIL);
+
 	FAILED_CHECK_RETURN(Ready_Prototype_Component(), E_FAIL);
 
 	FAILED_CHECK_RETURN(Ready_Prototype_GameObject(), E_FAIL);
@@ -88,6 +90,13 @@ HRESULT CMainApp::Start_Level(LEVEL eLevel)
 		return E_FAIL;
 	
 	FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphicDev, m_pDeviceContext, eLevel, L"../Bin/Save Data/Level_Logo_Prototype_Components_230116.json", L"../Bin/Save Data/Level_Logo_Prototype_GameObjects_230116.json", L"../Bin/Save Data/Level_Logo_CloneObjects_230116.json")), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Font()
+{
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Font(m_pGraphicDev, m_pDeviceContext, L"Font_DoongSil", L"../Bin/Resource/Font/DoongSil.spritefont"), E_FAIL);
 
 	return S_OK;
 }

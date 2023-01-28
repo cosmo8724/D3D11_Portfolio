@@ -58,8 +58,8 @@ HRESULT CRenderer::Draw_RenderGroup()
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Specular", 300.f, 300.f, 200.f, 200.f), E_FAIL);
 
-		m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
-		m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
+		//m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
+		//m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
 	}
 #endif // _DEBUG
 

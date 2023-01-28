@@ -45,8 +45,6 @@ void CUI::Tick(_double dTimeDelta)
 
 		m_fSizeX *= m_fAspectRatioX;
 		m_fSizeY *= m_fAspectRatioY;
-		m_fX = m_fSizeX * 0.5f;
-		m_fY = m_fSizeY * 0.5f;
 
 		_matrix	matWorld = m_pTransformCom->Get_WorldMatrix();
 		m_pTransformCom->Set_WorldMatrix(matWorld * XMMatrixScaling(m_fAspectRatioX, m_fAspectRatioY, 1.f));
@@ -57,12 +55,26 @@ void CUI::Tick(_double dTimeDelta)
 		m_fAspectRatioY = 1.f;
 	}
 
+	XMStoreFloat4x4(&m_matView, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_matProj, XMMatrixOrthographicLH((_float)g_iWinSizeX, (_float)g_iWinSizeY, 0.f, 1.f));
 }
 
 void CUI::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	if (m_pParent != nullptr)
+	{
+		_matrix	matWorld, matParentWorld;
+		matWorld = m_pTransformCom->Get_WorldMatrix();
+		matParentWorld = m_pParent->Get_WorldMatrix();
+
+		memcpy(&matParentWorld.r[0], &XMVector3Normalize(matParentWorld.r[0]), sizeof(_vector));
+		memcpy(&matParentWorld.r[1], &XMVector3Normalize(matParentWorld.r[1]), sizeof(_vector));
+		memcpy(&matParentWorld.r[2], &XMVector3Normalize(matParentWorld.r[2]), sizeof(_vector));
+
+		m_matWorldmulParent = matWorld * matParentWorld;
+	}
 }
 
 HRESULT CUI::Render()
@@ -70,6 +82,20 @@ HRESULT CUI::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	return S_OK;
+}
+
+CUI * CUI::Find_UI(_uint iLevelIndex, const wstring & wstrUITag)
+{
+	auto	pCloneUIList = CGameInstance::GetInstance()->Get_CloneObjectList(iLevelIndex, L"Layer_UI");
+	NULL_CHECK_RETURN(pCloneUIList, nullptr);
+
+	for (auto pUI : *pCloneUIList)
+	{
+		if (dynamic_cast<CUI*>(pUI)->Get_UITag() == wstrUITag)
+			return dynamic_cast<CUI*>(pUI);
+	}
+
+	return nullptr;
 }
 
 void CUI::Free()

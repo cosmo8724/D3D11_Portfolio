@@ -8,6 +8,7 @@
 #include "LightMgr.h"
 #include "Frustum.h"
 #include "RenderTargetMgr.h"
+#include "FontMgr.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -27,6 +28,7 @@ CGameInstance::CGameInstance()
 	, m_pLightMgr(CLightMgr::GetInstance())
 	, m_pFrustum(CFrustum::GetInstance())
 	, m_pRenderTargetMgr(CRenderTargetMgr::GetInstance())
+	, m_pFontMgr(CFontMgr::GetInstance())
 {
 	Safe_AddRef(m_pGraphicDev);
 	Safe_AddRef(m_pImGuiMgr);
@@ -40,6 +42,7 @@ CGameInstance::CGameInstance()
 	Safe_AddRef(m_pLightMgr);
 	Safe_AddRef(m_pFrustum);
 	Safe_AddRef(m_pRenderTargetMgr);
+	Safe_AddRef(m_pFontMgr);
 }
 
 HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & tGraphicDesc, DEVICE * ppDeviceOut, DEVICE_CONTEXT * ppContextOut)
@@ -534,6 +537,20 @@ _bool CGameInstance::IsInFrustum_Local(_fvector vLocalPos, _float fRange)
 	return m_pFrustum->IsInFrustum_Local(vLocalPos, fRange);
 }
 
+HRESULT CGameInstance::Add_Font(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring & wstrFontTag, const wstring & wstrFontFilePath)
+{
+	NULL_CHECK_RETURN(m_pFontMgr, E_FAIL);
+
+	return m_pFontMgr->Add_Font(pDevice, pContext, wstrFontTag, wstrFontFilePath);
+}
+
+HRESULT CGameInstance::Render_Font(const wstring & wstrFontTag, const wstring & wstrText, const _float2 & vPos, _float fRadian, _float2 vScale, _fvector vColor)
+{
+	NULL_CHECK_RETURN(m_pFontMgr, E_FAIL);
+
+	return m_pFontMgr->Render_Font(wstrFontTag, wstrText, vPos, fRadian, vScale, vColor);
+}
+
 void CGameInstance::Release_Engine()
 {
 	CTimerMgr::GetInstance()->DestroyInstance();
@@ -542,6 +559,7 @@ void CGameInstance::Release_Engine()
 	CImGuiMgr::GetInstance()->DestroyInstance();
 	CObjectMgr::GetInstance()->DestroyInstance();
 	CFrustum::GetInstance()->DestroyInstance();
+	CFontMgr::GetInstance()->DestroyInstance();
 	CPipeLine::GetInstance()->DestroyInstance();
 	CComponentMgr::GetInstance()->DestroyInstance();
 	CLevelMgr::GetInstance()->DestroyInstance();
@@ -557,6 +575,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pImGuiMgr);
 	Safe_Release(m_pObjectMgr);
 	Safe_Release(m_pFrustum);
+	Safe_Release(m_pFontMgr);
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pComponentMgr);
 	Safe_Release(m_pLevelMgr);

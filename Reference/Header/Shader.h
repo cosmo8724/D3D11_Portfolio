@@ -25,9 +25,11 @@ public:
 public:
 	HRESULT					Initialize_Prototype(const wstring& wstrShderFilePath, DECLARATIONTYPE eType, const D3D11_INPUT_ELEMENT_DESC * pElements, const _uint iNumElements);
 	virtual	HRESULT			Initialize(class CGameObject* pOwner, void* pArg) override;
+	virtual void				ImGui_RenderProperty() override;
 	
 public:
 	HRESULT					Begin(_uint iPassIndex);
+	HRESULT					ReCompile();
 
 private:
 	ID3DX11Effect*				m_pEffect = nullptr;
@@ -35,6 +37,7 @@ private:
 	_uint							m_iNumPasses = 0;
 
 	DECLARATIONTYPE			m_eType = DECLARATION_END;
+	const D3D11_INPUT_ELEMENT_DESC * m_pElements = nullptr;
 	_uint							m_iElementCnt = 0;
 
 public:

@@ -2,7 +2,6 @@
 #include "..\Public\Loader.h"
 #include "GameInstance.h"
 #include "CustomGameObject.h"
-#include "Logo.h"
 #include "Json/json.hpp"
 #include <fstream>
 
@@ -39,6 +38,12 @@
 #include "Monster_Orange.h"
 #include "Monster_Pink.h"
 #include "Monster_White.h"
+
+/* UI */
+#include "Logo.h"
+#include "HPBar.h"
+#include "MonsterDrink_Frame.h"
+#include "MonsterDrink_Icon.h"
 
 CLoader::CLoader(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: m_pDevice(pDevice)
@@ -486,6 +491,14 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 
 		jLevel.clear();
 
+		/* Testing */
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_HPBar", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Health Bar/HpBar.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Frame", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_Frame.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Icon_Black", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_Black.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Icon_Orange", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_Orange.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Icon_Pink", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_Pink.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Icon_White", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_White.png")), E_FAIL);
+
 		m_wstrLoadingText = L"Loading Navigation Info...";
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_Default.json")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_Roof", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_Roof.json")), E_FAIL);
@@ -512,6 +525,17 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Monster_Orange", CMonster_Orange::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Monster_Pink", CMonster_Pink::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Monster_White", CMonster_White::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	/* Testing */
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_HPBar", CHPBar::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Frame_Black", CMonsterDrink_Frame::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_BLACK)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Frame_Orange", CMonsterDrink_Frame::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_ORANGE)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Frame_Pink", CMonsterDrink_Frame::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_PINK)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Frame_White", CMonsterDrink_Frame::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_WHITE)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Icon_Black", CMonsterDrink_Icon::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_BLACK)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Icon_Orange", CMonsterDrink_Icon::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_ORANGE)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Icon_Pink", CMonsterDrink_Icon::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_PINK)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_MonsterDrink_Icon_White", CMonsterDrink_Icon::Create(m_pDevice, m_pContext, CMonsterDrink_Frame::MONSTERDRINK_WHITE)), E_FAIL);
 
 	if (wstrProtoObjFilePath != L"")
 	{
