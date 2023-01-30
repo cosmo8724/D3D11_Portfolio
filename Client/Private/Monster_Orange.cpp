@@ -2,6 +2,7 @@
 #include "..\Public\Monster_Orange.h"
 #include "GameInstance.h"
 #include "Sigrid.h"
+#include "MonsterDrink_Frame.h"
 
 CMonster_Orange::CMonster_Orange(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CMonsterDrink(pDevice, pContext)
@@ -46,11 +47,34 @@ HRESULT CMonster_Orange::Initialize(const wstring & wstrPrototypeTag, void * pAr
 void CMonster_Orange::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	if (m_pUIFrame == nullptr)
+	{
+		list<CGameObject*>*		pUIList = CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI");
+
+		for (auto& pGameObject : *pUIList)
+		{
+			m_pUIFrame = dynamic_cast<CMonsterDrink_Frame*>(pGameObject);
+
+			if (m_pUIFrame != nullptr)
+			{
+				if (m_pUIFrame->Get_UITag() == L"UI_MonsterDrink_Orange")
+					break;
+			}
+		}
+	}
 }
 
 void CMonster_Orange::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	if (m_pPlayer->Collision_Body(m_pSphereCol))
+	{
+		m_pPlayer->Get_Status().iMonsterDrink_Orange++;
+		m_bDead = true;
+		m_pUIFrame->Set_ValueChange();
+	}
 
 	if (m_bDead == true)
 		return;

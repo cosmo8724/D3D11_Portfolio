@@ -175,6 +175,8 @@ private:
 	CTransform::DIRECTION		m_eDir = CTransform::DIR_END;
 	CTransform::DIRECTION		m_eLastDir = CTransform::DIR_END;
 
+	_double					m_dEffectCloneTimer = 0.0;
+
 private:		/* State Start */
 	void	Start_Ground_Idle(_double dTimeDelta);
 	void	Start_Dash_Into_Idle(_double dTimeDelta);

@@ -39,6 +39,14 @@ private:
 	_long							m_MouseMoveX = 0;
 	_long							m_MouseMoveY = 0;
 
+	_bool							m_bShopOpen = false;
+	_bool							m_bNeedLerp = false;
+	_float							m_fCloseAngle = 25.f;
+
+	_float4						m_vLerpStartEye;
+	_float4						m_vLerpStartAt;
+	_double						m_dLerpTime = 0.0;
+
 private:
 	HRESULT						SetUp_Component();
 

@@ -68,12 +68,6 @@ void CMonsterDrink::Late_Tick(_double dTimeDelta)
 
 		m_pTransformCom->Chase(vTargetPos, dTimeDelta / (_double)fDist);
 	}
-
-	if (m_pPlayer->Collision_Body(m_pSphereCol))
-	{
-		m_pPlayer->Get_Status().iCoin += m_iValue;
-		m_bDead = true;
-	}
 }
 
 HRESULT CMonsterDrink::Render()

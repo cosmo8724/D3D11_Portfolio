@@ -6,6 +6,7 @@
 #include "Static_Camera.h"
 #include "Ocean.h"
 #include "StateMachine.h"
+#include "Cursor.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -35,6 +36,8 @@ HRESULT CMainApp::Initialize()
 	FAILED_CHECK_RETURN(Ready_Prototype_GameObject(), E_FAIL);
 
 	FAILED_CHECK_RETURN(Start_Level(LEVEL_LOGO), E_FAIL);
+
+	g_pCursor = dynamic_cast<CCursor*>(m_pGameInstance->Clone_GameObjectReturnPtr(LEVEL_END, L"Layer_Cursor", L"Prototype_GameObject_Cursor"));
 
 	return S_OK;
 }
@@ -113,7 +116,9 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_VIBuffer_Rect", CVIBuffer_Rect::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_StateMachine", CStateMachine::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
-	
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Texture_Cursor", CTexture::Create(m_pGraphicDev, m_pDeviceContext, L"../Bin/Resource/Texture/UI/Cursor/CursorIcon_%d.png", 2)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -126,6 +131,8 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Camera_Static", CStatic_Camera::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Ocean", COcean::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Cursor", CCursor::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
 
 	return S_OK;
 }

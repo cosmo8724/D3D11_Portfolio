@@ -29,6 +29,7 @@ protected:
 	CCollider*					m_pSphereCol = nullptr;
 
 protected:
+	class CMonsterDrink_Frame*		m_pUIFrame = nullptr;
 	class CSigrid*				m_pPlayer = nullptr;
 	
 	_uint						m_iValue = 0;

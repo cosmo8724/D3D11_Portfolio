@@ -29,6 +29,10 @@ void CBaine_State::Tick(_double dTimeDelta)
 
 void CBaine_State::Late_Tick(_double dTImeDelta)
 {
+	if (m_pBaine->m_pPlayer->Collision_Body(m_pBaine->m_pRangeCol))
+		m_pBaine->m_bPlayerDetected = true;
+	else
+		m_pBaine->m_bPlayerDetected = false;
 }
 
 HRESULT CBaine_State::SetUp_State_Idle()

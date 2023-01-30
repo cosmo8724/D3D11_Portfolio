@@ -12,6 +12,7 @@ protected:
 	virtual ~CNPC() = default;
 
 public:
+	const _bool&				Get_PlayerDetect() const { return m_bPlayerDetected; }
 	void						Set_Player(class CSigrid* pPlayer) { m_pPlayer = pPlayer; }
 
 public:

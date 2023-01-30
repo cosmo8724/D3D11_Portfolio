@@ -82,20 +82,23 @@ void CSigrid::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 
-	Check_CurrentNavigation();
+	if (g_bShopOpen == false)
+	{
+		Check_CurrentNavigation();
 
-	if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_OCEAN)
-		m_bOnOcean = true;
-	else if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_GROUND || m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_ROOF)
-		m_bOnOcean = false;
+		if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_OCEAN)
+			m_bOnOcean = true;
+		else if (m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_GROUND || m_pNavigationCom[m_eCurNavigation]->Get_CurrentCellState() == CCell::STATE_ROOF)
+			m_bOnOcean = false;
 
-	if (m_bOnOcean == true)
-		SetOn_Terrain();
-	else
-		SetOn_Navigation();
+		if (m_bOnOcean == true)
+			SetOn_Terrain();
+		else
+			SetOn_Navigation();
 
-	m_pSigridState->Tick(dTimeDelta);
-	m_pStateMachineCom->Tick(dTimeDelta);
+		m_pSigridState->Tick(dTimeDelta);
+		m_pStateMachineCom->Tick(dTimeDelta);
+	}
 
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
 	m_pModelCom->Play_Animation(dTimeDelta, m_eLerpType);
@@ -147,7 +150,7 @@ void CSigrid::ImGui_RenderProperty()
 {
 	__super::ImGui_RenderProperty();
 
-	ImGui::InputInt("Coin", &m_tStatus.iCoin, 0, 0, ImGuiInputTextFlags_ReadOnly);
+	//ImGui::InputInt("Coin", &m_tStatus.iCoin, 0, 0, ImGuiInputTextFlags_ReadOnly);
 	ImGui::InputInt("Navigation", (_int*)&m_eCurNavigation, 1, 1);
 
 	_int	iCurNavigation = (_int)m_eCurNavigation;
