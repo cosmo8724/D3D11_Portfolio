@@ -62,6 +62,7 @@
 #include "Shop_ArrowUp.h"
 #include "Shop_ArrowDown.h"
 #include "Shop_ItemBar.h"
+#include "Shop_ItemSelect.h"
 #include "Shop_Icon_Cloth.h"
 #include "Shop_Icon_Hair.h"
 #include "Shop_Icon_Hat.h"
@@ -539,6 +540,8 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_TurnLeft", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/Turn_Left.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_TurnRight", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/Turn_Right.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_ItemBar", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/HUD_BainesShop_ItemBar_%d.png", 3)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_ItemSelectL", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/HUD_BainesShop_SelectionBracketL.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_ItemSelectR", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/HUD_BainesShop_SelectionBracketR.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_SelectBarL", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/HUD_BainesShop_SelectionBracketL.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_SelectBarR", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/HUD_BainesShop_SelectionBracketR.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_Menu_Cloth", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/BainesShop_UI_Clothes_%d.png", 2)), E_FAIL);
@@ -603,6 +606,8 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_Menu_Hair", CShop_Menu_Hair::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_Menu_Hat", CShop_Menu_Hat::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemBar", CShop_ItemBar::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemSelectL", CShop_ItemSelect::Create(m_pDevice, m_pContext, CShop_ItemSelect::FRAME_LEFT)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemSelectR", CShop_ItemSelect::Create(m_pDevice, m_pContext, CShop_ItemSelect::FRAME_RIGHT)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemBar_Icon_Cloth", CShop_Icon_Cloth::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemBar_Icon_Hair", CShop_Icon_Hair::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemBar_Icon_Hat", CShop_Icon_Hat::Create(m_pDevice, m_pContext)), E_FAIL);

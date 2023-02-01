@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "..\Public\Shop_ButtonA.h"
 #include "GameInstance.h"
+#include "GameUtility.h"
+#include "Cursor.h"
+#include "Static_Camera.h"
+#include "Shop_BackGround.h"
 
 CShop_ButtonA::CShop_ButtonA(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -66,11 +70,53 @@ void CShop_ButtonA::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_Scale(_float3(m_fSizeX, m_fSizeY, 1.f));
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 	}
+
+	if (CGameUtility::Rect_Picking(g_hWnd, m_Rect))
+	{
+		m_bMouseHover = true;
+		dynamic_cast<CShop_BackGround*>(m_pParent)->Set_MouseHover();
+		g_pCursor->Set_CursorState(CCursor::CURSOR_SELECT);
+	}
+	else
+	{
+		m_bMouseHover = false;
+
+		if (dynamic_cast<CShop_BackGround*>(m_pParent)->Get_MouseHover() == false)
+			g_pCursor->Set_CursorState(CCursor::CURSOR_DEFAULT);
+	}
+
+	if (CGameInstance::GetInstance()->Key_Pressing(DIK_A) || m_bMouseHover == true)
+	{
+		if (m_bMouseHover && CGameInstance::GetInstance()->Mouse_Pressing(DIM_LB))
+		{
+			m_fHoverScale = 1.15f;
+			dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back())->Get_CloseAngle() -= 1.f;
+		}
+
+		if (m_fHoverScale < 1.3f && m_fHoverScale != 1.15f)
+			m_fHoverScale += (_float)dTimeDelta;
+		else
+			m_fHoverScale = 1.3f;
+	}
+	else
+	{
+		if (m_fHoverScale > 1.f)
+			m_fHoverScale -= (_float)dTimeDelta;
+		else
+			m_fHoverScale = 1.f;
+	}
+
+	m_pTransformCom->Set_Scale(_float3(m_fSizeX * m_fHoverScale, m_fSizeY * m_fHoverScale, 1.f));
 }
 
 void CShop_ButtonA::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	_float4	vPos = XMLoadFloat4x4(&m_matWorldmulParent).r[3];
+
+	m_Rect = { _long(((g_iWinSizeX * 0.5f) + vPos.x) - m_fSizeX * 0.5f), _long(((g_iWinSizeY * 0.5f) - vPos.y) - m_fSizeY * 0.5f),
+		_long(((g_iWinSizeX * 0.5f) + vPos.x) + m_fSizeX * 0.5f), _long(((g_iWinSizeY * 0.5f) - vPos.y) + m_fSizeY * 0.5f) };
 
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);

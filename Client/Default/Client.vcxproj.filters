@@ -331,6 +331,12 @@
     <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Icon Hat">
       <UniqueIdentifier>{22ed3185-26ce-4b62-96da-c7a37f2e2962}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\00. For_Public\UI\Scene Change FX">
+      <UniqueIdentifier>{a0276295-c429-46bd-a933-0d4f6adbf6b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Item Select">
+      <UniqueIdentifier>{5e355e5d-1b09-4eca-8b84-5eb3294587fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -615,6 +621,12 @@
     <ClInclude Include="..\Public\Shop_Icon_Hat.h">
       <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Hat</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Scene_Change.h">
+      <Filter>02. GameObject\00. For_Public\UI\Scene Change FX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ItemSelect.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Select</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -886,6 +898,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Shop_Icon_Hat.cpp">
       <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Hat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Scene_Change.cpp">
+      <Filter>02. GameObject\00. For_Public\UI\Scene Change FX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ItemSelect.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Select</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

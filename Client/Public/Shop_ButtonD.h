@@ -20,6 +20,7 @@ public:
 
 private:
 	_bool						m_bFixPosition = false;
+	_bool						m_bMouseHover = false;
 
 private:
 	HRESULT					SetUp_Component();

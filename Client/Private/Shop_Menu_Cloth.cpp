@@ -2,6 +2,7 @@
 #include "..\Public\Shop_Menu_Cloth.h"
 #include "GameInstance.h"
 #include "Shop_ItemBar.h"
+#include "Shop_BackGround.h"
 
 CShop_Menu_Cloth::CShop_Menu_Cloth(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -70,6 +71,23 @@ void CShop_Menu_Cloth::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 	}
 
+	if (m_bSelected == true)
+	{
+		m_pTransformCom->Set_Scale(_float3(m_fSizeX, m_fSizeY * 1.2f, 1.f));
+
+		_int	iCurrentSlot = dynamic_cast<CShop_BackGround*>(m_pParent)->Get_CurrentSlot();
+
+		for (size_t i = 0; i < m_vecChild.size(); ++i)
+		{
+			if ((_int)i == iCurrentSlot)
+				dynamic_cast<CShop_ItemBar*>(m_vecChild[i])->Set_Selected(true);
+			else
+				dynamic_cast<CShop_ItemBar*>(m_vecChild[i])->Set_Selected(false);
+		}
+	}
+	else
+		m_pTransformCom->Set_Scale(_float3(m_fSizeX, m_fSizeY, 1.f));
+
 	for (auto& pUI : m_vecChild)
 		pUI->Tick(dTimeDelta);
 }
@@ -78,8 +96,11 @@ void CShop_Menu_Cloth::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	for (auto& pUI : m_vecChild)
-		pUI->Late_Tick(dTimeDelta);
+	if (m_bSelected == true)
+	{
+		for (auto& pUI : m_vecChild)
+			pUI->Late_Tick(dTimeDelta);
+	}
 }
 
 HRESULT CShop_Menu_Cloth::Render()

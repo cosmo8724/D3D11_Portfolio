@@ -11,6 +11,12 @@ private:
 	virtual ~CShop_BackGround() = default;
 
 public:
+	_int&						Get_CurrentMenu() { return m_iCurrentMenu; }
+	_int&						Get_CurrentSlot() { return m_iCurrentSlot; }
+	const _bool&				Get_MouseHover() const { return m_bMouseHover; }
+	void						Set_MouseHover() { m_bMouseHover = true; }
+
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
@@ -23,6 +29,13 @@ private:
 	class CShop_Menu_Cloth*		m_pMenuCloth = nullptr;
 	class CShop_Menu_Hair*		m_pMenuHair = nullptr;
 	class CShop_Menu_Hat*			m_pMenuHat = nullptr;
+	class CShop_ItemSelect*		m_pItemSelectL = nullptr;
+	class CShop_ItemSelect*		m_pItemSelectR = nullptr;
+
+	_int								m_iCurrentMenu = 0;
+	_bool								m_bMouseHover = false;
+
+	_int								m_iCurrentSlot = 0;
 
 private:
 	HRESULT					SetUp_Component();

@@ -7,6 +7,8 @@
 #include "Ocean.h"
 #include "StateMachine.h"
 #include "Cursor.h"
+#include "Scene_Change.h"
+#include "Sigrid.h"
 
 CMainApp::CMainApp()
 	: m_pGameInstance(CGameInstance::GetInstance())
@@ -56,7 +58,14 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->ImGui_Render();
 	m_pGameInstance->Clear_Graphic_Device(&_float4(0.f, 0.f, 0.8f, 1.f));
-	m_pRenderer->Draw_RenderGroup();
+	m_pRenderer->Draw_RenderGroup(g_bShopOpen);
+
+	if (g_bShopOpen == true || g_bReadySceneChange == true)
+	{
+		m_pRenderer->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, dynamic_cast<CSigrid*>(m_pGameInstance->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back()));
+		m_pRenderer->Draw_RenderGroup(false);
+	}
+
 	m_pGameInstance->ImGui_Render_Update();
 	m_pGameInstance->Render_Level();
 	
@@ -119,6 +128,8 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Texture_Cursor", CTexture::Create(m_pGraphicDev, m_pDeviceContext, L"../Bin/Resource/Texture/UI/Cursor/CursorIcon_%d.png", 2)), E_FAIL);
 
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(CGameInstance::Get_StaticLevelIndex(), L"Prototype_Component_Texture_SceneChange", CTexture::Create(m_pGraphicDev, m_pDeviceContext, L"../Bin/Resource/Texture/UI/Scene Change FX/SS_BloodWipe_%d.png", 4)), E_FAIL);
+
 	return S_OK;
 }
 
@@ -133,6 +144,14 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Ocean", COcean::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_Cursor", CCursor::Create(m_pGraphicDev, m_pDeviceContext)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_SceneChange_0", CScene_Change::Create(m_pGraphicDev, m_pDeviceContext, 0)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_SceneChange_1", CScene_Change::Create(m_pGraphicDev, m_pDeviceContext, 1)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_SceneChange_2", CScene_Change::Create(m_pGraphicDev, m_pDeviceContext, 2)), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pGameInstance->Add_Prototype(L"Prototype_GameObject_SceneChange_3", CScene_Change::Create(m_pGraphicDev, m_pDeviceContext, 3)), E_FAIL);
 
 	return S_OK;
 }

@@ -21,6 +21,7 @@ public:
 private:
 	wstring					m_wstrYes = L"";
 	_bool						m_bFixPosition = false;
+	_bool						m_bMouseHover = false;
 
 private:
 	HRESULT					SetUp_Component();

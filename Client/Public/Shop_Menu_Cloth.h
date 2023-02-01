@@ -11,6 +11,10 @@ private:
 	virtual ~CShop_Menu_Cloth() = default;
 
 public:
+	vector<CUI*>*				Get_Childs() { return &m_vecChild; }
+	void						Set_Selected(_bool bSelected) { m_bSelected = bSelected; }
+
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;

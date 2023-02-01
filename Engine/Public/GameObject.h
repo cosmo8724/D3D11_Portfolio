@@ -25,6 +25,7 @@ public:
 	const _bool&				Is_Dead() const { return m_bDead; }
 	const _bool&				Is_Attack() const { return m_bAttack; }
 	const _bool&				Is_SpecialAttack() const { return m_bSpecialAttack; }
+	void						Set_Dead() { m_bDead = true; }
 	void						Set_WorldMatrix(_float4x4 matWorld) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(matWorld); }
 	class CComponent*		Find_Component(const wstring& wstrComponentTag);
 
@@ -37,6 +38,7 @@ public:
 	virtual void				Tick(_double dTimeDelta);
 	virtual void				Late_Tick(_double dTimeDelta);
 	virtual HRESULT			Render();
+	virtual HRESULT			Render_ShadowDepth();
 
 public:
 	void						ImGui_RenderComponentProperties();

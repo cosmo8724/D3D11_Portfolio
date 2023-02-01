@@ -14,6 +14,8 @@ private:
 public:
 	ID3D11RenderTargetView*		Get_RenderTargetView(const wstring& wstrTargetTag);
 	ID3D11ShaderResourceView*		Get_ShaderResourceView(const wstring& wstrTargetTag);
+	ID3D11RenderTargetView* const*		Get_BackBufferRenderTargetView() const { return &m_pBackBufferView; }
+	ID3D11DepthStencilView*		Get_DepthStencilView() { return m_pDepthStencilView; }
 
 public:
 	HRESULT							Initialize(DEVICE pDevice, DEVICE_CONTEXT pContext);

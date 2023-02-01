@@ -205,6 +205,7 @@
     <ClInclude Include="..\Public\Ocean.h" />
     <ClInclude Include="..\Public\Portal_Island.h" />
     <ClInclude Include="..\Public\River_Island.h" />
+    <ClInclude Include="..\Public\Scene_Change.h" />
     <ClInclude Include="..\Public\Shinobi.h" />
     <ClInclude Include="..\Public\Shop_ArrowDown.h" />
     <ClInclude Include="..\Public\Shop_ArrowUp.h" />
@@ -225,6 +226,7 @@
     <ClInclude Include="..\Public\Shop_Icon_Hat.h" />
     <ClInclude Include="..\Public\Shop_Island.h" />
     <ClInclude Include="..\Public\Shop_ItemBar.h" />
+    <ClInclude Include="..\Public\Shop_ItemSelect.h" />
     <ClInclude Include="..\Public\Shop_Menu_Cloth.h" />
     <ClInclude Include="..\Public\Shop_Menu_Hair.h" />
     <ClInclude Include="..\Public\Shop_Menu_Hat.h" />
@@ -315,6 +317,7 @@
     <ClCompile Include="..\Private\Ocean.cpp" />
     <ClCompile Include="..\Private\Portal_Island.cpp" />
     <ClCompile Include="..\Private\River_Island.cpp" />
+    <ClCompile Include="..\Private\Scene_Change.cpp" />
     <ClCompile Include="..\Private\Shinobi.cpp" />
     <ClCompile Include="..\Private\Shop_ArrowDown.cpp" />
     <ClCompile Include="..\Private\Shop_ArrowUp.cpp" />
@@ -335,6 +338,7 @@
     <ClCompile Include="..\Private\Shop_Icon_Hat.cpp" />
     <ClCompile Include="..\Private\Shop_Island.cpp" />
     <ClCompile Include="..\Private\Shop_ItemBar.cpp" />
+    <ClCompile Include="..\Private\Shop_ItemSelect.cpp" />
     <ClCompile Include="..\Private\Shop_Menu_Cloth.cpp" />
     <ClCompile Include="..\Private\Shop_Menu_Hair.cpp" />
     <ClCompile Include="..\Private\Shop_Menu_Hat.cpp" />

@@ -20,6 +20,7 @@ extern bool			g_bNeedResizeSwapChain;
 extern unsigned int	g_iWinSizeX;
 extern unsigned int	g_iWinSizeY;
 extern Client::CCursor*		g_pCursor;
+extern _bool			g_bReadySceneChange;
 extern _bool			g_bShopOpen;
 
 using namespace Client;

@@ -21,6 +21,7 @@ private:
 	virtual ~CShop_ItemBar() = default;
 
 public:
+	void						Set_Selected(_bool bSelected) { m_bSelected = bSelected; }
 	void						Set_ItemBarStatus(ITEMBAR_STATE eState) { m_eState = eState; }
 
 public:

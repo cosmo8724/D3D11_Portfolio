@@ -55,6 +55,8 @@ protected:
 	_float					m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4				m_matView;
 	_float4x4				m_matProj;
+	RECT					m_Rect;
+	_float					m_fHoverScale = 1.f;
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;

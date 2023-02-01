@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "..\Public\Shop_Button1.h"
 #include "GameInstance.h"
+#include "GameUtility.h"
+#include "Shop_BackGround.h"
+#include "Cursor.h"
 
 CShop_Button1::CShop_Button1(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -66,11 +69,52 @@ void CShop_Button1::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_Scale(_float3(m_fSizeX, m_fSizeY, 1.f));
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 	}
+
+	if (CGameUtility::Rect_Picking(g_hWnd, m_Rect))
+	{
+		m_bMouseHover = true;
+		dynamic_cast<CShop_BackGround*>(m_pParent)->Set_MouseHover();
+		g_pCursor->Set_CursorState(CCursor::CURSOR_SELECT);
+	}
+	else
+	{
+		m_bMouseHover = false;
+
+		if (dynamic_cast<CShop_BackGround*>(m_pParent)->Get_MouseHover() == false)
+			g_pCursor->Set_CursorState(CCursor::CURSOR_DEFAULT);
+	}
+
+	if (CGameInstance::GetInstance()->Key_Pressing(DIK_1) || m_bMouseHover == true)
+	{
+		if (m_bMouseHover && CGameInstance::GetInstance()->Mouse_Down(DIM_LB))
+		{
+			m_fHoverScale -= 0.15f;
+		}
+
+		if (m_fHoverScale < 1.3f)
+			m_fHoverScale += (_float)dTimeDelta;
+		else
+			m_fHoverScale = 1.3f;
+	}
+	else
+	{
+		if (m_fHoverScale > 1.f)
+			m_fHoverScale -= (_float)dTimeDelta;
+		else
+			m_fHoverScale = 1.f;
+	}
+
+	m_pTransformCom->Set_Scale(_float3(m_fSizeX * m_fHoverScale, m_fSizeY * m_fHoverScale, 1.f));
 }
 
 void CShop_Button1::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	_float4	vPos = XMLoadFloat4x4(&m_matWorldmulParent).r[3];
+
+	m_Rect = { _long(((g_iWinSizeX * 0.5f) + vPos.x) - m_fSizeX * 0.5f), _long(((g_iWinSizeY * 0.5f) - vPos.y) - m_fSizeY * 0.5f),
+		_long(((g_iWinSizeX * 0.5f) + vPos.x) + m_fSizeX * 0.5f), _long(((g_iWinSizeY * 0.5f) - vPos.y) + m_fSizeY * 0.5f) };
 
 	m_wstrYes = L"±¸¸Å";
 

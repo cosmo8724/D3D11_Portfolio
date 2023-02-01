@@ -4,6 +4,8 @@
 #include "Shop_Menu_Cloth.h"
 #include "Shop_Menu_Hair.h"
 #include "Shop_Menu_Hat.h"
+#include "Shop_ItemSelect.h"
+#include "Static_Camera.h"
 
 CShop_BackGround::CShop_BackGround(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -30,6 +32,7 @@ HRESULT CShop_BackGround::Initialize(const wstring & wstrPrototypeTag, void * pA
 	m_fSizeY = (_float)g_iWinSizeY * 0.8f;
 	m_fX = (_float)g_iWinSizeX * 0.2f;
 	m_fY = -(_float)g_iWinSizeY * 0.11f;
+	m_iCurrentMenu = -1;
 
 	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, pArg), E_FAIL);
 
@@ -40,7 +43,7 @@ HRESULT CShop_BackGround::Initialize(const wstring & wstrPrototypeTag, void * pA
 
 	FAILED_CHECK_RETURN(SetUp_Parts(), E_FAIL);
 	
-	g_bShopOpen = true;
+	//g_bShopOpen = true;
 
 	return S_OK;
 }
@@ -58,6 +61,48 @@ void CShop_BackGround::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 	}
 
+	if (CGameInstance::GetInstance()->Key_Down(DIK_E))
+		m_iCurrentMenu++;
+	else if (CGameInstance::GetInstance()->Key_Down(DIK_Q))
+		m_iCurrentMenu--;
+
+	if (m_iCurrentMenu > 2)
+		m_iCurrentMenu = 0;
+	else if (m_iCurrentMenu < 0)
+		m_iCurrentMenu = 2;
+
+	if (m_iCurrentMenu == 0)
+	{
+		m_pMenuCloth->Set_Selected(true);
+		m_pMenuHair->Set_Selected(false);
+		m_pMenuHat->Set_Selected(false);
+	}
+	else if (m_iCurrentMenu == 1)
+	{
+		m_pMenuCloth->Set_Selected(false);
+		m_pMenuHair->Set_Selected(true);
+		m_pMenuHat->Set_Selected(false);
+	}
+	else if (m_iCurrentMenu == 2)
+	{
+		m_pMenuCloth->Set_Selected(false);
+		m_pMenuHair->Set_Selected(false);
+		m_pMenuHat->Set_Selected(true);
+	}
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_W))
+		m_iCurrentSlot--;
+	else if (CGameInstance::GetInstance()->Key_Down(DIK_S))
+		m_iCurrentSlot++;
+
+	if (m_iCurrentSlot > 4)
+		m_iCurrentSlot = 0;
+	else if (m_iCurrentSlot < 0)
+		m_iCurrentSlot = 4;
+
+	m_pItemSelectL->Set_ItemSlot(m_iCurrentSlot);
+	m_pItemSelectR->Set_ItemSlot(m_iCurrentSlot);
+
 	for (auto& pUI : m_vecChild)
 		pUI->Tick(dTimeDelta);
 }
@@ -66,11 +111,10 @@ void CShop_BackGround::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (CGameInstance::GetInstance()->Key_Down(DIK_ESCAPE))
-	{
-		m_bDead = true;
+	m_bMouseHover = false;
+
+	if (m_bDead == true)
 		return;
-	}
 
 	if (nullptr != m_pMenuCloth)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, m_pMenuCloth);
@@ -217,6 +261,18 @@ HRESULT CShop_BackGround::SetUp_Parts()
 
 	m_vecChild.push_back(m_pMenuHat);
 
+	m_pItemSelectL = dynamic_cast<CShop_ItemSelect*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemSelectL"));
+	NULL_CHECK_RETURN(m_pItemSelectL, E_FAIL);
+	m_pItemSelectL->Set_Parent(this);
+
+	m_vecChild.push_back(m_pItemSelectL);
+
+	m_pItemSelectR = dynamic_cast<CShop_ItemSelect*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemSelectR"));
+	NULL_CHECK_RETURN(m_pItemSelectR, E_FAIL);
+	m_pItemSelectR->Set_Parent(this);
+
+	m_vecChild.push_back(m_pItemSelectR);
+
 	return S_OK;
 }
 
@@ -265,5 +321,6 @@ void CShop_BackGround::Free()
 	for (auto& pUI : m_vecChild)
 		Safe_Release(pUI);
 
+	g_bReadySceneChange = false;
 	g_bShopOpen = false;
 }

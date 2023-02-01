@@ -85,6 +85,23 @@ void CShop_ItemBar::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 	}
 
+	if (m_bSelected)
+	{
+		if (m_fHoverScale < 1.06f)
+			m_fHoverScale += (_float)dTimeDelta * 0.4f;
+		else
+			m_fHoverScale = 1.06f;
+	}
+	else
+	{
+		if (m_fHoverScale > 1.f)
+			m_fHoverScale -= (_float)dTimeDelta * 0.4f;
+		else
+			m_fHoverScale = 1.f;
+	}
+
+	m_pTransformCom->Set_Scale(_float3(m_fSizeX * m_fHoverScale, m_fSizeY * m_fHoverScale, 1.f));
+
 	for (auto& pUI : m_vecChild)
 		pUI->Tick(dTimeDelta);
 }

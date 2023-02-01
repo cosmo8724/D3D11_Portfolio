@@ -32,7 +32,6 @@ public:
 
 private:
 	MONSTERCOLOR			m_eColor = MONSTERDRINK_END;
-	RECT						m_Rect;
 	_bool						m_bInitPos = true;
 	_int						m_iCurMoveCnt = 0;
 	_int						m_iComebackMoveCnt = 0;

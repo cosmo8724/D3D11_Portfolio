@@ -105,7 +105,6 @@ _bool CInput_Device::Key_Up(_ubyte byKeyID)
 	if (m_bKeyState[byKeyID] && !(Get_DIKeyState(byKeyID) & 0x80))
 	{
 		m_bKeyState[byKeyID] = false;
-		m_bPressThisFrame[byKeyID] = false;
 		return true;
 	}
 

@@ -76,17 +76,17 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 	if (CGameInstance::GetInstance()->Key_Down(DIK_F1))
 		m_bMouseFix = !m_bMouseFix;
 
-	if (m_bShopOpen != g_bShopOpen)
+	if (m_bShopOpen != g_bReadySceneChange)
 	{
 		m_bNeedLerp = true;
 		m_dLerpTime = 0.0;
 		m_fCloseAngle = 25.f;
-		m_bShopOpen = g_bShopOpen;
+		m_bShopOpen = g_bReadySceneChange;
 		m_vLerpStartEye = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 		m_vLerpStartAt = XMLoadFloat4(&m_vLerpStartEye) + XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 	}
 
-	if (g_bShopOpen == false)
+	if (g_bReadySceneChange == false)
 	{
 		_vector	vTargetPos = m_pOwnerTransform->Get_State(CTransform::STATE_TRANS);
 		vTargetPos = XMVectorSet(XMVectorGetX(vTargetPos), XMVectorGetY(vTargetPos) + 2.f, XMVectorGetZ(vTargetPos), 1.f);
@@ -123,8 +123,8 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 			_float4	vLerpEndEye = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
 			_float4	vLerpEndAt = XMLoadFloat4(&m_vLerpStartEye) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
-			_float4	vLerpEye = _float4::Lerp(m_vLerpStartEye, vLerpEndEye, m_dLerpTime);
-			_float4	vLerpAt = _float4::Lerp(m_vLerpStartAt, vLerpEndAt, m_dLerpTime);
+			_float4	vLerpEye = _float4::Lerp(m_vLerpStartEye, vLerpEndEye, (_float)m_dLerpTime);
+			_float4	vLerpAt = _float4::Lerp(m_vLerpStartAt, vLerpEndAt, (_float)m_dLerpTime);
 
 			m_pTransformCom->Set_State(CTransform::STATE_TRANS, vLerpEye);
 			m_pTransformCom->LookAt(vLerpAt);
@@ -163,7 +163,7 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 		if (m_bNeedLerp)
 		{
 			_float4	vLerpEndEye = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
-			_float4	vLerpEye = _float4::Lerp(m_vLerpStartEye, vLerpEndEye, m_dLerpTime);
+			_float4	vLerpEye = _float4::Lerp(m_vLerpStartEye, vLerpEndEye, (_float)m_dLerpTime);
 			
 			m_pTransformCom->Set_State(CTransform::STATE_TRANS, vLerpEye);
 			m_pTransformCom->LookAt(vTargetPos + vRight * 1.f);

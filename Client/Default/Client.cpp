@@ -22,6 +22,7 @@ bool		g_bNeedResizeSwapChain = false;
 unsigned int g_iWinSizeX = 1280;
 unsigned int g_iWinSizeY = 720;
 CCursor*	g_pCursor = nullptr;
+_bool		g_bReadySceneChange = false;
 _bool		g_bShopOpen = false;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

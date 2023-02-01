@@ -92,7 +92,7 @@ void CMonsterDrink_Frame::Tick(_double dTimeDelta)
  
 		m_Rect = { _long(((g_iWinSizeX * 0.5f) + m_fX) - m_fSizeY * 0.5f), _long(((g_iWinSizeY * 0.5f) - m_fY) - m_fSizeX * 0.5f),
 			_long(((g_iWinSizeX * 0.5f) + m_fX) + m_fSizeY * 0.5f), _long(((g_iWinSizeY * 0.5f) - m_fY) + m_fSizeX * 0.5f) };
- 	} 	if (CGameUtility::Rect_Picking(g_hWnd, m_Rect) || m_bValueChange == true)
+ 	} 	if (CGameUtility::Rect_Picking(g_hWnd, m_Rect) || m_bValueChange == true || g_bShopOpen == true)
  	{ 
 		m_dTimeDelta += dTimeDelta;
 

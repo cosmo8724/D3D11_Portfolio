@@ -21,6 +21,8 @@ public:
 private:
 	wstring					m_wstrNo = L"³ª°¡±â";
 	_bool						m_bFixPosition = false;
+	_bool						m_bMouseHover = false;
+	_bool						m_bReadyToDead = false;
 
 private:
 	HRESULT					SetUp_Component();

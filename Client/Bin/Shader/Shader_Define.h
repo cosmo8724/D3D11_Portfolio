@@ -79,7 +79,7 @@ BlendOp = Add;
 BlendState BS_One
 {
 	BlendEnable[0] = true;
-SrcBlend = ONE;
+SrcBlend = SRC_ALPHA;
 DestBlend = ONE;
 BlendOp = Add;
 };

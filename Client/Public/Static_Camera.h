@@ -18,8 +18,10 @@ private:
 
 public:
 	const _long&					Get_MouseMoveX() const { return m_MouseMoveX; }
+	_float&						Get_CloseAngle() { return m_fCloseAngle; }
 	void							Set_OwnerTransform(CTransform* pTransformCom) { m_pOwnerTransform = pTransformCom; }
 	void							Set_TimeScale(_double dTimeDelta) { m_dTimeScale = dTimeDelta; }
+	void							Set_MouseFix(_bool bMouseFix) { m_bMouseFix = bMouseFix; }
 	void							Init_Position();
 
 public:
