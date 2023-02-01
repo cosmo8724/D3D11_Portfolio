@@ -3191,7 +3191,17 @@ void CSigrid_State::Tick_Ground_Idle(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
+	{
 		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		m_dEffectCloneTimer += dTimeDelta;
+
+		if (m_dEffectCloneTimer > 0.025)
+		{
+			m_pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Sigrid_Dash", m_pPlayer->Get_WorldMatrix());
+			m_dEffectCloneTimer = 0.0;
+		}
+	}
 }
 
 void CSigrid_State::Tick_Ground_Run(_double dTimeDelta)
@@ -3212,7 +3222,17 @@ void CSigrid_State::Tick_Ground_Run_Right(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Run(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
+	{
 		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		m_dEffectCloneTimer += dTimeDelta;
+
+		if (m_dEffectCloneTimer > 0.025)
+		{
+			m_pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Sigrid_Dash", m_pPlayer->Get_WorldMatrix());
+			m_dEffectCloneTimer = 0.0;
+		}
+	}
 
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 		Move(dTimeDelta, m_eDir);
@@ -3432,7 +3452,17 @@ void CSigrid_State::Tick_Jump_Charged2_90(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Air(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
+	{
 		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		m_dEffectCloneTimer += dTimeDelta;
+
+		if (m_dEffectCloneTimer > 0.025)
+		{
+			m_pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Sigrid_Dash", m_pPlayer->Get_WorldMatrix());
+			m_dEffectCloneTimer = 0.0;
+		}
+	}
 
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 	{
@@ -3444,13 +3474,33 @@ void CSigrid_State::Tick_Dash_Into_Air(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Water_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
+	{
 		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		m_dEffectCloneTimer += dTimeDelta;
+
+		if (m_dEffectCloneTimer > 0.025)
+		{
+			m_pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Sigrid_Dash", m_pPlayer->Get_WorldMatrix());
+			m_dEffectCloneTimer = 0.0;
+		}
+	}
 }
 
 void CSigrid_State::Tick_Dash_Into_Surf(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
+	{
 		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		m_dEffectCloneTimer += dTimeDelta;
+
+		if (m_dEffectCloneTimer > 0.025)
+		{
+			m_pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Sigrid_Dash", m_pPlayer->Get_WorldMatrix());
+			m_dEffectCloneTimer = 0.0;
+		}
+	}
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 		Move(dTimeDelta, m_eDir);
 }
@@ -3458,7 +3508,17 @@ void CSigrid_State::Tick_Dash_Into_Surf(_double dTimeDelta)
 void CSigrid_State::Tick_Dash_Into_Surf_Fast(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.05f && m_pModelCom->Get_AnimationProgress() < 0.45f)
+	{
 		m_pTransformCom->Dash(dTimeDelta, m_pPlayer->m_fFriction, m_pPlayer->m_fCurDashTickCount, m_pCamera->Get_WorldMatrix(), m_eDir, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		m_dEffectCloneTimer += dTimeDelta;
+
+		if (m_dEffectCloneTimer > 0.025)
+		{
+			m_pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Sigrid_Dash", m_pPlayer->Get_WorldMatrix());
+			m_dEffectCloneTimer = 0.0;
+		}
+	}
 	else if (m_pModelCom->Get_AnimationProgress() > 0.45f)
 		Move(dTimeDelta, m_eDir);
 }
@@ -4069,6 +4129,7 @@ void CSigrid_State::End_Ground_Idle(_double dTimeDelta)
 
 void CSigrid_State::End_Dash_Into_Idle(_double dTimeDelta)
 {
+	m_dEffectCloneTimer = 0.0;
 }
 
 void CSigrid_State::End_Ground_Run(_double dTimeDelta)
@@ -4088,6 +4149,7 @@ void CSigrid_State::End_Ground_Run_Right(_double dTimeDelta)
 
 void CSigrid_State::End_Dash_Into_Run(_double dTimeDelta)
 {
+	m_dEffectCloneTimer = 0.0;
 }
 
 void CSigrid_State::End_Ground_Boost(_double dTimeDelta)
@@ -4239,18 +4301,22 @@ void CSigrid_State::End_Jump_Charged2_90(_double dTimeDelta)
 
 void CSigrid_State::End_Dash_Into_Air(_double dTimeDelta)
 {
+	m_dEffectCloneTimer = 0.0;
 }
 
 void CSigrid_State::End_Dash_Into_Water_Idle(_double dTimeDelta)
 {
+	m_dEffectCloneTimer = 0.0;
 }
 
 void CSigrid_State::End_Dash_Into_Surf(_double dTimeDelta)
 {
+	m_dEffectCloneTimer = 0.0;
 }
 
 void CSigrid_State::End_Dash_Into_Surf_Fast(_double dTimeDelta)
 {
+	m_dEffectCloneTimer = 0.0;
 }
 
 void CSigrid_State::End_Air(_double dTimeDelta)

@@ -58,6 +58,16 @@ void CBaine::Tick(_double dTimeDelta)
 
 	m_pModelCom->Play_Animation(dTimeDelta);
 
+	if (m_bPlayerDetected == true)
+	{
+		if (CGameInstance::GetInstance()->Key_Down(DIK_E) && g_bShopOpen == false)
+		{
+			g_bReadySceneChange = true;
+			CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_SceneChange_1");
+			CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_UI_Shop_BackGround");
+		}
+	}
+
 	m_pRangeCol->Update(m_pTransformCom->Get_WorldMatrix());
 	m_pSphereCol->Update(m_pTransformCom->Get_WorldMatrix());
 }
@@ -65,6 +75,8 @@ void CBaine::Tick(_double dTimeDelta)
 void CBaine::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	m_pBaine_State->Late_Tick(dTimeDelta);
 
 	if (nullptr != m_pRendererCom)
 	{

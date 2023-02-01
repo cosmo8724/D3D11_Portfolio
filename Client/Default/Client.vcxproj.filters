@@ -244,6 +244,99 @@
     <Filter Include="02. GameObject\02. For_MainStage\UI\MonsterDrink Icon">
       <UniqueIdentifier>{ea9db8eb-7ffb-4b9d-95fc-d71b95879290}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect">
+      <UniqueIdentifier>{2b54d411-9546-40c0-a72e-1b82b793107f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Sigrid Dash">
+      <UniqueIdentifier>{c8c67dfa-84dc-4460-9c85-807f6dcb5c34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Effect">
+      <UniqueIdentifier>{6da84c10-b3f2-4469-a798-4615622ff0e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Effect\Mesh">
+      <UniqueIdentifier>{ab9fa2a8-e14f-48ee-b494-49f38762acaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Effect\VIBuffer">
+      <UniqueIdentifier>{45e8ef84-554a-4db4-afbe-2edf2f815231}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\UI">
+      <UniqueIdentifier>{3d108216-9ed2-4b33-8dc5-5066426d1672}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\UI\Cursor">
+      <UniqueIdentifier>{7af9acf4-e791-447f-ad91-0dec71049079}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop">
+      <UniqueIdentifier>{7900134c-145b-4ba3-8fdd-139ca421b53e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\BackGround">
+      <UniqueIdentifier>{87caa5ea-1332-489e-b304-222d3f48d2d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Monster Counter">
+      <UniqueIdentifier>{8d200fb7-01af-4013-8419-3d612d784fbf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button 1">
+      <UniqueIdentifier>{87eac81e-304d-430d-b56a-b2fb143dd489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button 2">
+      <UniqueIdentifier>{62e89ae1-a23c-47a0-86c8-c2525389c664}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button A">
+      <UniqueIdentifier>{6729115f-8959-4730-80b4-a181c66994eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button D">
+      <UniqueIdentifier>{fc64ae35-537a-4d74-ba0b-c17a5811a3f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Turn Left">
+      <UniqueIdentifier>{54bad616-9a8a-438b-989c-b29fe3f607b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Turn Right">
+      <UniqueIdentifier>{f58be90e-a7cc-4d28-9970-e034e6aae078}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Menu Cloth">
+      <UniqueIdentifier>{5cd9ced0-80a7-4816-98be-f0210342f65e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Menu Hair">
+      <UniqueIdentifier>{3d7068c5-e26d-4157-8a1c-ed4f7092e1a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Menu Hat">
+      <UniqueIdentifier>{04ef3230-9743-4661-9318-04b98cfeb80e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button W">
+      <UniqueIdentifier>{d8be5ed7-1f06-4bd3-97c7-78fd9f98b8fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button S">
+      <UniqueIdentifier>{fe1bb3f9-d608-4b20-b498-6e79ede7f0b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Arrow Up">
+      <UniqueIdentifier>{0f516d7a-3949-4203-acf1-c63c6ddd08bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Arrow Down">
+      <UniqueIdentifier>{19548862-43d7-4dfd-a5e1-3a10ca4e3a80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Item Bar">
+      <UniqueIdentifier>{aa12952d-9466-4b72-8051-9e04f6ec5e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button Q">
+      <UniqueIdentifier>{841ca2b2-c2c4-4e13-b631-396d5dc2ef53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Button E">
+      <UniqueIdentifier>{f82a131b-bb24-4324-9008-528bdbfd1dba}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Icon Cloth">
+      <UniqueIdentifier>{aa8e10dc-6711-453f-a9c5-6fbc95d6fcc3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Icon Hair">
+      <UniqueIdentifier>{2cdc7887-c033-4303-8030-584266fec89d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Icon Hat">
+      <UniqueIdentifier>{22ed3185-26ce-4b62-96da-c7a37f2e2962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\UI\Scene Change FX">
+      <UniqueIdentifier>{a0276295-c429-46bd-a933-0d4f6adbf6b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Item Select">
+      <UniqueIdentifier>{5e355e5d-1b09-4eca-8b84-5eb3294587fe}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -450,6 +543,90 @@
     <ClInclude Include="..\Public\MonsterDrink_Frame.h">
       <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02. GameObject\99. Parent\Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Mesh.h">
+      <Filter>02. GameObject\99. Parent\Effect\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_VIBuffer.h">
+      <Filter>02. GameObject\99. Parent\Effect\VIBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_SigridDash.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid Dash</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cursor.h">
+      <Filter>02. GameObject\00. For_Public\UI\Cursor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_BackGround.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_MonsterCounter.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Monster Counter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Button1.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Button2.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ButtonA.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button A</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ButtonD.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button D</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_TurnLeft.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Turn Left</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_TurnRight.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Turn Right</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Menu_Cloth.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Menu Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Menu_Hair.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Menu Hair</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Menu_Hat.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Menu Hat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ButtonW.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button W</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ButtonS.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button S</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ArrowUp.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Arrow Up</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ArrowDown.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Arrow Down</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ItemBar.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ButtonE.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button E</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ButtonQ.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button Q</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Icon_Cloth.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Cloth</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Icon_Hair.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Hair</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_Icon_Hat.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Hat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Scene_Change.h">
+      <Filter>02. GameObject\00. For_Public\UI\Scene Change FX</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ItemSelect.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Select</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -643,6 +820,90 @@
     </ClCompile>
     <ClCompile Include="..\Private\MonsterDrink_Frame.cpp">
       <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02. GameObject\99. Parent\Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Mesh.cpp">
+      <Filter>02. GameObject\99. Parent\Effect\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_VIBuffer.cpp">
+      <Filter>02. GameObject\99. Parent\Effect\VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_SigridDash.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid Dash</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cursor.cpp">
+      <Filter>02. GameObject\00. For_Public\UI\Cursor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_BackGround.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_MonsterCounter.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Monster Counter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Button1.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Button2.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ButtonA.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button A</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ButtonD.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button D</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_TurnLeft.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Turn Left</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_TurnRight.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Turn Right</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Menu_Cloth.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Menu Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Menu_Hair.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Menu Hair</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Menu_Hat.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Menu Hat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ButtonW.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button W</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ButtonS.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button S</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ArrowUp.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Arrow Up</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ArrowDown.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Arrow Down</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ItemBar.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ButtonE.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button E</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ButtonQ.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Button Q</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Icon_Cloth.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Cloth</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Icon_Hair.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Hair</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_Icon_Hat.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Icon Hat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Scene_Change.cpp">
+      <Filter>02. GameObject\00. For_Public\UI\Scene Change FX</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ItemSelect.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Select</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

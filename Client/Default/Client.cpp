@@ -8,6 +8,10 @@
 
 #define MAX_LOADSTRING 100
 
+namespace Client {
+class CCursor;
+}
+
 // 전역 변수:
 HWND		g_hWnd;
 HINSTANCE g_hInst;                                // 현재 인스턴스입니다.
@@ -17,6 +21,9 @@ bool		g_bFullScreen = false;
 bool		g_bNeedResizeSwapChain = false;
 unsigned int g_iWinSizeX = 1280;
 unsigned int g_iWinSizeY = 720;
+CCursor*	g_pCursor = nullptr;
+_bool		g_bReadySceneChange = false;
+_bool		g_bShopOpen = false;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -224,6 +231,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             }
         }
         break;
+	case WM_SETCURSOR:
+		SetCursor(NULL);
+		break;
     case WM_PAINT:
         {
             PAINTSTRUCT ps;

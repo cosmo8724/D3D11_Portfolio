@@ -20,14 +20,19 @@ protected:
 
 public:
 	const wstring&			Get_UITag() const { return m_wstrUITag; }
+	CUI*						Get_Parent() { return m_pParent; }
+	void						Set_Parent(CUI* pUI) { m_pParent = pUI; }
 	void						Set_Player(class CSigrid* pPlayer) { m_pPlayer = pPlayer; }
 
-protected:
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
+
+public:
+	void						ImGui_RenderTransformCom();
 
 protected:
 	CUI*						Find_UI(_uint iLevelIndex, const wstring& wstrUITag);
@@ -50,6 +55,8 @@ protected:
 	_float					m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4				m_matView;
 	_float4x4				m_matProj;
+	RECT					m_Rect;
+	_float					m_fHoverScale = 1.f;
 
 public:
 	virtual CGameObject*	Clone(const wstring& wstrPrototypeTag, void* pArg = nullptr) PURE;

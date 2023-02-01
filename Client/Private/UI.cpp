@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "..\Public\UI.h"
 #include "GameInstance.h"
+#include "GameUtility.h"
 
 CUI::CUI(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -9,6 +10,7 @@ CUI::CUI(DEVICE pDevice, DEVICE_CONTEXT pContext)
 
 CUI::CUI(const CUI & rhs)
 	: CGameObject(rhs)
+	, m_wstrUITag(rhs.m_wstrUITag)
 {
 }
 
@@ -82,6 +84,15 @@ HRESULT CUI::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	return S_OK;
+}
+
+void CUI::ImGui_RenderTransformCom()
+{
+	char szName[MAX_PATH];
+	CGameUtility::wctc(m_wstrUITag.c_str(), szName);
+
+	if (ImGui::CollapsingHeader(szName))
+		m_pTransformCom->ImGui_RenderProperty();
 }
 
 CUI * CUI::Find_UI(_uint iLevelIndex, const wstring & wstrUITag)

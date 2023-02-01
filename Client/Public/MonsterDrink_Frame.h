@@ -20,6 +20,9 @@ private:
 	virtual ~CMonsterDrink_Frame() = default;
 
 public:
+	void						Set_ValueChange() { m_bValueChange = true; m_dTimeDelta = 0.0; }
+
+public:
 	virtual HRESULT			Initialize_Prototype(MONSTERCOLOR eColor);
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
@@ -29,12 +32,16 @@ public:
 
 private:
 	MONSTERCOLOR			m_eColor = MONSTERDRINK_END;
-	RECT						m_Rect;
 	_bool						m_bInitPos = true;
 	_int						m_iCurMoveCnt = 0;
 	_int						m_iComebackMoveCnt = 0;
 	_int						m_iLastMoveCnt = 0;
-	_int						m_iMaxMoveCnt = 50;
+	_int						m_iMaxMoveCnt = 30;
+
+	_bool						m_bValueChange = false;
+	_double					m_dTimeDelta = 0.0;
+	wstring					m_wstrValue = L"";
+	_float4					m_vFontColor = { 1.f, 1.f, 1.f, 1.f };
 
 private:
 	HRESULT					SetUp_Component();

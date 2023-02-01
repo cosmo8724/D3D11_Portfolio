@@ -3,6 +3,9 @@
 matrix			g_matWorld, g_matView, g_matProj;
 texture2D		g_Texture;
 
+int				g_WidthFrame, g_HeightFrame;
+int				g_WidthCount, g_HeightCount;
+
 struct VS_IN
 {
 	float3		vPosition		: POSITION;
@@ -20,10 +23,10 @@ VS_OUT	VS_MAIN(VS_IN In)
 	VS_OUT	Out = (VS_OUT)0;
 
 	matrix		matWV, matWVP;
-
+    
 	matWV = mul(g_matWorld, g_matView);
 	matWVP = mul(matWV, g_matProj);
-
+	
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
 	Out.vTexUV = In.vTexUV;
 
@@ -58,7 +61,7 @@ PS_OUT	PS_MAIN(PS_IN In)
 PS_OUT	PS_MAIN_MONSTERDRINK_BLACK(PS_IN In)
 {
 	PS_OUT	Out = (PS_OUT)0;
-
+	
 	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
 
 	if (Out.vColor.a == 0.f)
@@ -111,6 +114,50 @@ PS_OUT	PS_MAIN_MONSTERDRINK_WHITE(PS_IN In)
 
 	if (Out.vColor.r == 1.f && Out.vColor.g == 1.f && Out.vColor.b == 1.f)
 		Out.vColor.rgb = float3(0.85f, 0.85f, 0.85f);
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_SPRITE(PS_IN In)
+{
+	PS_OUT	Out = (PS_OUT)0;
+
+	float2		vTexUV;
+	vTexUV.x = (In.vTexUV.x + 1.f * g_WidthFrame) / g_WidthCount;
+	vTexUV.y = (In.vTexUV.y + g_HeightFrame) / g_HeightCount;;
+
+	vector		vColor = vector(0.3f, 0.3f, 1.f, 1.f);
+	Out.vColor = g_Texture.Sample(LinearSampler, vTexUV);
+
+	Out.vColor = Out.vColor * vColor;
+
+	//if (Out.vColor.a < 0.1f)
+		//discard;
+
+	if (Out.vColor.r < 0.15f || Out.vColor.g < 0.15f || Out.vColor.b < 0.15f)
+		discard;
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_SPRITE_REVERSE(PS_IN In)
+{
+	PS_OUT	Out = (PS_OUT)0;
+
+	float2		vTexUV;
+	vTexUV.x = (In.vTexUV.x + 1.f * g_WidthFrame) / g_WidthCount;
+	vTexUV.y = (In.vTexUV.y + g_HeightFrame) / g_HeightCount;;
+
+	vector		vColor = vector(0.3f, 0.3f, 1.f, 1.f);
+	Out.vColor = g_Texture.Sample(LinearSampler, vTexUV);
+
+	if(Out.vColor.r > 0.3f || Out.vColor.g > 0.3f || Out.vColor.b > 0.3f)
+		discard;
+
+	Out.vColor = Out.vColor + vColor;
+
+	//if (Out.vColor.r > 0.3f && Out.vColor.g > 0.3f && Out.vColor.b >= 1.f)
+	//	discard;
 
 	return Out;
 }
@@ -193,5 +240,44 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MONSTERDRINK_WHITE();
+	}
+
+	pass UI_Cursor
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}
+
+	pass Sprite_Image
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SPRITE();
+	}
+
+	pass Sprite_Image_Color_Reverse
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SPRITE_REVERSE();
 	}
 }

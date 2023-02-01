@@ -17,7 +17,10 @@ namespace Engine
 	{
 		_int			iHP;
 		_int			iMaxHP;
-		_int			iCoin;
+		_int			iMonsterDrink_Black;
+		_int			iMonsterDrink_Orange;
+		_int			iMonsterDrink_Pink;
+		_int			iMonsterDrink_White;
 		_int			iAttack;
 		_int			iSpecialAttack;
 		_double		dInitAttackCoolTime;

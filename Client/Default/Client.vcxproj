@@ -176,6 +176,11 @@
     <ClInclude Include="..\Public\Baine_State.h" />
     <ClInclude Include="..\Public\Critter_Small.h" />
     <ClInclude Include="..\Public\Critter_Small_State.h" />
+    <ClInclude Include="..\Public\Cursor.h" />
+    <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\Effect_Mesh.h" />
+    <ClInclude Include="..\Public\Effect_SigridDash.h" />
+    <ClInclude Include="..\Public\Effect_VIBuffer.h" />
     <ClInclude Include="..\Public\Enemy.h" />
     <ClInclude Include="..\Public\Fantasy_Island.h" />
     <ClInclude Include="..\Public\Grapple_Hang.h" />
@@ -200,8 +205,34 @@
     <ClInclude Include="..\Public\Ocean.h" />
     <ClInclude Include="..\Public\Portal_Island.h" />
     <ClInclude Include="..\Public\River_Island.h" />
+    <ClInclude Include="..\Public\Scene_Change.h" />
     <ClInclude Include="..\Public\Shinobi.h" />
+    <ClInclude Include="..\Public\Shop_ArrowDown.h" />
+    <ClInclude Include="..\Public\Shop_ArrowUp.h" />
+    <ClInclude Include="..\Public\Shop_BackGround.h" />
+    <ClInclude Include="..\Public\Shop_Button1.h" />
+    <ClInclude Include="..\Public\Shop_Button2.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shop_ButtonA.h" />
+    <ClInclude Include="..\Public\Shop_ButtonD.h" />
+    <ClInclude Include="..\Public\Shop_ButtonE.h" />
+    <ClInclude Include="..\Public\Shop_ButtonQ.h" />
+    <ClInclude Include="..\Public\Shop_ButtonS.h" />
+    <ClInclude Include="..\Public\Shop_ButtonW.h" />
+    <ClInclude Include="..\Public\Shop_Icon_Cloth.h" />
+    <ClInclude Include="..\Public\Shop_Icon_Hair.h" />
+    <ClInclude Include="..\Public\Shop_Icon_Hat.h" />
     <ClInclude Include="..\Public\Shop_Island.h" />
+    <ClInclude Include="..\Public\Shop_ItemBar.h" />
+    <ClInclude Include="..\Public\Shop_ItemSelect.h" />
+    <ClInclude Include="..\Public\Shop_Menu_Cloth.h" />
+    <ClInclude Include="..\Public\Shop_Menu_Hair.h" />
+    <ClInclude Include="..\Public\Shop_Menu_Hat.h" />
+    <ClInclude Include="..\Public\Shop_MonsterCounter.h" />
+    <ClInclude Include="..\Public\Shop_TurnLeft.h" />
+    <ClInclude Include="..\Public\Shop_TurnRight.h" />
     <ClInclude Include="..\Public\Sigrid.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Logo.h" />
@@ -257,6 +288,11 @@
     <ClCompile Include="..\Private\Baine_State.cpp" />
     <ClCompile Include="..\Private\Critter_Small.cpp" />
     <ClCompile Include="..\Private\Critter_Small_State.cpp" />
+    <ClCompile Include="..\Private\Cursor.cpp" />
+    <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\Effect_Mesh.cpp" />
+    <ClCompile Include="..\Private\Effect_SigridDash.cpp" />
+    <ClCompile Include="..\Private\Effect_VIBuffer.cpp" />
     <ClCompile Include="..\Private\Enemy.cpp" />
     <ClCompile Include="..\Private\Fantasy_Island.cpp" />
     <ClCompile Include="..\Private\Grapple_Hang.cpp" />
@@ -281,8 +317,34 @@
     <ClCompile Include="..\Private\Ocean.cpp" />
     <ClCompile Include="..\Private\Portal_Island.cpp" />
     <ClCompile Include="..\Private\River_Island.cpp" />
+    <ClCompile Include="..\Private\Scene_Change.cpp" />
     <ClCompile Include="..\Private\Shinobi.cpp" />
+    <ClCompile Include="..\Private\Shop_ArrowDown.cpp" />
+    <ClCompile Include="..\Private\Shop_ArrowUp.cpp" />
+    <ClCompile Include="..\Private\Shop_BackGround.cpp" />
+    <ClCompile Include="..\Private\Shop_Button1.cpp" />
+    <ClCompile Include="..\Private\Shop_Button2.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shop_ButtonA.cpp" />
+    <ClCompile Include="..\Private\Shop_ButtonD.cpp" />
+    <ClCompile Include="..\Private\Shop_ButtonE.cpp" />
+    <ClCompile Include="..\Private\Shop_ButtonQ.cpp" />
+    <ClCompile Include="..\Private\Shop_ButtonS.cpp" />
+    <ClCompile Include="..\Private\Shop_ButtonW.cpp" />
+    <ClCompile Include="..\Private\Shop_Icon_Cloth.cpp" />
+    <ClCompile Include="..\Private\Shop_Icon_Hair.cpp" />
+    <ClCompile Include="..\Private\Shop_Icon_Hat.cpp" />
     <ClCompile Include="..\Private\Shop_Island.cpp" />
+    <ClCompile Include="..\Private\Shop_ItemBar.cpp" />
+    <ClCompile Include="..\Private\Shop_ItemSelect.cpp" />
+    <ClCompile Include="..\Private\Shop_Menu_Cloth.cpp" />
+    <ClCompile Include="..\Private\Shop_Menu_Hair.cpp" />
+    <ClCompile Include="..\Private\Shop_Menu_Hat.cpp" />
+    <ClCompile Include="..\Private\Shop_MonsterCounter.cpp" />
+    <ClCompile Include="..\Private\Shop_TurnLeft.cpp" />
+    <ClCompile Include="..\Private\Shop_TurnRight.cpp" />
     <ClCompile Include="..\Private\Sigrid.cpp" />
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\Private\Logo.cpp" />

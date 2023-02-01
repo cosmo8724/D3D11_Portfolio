@@ -18,8 +18,10 @@ private:
 
 public:
 	const _long&					Get_MouseMoveX() const { return m_MouseMoveX; }
+	_float&						Get_CloseAngle() { return m_fCloseAngle; }
 	void							Set_OwnerTransform(CTransform* pTransformCom) { m_pOwnerTransform = pTransformCom; }
 	void							Set_TimeScale(_double dTimeDelta) { m_dTimeScale = dTimeDelta; }
+	void							Set_MouseFix(_bool bMouseFix) { m_bMouseFix = bMouseFix; }
 	void							Init_Position();
 
 public:
@@ -38,6 +40,14 @@ private:
 
 	_long							m_MouseMoveX = 0;
 	_long							m_MouseMoveY = 0;
+
+	_bool							m_bShopOpen = false;
+	_bool							m_bNeedLerp = false;
+	_float							m_fCloseAngle = 25.f;
+
+	_float4						m_vLerpStartEye;
+	_float4						m_vLerpStartAt;
+	_double						m_dLerpTime = 0.0;
 
 private:
 	HRESULT						SetUp_Component();
