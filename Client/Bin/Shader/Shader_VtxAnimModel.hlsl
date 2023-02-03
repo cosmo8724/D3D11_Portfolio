@@ -7,6 +7,9 @@ float2			g_WinSize = { 0.f, 0.f };
 
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
+texture2D		g_MaskTexture;
+
+float4			g_HairColor;
 
 struct VS_IN
 {
@@ -140,7 +143,64 @@ PS_OUT_SHADOWDEPTH	PS_MAIN_SHADOW_WRITE(PS_IN In)
 {
     PS_OUT_SHADOWDEPTH Out = (PS_OUT_SHADOWDEPTH) 0;
 
-    Out.vLightDepth = vector(In.vProjPos.w / 3000.f, 0.f, 0.f, 1.f);
+    Out.vLightDepth = vector(In.vProjPos.w / 1000.f, 0.f, 0.f, 1.f);
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_HAIRMASK(PS_IN In)
+{
+	PS_OUT         Out = (PS_OUT)0;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+
+	vDiffuse.a = vDiffuse.a * 0.5f;
+
+	if (vDiffuse.a < 0.1f)
+		discard;
+
+	float Lx = 0;
+	float Ly = 0;
+
+	for (int y = -1; y <= 1; ++y)
+	{
+		for (int x = -1; x <= 1; ++x)
+		{
+			float2 offset = float2(x, y) * float2(1 / g_WinSize.x, 1 / g_WinSize.y);
+			float3 tex = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV + offset).rgb;
+			float luminance = dot(tex, float3(0.3, 0.59, 0.11));
+
+			Lx += luminance * Kx[y + 1][x + 1];
+			Ly += luminance * Ky[y + 1][x + 1];
+		}
+	}
+	float L = sqrt((Lx*Lx) + (Ly*Ly));
+
+	if (L < 0.1) // �̰� �� ���� �ϸ� �� �β� ���� ����
+	{
+		Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	}
+	else
+	{
+		Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV) * 0.3f;
+	}
+
+	vector		vMask = g_MaskTexture.Sample(LinearSampler, In.vTexUV);
+
+	// Hair Color
+	if (vMask.r == 1.f && vMask.g == 1.f && vMask.b == 0.f)
+	{
+		Out.vDiffuse.r = g_HairColor.r;
+		Out.vDiffuse.g = g_HairColor.g;
+		Out.vDiffuse.b = g_HairColor.b;
+	}
+	if (vMask.r == 0.f && vMask.g == 0.f && vMask.b == 1.f)
+	{
+
+	}
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -184,5 +244,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW_WRITE();
+	}
+
+	pass Sigrid_HairMask
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_HAIRMASK();
 	}
 }

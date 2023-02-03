@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Shop_ItemBar.h"
 #include "Shop_BackGround.h"
+#include "Sigrid.h"
 
 CShop_Menu_Hat::CShop_Menu_Hat(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -38,6 +39,11 @@ HRESULT CShop_Menu_Hat::Initialize(const wstring & wstrPrototypeTag, void * pArg
 	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 
 	FAILED_CHECK_RETURN(SetUp_Parts(), E_FAIL);
+
+	m_pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back());
+	NULL_CHECK_RETURN(m_pPlayer, E_FAIL);
+
+	m_iCurEquipSlot = m_pPlayer->Get_EquipSlot(2);
 
 	return S_OK;
 }
@@ -146,7 +152,7 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	m_vecChild.push_back(pUI);
 
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_2";
-	ItemBarDesc.wstrItemName = L"미정일";
+	ItemBarDesc.wstrItemName = L"게 모자";
 	ItemBarDesc.iSlot = 1;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
@@ -156,7 +162,7 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	m_vecChild.push_back(pUI);
 
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_3";
-	ItemBarDesc.wstrItemName = L"미정이";
+	ItemBarDesc.wstrItemName = L"보송보송 귀";
 	ItemBarDesc.iSlot = 2;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
@@ -166,7 +172,7 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	m_vecChild.push_back(pUI);
 
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_4";
-	ItemBarDesc.wstrItemName = L"미정삼";
+	ItemBarDesc.wstrItemName = L"젤리콘";
 	ItemBarDesc.iSlot = 3;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
@@ -176,7 +182,7 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	m_vecChild.push_back(pUI);
 
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_5";
-	ItemBarDesc.wstrItemName = L"미정사";
+	ItemBarDesc.wstrItemName = L"이빨 난 후드";
 	ItemBarDesc.iSlot = 4;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));

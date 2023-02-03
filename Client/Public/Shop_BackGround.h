@@ -11,6 +11,7 @@ private:
 	virtual ~CShop_BackGround() = default;
 
 public:
+	CUI*						Get_Child(const wstring& wstrUITag);
 	_int&						Get_CurrentMenu() { return m_iCurrentMenu; }
 	_int&						Get_CurrentSlot() { return m_iCurrentSlot; }
 	const _bool&				Get_MouseHover() const { return m_bMouseHover; }

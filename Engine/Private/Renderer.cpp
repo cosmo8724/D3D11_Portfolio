@@ -55,6 +55,13 @@ HRESULT CRenderer::Draw_RenderGroup(_bool bRenderOFF)
 	FAILED_CHECK_RETURN(Render_DebugObject(bRenderOFF), E_FAIL);
 #endif // _DEBUG
 
+#ifndef _DEBUG
+	for (auto& pComponent : m_DebugObjectList)
+		Safe_Release(pComponent);
+
+	m_DebugObjectList.clear();
+#endif
+
 	FAILED_CHECK_RETURN(Render_UI(), E_FAIL);
 
 #ifdef _DEBUG
@@ -69,8 +76,8 @@ HRESULT CRenderer::Draw_RenderGroup(_bool bRenderOFF)
 
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_ShadowDepth", 300.f, 500.f, 200.f, 200.f), E_FAIL);
 
-		m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
-		m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
+		//m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
+		//m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
 		m_pRenderTargetMgr->Render_Debug(L"MRT_LightDepth");
 	}
 #endif // _DEBUG
@@ -95,34 +102,10 @@ HRESULT CRenderer::Initialize_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Shade", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Specular", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 
-	_uint	iDepthStencilShadowX = 10240;
-	_uint	iDepthStencilShadowY = 5920;
+	_uint	iDepthStencilShadowX = 16384;// 10240;
+	_uint	iDepthStencilShadowY = 9472;// 5920;
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_ShadowDepth", iDepthStencilShadowX, iDepthStencilShadowY, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
-	
-	ID3D11Texture2D*		pDepthStencilTexture = nullptr;
-
-	D3D11_TEXTURE2D_DESC	TextureDesc;
-	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
-
-	TextureDesc.Width = iDepthStencilShadowX;
-	TextureDesc.Height = iDepthStencilShadowY;
-	TextureDesc.MipLevels = 1;
-	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-
-	TextureDesc.SampleDesc.Quality = 0;
-	TextureDesc.SampleDesc.Count = 1;
-
-	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
-	TextureDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
-	TextureDesc.CPUAccessFlags = 0;
-	TextureDesc.MiscFlags = 0;
-
-	FAILED_CHECK_RETURN(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture), E_FAIL);
-	FAILED_CHECK_RETURN(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDepthStencilViewShadow), E_FAIL);
-
-	Safe_Release(pDepthStencilTexture);
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Diffuse"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Normal"), E_FAIL);
@@ -164,6 +147,12 @@ HRESULT CRenderer::Initialize(CGameObject * pOwner, void * pArg)
 	return S_OK;
 }
 
+void CRenderer::ImGui_RenderProperty()
+{
+	if (ImGui::Button("Recompile Shader"))
+		m_pShaderCom->ReCompile();
+}
+
 HRESULT CRenderer::Render_Priority(_bool bRenderOFF)
 {
 	if (bRenderOFF == true)
@@ -193,14 +182,11 @@ HRESULT CRenderer::Render_ShadowDepth(_bool bRenderOFF)
 {
 	NULL_CHECK_RETURN(m_pRenderTargetMgr, E_FAIL);
 
-	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Begin_MultiRenderTarget(m_pContext, L"MRT_LightDepth"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Begin_ShadowDepthRenderTarget(m_pContext, L"Target_ShadowDepth"), E_FAIL);
 
-	m_pDepthStencilViewOrigin = m_pRenderTargetMgr->Get_DepthStencilView();
-	m_pContext->OMSetRenderTargets(1, m_pRenderTargetMgr->Get_BackBufferRenderTargetView(), m_pDepthStencilViewShadow);
+	//m_pContext->ClearDepthStencilView(m_pDepthStencilViewShadow, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
 
-	m_pContext->ClearDepthStencilView(m_pDepthStencilViewShadow, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
-
-	if (bRenderOFF == true)
+	/*if (bRenderOFF == true)
 	{
 		for (auto& pGameObject : m_RenderObjectList[RENDER_SHADOWDEPTH])
 			Safe_Release(pGameObject);
@@ -208,7 +194,7 @@ HRESULT CRenderer::Render_ShadowDepth(_bool bRenderOFF)
 		m_RenderObjectList[RENDER_SHADOWDEPTH].clear();
 
 		return S_OK;
-	}
+	}*/
 
 	for (auto& pGameObject : m_RenderObjectList[RENDER_SHADOWDEPTH])
 	{
@@ -221,8 +207,6 @@ HRESULT CRenderer::Render_ShadowDepth(_bool bRenderOFF)
 	m_RenderObjectList[RENDER_SHADOWDEPTH].clear();
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->End_MultiRenderTarget(m_pContext, L"MRT_LightDepth"), E_FAIL);
-
-	m_pContext->OMSetRenderTargets(1, m_pRenderTargetMgr->Get_BackBufferRenderTargetView(), m_pDepthStencilViewOrigin);
 
 	return S_OK;
 }
@@ -314,8 +298,8 @@ HRESULT CRenderer::Render_Blend(_bool bRenderOFF)
 		//_float4	vLightAt = XMLoadFloat4(&vLightEye) + XMVector3Normalize(XMLoadFloat4(&pLightDesc->vDirection));
 		//_float4	vLightUp = { 0.f, 1.f, 0.f, 0.f };
 
-		_float4		vLightEye = _float4(-500.f, 1000.f, -500.f, 1.f);
-		_float4		vLightAt = _float4(1000.f, 0.f, 1000.f, 1.f);
+		_float4		vLightEye = _float4(0.f, 300.f, 0.f, 1.f);
+		_float4		vLightAt = _float4(900.f, 0.f, 900.f, 1.f);
 		_float4		vLightUp = _float4(0.f, 1.f, 0.f, 0.f);
 
 		_float4x4	matLightView = XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp);
@@ -327,7 +311,7 @@ HRESULT CRenderer::Render_Blend(_bool bRenderOFF)
 
 		m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
 
-		_float4x4	matLightProj = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), (_float)ViewportDesc.Width / (_float)ViewportDesc.Height, 0.1f, 3000.f);
+		_float4x4	matLightProj = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), (_float)ViewportDesc.Width / (_float)ViewportDesc.Height, 0.1f, 1000.f);
 
 		m_pShaderCom->Set_Matrix(L"g_matLightView", &matLightView);
 		m_pShaderCom->Set_Matrix(L"g_matLightProj", &matLightProj);

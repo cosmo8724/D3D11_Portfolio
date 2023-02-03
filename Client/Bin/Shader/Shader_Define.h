@@ -40,6 +40,13 @@ RasterizerState	RS_CW
 	FrontCounterClockwise = false;
 };
 
+RasterizerState RS_NonCulling
+{
+	FillMode = solid;
+	CullMode = none;
+	FrontCounterClockwise = false;
+};
+
 DepthStencilState DS_Default
 {
 	DepthEnable = true;

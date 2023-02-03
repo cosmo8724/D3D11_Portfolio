@@ -4,6 +4,9 @@
 #include "Shop_Menu_Cloth.h"
 #include "Shop_Menu_Hair.h"
 #include "Shop_Menu_Hat.h"
+#include "Sigrid.h"
+#include "Shop_Button1.h"
+#include "Shop_BackGround.h"
 
 CShop_ItemBar::CShop_ItemBar(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -50,6 +53,9 @@ HRESULT CShop_ItemBar::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	FAILED_CHECK_RETURN(SetUp_Parts(), E_FAIL);
 
+	m_pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back());
+	NULL_CHECK_RETURN(m_pPlayer, E_FAIL);
+
 	return S_OK;
 }
 
@@ -85,12 +91,107 @@ void CShop_ItemBar::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 	}
 
+	if (dynamic_cast<CShop_Menu_Cloth*>(m_pParent))
+		m_eState = (ITEMBAR_STATE)m_pPlayer->Get_ItemState(0, m_iSlot);
+	else if (dynamic_cast<CShop_Menu_Hair*>(m_pParent))
+		m_eState = (ITEMBAR_STATE)m_pPlayer->Get_ItemState(1, m_iSlot);
+	else if (dynamic_cast<CShop_Menu_Hat*>(m_pParent))
+		m_eState = (ITEMBAR_STATE)m_pPlayer->Get_ItemState(2, m_iSlot);
+
+	if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED)
+	{
+		if (dynamic_cast<CShop_Menu_Cloth*>(m_pParent))
+		{
+			if (dynamic_cast<CShop_Menu_Cloth*>(m_pParent)->Get_CurEquipSlot() != m_iSlot)
+			{
+				m_eState = CShop_ItemBar::ITEMBAR_PURCHASED;
+				m_pPlayer->Set_ItemState(m_iMenu, m_iSlot, (_uint)ITEMBAR_PURCHASED);
+			}
+		}
+		else if (dynamic_cast<CShop_Menu_Hair*>(m_pParent))
+		{
+			if (dynamic_cast<CShop_Menu_Hair*>(m_pParent)->Get_CurEquipSlot() != m_iSlot)
+			{
+				m_eState = CShop_ItemBar::ITEMBAR_PURCHASED;
+				m_pPlayer->Set_ItemState(m_iMenu, m_iSlot, (_uint)ITEMBAR_PURCHASED);
+			}
+		}
+		else if (dynamic_cast<CShop_Menu_Hat*>(m_pParent))
+		{
+			if (dynamic_cast<CShop_Menu_Hat*>(m_pParent)->Get_CurEquipSlot() != m_iSlot)
+			{
+				m_eState = CShop_ItemBar::ITEMBAR_PURCHASED;
+				m_pPlayer->Set_ItemState(m_iMenu, m_iSlot, (_uint)ITEMBAR_PURCHASED);
+			}
+		}
+	}
+
 	if (m_bSelected)
 	{
 		if (m_fHoverScale < 1.06f)
 			m_fHoverScale += (_float)dTimeDelta * 0.4f;
 		else
 			m_fHoverScale = 1.06f;
+
+		CSigrid*	pPlayer = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back());
+
+		CShop_Button1*	pUI = dynamic_cast<CShop_Button1*>(dynamic_cast<CShop_BackGround*>(m_pParent->Get_Parent())->Get_Child(L"UI_Shop_Button1"));
+		NULL_CHECK_RETURN(pUI, );
+
+		if (dynamic_cast<CShop_Menu_Cloth*>(m_pParent))
+		{
+			CShop_Menu_Cloth*		pMenu = dynamic_cast<CShop_Menu_Cloth*>(m_pParent);
+			if (pMenu->Is_Selected() == true)
+			{
+				m_iMenu = 0;
+				m_eState = (ITEMBAR_STATE)pPlayer->Get_ItemState(m_iMenu, m_iSlot);
+
+				pPlayer->Set_PreviewOutfit(m_iSlot);
+				pPlayer->Set_PreviewHair(0);
+				pPlayer->Set_PreviewHat(0);
+
+				if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED || m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
+					pUI->Set_ButtonText(L"ÀåÂø");
+				else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
+					pUI->Set_ButtonText(L"±¸¸Å");
+			}
+		}
+		else if (dynamic_cast<CShop_Menu_Hair*>(m_pParent))
+		{
+			CShop_Menu_Hair*		pMenu = dynamic_cast<CShop_Menu_Hair*>(m_pParent);
+			if (pMenu->Is_Selected() == true)
+			{
+				m_iMenu = 1;
+				m_eState = (ITEMBAR_STATE)pPlayer->Get_ItemState(m_iMenu, m_iSlot);
+
+				pPlayer->Set_PreviewOutfit(0);
+				pPlayer->Set_PreviewHair(m_iSlot);
+				pPlayer->Set_PreviewHat(0);
+
+				if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED || m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
+					pUI->Set_ButtonText(L"ÀåÂø");
+				else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
+					pUI->Set_ButtonText(L"±¸¸Å");
+			}
+		}
+		else if (dynamic_cast<CShop_Menu_Hat*>(m_pParent))
+		{
+			CShop_Menu_Hat*		pMenu = dynamic_cast<CShop_Menu_Hat*>(m_pParent);
+			if (pMenu->Is_Selected() == true)
+			{
+				m_iMenu = 2;
+				m_eState = (ITEMBAR_STATE)pPlayer->Get_ItemState(m_iMenu, m_iSlot);
+
+				pPlayer->Set_PreviewOutfit(0);
+				pPlayer->Set_PreviewHair(0);
+				pPlayer->Set_PreviewHat(m_iSlot);
+
+				if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED || m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
+					pUI->Set_ButtonText(L"ÀåÂø");
+				else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
+					pUI->Set_ButtonText(L"±¸¸Å");
+			}
+		}
 	}
 	else
 	{
@@ -123,6 +224,38 @@ void CShop_ItemBar::Late_Tick(_double dTimeDelta)
 		m_matWorldmulParent = matWorld * matParentWorld;
 	}
 
+	if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED)
+		m_wstrState = L"ÀåÂøÇÔ";
+	else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
+		m_wstrState = L"1";
+	else if (m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
+		m_wstrState = L"º¸À¯ Áß";
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_1))
+	{
+		if (m_bSelected == true)
+		{
+			if (m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
+			{
+				m_eState = CShop_ItemBar::ITEMBAR_EQUIPED;
+				m_pPlayer->Set_ItemState(m_iMenu, m_iSlot, (_uint)ITEMBAR_EQUIPED);
+				m_pPlayer->EquipItem(m_iMenu, m_iSlot);
+
+				if (dynamic_cast<CShop_Menu_Cloth*>(m_pParent))
+					dynamic_cast<CShop_Menu_Cloth*>(m_pParent)->Set_CurEquipSlot(m_iSlot);
+				else if (dynamic_cast<CShop_Menu_Hair*>(m_pParent))
+					dynamic_cast<CShop_Menu_Hair*>(m_pParent)->Set_CurEquipSlot(m_iSlot);
+				else if (dynamic_cast<CShop_Menu_Hat*>(m_pParent))
+					dynamic_cast<CShop_Menu_Hat*>(m_pParent)->Set_CurEquipSlot(m_iSlot);
+			}
+			else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
+			{
+				m_eState = CShop_ItemBar::ITEMBAR_PURCHASED;
+				m_pPlayer->Set_ItemState(m_iMenu, m_iSlot, (_uint)ITEMBAR_PURCHASED);
+			}
+		}
+	}
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 
@@ -142,9 +275,26 @@ HRESULT CShop_ItemBar::Render()
 
 	_float4	vPos = XMLoadFloat4x4(&m_matWorldmulParent).r[3];
 
-	m_wstrState = L"º¸À¯Áß";
 	CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrItemName, _float2(vPos.x + 950.f, -vPos.y + 715.f), 0.f, _float2(m_fAspectRatioX * 1.3f, m_fAspectRatioY * 1.3f));
-	CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1620.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+
+	if (m_bSelected)
+	{
+		if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED)
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f + (27.f * m_fHoverScale), -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+		else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1690.f + (33.f * m_fHoverScale), -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+		else if (m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f + (27.f * m_fHoverScale), -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+	}
+	else
+	{
+		if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED)
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+		else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1700.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+		else if (m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+	}
 
 	return S_OK;
 }

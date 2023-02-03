@@ -11,6 +11,9 @@ private:
 	virtual ~CShop_Button1() = default;
 
 public:
+	void						Set_ButtonText(const wstring& wstrText) { m_wstrYes = wstrText; }
+
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;

@@ -337,6 +337,24 @@
     <Filter Include="02. GameObject\02. For_MainStage\UI\Shop\Item Select">
       <UniqueIdentifier>{5e355e5d-1b09-4eca-8b84-5eb3294587fe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player\Hat">
+      <UniqueIdentifier>{9db9699a-a18c-4610-bf26-2bfe308801d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player\Hat\CrabbyHat">
+      <UniqueIdentifier>{f74b3e8b-4c6f-4e51-b08a-9618ba47b55c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player\Hat\FuzzyEars">
+      <UniqueIdentifier>{035a0006-e762-4206-9f78-e662c0cf4b1f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player\Hat\JellyCorne">
+      <UniqueIdentifier>{5ee4336d-a1ea-4c11-a105-483856e8edd2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\00. For_Public\Player\Hat\ToothyHood">
+      <UniqueIdentifier>{93643c3e-a93a-490b-8f9f-5538df2bc4a9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\GroundSlam">
+      <UniqueIdentifier>{7d881e63-04a4-4c55-b83a-03db26348aff}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -627,6 +645,21 @@
     <ClInclude Include="..\Public\Shop_ItemSelect.h">
       <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Select</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Hat_CrabbyHat.h">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\CrabbyHat</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hat_FuzzyEars.h">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\FuzzyEars</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hat_JellyCorne.h">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\JellyCorne</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hat_ToothyHood.h">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\ToothyHood</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_GroundSlam.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\GroundSlam</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -904,6 +937,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\Shop_ItemSelect.cpp">
       <Filter>02. GameObject\02. For_MainStage\UI\Shop\Item Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hat_CrabbyHat.cpp">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\CrabbyHat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hat_FuzzyEars.cpp">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\FuzzyEars</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hat_JellyCorne.cpp">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\JellyCorne</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hat_ToothyHood.cpp">
+      <Filter>02. GameObject\00. For_Public\Player\Hat\ToothyHood</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_GroundSlam.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\GroundSlam</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -159,8 +159,6 @@ HRESULT CLevel_TestStage::Load_CloneObjects(const wstring & wstrCloneObjFilePath
 	Safe_Release(pGameInstance);
 
 	return S_OK;
-
-	return S_OK;
 }
 
 HRESULT CLevel_TestStage::Ready_Light()

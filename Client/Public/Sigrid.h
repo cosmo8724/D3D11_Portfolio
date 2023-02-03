@@ -9,6 +9,7 @@ class CRenderer;
 class CStateMachine;
 class CCollider;
 class CNavigation;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -19,6 +20,7 @@ class CSigrid final : public CGameObject
 
 public:
 	enum NAVIGATIONTYPE { NAVI_DEFAULT, NAVI_ROOF, NAVI_SKY, NAVI_FANTASY, NAVI_HELLHEIM, NAVI_END };
+	enum ITEMSTATE { ITEM_EQUIPPED, ITEM_NOTPURCHASED, ITEM_PURCHASED, ITEM_END };
 
 private:
 	CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext);
@@ -26,6 +28,17 @@ private:
 	virtual ~CSigrid() = default;
 
 public:
+	ITEMSTATE				Get_ItemState(_uint iMenuIndex, _uint iSlot) { return m_eItemState[iMenuIndex][iSlot]; }
+	_uint						Get_EquipSlot(_uint iMenuIndex);
+	_float4					Get_CurrentHairColor();
+	void						EquipItem(_uint iMenuIndex, _uint iSlot);
+	void						Set_ItemState(_uint iMenuIndex, _uint iSlot, _uint eState) { m_eItemState[iMenuIndex][iSlot] = (ITEMSTATE)eState; }
+	void						Set_CurrentOutfit(_uint iIndex) { m_iCurrentOutfit = iIndex; }
+	void						Set_PreviewOutfit(_uint iIndex) { m_iPreviewOutfit = iIndex; }
+	void						Set_CurrentHair(_uint iIndex) { m_iCurrentHair = iIndex; }
+	void						Set_PreviewHair(_uint iIndex) { m_iPreviewHair = iIndex; }
+	void						Set_CurrentHat(_uint iIndex) { m_iCurrentHat = iIndex; }
+	void						Set_PreviewHat(_uint iIndex) { m_iPreviewHat = iIndex; }
 	void						Set_GrappleLauncher() { m_bGrappleLauncher = true; m_bGrappleHang = false; }
 	void						Set_GrappleHang() { m_bGrappleLauncher = false; m_bGrappleHang = true; }
 	void						Set_SnapGrappleFast(_float fGrabAngle, _float fLaunchAngle, _fvector vGrapplePos, _fmatrix matWorld) {
@@ -72,6 +85,8 @@ private:
 	CShader*					m_pShaderCom = nullptr;
 	CRenderer*				m_pRendererCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
+	CTexture*					m_pOutfitTextureCom[4] = { nullptr };
+	CTexture*					m_pHairMaskTextureCom = nullptr;
 	
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
@@ -82,9 +97,23 @@ private:
 
 	class CStatic_Camera*	m_pCamera = nullptr;
 
+	vector<CGameObject*>	m_vecHats;
+
 private:	/* State */
 	_double					m_dTimeScale = 1.0;
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;
+
+	_uint						m_iCurrentOutfit = 0;
+	_uint						m_iPreviewOutfit = 0;
+	_uint						m_iCurrentHair = 0;
+	_uint						m_iPreviewHair = 0;
+	_uint						m_iCurrentHat = 0;
+	_uint						m_iPreviewHat = 0;
+	_bool						m_bHairMask = false;
+	_float4					m_vHairColor[4];
+	ITEMSTATE				m_eItemState[3][5] = { {ITEM_EQUIPPED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED},
+															{ITEM_EQUIPPED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED},
+															{ITEM_EQUIPPED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED, ITEM_NOTPURCHASED} };
 
 	_bool						m_bOnOcean = false;
 	_double					m_dSurfTime = 0.0;
@@ -122,6 +151,7 @@ private:	/* State */
 
 private:
 	HRESULT					SetUp_Component();
+	HRESULT					SetUp_Parts_Hat();
 	HRESULT					SetUp_ShaderResource();
 	HRESULT					SetUp_ShaderResource_LightDepth();
 

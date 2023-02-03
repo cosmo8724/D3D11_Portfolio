@@ -41,6 +41,7 @@ private:
 
 	wstring					m_wstrItemName = L"";
 	wstring					m_wstrState = L"";
+	_uint						m_iMenu = 0;
 	_uint						m_iSlot = 0;
 
 private:

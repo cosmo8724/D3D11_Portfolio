@@ -101,6 +101,58 @@ HRESULT CRenderTargetMgr::Add_MultiRenderTarget(const wstring & wstrMultiTargetT
 	return S_OK;
 }
 
+HRESULT CRenderTargetMgr::Begin_RenderTarget(DEVICE_CONTEXT pContext, const wstring & wstrTargetTag)
+{
+	CRenderTarget*		pRenderTarget = Find_RenderTarget(wstrTargetTag);
+	NULL_CHECK_RETURN(pRenderTarget, E_FAIL);
+
+	ID3D11ShaderResourceView*		pSRVs[128] = { nullptr };
+
+	pContext->PSSetShaderResources(0, 128, pSRVs);
+
+	ID3D11RenderTargetView*		pRTV = nullptr;
+
+	pRenderTarget->Clear_RenderTarget();
+	pRTV = pRenderTarget->Get_RenderTargetView();
+
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	_uint	iNumViewPort = 1;
+	pContext->RSGetViewports(&iNumViewPort, &m_ViewPortOrigin);
+
+	pContext->OMSetRenderTargets(1, &pRTV, m_pDepthStencilView);
+
+	return S_OK;
+}
+
+HRESULT CRenderTargetMgr::Begin_ShadowDepthRenderTarget(DEVICE_CONTEXT pContext, const wstring & wstrTargetTag)
+{
+	CRenderTarget*		pRenderTarget = Find_RenderTarget(wstrTargetTag);
+	NULL_CHECK_RETURN(pRenderTarget, E_FAIL);
+
+	ID3D11ShaderResourceView*		pSRVs[128] = { nullptr };
+
+	pContext->PSSetShaderResources(0, 128, pSRVs);
+
+	ID3D11RenderTargetView*		pRTV = nullptr;
+
+	pRenderTarget->Clear_RenderTarget();
+	pRTV = pRenderTarget->Get_RenderTargetView();
+
+	pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	_uint	iNumViewPort = 1;
+	pContext->RSGetViewports(&iNumViewPort, &m_ViewPortOrigin);
+
+	pContext->OMSetRenderTargets(1, &pRTV, pRenderTarget->Get_DepthStencilView());
+
+	pContext->ClearDepthStencilView(pRenderTarget->Get_DepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+
+	pContext->RSSetViewports(1, &pRenderTarget->Get_ViewPortDesc());
+
+	return S_OK;
+}
+
 HRESULT CRenderTargetMgr::Begin_MultiRenderTarget(DEVICE_CONTEXT pContext, const wstring & wstrMultiTargetTag)
 {
 	list<CRenderTarget*>*	pMultiRenderTargetList = Find_MultiRenderTarget(wstrMultiTargetTag);
@@ -128,6 +180,8 @@ HRESULT CRenderTargetMgr::End_MultiRenderTarget(DEVICE_CONTEXT pContext, const w
 
 	Safe_Release(m_pBackBufferView);
 	Safe_Release(m_pDepthStencilView);
+
+	pContext->RSSetViewports(1, &m_ViewPortOrigin);
 
 	return S_OK;
 }

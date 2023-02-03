@@ -58,7 +58,7 @@ void CHPBar::Late_Tick(_double dTimeDelta)
 
 	m_wstrHP = to_wstring(m_pPlayer->Get_Status().iHP);
 
-	if (nullptr != m_pRendererCom)
+	if (nullptr != m_pRendererCom && g_bReadySceneChange == false && g_bShopOpen == false)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }
 

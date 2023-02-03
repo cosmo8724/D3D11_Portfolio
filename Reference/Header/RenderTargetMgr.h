@@ -12,9 +12,9 @@ private:
 	virtual ~CRenderTargetMgr() = default;
 
 public:
-	ID3D11RenderTargetView*		Get_RenderTargetView(const wstring& wstrTargetTag);
+	ID3D11RenderTargetView* 		Get_RenderTargetView(const wstring& wstrTargetTag);
 	ID3D11ShaderResourceView*		Get_ShaderResourceView(const wstring& wstrTargetTag);
-	ID3D11RenderTargetView* const*		Get_BackBufferRenderTargetView() const { return &m_pBackBufferView; }
+	ID3D11RenderTargetView**		Get_BackBufferRenderTargetView() { return &m_pBackBufferView; }
 	ID3D11DepthStencilView*		Get_DepthStencilView() { return m_pDepthStencilView; }
 
 public:
@@ -23,6 +23,8 @@ public:
 	HRESULT							Add_RenderTarget(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring& wstrTargetTag, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
 	HRESULT							Add_MultiRenderTarget(const wstring& wstrMultiTargetTag, const wstring& wstrTargetTag);
 
+	HRESULT							Begin_RenderTarget(DEVICE_CONTEXT pDevice, const wstring& wstrTargetTag);
+	HRESULT							Begin_ShadowDepthRenderTarget(DEVICE_CONTEXT pDevice, const wstring& wstrTargetTag);
 	HRESULT							Begin_MultiRenderTarget(DEVICE_CONTEXT pContext, const wstring& wstrMultiTargetTag);
 	HRESULT							End_MultiRenderTarget(DEVICE_CONTEXT pContext, const wstring& wstrMultiTargetTag);
 
@@ -37,6 +39,7 @@ private:
 
 	ID3D11RenderTargetView*		m_pBackBufferView = nullptr;
 	ID3D11DepthStencilView*		m_pDepthStencilView = nullptr;
+	D3D11_VIEWPORT				m_ViewPortOrigin;
 
 private:
 	map<const wstring, class CRenderTarget*>			m_mapRenderTarget;

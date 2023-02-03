@@ -4,8 +4,14 @@ matrix			g_matWorld, g_matView, g_matProj;
 matrix			g_matSocket;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
+texture2D		g_MaskTexture;
 
 float			g_fFadeAlpha;
+bool			g_bHairMask;
+vector			g_vHairColor;
+
+int				g_WidthFrame, g_HeightFrame;
+int				g_WidthCount, g_HeightCount;
 
 struct VS_IN
 {
@@ -123,7 +129,67 @@ PS_OUT_SHADOWDEPTH	PS_MAIN_SHADOW_WRITE(PS_IN In)
 {
     PS_OUT_SHADOWDEPTH Out = (PS_OUT_SHADOWDEPTH) 0;
 
-    Out.vLightDepth = vector(In.vProjPos.w / 3000.f, 0.f, 0.f, 1.f);
+    Out.vLightDepth = vector(In.vProjPos.w / 1000.f, 0.f, 0.f, 1.f);
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_FUZZYEARS(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	if (0.1f > vDiffuse.a)
+		discard;
+
+	Out.vDiffuse = vDiffuse;
+
+	vector		vMask = g_MaskTexture.Sample(LinearSampler, In.vTexUV);
+
+	// Hair Color
+	if (g_bHairMask == true)
+	{
+		if (vMask.r == 1.f && vMask.g == 1.f && vMask.b == 0.f)
+		{
+			Out.vDiffuse.r = g_vHairColor.r;
+			Out.vDiffuse.g = g_vHairColor.g;
+			Out.vDiffuse.b = g_vHairColor.b;
+		}
+		if (vMask.r == 0.f && vMask.g == 0.f && vMask.b == 1.f)
+		{
+			//Out.vDiffuse.a = 0.f;
+		}
+	}
+	else
+		Out.vDiffuse *= g_vHairColor;
+
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_SIGRID_GROUNDSLAM(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float2		vTexUV;
+	vTexUV.x = (In.vTexUV.x + 1.f * g_WidthFrame) / g_WidthCount;
+	vTexUV.y = (In.vTexUV.y + g_HeightFrame) / g_HeightCount;;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexUV);
+	vector		vMask = g_MaskTexture.Sample(LinearSampler, vTexUV);
+	vector		vColor = vector(1.f, 0.f, 0.f, 1.f);
+	
+	//vMask.a = 1.f;
+	//vDiffuse = vDiffuse * vMask;
+	//vDiffuse.a = vMask.r;
+	if (0.1f > vMask.r)
+		discard;
+
+	Out.vDiffuse = vMask;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f) * -1.f;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
 
 	return Out;
 }
@@ -180,6 +246,45 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW_WRITE();
+	}
+
+	pass Shadow_Write_Socket
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_SOCKET();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SHADOW_WRITE();
+	}
+
+	pass Hat_FuzzyEars
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_SOCKET();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FUZZYEARS();
+	}
+
+	pass Effect_Sigrid_GroundSlam
+	{
+		SetRasterizerState(RS_NonCulling);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_SIGRID_GROUNDSLAM();
 	}
 }
 

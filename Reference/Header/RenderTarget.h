@@ -12,6 +12,8 @@ private:
 public:
 	ID3D11RenderTargetView*		Get_RenderTargetView() const { return m_pRenderTargetView; }
 	ID3D11ShaderResourceView*		Get_ShaderResourceView() const { return m_pShaderResourceView; }
+	ID3D11DepthStencilView*		Get_DepthStencilView() const { return m_pDepthStencilView; }
+	const D3D11_VIEWPORT&		Get_ViewPortDesc() const { return m_ViewPort; }
 
 public:
 	HRESULT							Initialize(_uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
@@ -32,13 +34,21 @@ private:
 	ID3D11Texture2D*				m_pTexture2D = nullptr;
 	ID3D11RenderTargetView*		m_pRenderTargetView = nullptr;
 	ID3D11ShaderResourceView*		m_pShaderResourceView = nullptr;
+	ID3D11DepthStencilView*		m_pDepthStencilView = nullptr;
+	D3D11_VIEWPORT				m_ViewPort;
 
 	_float4							m_vClearColor;
+
+	_uint								m_iWidth = 0;
+	_uint								m_iHeight = 0;
 
 #ifdef _DEBUG
 private:
 	_float4x4							m_matWorld;
 #endif // _DEBUG
+
+private:
+	HRESULT							Ready_DepthStencilRenderTargetView(_uint iWidth, _uint iHeight);
 
 public:
 	static CRenderTarget*			Create(DEVICE pDevice, DEVICE_CONTEXT pContext, _uint iWidth, _uint iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);

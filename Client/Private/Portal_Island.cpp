@@ -40,11 +40,12 @@ void CPortal_Island::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	if (nullptr != m_pRendererCom &&
-		true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 50.f))
+	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+
+		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 100.f))
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 	}
 }
 
@@ -140,17 +141,16 @@ HRESULT CPortal_Island::SetUp_ShaderResource_LightDepth()
 	//_float4	vLightAt = XMLoadFloat4(&vLightEye) + XMVector3Normalize(XMLoadFloat4(&pLightDesc->vDirection));
 	//_float4	vLightUp = { 0.f, 1.f, 0.f, 0.f };
 
-	_float4		vLightEye = _float4(-500.f, 1000.f, -500.f, 1.f);
-	_float4		vLightAt = _float4(1000.f, 0.f, 1000.f, 1.f);
+	_float4		vLightEye = _float4(0.f, 300.f, 0.f, 1.f);
+	_float4		vLightAt = _float4(900.f, 0.f, 900.f, 1.f);
 	_float4		vLightUp = _float4(0.f, 1.f, 0.f, 0.f);
 
 	_float4x4	matLightView = XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp);
-	_float4x4	matLightProj = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), (_float)g_iWinSizeX / (_float)g_iWinSizeY, 0.1f, 3000.f);
+	_float4x4	matLightProj = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), (_float)g_iWinSizeX / (_float)g_iWinSizeY, 0.1f, 1000.f);
 
 	m_pShaderCom->Set_Matrix(L"g_matView", &matLightView);
 	//m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &matLightProj);
-	m_pShaderCom->Set_RawValue(L"g_WinSize", &_float2((_float)g_iWinSizeX, (_float)g_iWinSizeY), sizeof(_float2));
 
 	Safe_Release(pGameInstance);
 

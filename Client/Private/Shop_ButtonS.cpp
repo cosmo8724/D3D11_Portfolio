@@ -89,6 +89,7 @@ void CShop_ButtonS::Tick(_double dTimeDelta)
 		if (m_bMouseHover && CGameInstance::GetInstance()->Mouse_Down(DIM_LB))
 		{
 			m_fHoverScale -= 0.15f;
+			dynamic_cast<CShop_BackGround*>(m_pParent)->Get_CurrentSlot()++;
 		}
 
 		if (m_fHoverScale < 1.3f)

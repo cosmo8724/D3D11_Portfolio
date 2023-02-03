@@ -11,6 +11,9 @@
 
 #define			MSG_BOX(_message)			MessageBox(nullptr, TEXT(_message), L"System Message", MB_OK)
 
+#define D3DCOLOR_ARGB(a,r,g,b) \
+    ((D3DCOLOR)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
+
 #define NULL_CHECK( _ptr)	\
 	{if( _ptr == 0){__debugbreak();return;}}
 

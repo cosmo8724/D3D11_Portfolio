@@ -15,6 +15,7 @@ public:
 public:
 	virtual HRESULT		Initialize_Prototype() override;
 	virtual HRESULT		Initialize(class CGameObject* pOwner, void* pArg) override;
+	virtual void			ImGui_RenderProperty() override;
 
 public:
 	HRESULT				Add_RenderGroup(RENDERGROUP eRenderGroup, class CGameObject* pGameObject, _bool bFirst = false);
@@ -29,9 +30,6 @@ private:
 	typedef	list<class CComponent*>	DEBUGOBJECTS;
 
 private:
-	ID3D11DepthStencilView*				m_pDepthStencilViewOrigin = nullptr;
-	ID3D11DepthStencilView*				m_pDepthStencilViewShadow = nullptr;
-
 	class CRenderTargetMgr*				m_pRenderTargetMgr = nullptr;
 	class CLightMgr*							m_pLightMgr = nullptr;
 	class CVIBuffer_Rect*					m_pVIBufferCom = nullptr;

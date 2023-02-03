@@ -145,7 +145,7 @@ PS_OUT_LIGHT	PS_MAIN_DIRECTIONAL(PS_IN In)
 
 	vector		vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
 
-	Out.vShade = g_vLightDiffuse * saturate(saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal))) + (g_vLightAmbient * g_vMaterialAmbient));
+	Out.vShade = g_vLightDiffuse * ceil(saturate(saturate(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal))) + (g_vLightAmbient * g_vMaterialAmbient)) * 5.f) / 5.f;
 	Out.vShade.a = 1.f;
 
 	vector		vWorldPos;
@@ -162,7 +162,7 @@ PS_OUT_LIGHT	PS_MAIN_DIRECTIONAL(PS_IN In)
 	vector		vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
 	vector		vLook = vWorldPos - g_vCamPosition;
 
-	Out.vSpecular = (g_vLightSpecular * g_vMaterialSpecular) * pow(saturate(dot(normalize(vLook) * -1.f, normalize(vReflect))), 30.f);
+	Out.vSpecular = (g_vLightSpecular * g_vMaterialSpecular) * ceil(pow(saturate(dot(normalize(vLook) * -1.f, normalize(vReflect))), 100.f) * 0.7f * 30.f) / 30.f;
 	Out.vSpecular.a = 0.f;
 
 	return Out;
@@ -228,7 +228,7 @@ PS_OUT	PS_MAIN_BLEND(PS_IN In)
 	vPos.w = 1.f;
 
 	vPos *= fViewZ;
-
+	
 	vPos = mul(vPos, g_matProjInv);
 	vPos = mul(vPos, g_matViewInv);
 	vPos = mul(vPos, g_matLightView);
@@ -238,7 +238,7 @@ PS_OUT	PS_MAIN_BLEND(PS_IN In)
 
 	vector		vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearSampler, vLightUV);
 
-	if (vPos.z - 0.1f > vShadowDepthInfo.x * 3000.f)
+	if (vPos.z - 0.1f > vShadowDepthInfo.x * 1000.f)
 		Out.vColor = Out.vColor * vector(0.3f, 0.3f, 0.3f, 1.f);
 
 	if (0.f == Out.vColor.a)

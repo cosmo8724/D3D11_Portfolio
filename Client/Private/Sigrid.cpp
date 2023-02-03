@@ -6,6 +6,7 @@
 #include "Sigrid_State.h"
 #include "Ocean.h"
 #include "Enemy.h"
+#include "Shop_BackGround.h"
 
 CSigrid::CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -27,6 +28,62 @@ CSigrid::CSigrid(const CSigrid & rhs)
 	, m_fMaxDashTickCount(rhs.m_fMaxDashTickCount)
 	, m_fCurDashTickCount(rhs.m_fCurDashTickCount)
 {
+	ZeroMemory(m_vHairColor, sizeof(_float4) * 4);
+}
+
+_uint CSigrid::Get_EquipSlot(_uint iMenuIndex)
+{
+	for (_uint i = 0; i < 5; ++i)
+	{
+		if (m_eItemState[iMenuIndex][i] == ITEM_EQUIPPED)
+			return i;
+	}
+
+	return 10000;
+}
+
+_float4 CSigrid::Get_CurrentHairColor()
+{
+	_float4	vColor = { 0.f, 0.f, 0.f, 0.f };
+
+	if (m_bHairMask == true)
+	{
+		if (m_iCurrentHair != 0)
+			vColor = m_vHairColor[m_iCurrentHair - 1];
+
+		if (g_bShopOpen == true)
+		{
+			if (m_iPreviewHair != 0)
+				vColor = m_vHairColor[m_iPreviewHair - 1];
+			else
+			{
+				if (m_iCurrentHair != 0)
+					vColor = m_vHairColor[m_iCurrentHair - 1];
+				else
+					vColor = { 0.f, 0.f, 0.f, 0.f };
+			}
+		}
+	}
+
+	return vColor;
+}
+
+void CSigrid::EquipItem(_uint iMenuIndex, _uint iSlot)
+{
+	switch (iMenuIndex)
+	{
+	case 0:
+		Set_CurrentOutfit(iSlot);
+		break;
+
+	case 1:
+		Set_CurrentHair(iSlot);
+		break;
+
+	case 2:
+		Set_CurrentHat(iSlot);
+		break;
+	}
 }
 
 HRESULT CSigrid::Initialize_Prototype()
@@ -75,6 +132,13 @@ HRESULT CSigrid::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	m_tStatus.dInitHitCoolTime = 2.0;
 	m_tStatus.dCurHitCoolTime = 0.0;
 
+	m_vHairColor[0] = FLOAT4COLOR_RGBA(253.f, 229.f, 169.f, 255.f);
+	m_vHairColor[1] = FLOAT4COLOR_RGBA(255.f, 255.f, 255.f, 255.f);
+	m_vHairColor[2] = FLOAT4COLOR_RGBA(241.f, 116.f, 115.f, 255.f);
+	m_vHairColor[3] = FLOAT4COLOR_RGBA(68.f, 27.f, 38.f, 255.f);
+
+	FAILED_CHECK_RETURN(SetUp_Parts_Hat(), E_FAIL);
+
 	return S_OK;
 }
 
@@ -98,6 +162,10 @@ void CSigrid::Tick(_double dTimeDelta)
 
 		m_pSigridState->Tick(dTimeDelta);
 		m_pStateMachineCom->Tick(dTimeDelta);
+
+		m_iPreviewOutfit = 0;
+		m_iPreviewHair = 0;
+		m_iPreviewHat = 0;
 	}
 
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
@@ -109,6 +177,9 @@ void CSigrid::Tick(_double dTimeDelta)
 
 	_matrix	matNetRing = m_pModelCom->Get_BoneMatrix("NetRing DEF 1");
 	m_pNetSphereCol->Update(matNetRing * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	for (auto& pGameObject : m_vecHats)
+		pGameObject->Tick(dTimeDelta);
 }
 
 void CSigrid::Late_Tick(_double dTimeDelta)
@@ -116,6 +187,16 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 	__super::Late_Tick(dTimeDelta);
 
 	m_pSigridState->Late_Tick(dTimeDelta);
+
+	if (m_iCurrentHair != 0 || m_iPreviewHair != 0)
+	{
+		m_bHairMask = true;
+
+		if (g_bShopOpen == true && dynamic_cast<CShop_BackGround*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI")->back())->Get_CurrentMenu() == 1 && m_iPreviewHair == 0)
+			m_bHairMask = false;
+	}
+	else
+		m_bHairMask = false;
 
 	if (nullptr != m_pRendererCom && g_bReadySceneChange == false)
 	{
@@ -127,6 +208,20 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 		m_pRendererCom->Add_DebugRenderGroup(m_pNetSphereCol);
 		//m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 	}
+
+	if (m_iCurrentHat != 0)
+	{
+		if (m_iPreviewHat == 0)
+			m_vecHats[m_iCurrentHat - 1]->Late_Tick(dTimeDelta);
+	}
+
+	if (m_iPreviewHat != 0)
+	{
+		m_vecHats[m_iPreviewHat - 1]->Late_Tick(dTimeDelta);
+	}
+
+	if (CGameInstance::GetInstance()->Key_Down(DIK_G))
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_GroundSlam", m_pTransformCom->Get_WorldMatrix());
 }
 
 HRESULT CSigrid::Render()
@@ -141,7 +236,48 @@ HRESULT CSigrid::Render()
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 1);
+		if (m_iCurrentOutfit != 0)
+		{
+			if (i < 2)
+			{
+				m_pOutfitTextureCom[m_iCurrentOutfit - 1]->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture");
+				
+				if (g_bShopOpen == true && dynamic_cast<CShop_BackGround*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI")->back())->Get_CurrentMenu() == 0 && m_iPreviewOutfit == 0)
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			}
+		}
+
+		if (m_iPreviewOutfit != 0)
+		{
+			if (i < 2)
+				m_pOutfitTextureCom[m_iPreviewOutfit - 1]->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture");
+		}
+
+		if (m_bHairMask == false)
+			m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 1);
+		else
+		{
+			if (i < 2)
+			{
+				if (m_iPreviewHair != 0)
+					m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 3);
+				else
+					m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 3);
+			}
+			else
+				m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 1);
+		}
+	}
+
+	if (g_bShopOpen == true || g_bReadySceneChange == true)
+	{
+		if (m_iPreviewHat != 0)
+			m_vecHats[m_iPreviewHat - 1]->Render();
+		else
+		{
+			if (m_iCurrentHat != 0 && dynamic_cast<CShop_BackGround*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI")->back())->Get_CurrentMenu() != 2)
+				m_vecHats[m_iCurrentHat - 1]->Render();
+		}
 	}
 
 	return S_OK;
@@ -222,6 +358,12 @@ HRESULT CSigrid::SetUp_Component()
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Sigrid", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
 
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Stripes", L"Com_Outfit_Stripe", (CComponent**)&m_pOutfitTextureCom[0], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_FlowerPower", L"Com_Outfit_FlowerPower", (CComponent**)&m_pOutfitTextureCom[1], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Camouflage", L"Com_Outfit_Camouflage", (CComponent**)&m_pOutfitTextureCom[2], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Hearts", L"Com_Outfit_Hearts", (CComponent**)&m_pOutfitTextureCom[3], this), E_FAIL);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_HairMask", L"Com_HairMask", (CComponent**)&m_pHairMaskTextureCom, this), E_FAIL);
+
 	_float Xmin = (_float)SHRT_MAX, Xmax = (_float)SHRT_MIN, Ymin = (_float)SHRT_MAX, Ymax = (_float)SHRT_MIN, Zmin = (_float)SHRT_MAX, Zmax = (_float)SHRT_MIN;
 	FAILED_CHECK_RETURN(m_pModelCom->Check_MeshSize("Sigrid_Mesh_LOD0", Xmin, Xmax, Ymin, Ymax, Zmin, Zmax), E_FAIL);
 
@@ -258,6 +400,36 @@ HRESULT CSigrid::SetUp_Component()
 	return S_OK;
 }
 
+HRESULT CSigrid::SetUp_Parts_Hat()
+{
+	CGameObject*	pHat = nullptr;
+
+	HATDESC	HatDesc;
+	ZeroMemory(&HatDesc, sizeof(HatDesc));
+	HatDesc.matSocketPivot = m_pModelCom->Get_PivotMatrix();
+	HatDesc.pSocket = m_pModelCom->Get_BoneFromEntireBone("Sigrid DEF Nose");
+	HatDesc.pPlayer = this;
+	HatDesc.pPlayerTransformCom = m_pTransformCom;
+
+	pHat = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Hat_CrabbyHat", &HatDesc);
+	NULL_CHECK_RETURN(pHat, E_FAIL);
+	m_vecHats.push_back(pHat);
+
+	pHat = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Hat_FuzzyEars", &HatDesc);
+	NULL_CHECK_RETURN(pHat, E_FAIL);
+	m_vecHats.push_back(pHat);
+
+	pHat = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Hat_JellyCorne", &HatDesc);
+	NULL_CHECK_RETURN(pHat, E_FAIL);
+	m_vecHats.push_back(pHat);
+
+	pHat = CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_Hat_ToothyHood", &HatDesc);
+	NULL_CHECK_RETURN(pHat, E_FAIL);
+	m_vecHats.push_back(pHat);
+
+	return S_OK;
+}
+
 HRESULT CSigrid::SetUp_ShaderResource()
 {
 	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
@@ -268,6 +440,15 @@ HRESULT CSigrid::SetUp_ShaderResource()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pHairMaskTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_MaskTexture");
+
+	if (m_bHairMask)
+	{
+		if (m_iCurrentHair != 0)
+			m_pShaderCom->Set_RawValue(L"g_HairColor", &m_vHairColor[m_iCurrentHair - 1], sizeof(_float4));
+		if (m_iPreviewHair != 0)
+			m_pShaderCom->Set_RawValue(L"g_HairColor", &m_vHairColor[m_iPreviewHair - 1], sizeof(_float4));
+	}
 	m_pShaderCom->Set_RawValue(L"g_WinSize", &_float2((_float)g_iWinSizeX, (_float)g_iWinSizeY),  sizeof(_float2));
 
 	Safe_Release(pGameInstance);
@@ -290,12 +471,12 @@ HRESULT CSigrid::SetUp_ShaderResource_LightDepth()
 	//_float4	vLightAt = XMLoadFloat4(&vLightEye) + XMVector3Normalize(XMLoadFloat4(&pLightDesc->vDirection));
 	//_float4	vLightUp = { 0.f, 1.f, 0.f, 0.f };
 
-	_float4		vLightEye = _float4(-500.f, 1000.f, -500.f, 1.f);
-	_float4		vLightAt = _float4(1000.f, 0.f, 1000.f, 1.f);
+	_float4		vLightEye = _float4(0.f, 300.f, 0.f, 1.f);
+	_float4		vLightAt = _float4(900.f, 0.f, 900.f, 1.f);
 	_float4		vLightUp = _float4(0.f, 1.f, 0.f, 0.f);
 
 	_float4x4	matLightView = XMMatrixLookAtLH(vLightEye, vLightAt, vLightUp);
-	_float4x4	matLightProj = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), (_float)g_iWinSizeX / (_float)g_iWinSizeY, 0.1f, 3000.f);
+	_float4x4	matLightProj = XMMatrixPerspectiveFovLH(XMConvertToRadians(120.f), (_float)g_iWinSizeX / (_float)g_iWinSizeY, 0.1f, 1000.f);
 
 	m_pShaderCom->Set_Matrix(L"g_matView", &matLightView);
 	//m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
@@ -414,11 +595,19 @@ void CSigrid::Free()
 {
 	__super::Free();
 
+	for (auto& pGameObject : m_vecHats)
+		Safe_Release(pGameObject);
+	m_vecHats.clear();
+
 	Safe_Release(m_pSigridState);
 
 	for (_uint i = 0; i < (_uint)NAVI_END; ++i)
 		Safe_Release(m_pNavigationCom[i]);
 
+	for (_uint i = 0; i < 4; ++i)
+		Safe_Release(m_pOutfitTextureCom[i]);
+
+	Safe_Release(m_pHairMaskTextureCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pSphereCol);

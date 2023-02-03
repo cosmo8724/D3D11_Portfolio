@@ -178,6 +178,7 @@
     <ClInclude Include="..\Public\Critter_Small_State.h" />
     <ClInclude Include="..\Public\Cursor.h" />
     <ClInclude Include="..\Public\Effect.h" />
+    <ClInclude Include="..\Public\Effect_GroundSlam.h" />
     <ClInclude Include="..\Public\Effect_Mesh.h" />
     <ClInclude Include="..\Public\Effect_SigridDash.h" />
     <ClInclude Include="..\Public\Effect_VIBuffer.h" />
@@ -185,6 +186,9 @@
     <ClInclude Include="..\Public\Fantasy_Island.h" />
     <ClInclude Include="..\Public\Grapple_Hang.h" />
     <ClInclude Include="..\Public\Grapple_Launcher.h" />
+    <ClInclude Include="..\Public\Hat_CrabbyHat.h" />
+    <ClInclude Include="..\Public\Hat_FuzzyEars.h" />
+    <ClInclude Include="..\Public\Hat_JellyCorne.h" />
     <ClInclude Include="..\Public\Hellheim_Island.h" />
     <ClInclude Include="..\Public\HPBar.h" />
     <ClInclude Include="..\Public\Leviathan.h" />
@@ -276,6 +280,7 @@
     <ClInclude Include="..\Public\Tool_Navigation.h" />
     <ClInclude Include="..\Public\Tool_PrototypeMgr.h" />
     <ClInclude Include="..\Public\Tool_Settings.h" />
+    <ClInclude Include="..\Public\Hat_ToothyHood.h" />
     <ClInclude Include="..\Public\UI.h" />
     <ClInclude Include="..\Public\Weapon.h" />
     <ClInclude Include="Client.h" />
@@ -290,6 +295,7 @@
     <ClCompile Include="..\Private\Critter_Small_State.cpp" />
     <ClCompile Include="..\Private\Cursor.cpp" />
     <ClCompile Include="..\Private\Effect.cpp" />
+    <ClCompile Include="..\Private\Effect_GroundSlam.cpp" />
     <ClCompile Include="..\Private\Effect_Mesh.cpp" />
     <ClCompile Include="..\Private\Effect_SigridDash.cpp" />
     <ClCompile Include="..\Private\Effect_VIBuffer.cpp" />
@@ -297,6 +303,9 @@
     <ClCompile Include="..\Private\Fantasy_Island.cpp" />
     <ClCompile Include="..\Private\Grapple_Hang.cpp" />
     <ClCompile Include="..\Private\Grapple_Launcher.cpp" />
+    <ClCompile Include="..\Private\Hat_CrabbyHat.cpp" />
+    <ClCompile Include="..\Private\Hat_FuzzyEars.cpp" />
+    <ClCompile Include="..\Private\Hat_JellyCorne.cpp" />
     <ClCompile Include="..\Private\Hellheim_Island.cpp" />
     <ClCompile Include="..\Private\HPBar.cpp" />
     <ClCompile Include="..\Private\Leviathan.cpp" />
@@ -387,6 +396,7 @@
     <ClCompile Include="..\Private\Tool_Navigation.cpp" />
     <ClCompile Include="..\Private\Tool_PrototypeMgr.cpp" />
     <ClCompile Include="..\Private\Tool_Settings.cpp" />
+    <ClCompile Include="..\Private\Hat_ToothyHood.cpp" />
     <ClCompile Include="..\Private\UI.cpp" />
     <ClCompile Include="..\Private\Weapon.cpp" />
     <ClCompile Include="Client.cpp" />

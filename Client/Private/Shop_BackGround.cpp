@@ -17,6 +17,17 @@ CShop_BackGround::CShop_BackGround(const CShop_BackGround & rhs)
 {
 }
 
+CUI * CShop_BackGround::Get_Child(const wstring & wstrUITag)
+{
+	for (auto& pUI : m_vecChild)
+	{
+		if (pUI->Get_UITag() == wstrUITag)
+			return pUI;
+	}
+
+	return nullptr;
+}
+
 HRESULT CShop_BackGround::Initialize_Prototype()
 {
 	m_wstrUITag = L"UI_Shop_BackGround";

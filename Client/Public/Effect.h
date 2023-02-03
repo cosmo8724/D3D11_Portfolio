@@ -29,6 +29,7 @@ protected:
 	CRenderer*				m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
 	CTexture*					m_pTextureCom = nullptr;
+	CTexture*					m_pMaskTextureCom = nullptr;
 
 protected:
 	class CSigrid*				m_pPlayer = nullptr;

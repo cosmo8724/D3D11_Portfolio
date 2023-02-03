@@ -60,7 +60,7 @@ void CBaine::Tick(_double dTimeDelta)
 
 	if (m_bPlayerDetected == true)
 	{
-		if (CGameInstance::GetInstance()->Key_Down(DIK_E) && g_bShopOpen == false)
+		if (CGameInstance::GetInstance()->Key_Down(DIK_E) && g_bShopOpen == false && g_bReadySceneChange == false)
 		{
 			g_bReadySceneChange = true;
 			CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_SceneChange_1");

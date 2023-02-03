@@ -11,6 +11,10 @@
 /* Player */
 #include "Sigrid.h"
 #include "Sigrid_CutScn.h"
+#include "Hat_CrabbyHat.h"
+#include "Hat_FuzzyEars.h"
+#include "Hat_JellyCorne.h"
+#include "Hat_ToothyHood.h"
 
 /* NPCs */
 #include "Baine.h"
@@ -69,6 +73,7 @@
 
 /* Effect */
 #include "Effect_SigridDash.h"
+#include "Effect_GroundSlam.h"
 
 CLoader::CLoader(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: m_pDevice(pDevice)
@@ -550,6 +555,18 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_ItemBar_Icon_Cloth", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/BainesShopUI_mockup_ItemIcon_PatternSel.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_ItemBar_Icon_Hair", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/BainesShopUI_mockup_ItemIcon_HairSel.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Shop_ItemBar_Icon_Hat", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Shop/BainesShopUI_mockup_ItemIcon_HatsSel.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Stripes", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Skin/Outfit/Cosmetic_OutfitStripes_BC.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_FlowerPower", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Skin/Outfit/Cosmetic_OutfitFlowerPower_BC.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Camouflage", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Skin/Outfit/Cosmetic_OutfitCamouflage_BC.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Hearts", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Skin/Outfit/Cosmetic_OutfitHearts_BC.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_HairMask", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Skin/Hair/SigridHair_BC.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Effect_GroundSlamCircle", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Effect/T_Soundwave.png")), E_FAIL);
+
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hat_CrabbyHat", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sigrid/Hat/CrabbyHat/CrabbyHat.fbx", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hat_FuzzyEars", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sigrid/Hat/FuzzyEars/FuzzyEars.fbx", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hat_JellyCorne", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sigrid/Hat/JellyCorne/JellyCorne.fbx", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hat_ToothyHood", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sigrid/Hat/ToothyHood/ToothyHood.fbx", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_Circle", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Ring.fbx", XMMatrixIdentity())), E_FAIL);
 
 		m_wstrLoadingText = L"Loading Navigation Info...";
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_Default.json")), E_FAIL);
@@ -612,6 +629,11 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemBar_Icon_Hair", CShop_Icon_Hair::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Shop_ItemBar_Icon_Hat", CShop_Icon_Hat::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Sigrid_Dash", CEffect_SigridDash::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hat_CrabbyHat", CHat_CrabbyHat::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hat_FuzzyEars", CHat_FuzzyEars::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hat_JellyCorne", CHat_JellyCorne::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hat_ToothyHood", CHat_ToothyHood::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_GroundSlam", CEffect_GroundSlam::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	if (wstrProtoObjFilePath != L"")
 	{

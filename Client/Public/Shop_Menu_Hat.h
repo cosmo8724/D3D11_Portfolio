@@ -12,7 +12,10 @@ private:
 
 public:
 	vector<CUI*>*				Get_Childs() { return &m_vecChild; }
+	_uint						Get_CurEquipSlot() { return m_iCurEquipSlot; }
+	const _bool&				Is_Selected() const { return m_bSelected; }
 	void						Set_Selected(_bool bSelected) { m_bSelected = bSelected; }
+	void						Set_CurEquipSlot(_uint iSlot) { m_iCurEquipSlot = iSlot; }
 
 public:
 	virtual HRESULT			Initialize_Prototype() override;
@@ -26,6 +29,7 @@ private:
 	vector<CUI*>				m_vecChild;
 	_bool						m_bFixPosition = false;
 	_bool						m_bSelected = false;
+	_uint						m_iCurEquipSlot = 0;
 
 private:
 	HRESULT					SetUp_Component();
