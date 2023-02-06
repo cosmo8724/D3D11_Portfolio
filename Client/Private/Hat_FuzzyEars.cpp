@@ -80,6 +80,7 @@ void CHat_FuzzyEars::Late_Tick(_double dTimeDelta)
 	if (m_pRendererCom != nullptr)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 	}
 }
@@ -110,6 +111,23 @@ HRESULT CHat_FuzzyEars::Render_ShadowDepth()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 		m_pModelCom->Render(m_pShaderCom, i, L"", 4);
+
+	return S_OK;
+}
+
+HRESULT CHat_FuzzyEars::Render_Reflect()
+{
+	FAILED_CHECK_RETURN(__super::Render_Reflect(), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_ShaderResource_Reflect(), E_FAIL);
+
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+
+		m_pModelCom->Render(m_pShaderCom, i, L"", 7);
+	}
 
 	return S_OK;
 }
@@ -183,6 +201,22 @@ HRESULT CHat_FuzzyEars::SetUp_ShaderResource_LightDepth()
 	return S_OK;
 }
 
+HRESULT CHat_FuzzyEars::SetUp_ShaderResource_Reflect()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_matReflectView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_REFLECTVIEW));
+	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
 CHat_FuzzyEars * CHat_FuzzyEars::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)
 {
 	CHat_FuzzyEars*		pInstance = new CHat_FuzzyEars(pDevice, pContext);
@@ -213,6 +247,7 @@ void CHat_FuzzyEars::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pHairMaskTextureCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pRendererCom);

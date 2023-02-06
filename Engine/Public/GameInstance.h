@@ -94,7 +94,9 @@ public:		/* For PipeLine */
 	_matrix				Get_TransformMatrix_Inverse(CPipeLine::TRANSFORMSTATE eState);
 	_float4x4				Get_TransformFloat4x4(CPipeLine::TRANSFORMSTATE eState);
 	void					Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix TransformMatrix);
+	void					Set_ClipPlane(CPipeLine::CLIPPLANESTATE eState, const _float4& vPlane);
 	_float4				Get_CameraPosition() const;
+	_float4				Get_ClipPlane(CPipeLine::CLIPPLANESTATE eState) const;
 
 public:		/* For Timer Manager */
 	const _double			Get_TimeDelta(const wstring wstrTimerTag);
@@ -113,6 +115,9 @@ public:		/* For Frustum */
 public:		/* For Font Manager */
 	HRESULT				Add_Font(DEVICE pDevice, DEVICE_CONTEXT pContext, const wstring& wstrFontTag, const wstring& wstrFontFilePath);
 	HRESULT				Render_Font(const wstring& wstrFontTag, const wstring& wstrText, const _float2& vPos, _float fRadian, _float2 vScale, _fvector vColor = XMVectorSet(1.f, 1.f, 1.f, 1.f));
+
+public:		/* For RenderTarget Manager */
+	ID3D11ShaderResourceView*		Get_ShaderResourceView(const wstring& wstrTargetTag);
 
 private:
 	HWND							m_hWnd;

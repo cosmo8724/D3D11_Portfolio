@@ -1,7 +1,10 @@
 #include "Shader_Define.h"
 
 matrix			g_matWorld, g_matView, g_matProj;
+matrix			g_matReflectView;
 texture2D		g_Texture;
+
+float4			g_vClipPlane;
 
 int				g_WidthFrame, g_HeightFrame;
 int				g_WidthCount, g_HeightCount;
@@ -28,6 +31,22 @@ VS_OUT	VS_MAIN(VS_IN In)
 	matWVP = mul(matWV, g_matProj);
 	
 	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vTexUV = In.vTexUV;
+
+	return Out;
+}
+
+[clipplanes(g_vClipPlane)]
+VS_OUT	VS_MAIN_REFLECT(VS_IN In)
+{
+	VS_OUT	Out = (VS_OUT)0;
+
+	matrix		matWRV, matWRVP;
+    
+	matWRV = mul(g_matWorld, g_matReflectView);
+	matWRVP = mul(matWRV, g_matProj);
+	
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWRVP);
 	Out.vTexUV = In.vTexUV;
 
 	return Out;
@@ -175,7 +194,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader	= compile ps_5_0 PS_MAIN();
-	}
+	}	// 0
 
 	pass SkyBox
 	{
@@ -188,7 +207,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
-	}
+	}	// 1
 
 	pass UI_MonsterDrink_Black
 	{
@@ -201,7 +220,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MONSTERDRINK_BLACK();
-	}
+	}	// 2
 
 	pass UI_MonsterDrink_Orange
 	{
@@ -214,7 +233,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MONSTERDRINK_ORANGE();
-	}
+	}	// 3
 
 	pass UI_MonsterDrink_Pink
 	{
@@ -227,7 +246,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MONSTERDRINK_PINK();
-	}
+	}	// 4
 
 	pass UI_MonsterDrink_White
 	{
@@ -240,7 +259,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_MONSTERDRINK_WHITE();
-	}
+	}	// 5
 
 	pass UI_Cursor
 	{
@@ -253,7 +272,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
-	}
+	}	// 6
 
 	pass Sprite_Image
 	{
@@ -266,7 +285,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SPRITE();
-	}
+	}	// 7
 
 	pass Sprite_Image_Color_Reverse
 	{
@@ -279,5 +298,18 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SPRITE_REVERSE();
-	}
+	}	// 8
+
+	pass Reflect
+	{
+		SetRasterizerState(RS_CW);
+		SetDepthStencilState(DS_ZEnable_ZWriteEnable_FALSE, 0);
+		SetBlendState(BS_Default, float4(0.0f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_REFLECT();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}	// 9
 }

@@ -69,6 +69,11 @@ HRESULT CMainIsland::Render()
 	return S_OK;
 }
 
+HRESULT CMainIsland::Render_Reflect()
+{
+	return S_OK;
+}
+
 pair<_bool, _float3> CMainIsland::Picking_Mesh()
 {
 	_vector	vCamPos = CGameInstance::GetInstance()->Get_CameraPosition();
@@ -107,6 +112,11 @@ HRESULT CMainIsland::SetUp_ShaderResource()
 
 	Safe_Release(pGameInstance);
 
+	return S_OK;
+}
+
+HRESULT CMainIsland::SetUp_ShaderResource_Reflect()
+{
 	return S_OK;
 }
 

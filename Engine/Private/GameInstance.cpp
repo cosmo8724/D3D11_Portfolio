@@ -481,11 +481,25 @@ void CGameInstance::Set_Transform(CPipeLine::TRANSFORMSTATE eState, _fmatrix Tra
 	m_pPipeLine->Set_Transform(eState, TransformMatrix);
 }
 
+void CGameInstance::Set_ClipPlane(CPipeLine::CLIPPLANESTATE eState, const _float4 & vPlane)
+{
+	NULL_CHECK_RETURN(m_pPipeLine, );
+
+	m_pPipeLine->Set_ClipPlane(eState, vPlane);
+}
+
 _float4 CGameInstance::Get_CameraPosition() const
 {
 	NULL_CHECK_RETURN(m_pPipeLine, _float4());
 
 	return m_pPipeLine->Get_CameraPosition();
+}
+
+_float4 CGameInstance::Get_ClipPlane(CPipeLine::CLIPPLANESTATE eState) const
+{
+	NULL_CHECK_RETURN(m_pPipeLine, _float4());
+
+	return m_pPipeLine->Get_ClipPlane(eState);
 }
 
 const _double CGameInstance::Get_TimeDelta(const wstring wstrTimerTag)
@@ -556,6 +570,13 @@ HRESULT CGameInstance::Render_Font(const wstring & wstrFontTag, const wstring & 
 	NULL_CHECK_RETURN(m_pFontMgr, E_FAIL);
 
 	return m_pFontMgr->Render_Font(wstrFontTag, wstrText, vPos, fRadian, vScale, vColor);
+}
+
+ID3D11ShaderResourceView * CGameInstance::Get_ShaderResourceView(const wstring & wstrTargetTag)
+{
+	NULL_CHECK_RETURN(m_pRenderTargetMgr, nullptr);
+
+	return m_pRenderTargetMgr->Get_ShaderResourceView(wstrTargetTag);
 }
 
 void CGameInstance::Release_Engine()

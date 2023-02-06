@@ -68,7 +68,7 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 {
 	if (!m_bRender)
 		return;
-
+	
 	m_CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;
 
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, 1.0);
@@ -177,6 +177,8 @@ void CStatic_Camera::Tick(_double dTimeDelta)
 
 	__super::Tick(dTimeDelta);
 
+	//Update_ReflectWorld();
+
 	CGameInstance::GetInstance()->Set_TimeScale(L"Timer_165", dTimeDelta, m_dTimeScale);
 }
 
@@ -209,6 +211,29 @@ HRESULT CStatic_Camera::Render()
 HRESULT CStatic_Camera::SetUp_Component()
 {
 	return S_OK;
+}
+
+void CStatic_Camera::Update_ReflectWorld()
+{
+	_vector	vTargetPos = m_pOwnerTransform->Get_State(CTransform::STATE_TRANS);
+
+	_matrix	matWorld = m_pTransformCom->Get_WorldMatrix();
+	_float3	vScale = m_pTransformCom->Get_Scale();
+
+	_vector	vEye = matWorld.r[3];
+
+	_vector	vLook = XMVector3Normalize(vTargetPos - vEye) * vScale.z;
+	_vector	vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * vScale.x;
+	_vector	vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * vScale.y;
+
+	matWorld.r[0] = vRight;
+	matWorld.r[1] = vUp;
+	matWorld.r[2] = vLook;
+	matWorld.r[3] = vEye;
+
+	m_matReflectWorld = matWorld;
+
+	CGameInstance::GetInstance()->Set_Transform(CPipeLine::D3DTS_CAMWORLD, m_matReflectWorld);
 }
 
 CStatic_Camera * CStatic_Camera::Create(DEVICE pDevice, DEVICE_CONTEXT pContext)

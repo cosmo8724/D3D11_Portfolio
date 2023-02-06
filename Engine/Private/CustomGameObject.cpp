@@ -142,7 +142,10 @@ void CCustomGameObject::Late_Tick(_double dTimeDelta)
 	__super::Late_Tick(dTimeDelta);
 
 	if (m_pRendererCom != nullptr)
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+	}
 }
 
 HRESULT CCustomGameObject::Render()
@@ -177,6 +180,37 @@ HRESULT CCustomGameObject::Render()
 	if (m_pColliderCom != nullptr)
 		m_pColliderCom->Render();
 #endif
+
+	return S_OK;
+}
+
+HRESULT CCustomGameObject::Render_ShadowDepth()
+{
+	
+
+	return S_OK;
+}
+
+HRESULT CCustomGameObject::Render_Reflect()
+{
+	FAILED_CHECK_RETURN(__super::Render_Reflect(), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_ShaderResource_Reflect(), E_FAIL);
+
+	if (m_pModelCom != nullptr && m_pShaderCom != nullptr)
+	{
+		_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+		for (_uint i = 0; i < iNumMeshes; ++i)
+		{
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+
+			if (m_pModelCom->Get_ModelType() == CModel::MODEL_ANIM)
+				m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 8);
+			else
+				m_pModelCom->Render(m_pShaderCom, i, L"", 7);
+		}
+	}
 
 	return S_OK;
 }
@@ -235,6 +269,24 @@ HRESULT CCustomGameObject::SetUp_ShaderResource()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_matView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_RawValue(L"g_vClipPlane", &pGameInstance->Get_ClipPlane(CPipeLine::CLIPPLANE_REFLECT), sizeof(_float4));
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CCustomGameObject::SetUp_ShaderResource_Reflect()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_matReflectView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_REFLECTVIEW));
+	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_RawValue(L"g_vClipPlane", &pGameInstance->Get_ClipPlane(CPipeLine::CLIPPLANE_REFLECT), sizeof(_float4));
 
 	Safe_Release(pGameInstance);
 

@@ -6,6 +6,7 @@
 #include "VIBuffer_Rect.h"
 #include "Shader.h"
 #include "PipeLine.h"
+#include "Input_Device.h"
 
 CRenderer::CRenderer(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CComponent(pDevice, pContext)
@@ -45,6 +46,7 @@ HRESULT CRenderer::Draw_RenderGroup(_bool bRenderOFF)
 {
 	FAILED_CHECK_RETURN(Render_Priority(bRenderOFF), E_FAIL);
 	FAILED_CHECK_RETURN(Render_ShadowDepth(bRenderOFF), E_FAIL);
+	FAILED_CHECK_RETURN(Render_Reflect(bRenderOFF), E_FAIL);
 	FAILED_CHECK_RETURN(Render_NonAlphaBlend(bRenderOFF), E_FAIL);
 	FAILED_CHECK_RETURN(Render_LightAcc(bRenderOFF), E_FAIL);
 	FAILED_CHECK_RETURN(Render_Blend(bRenderOFF), E_FAIL);
@@ -67,18 +69,27 @@ HRESULT CRenderer::Draw_RenderGroup(_bool bRenderOFF)
 #ifdef _DEBUG
 	if (m_pRenderTargetMgr != nullptr)
 	{
+		if (CInput_Device::GetInstance()->Key_Down(DIK_F3))
+			m_bRenderDebug = !m_bRenderDebug;
+
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Normal", 100.f, 300.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Depth", 100.f, 500.f, 200.f, 200.f), E_FAIL);
+
+		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Reflect", 500.f, 100.f, 200.f, 200.f), E_FAIL);
 
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f), E_FAIL);
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Specular", 300.f, 300.f, 200.f, 200.f), E_FAIL);
 
 		FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_ShadowDepth", 300.f, 500.f, 200.f, 200.f), E_FAIL);
 
-		//m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
-		//m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
-		m_pRenderTargetMgr->Render_Debug(L"MRT_LightDepth");
+		if (m_bRenderDebug == true)
+		{
+			m_pRenderTargetMgr->Render_Debug(L"MRT_Deferred");
+			m_pRenderTargetMgr->Render_Debug(L"MRT_LightAcc");
+			m_pRenderTargetMgr->Render_Debug(L"MRT_Reflect");
+			m_pRenderTargetMgr->Render_Debug(L"MRT_LightDepth");
+		}
 	}
 #endif // _DEBUG
 
@@ -99,6 +110,9 @@ HRESULT CRenderer::Initialize_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Diffuse", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Normal", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Depth", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
+	
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Reflect", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
+
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Shade", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f)), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_RenderTarget(m_pDevice, m_pContext, L"Target_Specular", (_uint)ViewportDesc.Width, (_uint)ViewportDesc.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f)), E_FAIL);
 
@@ -110,6 +124,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Diffuse"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Normal"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Deferred", L"Target_Depth"), E_FAIL);
+	
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_Reflect", L"Target_Reflect"), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_LightAcc", L"Target_Shade"), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Add_MultiRenderTarget(L"MRT_LightAcc", L"Target_Specular"), E_FAIL);
@@ -130,6 +146,8 @@ HRESULT CRenderer::Initialize_Prototype()
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Diffuse", 100.f, 100.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Normal", 100.f, 300.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Depth", 100.f, 500.f, 200.f, 200.f), E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Reflect", 500.f, 100.f, 200.f, 200.f), E_FAIL);
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Shade", 300.f, 100.f, 200.f, 200.f), E_FAIL);
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Ready_Debug(L"Target_Specular", 300.f, 300.f, 200.f, 200.f), E_FAIL);
@@ -207,6 +225,37 @@ HRESULT CRenderer::Render_ShadowDepth(_bool bRenderOFF)
 	m_RenderObjectList[RENDER_SHADOWDEPTH].clear();
 
 	FAILED_CHECK_RETURN(m_pRenderTargetMgr->End_MultiRenderTarget(m_pContext, L"MRT_LightDepth"), E_FAIL);
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Render_Reflect(_bool bRenderOFF)
+{
+	if (bRenderOFF == true)
+	{
+		for (auto& pGameObject : m_RenderObjectList[RENDER_REFLECT])
+			Safe_Release(pGameObject);
+
+		m_RenderObjectList[RENDER_REFLECT].clear();
+
+		return S_OK;
+	}
+
+	NULL_CHECK_RETURN(m_pRenderTargetMgr, E_FAIL);
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->Begin_MultiRenderTarget(m_pContext, L"MRT_Reflect"), E_FAIL);
+
+	for (auto& pGameObject : m_RenderObjectList[RENDER_REFLECT])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_Reflect();
+
+		Safe_Release(pGameObject);
+	}
+
+	m_RenderObjectList[RENDER_REFLECT].clear();
+
+	FAILED_CHECK_RETURN(m_pRenderTargetMgr->End_MultiRenderTarget(m_pContext, L"MRT_Reflect"), E_FAIL);
 
 	return S_OK;
 }

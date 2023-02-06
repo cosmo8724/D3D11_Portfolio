@@ -2,8 +2,10 @@
 
 matrix			g_matWorld, g_matView, g_matProj;
 matrix			g_matBones[600];
+matrix			g_matReflectView;
 
 float2			g_WinSize = { 0.f, 0.f };
+float4			g_vClipPlane;
 
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
@@ -51,6 +53,35 @@ VS_OUT	VS_MAIN(VS_IN In)
 	vector		vNormal = mul(float4(In.vNormal, 0.f), matBone);
 
 	Out.vPosition = mul(vPosition, matWVP);
+	Out.vNormal = normalize(mul(vNormal, g_matWorld));
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+	Out.vTangent = (vector)0.f;
+
+	return Out;
+}
+
+[clipplanes(g_vClipPlane)]
+VS_OUT	VS_MAIN_REFLECT(VS_IN In)
+{
+	VS_OUT	Out = (VS_OUT)0;
+
+	matrix		matWRV, matWRVP;
+
+	matWRV = mul(g_matWorld, g_matReflectView);
+	matWRVP = mul(matWRV, g_matProj);
+
+	float		fWeightW = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
+
+	matrix		matBone = g_matBones[In.vBlendIndex.x] * In.vBlendWeight.x +
+		g_matBones[In.vBlendIndex.y] * In.vBlendWeight.y +
+		g_matBones[In.vBlendIndex.z] * In.vBlendWeight.z +
+		g_matBones[In.vBlendIndex.w] * fWeightW;
+
+	vector		vPosition = mul(float4(In.vPosition, 1.f), matBone);
+	vector		vNormal = mul(float4(In.vNormal, 0.f), matBone);
+
+	Out.vPosition = mul(vPosition, matWRVP);
 	Out.vNormal = normalize(mul(vNormal, g_matWorld));
 	Out.vTexUV = In.vTexUV;
 	Out.vProjPos = Out.vPosition;
@@ -218,7 +249,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader	= compile ps_5_0 PS_MAIN();
-	}
+	}	// 0
 
 	pass Outline
 	{
@@ -231,7 +262,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_OUTLINE();
-	}
+	}	// 1
 
 	pass Shadow_Write
 	{
@@ -244,7 +275,7 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW_WRITE();
-	}
+	}	// 2
 
 	pass Sigrid_HairMask
 	{
@@ -257,5 +288,31 @@ technique11 DefaultTechnique
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_HAIRMASK();
-	}
+	}	// 3
+
+	pass Reflect_Outline
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_REFLECT();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_OUTLINE();
+	}	// 4
+
+	pass Reflect_Sigrid_HairMask
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_REFLECT();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_HAIRMASK();
+	}	// 5
 }

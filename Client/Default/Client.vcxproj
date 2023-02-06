@@ -205,6 +205,7 @@
     <ClInclude Include="..\Public\Monster_Pink.h" />
     <ClInclude Include="..\Public\Monster_White.h" />
     <ClInclude Include="..\Public\Mystic_Island.h" />
+    <ClInclude Include="..\Public\NewOcean.h" />
     <ClInclude Include="..\Public\NPC.h" />
     <ClInclude Include="..\Public\Ocean.h" />
     <ClInclude Include="..\Public\Portal_Island.h" />
@@ -322,6 +323,7 @@
     <ClCompile Include="..\Private\Monster_Pink.cpp" />
     <ClCompile Include="..\Private\Monster_White.cpp" />
     <ClCompile Include="..\Private\Mystic_Island.cpp" />
+    <ClCompile Include="..\Private\NewOcean.cpp" />
     <ClCompile Include="..\Private\NPC.cpp" />
     <ClCompile Include="..\Private\Ocean.cpp" />
     <ClCompile Include="..\Private\Portal_Island.cpp" />
@@ -415,6 +417,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\Shader\Shader_Ocean.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxAnimModel.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxNonAnim.hlsl" />
     <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex.hlsl" />

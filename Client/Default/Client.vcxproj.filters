@@ -660,6 +660,7 @@
     <ClInclude Include="..\Public\Effect_GroundSlam.h">
       <Filter>02. GameObject\02. For_MainStage\Effect\GroundSlam</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\NewOcean.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -953,6 +954,7 @@
     <ClCompile Include="..\Private\Effect_GroundSlam.cpp">
       <Filter>02. GameObject\02. For_MainStage\Effect\GroundSlam</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\NewOcean.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -981,6 +983,9 @@
       <Filter>96. Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\Shader_VtxNorTex_Ocean.hlsl">
+      <Filter>96. Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Shader_Ocean.hlsl">
       <Filter>96. Shader</Filter>
     </FxCompile>
   </ItemGroup>

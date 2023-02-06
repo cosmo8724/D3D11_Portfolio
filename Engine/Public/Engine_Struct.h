@@ -34,6 +34,12 @@ namespace Engine
 		XMFLOAT3	vPosition;
 	} VTXPOS;
 
+	typedef struct tagVertexPoint
+	{
+		XMFLOAT3	vPosition;
+		XMFLOAT2	vPSize;
+	} VTXPOINT;
+
 	typedef struct tagVertexPositionTexture
 	{
 		XMFLOAT3	vPosition;
@@ -112,6 +118,12 @@ namespace Engine
 		static const unsigned int				iNumElements = 1;
 		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
 	} VTXPOS_DECLARATION;
+
+	typedef struct ENGINE_DLL tagVertexPoint_Declaration
+	{
+		static const unsigned int				iNumElements = 2;
+		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
+	} VTXPOINT_DECLARATION;
 
 	typedef struct ENGINE_DLL tagVertexPositionTexture_Declaration
 	{
