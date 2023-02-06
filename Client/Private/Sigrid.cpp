@@ -201,6 +201,7 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 	if (nullptr != m_pRendererCom && g_bReadySceneChange == false)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 		m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol);
@@ -221,7 +222,10 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 	}
 
 	if (CGameInstance::GetInstance()->Key_Down(DIK_G))
+	{
 		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_GroundSlam", m_pTransformCom->Get_WorldMatrix());
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_NewOcean", L"Prototype_GameObject_NewOcean");
+	}
 }
 
 HRESULT CSigrid::Render()
@@ -296,6 +300,65 @@ HRESULT CSigrid::Render_ShadowDepth()
 		//m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
 		m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 2);
+	}
+
+	return S_OK;
+}
+
+HRESULT CSigrid::Render_Reflect()
+{
+	FAILED_CHECK_RETURN(__super::Render_Reflect(), E_FAIL);
+	FAILED_CHECK_RETURN(SetUp_ShaderResource_Reflect(), E_FAIL);
+
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+
+		if (m_iCurrentOutfit != 0)
+		{
+			if (i < 2)
+			{
+				m_pOutfitTextureCom[m_iCurrentOutfit - 1]->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture");
+
+				if (g_bShopOpen == true && dynamic_cast<CShop_BackGround*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI")->back())->Get_CurrentMenu() == 0 && m_iPreviewOutfit == 0)
+					m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+			}
+		}
+
+		if (m_iPreviewOutfit != 0)
+		{
+			if (i < 2)
+				m_pOutfitTextureCom[m_iPreviewOutfit - 1]->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture");
+		}
+
+		if (m_bHairMask == false)
+			m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 4);
+		else
+		{
+			if (i < 2)
+			{
+				if (m_iPreviewHair != 0)
+					m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 5);
+				else
+					m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 5);
+			}
+			else
+				m_pModelCom->Render(m_pShaderCom, i, L"g_matBones", 4);
+		}
+	}
+
+	if (g_bShopOpen == true || g_bReadySceneChange == true)
+	{
+		if (m_iPreviewHat != 0)
+			m_vecHats[m_iPreviewHat - 1]->Render_Reflect();
+		else
+		{
+			if (m_iCurrentHat != 0 && dynamic_cast<CShop_BackGround*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI")->back())->Get_CurrentMenu() != 2)
+				m_vecHats[m_iCurrentHat - 1]->Render_Reflect();
+		}
 	}
 
 	return S_OK;
@@ -488,10 +551,44 @@ HRESULT CSigrid::SetUp_ShaderResource_LightDepth()
 	return S_OK;
 }
 
+HRESULT CSigrid::SetUp_ShaderResource_Reflect()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	//FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
+
+	_float4x4		matWorld = m_pTransformCom->Get_WorldMatrix();
+	
+	if (m_bOnOcean == true)
+		matWorld._42 = 0.f;
+
+	m_pShaderCom->Set_Matrix(L"g_matWorld", &matWorld);
+	m_pShaderCom->Set_Matrix(L"g_matReflectView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_REFLECTVIEW));
+	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pHairMaskTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_MaskTexture");
+
+	if (m_bHairMask)
+	{
+		if (m_iCurrentHair != 0)
+			m_pShaderCom->Set_RawValue(L"g_HairColor", &m_vHairColor[m_iCurrentHair - 1], sizeof(_float4));
+		if (m_iPreviewHair != 0)
+			m_pShaderCom->Set_RawValue(L"g_HairColor", &m_vHairColor[m_iPreviewHair - 1], sizeof(_float4));
+	}
+	m_pShaderCom->Set_RawValue(L"g_WinSize", &_float2((_float)g_iWinSizeX, (_float)g_iWinSizeY), sizeof(_float2));
+	m_pShaderCom->Set_RawValue(L"g_vClipPlane", &pGameInstance->Get_ClipPlane(CPipeLine::CLIPPLANE_REFLECT), sizeof(_float4));
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
 void CSigrid::SetOn_Terrain()
 {
 	_float4	vPlayerPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
-	COcean*	pOcean = dynamic_cast<COcean*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Ocean")->front());
+	/*COcean*	pOcean = dynamic_cast<COcean*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Ocean")->front());
 	CVIBuffer_Terrain*		pVIBuffer = dynamic_cast<CVIBuffer_Terrain*>(pOcean->Get_Component(L"Com_VIBuffer"));
 	_uint		iNumVerticesX = pVIBuffer->Get_NumVerticesX();
 	_uint		iNumVerticesZ = pVIBuffer->Get_NumVerticesZ();
@@ -514,8 +611,9 @@ void CSigrid::SetOn_Terrain()
 			vPlane = XMPlaneFromPoints(pTerrainPos[iIndex + iNumVerticesX], pTerrainPos[iIndex + 1], pTerrainPos[iIndex]);
 
 		vPlayerPos.y = (XMVectorGetX(vPlane) * vPlayerPos.x * -1.f - XMVectorGetZ(vPlane) * vPlayerPos.z - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
-	}
+	}*/
 
+	vPlayerPos.y = 0.f;
 	m_fGroundHeight = vPlayerPos.y;
 
 	//if (m_bOnOcean == true && m_bJump == false)

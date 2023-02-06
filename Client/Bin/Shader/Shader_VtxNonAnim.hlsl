@@ -2,9 +2,12 @@
 
 matrix			g_matWorld, g_matView, g_matProj;
 matrix			g_matSocket;
+matrix			g_matReflectView;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
 texture2D		g_MaskTexture;
+
+float4			g_vClipPlane;
 
 float			g_fFadeAlpha;
 bool			g_bHairMask;
@@ -30,6 +33,7 @@ struct VS_OUT
 	float4		vTangent	: TANGENT;
 };
 
+//[clipplanes(g_vClipPlane)]
 VS_OUT VS_MAIN(VS_IN In)
 {
 	VS_OUT		Out = (VS_OUT)0;
@@ -74,6 +78,50 @@ VS_OUT VS_MAIN_SOCKET(VS_IN In)
 	return Out;
 }
 
+[clipplanes(g_vClipPlane)]
+VS_OUT VS_MAIN_REFLECT(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matWRV, matWVP;
+
+	matWRV = mul(g_matWorld, g_matReflectView);
+	matWVP = mul(matWRV, g_matProj);
+
+	Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+	Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_matWorld));
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+	Out.vTangent = (vector)0.f;
+
+	return Out;
+}
+
+VS_OUT VS_MAIN_REFLECT_SOCKET(VS_IN In)
+{
+	VS_OUT		Out = (VS_OUT)0;
+
+	matrix		matRVP;
+
+	
+	matRVP = mul(g_matReflectView, g_matProj);
+
+	vector		vPosition = mul(float4(In.vPosition, 1.f), g_matWorld);
+	vPosition = mul(vPosition, g_matSocket);
+	vPosition = mul(vPosition, matRVP);
+
+	vector		vNormal = mul(float4(In.vNormal, 0.f), g_matWorld);
+	vNormal = mul(vNormal, g_matSocket);
+	vNormal = normalize(vNormal);
+
+	Out.vPosition = vPosition;
+	Out.vNormal = vNormal;
+	Out.vTexUV = In.vTexUV;
+	Out.vProjPos = Out.vPosition;
+	Out.vTangent = (vector)0.f;
+
+	return Out;
+}
 
 struct PS_IN
 {
@@ -94,6 +142,11 @@ struct PS_OUT
 struct PS_OUT_SHADOWDEPTH
 {
 	float4		vLightDepth	: SV_TARGET0;
+};
+
+struct PS_OUT_REFLECT
+{
+	float4		vDiffuse	: SV_TARGET0;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -207,7 +260,7 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
-	}	
+	}	// 0
 
 	pass Socket
 	{
@@ -220,7 +273,7 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
-	}
+	}	// 1
 	
 	pass Effect_Sigrid_Dash
 	{
@@ -233,7 +286,7 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_SIGRID_DASH();
-	}
+	}	// 2
 
 	pass Shadow_Write
 	{
@@ -246,7 +299,7 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW_WRITE();
-	}
+	}	// 3
 
 	pass Shadow_Write_Socket
 	{
@@ -259,7 +312,7 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SHADOW_WRITE();
-	}
+	}	// 4
 
 	pass Hat_FuzzyEars
 	{
@@ -272,7 +325,7 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_FUZZYEARS();
-	}
+	}	// 5
 
 	pass Effect_Sigrid_GroundSlam
 	{
@@ -285,6 +338,32 @@ technique11 DefaultTechinque
 		HullShader = NULL;
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN_SIGRID_GROUNDSLAM();
-	}
+	}	// 6
+
+	pass Reflect
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_REFLECT();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}	// 7
+
+	pass Reflect_Socket
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_REFLECT_SOCKET();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN();
+	}	// 8
 }
 

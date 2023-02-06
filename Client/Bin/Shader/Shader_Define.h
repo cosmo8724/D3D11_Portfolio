@@ -20,10 +20,30 @@ AddressU = wrap;
 AddressV = wrap;
 };
 
+sampler WaterBumpSampler = sampler_state
+{
+	filter = min_mag_mip_Linear;
+	AddressU = mirror;
+	AddressV = mirror;
+};
+
+/* 
+D3D11_FILL_MODE fillMode,
+D3D11_CULL_MODE cullMode,
+BOOL frontCounterClockwise,
+INT depthBias,
+FLOAT depthBiasClamp,
+FLOAT slopeScaledDepthBias,
+BOOL depthClipEnable,
+BOOL scissorEnable,
+BOOL multisampleEnable,
+BOOL antialiasedLineEnable
+*/
 RasterizerState	RS_Default
 {
 	FillMode = Solid;
 	CullMode = Back;
+	DepthClipEnable = true;
 	FrontCounterClockwise = false;
 };
 

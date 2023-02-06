@@ -74,6 +74,7 @@
 /* Effect */
 #include "Effect_SigridDash.h"
 #include "Effect_GroundSlam.h"
+#include "NewOcean.h"
 
 CLoader::CLoader(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: m_pDevice(pDevice)
@@ -286,6 +287,12 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 		jLevel.clear();
 	}
 
+	/* Testing */
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_NewOcean_Foam", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Caustic/watter_effect.png")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_NewOcean_Height", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Caustic/waterbump.png")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_NewOcean", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Ocean.hlsl", CShader::DECLARATION_VTXNORTEX, VTXPOINT_DECLARATION::Elements, VTXPOINT_DECLARATION::iNumElements)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Point_Instancing", CVIBuffer_PointInstancing::Create(m_pDevice, m_pContext)), E_FAIL);
+
 	m_wstrLoadingText = L"Create Prototype Objects...";
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sigrid_CutScene", CSigrid_CutScn::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Logo", CLogo::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -293,6 +300,9 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Portal_Island", CPortal_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Mystic_Island", CMystic_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_River_Island", CRiver_Island::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	/* Testing */
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NewOcean", CNewOcean::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	if (wstrProtoObjFilePath != L"")
 	{

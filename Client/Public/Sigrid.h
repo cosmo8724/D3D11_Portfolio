@@ -70,6 +70,7 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 	virtual HRESULT			Render_ShadowDepth() override;
+	virtual HRESULT			Render_Reflect() override;
 	virtual void				ImGui_RenderProperty() override;
 
 public:
@@ -154,6 +155,7 @@ private:
 	HRESULT					SetUp_Parts_Hat();
 	HRESULT					SetUp_ShaderResource();
 	HRESULT					SetUp_ShaderResource_LightDepth();
+	HRESULT					SetUp_ShaderResource_Reflect();
 
 private:
 	void						SetOn_Terrain();

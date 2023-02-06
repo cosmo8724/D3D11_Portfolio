@@ -39,6 +39,7 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta);
 	virtual HRESULT			Render();
 	virtual HRESULT			Render_ShadowDepth();
+	virtual HRESULT			Render_Reflect();
 
 public:
 	void						ImGui_RenderComponentProperties();

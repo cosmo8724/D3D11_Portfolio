@@ -46,12 +46,17 @@ void CSkyBox::Tick(_double dTimeDelta)
 
 void CSkyBox::Late_Tick(_double dTimeDelta)
 {
-	__super::Late_Tick(dTimeDelta);
+ 	__super::Late_Tick(dTimeDelta);
 
-	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMLoadFloat4(&CGameInstance::GetInstance()->Get_CameraPosition()));
+	_vector	vCamPos = CGameInstance::GetInstance()->Get_CameraPosition();
+
+	m_pTransformCom->Set_State(CTransform::STATE_TRANS, vCamPos);
 
 	if (nullptr != m_pRendererCom)
+	{
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this, true);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_PRIORITY, this);
+	}
 }
 
 HRESULT CSkyBox::Render()
@@ -61,6 +66,19 @@ HRESULT CSkyBox::Render()
 	FAILED_CHECK_RETURN(SetUp_ShaderResource(), E_FAIL);
 
 	m_pShaderCom->Begin(1);
+
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+
+HRESULT CSkyBox::Render_Reflect()
+{
+	FAILED_CHECK_RETURN(__super::Render_Reflect(), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_ShaderResource_Reflect(), E_FAIL);
+
+	m_pShaderCom->Begin(9);
 
 	m_pVIBufferCom->Render();
 
@@ -90,6 +108,24 @@ HRESULT CSkyBox::SetUp_ShaderResource()
 
 	m_pShaderCom->Set_Matrix(L"g_matView", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_VIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+
+	return S_OK;
+}
+
+HRESULT CSkyBox::SetUp_ShaderResource_Reflect()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	_float4x4		matWorld = m_pTransformCom->Get_WorldMatrix();
+	matWorld._42 *= -1.f;
+
+	m_pShaderCom->Set_Matrix(L"g_matWorld", &matWorld);
+
+	m_pTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_Texture");
+
+	m_pShaderCom->Set_Matrix(L"g_matReflectView", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_REFLECTVIEW));
+	m_pShaderCom->Set_Matrix(L"g_matProj", &CGameInstance::GetInstance()->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_RawValue(L"g_vClipPlane", &CGameInstance::GetInstance()->Get_ClipPlane(CPipeLine::CLIPPLANE_REFRACT), sizeof(_float4));
 
 	return S_OK;
 }

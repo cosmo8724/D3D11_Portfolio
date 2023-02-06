@@ -24,6 +24,7 @@ public:
 	virtual void				Tick(_double dTimeDelta) override;
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
+	virtual HRESULT			Render_Reflect() override;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -35,6 +36,7 @@ private:
 private:
 	HRESULT					SetUp_Component();
 	HRESULT					SetUp_ShaderResource();
+	HRESULT					SetUp_ShaderResource_Reflect();
 
 public:
 	static CGrapple_Hang*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

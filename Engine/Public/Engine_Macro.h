@@ -14,6 +14,9 @@
 #define D3DCOLOR_ARGB(a,r,g,b) \
     ((D3DCOLOR)((((a)&0xff)<<24)|(((r)&0xff)<<16)|(((g)&0xff)<<8)|((b)&0xff)))
 
+#define FLOAT4COLOR_RGBA(r, g, b, a) \
+	_float4(r / 255.f, g / 255.f, b / 255.f, a / 255.f)
+
 #define NULL_CHECK( _ptr)	\
 	{if( _ptr == 0){__debugbreak();return;}}
 

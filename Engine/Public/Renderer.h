@@ -6,7 +6,7 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer final : public CComponent
 {
 public:
-	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWDEPTH, RENDER_NONALPHABLEND, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDERGROUP_END };
+	enum RENDERGROUP { RENDER_PRIORITY, RENDER_SHADOWDEPTH, RENDER_REFLECT, RENDER_NONALPHABLEND, RENDER_NONLIGHT, RENDER_ALPHABLEND, RENDER_UI, RENDERGROUP_END };
 
 public:
 	CRenderer(DEVICE pDevice, DEVICE_CONTEXT pContext);
@@ -36,9 +36,15 @@ private:
 	class CShader*							m_pShaderCom = nullptr;
 	_float4x4									m_matWorld, m_matView, m_matProj;
 
+#ifdef _DEBUG
+private:
+	_bool										m_bRenderDebug = true;
+#endif
+
 private:
 	HRESULT				Render_Priority(_bool bRenderOFF);
 	HRESULT				Render_ShadowDepth(_bool bRenderOFF);
+	HRESULT				Render_Reflect(_bool bRenderOFF);
 	HRESULT				Render_NonAlphaBlend(_bool bRenderOFF);
 	HRESULT				Render_LightAcc(_bool bRenderOFF);
 	HRESULT				Render_Blend(_bool bRenderOFF);

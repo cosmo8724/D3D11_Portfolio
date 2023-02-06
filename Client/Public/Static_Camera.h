@@ -35,6 +35,8 @@ private:
 	CTransform*					m_pOwnerTransform = nullptr;
 	_float							m_fDistanceFromTarget = 5.f;
 
+	_float4x4						m_matReflectWorld;
+
 	_double						m_dTimeScale = 1.0;
 	_bool							m_bMouseFix = true;
 
@@ -51,6 +53,7 @@ private:
 
 private:
 	HRESULT						SetUp_Component();
+	void							Update_ReflectWorld();
 
 public:
 	static CStatic_Camera*		Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

@@ -24,6 +24,7 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 	virtual HRESULT			Render_ShadowDepth() override;
+	virtual HRESULT			Render_Reflect() override;
 
 	virtual pair<_bool, _float3>		Picking_Mesh() override;
 
@@ -36,6 +37,7 @@ private:
 	HRESULT					SetUp_Component();
 	HRESULT					SetUp_ShaderResource();
 	HRESULT					SetUp_ShaderResource_LightDepth();
+	HRESULT					SetUp_ShaderResource_Reflect();
 
 public:
 	static CPortal_Island*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext);

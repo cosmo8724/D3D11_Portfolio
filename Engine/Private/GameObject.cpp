@@ -76,6 +76,11 @@ HRESULT CGameObject::Render_ShadowDepth()
 	return S_OK;
 }
 
+HRESULT CGameObject::Render_Reflect()
+{
+	return S_OK;
+}
+
 void CGameObject::ImGui_RenderComponentProperties()
 {
 	ImGui::Separator();

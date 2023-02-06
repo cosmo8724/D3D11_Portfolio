@@ -43,6 +43,7 @@ void CPortal_Island::Late_Tick(_double dTimeDelta)
 	if (nullptr != m_pRendererCom)
 	{
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
 
 		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 100.f))
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
@@ -81,6 +82,25 @@ HRESULT CPortal_Island::Render_ShadowDepth()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 		m_pModelCom->Render(m_pShaderCom, i, L"", 3);
+
+	return S_OK;
+}
+
+HRESULT CPortal_Island::Render_Reflect()
+{
+	FAILED_CHECK_RETURN(__super::Render_Reflect(), E_FAIL);
+
+	FAILED_CHECK_RETURN(SetUp_ShaderResource_Reflect(), E_FAIL);
+
+	_uint		iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (_uint i = 0; i < iNumMeshes; ++i)
+	{
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
+
+		m_pModelCom->Render(m_pShaderCom, i, L"", 7);
+	}
 
 	return S_OK;
 }
@@ -151,6 +171,23 @@ HRESULT CPortal_Island::SetUp_ShaderResource_LightDepth()
 	m_pShaderCom->Set_Matrix(L"g_matView", &matLightView);
 	//m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &matLightProj);
+
+	Safe_Release(pGameInstance);
+
+	return S_OK;
+}
+
+HRESULT CPortal_Island::SetUp_ShaderResource_Reflect()
+{
+	NULL_CHECK_RETURN(m_pShaderCom, E_FAIL);
+
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
+	m_pShaderCom->Set_Matrix(L"g_matReflectView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_REFLECTVIEW));
+	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_RawValue(L"g_vClipPlane", &pGameInstance->Get_ClipPlane(CPipeLine::CLIPPLANE_REFLECT), sizeof(_float4));
 
 	Safe_Release(pGameInstance);
 

@@ -42,8 +42,8 @@ void COcean::Late_Tick(_double dTimeDelta)
 
 	m_pVIBufferCom->Culling(m_pTransformCom->Get_WorldMatrix());
 
-	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+	//if (nullptr != m_pRendererCom)
+	//	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 }
 
 HRESULT COcean::Render()
