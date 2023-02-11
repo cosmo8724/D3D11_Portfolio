@@ -113,7 +113,7 @@ HRESULT CHat_JellyCorne::Render_Reflect()
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i, L"", 7);
+		m_pModelCom->Render(m_pShaderCom, i, L"", 8);
 	}
 
 	return S_OK;

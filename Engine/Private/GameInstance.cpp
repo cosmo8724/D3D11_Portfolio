@@ -537,6 +537,34 @@ const LIGHTDESC * CGameInstance::Get_LightDesc(_uint iIndex)
 	return m_pLightMgr->Get_LightDesc(iIndex);
 }
 
+_float4 & CGameInstance::Get_LightDiffuse(_uint iIndex)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, _float4(0.f, 0.f, 0.f, 0.f));
+
+	return m_pLightMgr->Get_LightDiffuse(iIndex);
+}
+
+void CGameInstance::Set_LightState(_uint iIndex, _bool bState)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, );
+
+	return m_pLightMgr->Set_LightState(iIndex, bState);
+}
+
+void CGameInstance::Set_LightPosition(_uint iIndex, _float4 vPos)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, );
+
+	return m_pLightMgr->Set_LightPosition(iIndex, vPos);
+}
+
+void CGameInstance::Set_LightRange(_uint iIndex, _float fRange)
+{
+	NULL_CHECK_RETURN(m_pLightMgr, );
+
+	return m_pLightMgr->Set_LightRange(iIndex, fRange);
+}
+
 HRESULT CGameInstance::Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC & LightDesc)
 {
 	NULL_CHECK_RETURN(m_pLightMgr, E_FAIL);

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "..\Public\VIBuffer_PointInstancing.h"
-
+#include "Shader.h"
 
 CVIBuffer_PointInstancing::CVIBuffer_PointInstancing(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CVIBuffer_Instancing(pDevice, pContext)
@@ -9,6 +9,7 @@ CVIBuffer_PointInstancing::CVIBuffer_PointInstancing(DEVICE pDevice, DEVICE_CONT
 
 CVIBuffer_PointInstancing::CVIBuffer_PointInstancing(const CVIBuffer_PointInstancing & rhs)
 	: CVIBuffer_Instancing(rhs)
+	, m_iInitNumInstance(rhs.m_iInitNumInstance)
 {
 }
 
@@ -16,9 +17,10 @@ HRESULT CVIBuffer_PointInstancing::Initialize_Prototype(_uint iNumInstance)
 {
 	FAILED_CHECK_RETURN(__super::Initialize_Prototype(), E_FAIL);
 
+	m_iInitNumInstance = iNumInstance;
 	m_iNumInstance = iNumInstance;
 	m_iIndexCountPerInstance = 1;
-	m_iNumVertexBuffers = 1;
+	m_iNumVertexBuffers = 2;
 	m_iStride = sizeof(VTXPOINT);
 	m_iNumVertices = 1;
 	m_iNumPrimitive = iNumInstance;
@@ -73,16 +75,118 @@ HRESULT CVIBuffer_PointInstancing::Initialize_Prototype(_uint iNumInstance)
 
 	Safe_Delete_Array(pIndices);
 
+	/* Instance Buffer */
+	m_iInstanceStride = sizeof(VTXMATRIX);
+
+	ZeroMemory(&m_tBufferDesc, sizeof m_tBufferDesc);
+	m_tBufferDesc.ByteWidth = m_iInstanceStride * iNumInstance;
+	m_tBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+	m_tBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_tBufferDesc.StructureByteStride = m_iInstanceStride;
+	m_tBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_tBufferDesc.MiscFlags = 0;
+
+	VTXMATRIX*		pInstanceVertices = new VTXMATRIX[iNumInstance];
+	ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * iNumInstance);
+
+	for (_uint i = 0; i < iNumInstance; ++i)
+	{
+		pInstanceVertices[i].vRight = _float4(1.0f, 0.f, 0.f, 0.f);
+		pInstanceVertices[i].vUp = _float4(0.0f, 1.f, 0.f, 0.f);
+		pInstanceVertices[i].vLook = _float4(0.0f, 0.f, 1.f, 0.f);
+		pInstanceVertices[i].vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+	}
+
+	ZeroMemory(&m_tSubResourceData, sizeof m_tSubResourceData);
+	m_tSubResourceData.pSysMem = pInstanceVertices;
+
+	m_pDevice->CreateBuffer(&m_tBufferDesc, &m_tSubResourceData, &m_pInstanceBuffer);
+
+	Safe_Delete_Array(pInstanceVertices);
+
+	m_vecInstanceInfo.reserve(m_iInitNumInstance);
+
 	return S_OK;
 }
 
 HRESULT CVIBuffer_PointInstancing::Initialize(CGameObject * pOwner, void * pArg)
 {
+	FAILED_CHECK_RETURN(__super::Initialize(pOwner, pArg), E_FAIL);
+
+	/*m_pInstanceInfo = new VTXMATRIX[m_iMaxInstanceCount];
+	ZeroMemory(m_pInstanceInfo, sizeof(VTXMATRIX) * m_iMaxInstanceCount);
+
+	for (int i = 0; i < 300; ++i)
+	{
+		memcpy(&m_pInstanceInfo[i], &_float4x4::Identity, sizeof(_float4x4));
+		m_pInstanceInfo[i].vPosition.w = 3.f;
+	}*/
+
 	return S_OK;
 }
 
 HRESULT CVIBuffer_PointInstancing::Tick(_double dTimeDelta)
 {
+	D3D11_MAPPED_SUBRESOURCE			SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	for (_uint i = 0; i < m_iNumInstance; ++i)
+	{
+		//((VTXMATRIX*)SubResource.pData)[i].vPosition.y -= m_pSpeeds[i] * TimeDelta;
+
+		if (((VTXMATRIX*)SubResource.pData)[i].vPosition.y < 0.f)
+			((VTXMATRIX*)SubResource.pData)[i].vPosition.y = 3.f;
+	}
+
+	m_pContext->Unmap(m_pInstanceBuffer, 0);
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_PointInstancing::Tick_Trail(_double dTimeDelta)
+{
+	for (VTXMATRIX& pInfo : m_vecInstanceInfo)
+		pInfo.vPosition.w -= (_float)dTimeDelta;
+
+	m_vecInstanceInfo.erase(remove_if(m_vecInstanceInfo.begin(), m_vecInstanceInfo.end(), [](const VTXMATRIX& Info) {
+		return Info.vPosition.w <= 0.f;
+	}), m_vecInstanceInfo.end());
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+	memcpy(SubResource.pData, m_vecInstanceInfo.data(), sizeof(VTXMATRIX) * m_vecInstanceInfo.size());
+	m_pContext->Unmap(m_pInstanceBuffer, 0);
+
+	m_iNumInstance = (_uint)m_vecInstanceInfo.size();
+
+	/*if (m_dTimeDelta > 0.2)
+	{
+		m_iNumInstance++;
+		m_dTimeDelta -= 0.2;
+	}
+
+	for (int i = 0; i < m_iNumInstance; ++i)
+	{
+		_float fCurLife = m_vecInstanceInfo[i].vPosition.w - dTimDelta;
+		m_vecInstanceInfo[i].vPosition.w = 1.f;
+		m_vecInstanceInfo[i].vPosition += XMVector3Normalize(vDir) * (_float)m_dMoveSpeed * dTimDelta;
+		m_vecInstanceInfo[i].vPosition.w = fCurLife;
+	}
+
+	D3D11_MAPPED_SUBRESOURCE			SubResource;
+	ZeroMemory(&SubResource, sizeof(D3D11_MAPPED_SUBRESOURCE));
+
+	m_pContext->Map(m_pInstanceBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	for (size_t i = 0; i < m_vecInstanceInfo.size(); ++i)
+		memcpy(&((VTXMATRIX*)SubResource.pData)[i], &m_vecInstanceInfo[i], sizeof(VTXMATRIX));
+
+	m_pContext->Unmap(m_pInstanceBuffer, 0);*/
+
 	return S_OK;
 }
 
@@ -95,29 +199,47 @@ HRESULT CVIBuffer_PointInstancing::Render()
 
 	ID3D11Buffer*			pVertexBuffers[] = {
 		m_pVB,
-		//m_pInstanceBuffer
+		m_pInstanceBuffer
 	};
 
 	_uint					iStrides[] = {
 		m_iStride,
-		//m_iInstanceStride,
+		m_iInstanceStride,
 	};
 
 	_uint					iOffsets[] = {
 		0,
-		//0,
+		0,
 	};
 
-	m_pContext->IASetVertexBuffers(0, 1, pVertexBuffers, iStrides, iOffsets);
+	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertexBuffers, iStrides, iOffsets);
 
 	/* 인덱스버퍼를 장치에 바인딩한다.(단일로 바인딩한다.)  */
 	m_pContext->IASetIndexBuffer(m_pIB, m_eIndexFormat, 0);
 
 	m_pContext->IASetPrimitiveTopology(m_eTopology);
 
-	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+	//m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+	m_pContext->DrawIndexedInstanced(m_iIndexCountPerInstance, m_iNumInstance, 0, 0, 0);
 
 	return S_OK;
+}
+
+void CVIBuffer_PointInstancing::Add_Instance(_float4x4 matInfo)
+{
+	if (m_vecInstanceInfo.size() >= m_iInitNumInstance)
+		return;
+
+	VTXMATRIX	Info;
+	memcpy(&Info, &matInfo, sizeof(_float4x4));
+	m_vecInstanceInfo.push_back(Info);
+}
+
+HRESULT CVIBuffer_PointInstancing::Bind_ShaderResource(CShader * pShaderCom, const wstring & wstrConstantName)
+{
+	NULL_CHECK_RETURN(pShaderCom, E_FAIL);
+
+	return pShaderCom->Set_MatrixArray(wstrConstantName, (_float4x4*)m_vecInstanceInfo.data(), (_uint)m_vecInstanceInfo.size());
 }
 
 CVIBuffer_PointInstancing * CVIBuffer_PointInstancing::Create(DEVICE pDevice, DEVICE_CONTEXT pContext, _uint iNumInstance)

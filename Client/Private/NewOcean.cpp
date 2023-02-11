@@ -136,8 +136,8 @@ HRESULT CNewOcean::SetUp_ShaderResource()
 
 void CNewOcean::Update_ReflectionCam()
 {
-	if (CGameInstance::GetInstance()->Get_CurLevelIndex() != LEVEL_TESTSTAGE)
-		return;
+	//if (CGameInstance::GetInstance()->Get_CurLevelIndex() != LEVEL_TESTSTAGE)
+	//	return;
 
 	_vector	vCamPos, vCamLook, vTargetPos;
 	_vector	vCamRight;

@@ -54,7 +54,7 @@ HRESULT CLeviathan::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	m_tStatus.iSpecialAttack = 20;
 	m_tStatus.dInitAttackCoolTime = 6.0;
 	m_tStatus.dCurAttackCoolTime = 0.0;
-	m_tStatus.dInitHitCoolTime = 1.5;
+	m_tStatus.dInitHitCoolTime = 0.5;
 	m_tStatus.dCurHitCoolTime = 0.0;
 
 	return S_OK;
@@ -68,7 +68,7 @@ void CLeviathan::Tick(_double dTimeDelta)
 
 	m_pLeviathan_State->Tick(dTimeDelta);
 	m_pStateMachineCom->Tick(dTimeDelta);
-
+	//m_pModelCom->Play_Animation(dTimeDelta);
 	if (m_bPlayerDetected)
 		m_pModelCom->Play_Animation(dTimeDelta);
 	else
@@ -165,6 +165,10 @@ void CLeviathan::Tick(_double dTimeDelta)
 
 	matSocket = m_pModelCom->Get_BoneMatrix("R_Farm_b_Phy");
 	m_pSphereCol[RWING_B]->Update(matSocket * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
+
+	_vector	vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
+	vPos = XMVectorSetY(vPos, XMVectorGetY(vPos) + 10.f);
+	CGameInstance::GetInstance()->Set_LightPosition(3, vPos);
 }
 
 void CLeviathan::Late_Tick(_double dTimeDelta)
@@ -178,12 +182,12 @@ void CLeviathan::Late_Tick(_double dTimeDelta)
 		//if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 20.f))
 
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
+		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
 		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
 
-		for (_uint i = 0; i < (_uint)HITBOX_END; ++i)
-			m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol[i]);
+		//for (_uint i = 0; i < (_uint)HITBOX_END; ++i)
+		//	m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol[i]);
 		//m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 	}
 }

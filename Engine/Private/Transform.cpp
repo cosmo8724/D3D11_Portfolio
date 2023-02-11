@@ -119,6 +119,25 @@ void CTransform::Go_Direction(_fvector vDirection, _double dTimeDelta, CNavigati
 	Set_State(CTransform::STATE_TRANS, vMovedPos);
 }
 
+void CTransform::Go_DirectionWithY(_fvector vDirection, _double dTimeDelta, CNavigation * pNavigationCom)
+{
+	_float3		fScale = Get_Scale();
+
+	_vector		vPosition = Get_State(CTransform::STATE_TRANS);
+	_float4		vFDirection = vDirection;
+
+	_vector		vLook = XMVector3Normalize(XMVectorSet(vFDirection.x, vFDirection.y, vFDirection.z, 0.f)) * fScale.z;
+	_vector		vRight = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook)) * fScale.x;
+	_vector		vUp = XMVector3Normalize(XMVector3Cross(vLook, vRight)) * fScale.y;
+
+	Set_State(CTransform::STATE_RIGHT, vRight);
+	Set_State(CTransform::STATE_UP, vUp);
+	Set_State(CTransform::STATE_LOOK, vLook);
+
+	_vector	vMovedPos = vPosition + XMVector3Normalize(vLook) * (_float)m_TransformDesc.dSpeedPerSec * (_float)dTimeDelta;
+	Set_State(CTransform::STATE_TRANS, vMovedPos);
+}
+
 void CTransform::Go_Straight(_double dTimeDelta, CNavigation * pNavigationCom)
 {
 	_vector	vPos = Get_State(CTransform::STATE_TRANS);

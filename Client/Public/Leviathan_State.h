@@ -16,7 +16,7 @@ class CLeviathan_State final : public CBase
 public:
 	enum ANIMATION {
 		APPEAR, PHASE_CHANGE,
-		ATT_BITE, PHASE_CHANGE_READY_ST, PHASE_CHANGE_READY_LP, PHASE_CHANGE_READY_ED,
+		ATT_BITE, ATT_LIGHTNING_ST, ATT_LIGHTNING_LP, ATT_LIGHTNING_ED,
 		ATT_MOVE_1, ATT_MOVE_2, ATT_MOVE_3, ATT_SPIN, ATT_SPLASH, ATT_TAIL_WHIP, ATT_WATER_BALL,
 		ATT_WATER_BEAM_ST, ATT_WATER_BEAM_RIGHT_LP, ATT_WATER_BEAM_RIGHT_ED, ATT_WATER_BEAM_LEFT_LP, ATT_WATER_BEAM_LEFT_ED,
 		GROGGY_UP, ATT_WATER_TORNADO, ATT_WING,
@@ -34,11 +34,11 @@ public:
 	enum PHASE { PHASE_1, PHASE_2, PHASE_END };
 
 	enum PHASE_1_PATTERN {
-		BITE, MOVE, SPLASH, TAIL_WHIP, WATER_BALL, PHASE_1_PATTERN_END
+		BITE, LIGHTNING, /*MOVE, */SPLASH, TAIL_WHIP, WATER_BALL, PHASE_1_PATTERN_END
 	};
 
 	enum PHASE_2_PATTERN {
-		SPIN = 5, WATER_BEAM, WATER_TORNADO, WING, PHASE_2_PATTERN_END
+		SPIN = 5, WATER_BEAM, /*WATER_TORNADO, WING,*/ PHASE_2_PATTERN_END
 	};
 
 private:
@@ -76,8 +76,16 @@ private:
 	PHASE						m_ePhase = PHASE_1;
 	_uint						m_iCurrentPattern = (_uint)PHASE_2_PATTERN_END;
 	_uint						m_iLastPattern = (_uint)PHASE_2_PATTERN_END;
+	_bool						m_bGroggy = false;
 
 	_uint						m_iIdleFinishCount = 0;
+	_uint						m_iLightningCount = 0;
+	_uint						m_iLightningCount2 = 0;
+	_bool						m_bLightning = false;
+	_uint						m_iLightningPattern = 0;
+	_double					m_dLightningTime = 0.0;
+
+	_double					m_dHPRecoverTime = 0.0;
 
 private:
 	void						Start_Appear(_double dTimeDelta);
@@ -87,6 +95,9 @@ private:
 	void						Start_Warp_1(_double dTimeDelta);
 	void						Start_Warp_2(_double dTimeDelta);
 	void						Start_Attack_Bite(_double dTimeDelta);
+	void						Start_Attack_Lightning_Start(_double dTimeDelta);
+	void						Start_Attack_Lightning_Loop(_double dTimeDelta);
+	void						Start_Attack_Lightning_End(_double dTimeDelta);
 	void						Start_Attack_Move(_double dTimeDelta);
 	void						Start_Attack_Move_1(_double dTimeDelta);
 	void						Start_Attack_Move_2(_double dTimeDelta);
@@ -107,6 +118,10 @@ private:
 	void						Start_Turn_Right_90(_double dTimeDelta);
 	void						Start_Turn_Left_180(_double dTimeDelta);
 	void						Start_Turn_Left_90(_double dTimeDelta);
+	void						Start_Groggy_Down(_double dTimeDelta);
+	void						Start_Groggy_Up(_double dTimeDelta);
+	void						Start_Damage_Down_Start(_double dTimeDelta);
+	void						Start_Damage_Down_Loop(_double dTimeDelta);
 
 private:
 	void						Tick_Appear(_double dTimeDelta);
@@ -116,6 +131,9 @@ private:
 	void						Tick_Warp_1(_double dTimeDelta);
 	void						Tick_Warp_2(_double dTimeDelta);
 	void						Tick_Attack_Bite(_double dTimeDelta);
+	void						Tick_Attack_Lightning_Start(_double dTimeDelta);
+	void						Tick_Attack_Lightning_Loop(_double dTimeDelta);
+	void						Tick_Attack_Lightning_End(_double dTimeDelta);
 	void						Tick_Attack_Move(_double dTimeDelta);
 	void						Tick_Attack_Move_1(_double dTimeDelta);
 	void						Tick_Attack_Move_2(_double dTimeDelta);
@@ -136,6 +154,10 @@ private:
 	void						Tick_Turn_Right_90(_double dTimeDelta);
 	void						Tick_Turn_Left_180(_double dTimeDelta);
 	void						Tick_Turn_Left_90(_double dTimeDelta);
+	void						Tick_Groggy_Down(_double dTimeDelta);
+	void						Tick_Groggy_Up(_double dTimeDelta);
+	void						Tick_Damage_Down_Start(_double dTimeDelta);
+	void						Tick_Damage_Down_Loop(_double dTimeDelta);
 
 private:
 	void						End_Appear(_double dTimeDelta);
@@ -145,6 +167,9 @@ private:
 	void						End_Warp_1(_double dTimeDelta);
 	void						End_Warp_2(_double dTimeDelta);
 	void						End_Attack_Bite(_double dTimeDelta);
+	void						End_Attack_Lightning_Start(_double dTimeDelta);
+	void						End_Attack_Lightning_Loop(_double dTimeDelta);
+	void						End_Attack_Lightning_End(_double dTimeDelta);
 	void						End_Attack_Move(_double dTimeDelta);
 	void						End_Attack_Move_1(_double dTimeDelta);
 	void						End_Attack_Move_2(_double dTimeDelta);
@@ -165,6 +190,10 @@ private:
 	void						End_Turn_Right_90(_double dTimeDelta);
 	void						End_Turn_Left_180(_double dTimeDelta);
 	void						End_Turn_Left_90(_double dTimeDelta);
+	void						End_Groggy_Down(_double dTimeDelta);
+	void						End_Groggy_Up(_double dTimeDelta);
+	void						End_Damage_Down_Start(_double dTimeDelta);
+	void						End_Damage_Down_Loop(_double dTimeDelta);
 
 private:
 	_bool						Animation_Finish();
@@ -173,6 +202,7 @@ private:
 	_bool						Ready_Attack_Close();		// ATT_BITE, ATT_TAIL_WHIP, ATT_WATER_TORNADO, ATT_WING
 	_bool						Ready_Attack_Far();		// ATT_MOVE, ATT_WATER_BALL, ATT_WATER_BEAM
 	_bool						Ready_Attack_Bite();
+	_bool						Ready_Attack_Lightning();
 	_bool						Ready_Attack_Move();
 	_bool						Ready_Attack_Splash();
 	_bool						Ready_Attack_TailWhip();
@@ -190,6 +220,9 @@ private:
 	_bool						Target_On_Left();
 	_bool						PosY_Less_Neg50();
 	_bool						Check_IdleFinishCount();
+	_bool						Check_LightningCount();
+	_bool						Check_HP_Groggy();
+	_bool						Check_HP_Die();
 
 public:
 	static CLeviathan_State*	Create(DEVICE pDevice, DEVICE_CONTEXT pContext, class CLeviathan* pLeviathan, CStateMachine* pStateMachineCom, CModel* pModel, CTransform* pTransform);

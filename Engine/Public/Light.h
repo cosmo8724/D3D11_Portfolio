@@ -11,6 +11,10 @@ public:
 
 public:
 	const LIGHTDESC*	Get_LightDesc() const { return &m_LightDesc; }
+	_float4&				Get_Diffuse() { return m_LightDesc.vDiffuse; }
+	void					Set_LightState(_bool bState) { m_LightDesc.bIsLightOn = bState; }
+	void					Set_LightPosition(_float4 vPos) { m_LightDesc.vPosition = vPos; }
+	void					Set_LightRange(_float fRange) { m_LightDesc.fRange = fRange; }
 
 public:
 	HRESULT				Initialize(const LIGHTDESC& LightDesc);

@@ -4,6 +4,7 @@
 #include "GameUtility.h"
 #include "Leviathan.h"
 #include "Sigrid.h"
+#include "SkyBox.h"
 
 #define	POSITION_A	XMVectorSet(149.f, -2.f, 775.5f, 1.f)
 #define	POSITION_B	XMVectorSet(205.f, -2.f, 713.f, 1.f)
@@ -66,9 +67,15 @@ void CLeviathan_State::Late_Tick(_double dTimeDelta)
 {
 	if (m_pLeviathan->m_pPlayer->Collision_Body(m_pLeviathan->m_pRangeCol))
 	{
+		if (m_pLeviathan->m_bPlayerDetected == false)
+			CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_UI_HPBar_Boss");
+
 		m_pLeviathan->m_bPlayerDetected = true;
 		m_pLeviathan->m_pPlayer->Set_BossBattle(true);
-	}
+		dynamic_cast<CSkyBox*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_SkyBox")->back())->Set_LightDecrease(true);
+		CGameInstance::GetInstance()->Set_LightState(2, true);
+		CGameInstance::GetInstance()->Set_LightState(3, true);
+	}		
 
 	for (auto& pSphereCollider : m_pLeviathan->m_pSphereCol)
 	{
@@ -106,17 +113,20 @@ HRESULT CLeviathan_State::SetUp_State_Idle()
 		.Init_Start(this, &CLeviathan_State::Start_Idle_Loop)
 		.Init_Tick(this, &CLeviathan_State::Tick_Idle_Loop)
 		.Init_End(this, &CLeviathan_State::End_Idle_Loop)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"TURN_RIGHT_180", this, &CLeviathan_State::To_Target_Angle_R180)
 		.Init_Changer(L"TURN_LEFT_180", this, &CLeviathan_State::To_Target_Angle_L180)
 		.Init_Changer(L"TURN_RIGHT_90", this, &CLeviathan_State::To_Target_Angle_R90)
 		.Init_Changer(L"TURN_LEFT_90", this, &CLeviathan_State::To_Target_Angle_L90)
 		.Init_Changer(L"ATT_BITE", this, &CLeviathan_State::Ready_Attack_Bite)
-		.Init_Changer(L"ATT_MOVE", this, &CLeviathan_State::Ready_Attack_Move)
+		.Init_Changer(L"ATT_LIGHTNING_ST", this, &CLeviathan_State::Ready_Attack_Lightning)
+		//.Init_Changer(L"ATT_MOVE", this, &CLeviathan_State::Ready_Attack_Move)
 		.Init_Changer(L"ATT_TAIL_WHIP", this, &CLeviathan_State::Ready_Attack_TailWhip)
 		.Init_Changer(L"ATT_WATER_BALL", this, &CLeviathan_State::Ready_Attack_Water_Ball)
 		.Init_Changer(L"ATT_WATER_BEAM_ST", this, &CLeviathan_State::Ready_Attack_Water_Beam)
-		.Init_Changer(L"ATT_WATER_TORNADO", this, &CLeviathan_State::Ready_Attack_Water_Tornado)
-		.Init_Changer(L"ATT_WING", this, &CLeviathan_State::Ready_Attack_Wing)
+		//.Init_Changer(L"ATT_WATER_TORNADO", this, &CLeviathan_State::Ready_Attack_Water_Tornado)
+		//.Init_Changer(L"ATT_WING", this, &CLeviathan_State::Ready_Attack_Wing)
 		.Init_Changer(L"WARP_1", this, &CLeviathan_State::Check_IdleFinishCount)
 
 		.Finish_Setting();
@@ -151,6 +161,32 @@ HRESULT CLeviathan_State::SetUp_State_Attack_Phase_1()
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Bite)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Bite)
 		.Init_End(this, &CLeviathan_State::End_Attack_Bite)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
+		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
+
+		.Add_State(L"ATT_LIGHTNING_ST")
+		.Init_Start(this, &CLeviathan_State::Start_Attack_Lightning_Start)
+		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Lightning_Start)
+		.Init_End(this, &CLeviathan_State::End_Attack_Lightning_Start)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
+		.Init_Changer(L"ATT_LIGHTING_LP", this, &CLeviathan_State::Animation_Finish)
+
+		.Add_State(L"ATT_LIGHTING_LP")
+		.Init_Start(this, &CLeviathan_State::Start_Attack_Lightning_Loop)
+		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Lightning_Loop)
+		.Init_End(this, &CLeviathan_State::End_Attack_Lightning_Loop)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
+		.Init_Changer(L"ATT_LIGHTNING_ED", this, &CLeviathan_State::Check_LightningCount)
+
+		.Add_State(L"ATT_LIGHTNING_ED")
+		.Init_Start(this, &CLeviathan_State::Start_Attack_Lightning_End)
+		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Lightning_End)
+		.Init_End(this, &CLeviathan_State::End_Attack_Lightning_End)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_MOVE")
@@ -175,18 +211,24 @@ HRESULT CLeviathan_State::SetUp_State_Attack_Phase_1()
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Splash)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Splash)
 		.Init_End(this, &CLeviathan_State::End_Attack_Splash)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"WARP_2", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_TAIL_WHIP")
 		.Init_Start(this, &CLeviathan_State::Start_Attack_TailWhip)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_TailWhip)
 		.Init_End(this, &CLeviathan_State::End_Attack_TailWhip)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_WATER_BALL")
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Water_Ball)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Water_Ball)
 		.Init_End(this, &CLeviathan_State::End_Attack_Water_Ball)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Finish_Setting();
@@ -200,12 +242,16 @@ HRESULT CLeviathan_State::SetUp_State_Attack_Phase_2()
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Spin)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Spin)
 		.Init_End(this, &CLeviathan_State::End_Attack_Spin)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"WARP_2", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_WATER_BEAM_ST")
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Water_Beam_Start)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Water_Beam_Start)
 		.Init_End(this, &CLeviathan_State::End_Attack_Water_Beam_Start)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"ATT_WATER_BEAM_RIGHT_LP", this, &CLeviathan_State::Target_On_Right)
 		.Init_Changer(L"ATT_WATER_BEAM_LEFT_LP", this, &CLeviathan_State::Target_On_Left)
 
@@ -213,24 +259,32 @@ HRESULT CLeviathan_State::SetUp_State_Attack_Phase_2()
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Water_Beam_Right_Loop)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Water_Beam_Right_Loop)
 		.Init_End(this, &CLeviathan_State::End_Attack_Water_Beam_Right_Loop)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"ATT_WATER_BEAM_RIGHT_ED", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_WATER_BEAM_RIGHT_ED")
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Water_Beam_Right_End)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Water_Beam_Right_End)
 		.Init_End(this, &CLeviathan_State::End_Attack_Water_Beam_Right_End)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_WATER_BEAM_LEFT_LP")
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Water_Beam_Left_Loop)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Water_Beam_Left_Loop)
 		.Init_End(this, &CLeviathan_State::End_Attack_Water_Beam_Left_Loop)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"ATT_WATER_BEAM_LEFT_ED", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_WATER_BEAM_LEFT_ED")
 		.Init_Start(this, &CLeviathan_State::Start_Attack_Water_Beam_Left_End)
 		.Init_Tick(this, &CLeviathan_State::Tick_Attack_Water_Beam_Left_End)
 		.Init_End(this, &CLeviathan_State::End_Attack_Water_Beam_Left_End)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"ATT_WATER_TORNADO")
@@ -252,11 +306,38 @@ HRESULT CLeviathan_State::SetUp_State_Attack_Phase_2()
 
 HRESULT CLeviathan_State::SetUp_State_Damaged()
 {
+	m_pStateMachineCom->Add_State(L"GROGGY_DOWN")
+		.Init_Start(this, &CLeviathan_State::Start_Groggy_Down)
+		.Init_Tick(this, &CLeviathan_State::Tick_Groggy_Down)
+		.Init_End(this, &CLeviathan_State::End_Groggy_Down)
+		.Init_Changer(L"GROGGY_UP", this, &CLeviathan_State::Animation_Finish)
+
+		.Add_State(L"GROGGY_UP")
+		.Init_Start(this, &CLeviathan_State::Start_Groggy_Up)
+		.Init_Tick(this, &CLeviathan_State::Tick_Groggy_Up)
+		.Init_End(this, &CLeviathan_State::End_Groggy_Up)
+		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
+
+		.Finish_Setting();
+
 	return S_OK;
 }
 
 HRESULT CLeviathan_State::SetUp_State_Die()
 {
+	m_pStateMachineCom->Add_State(L"DMG_DOWN_ST")
+		.Init_Start(this, &CLeviathan_State::Start_Damage_Down_Start)
+		.Init_Tick(this, &CLeviathan_State::Tick_Damage_Down_Start)
+		.Init_End(this, &CLeviathan_State::End_Damage_Down_Start)
+		.Init_Changer(L"DMG_DOWN_LP", this, &CLeviathan_State::Animation_Finish)
+
+		.Add_State(L"DMG_DOWN_LP")
+		.Init_Start(this, &CLeviathan_State::Start_Damage_Down_Loop)
+		.Init_Tick(this, &CLeviathan_State::Tick_Damage_Down_Loop)
+		.Init_End(this, &CLeviathan_State::End_Damage_Down_Loop)
+
+		.Finish_Setting();
+
 	return S_OK;
 }
 
@@ -287,24 +368,32 @@ HRESULT CLeviathan_State::SetUp_State_Turn()
 		.Init_Start(this, &CLeviathan_State::Start_Turn_Right_180)
 		.Init_Tick(this, &CLeviathan_State::Tick_Turn_Right_180)
 		.Init_End(this, &CLeviathan_State::End_Turn_Right_180)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"TURN_RIGHT_90")
 		.Init_Start(this, &CLeviathan_State::Start_Turn_Right_90)
 		.Init_Tick(this, &CLeviathan_State::Tick_Turn_Right_90)
 		.Init_End(this, &CLeviathan_State::End_Turn_Right_90)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"TURN_LEFT_180")
 		.Init_Start(this, &CLeviathan_State::Start_Turn_Left_180)
 		.Init_Tick(this, &CLeviathan_State::Tick_Turn_Left_180)
 		.Init_End(this, &CLeviathan_State::End_Turn_Left_180)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Add_State(L"TURN_LEFT_90")
 		.Init_Start(this, &CLeviathan_State::Start_Turn_Left_90)
 		.Init_Tick(this, &CLeviathan_State::Tick_Turn_Left_90)
 		.Init_End(this, &CLeviathan_State::End_Turn_Left_90)
+		.Init_Changer(L"DMG_DOWN_ST", this, &CLeviathan_State::Check_HP_Die)
+		.Init_Changer(L"GROGGY_DOWN", this, &CLeviathan_State::Check_HP_Groggy)
 		.Init_Changer(L"IDLE_LP", this, &CLeviathan_State::Animation_Finish)
 
 		.Finish_Setting();
@@ -427,6 +516,23 @@ void CLeviathan_State::Start_Attack_Bite(_double dTimeDelta)
 	m_pModelCom->Set_CurAnimationIndex(ATT_BITE);
 }
 
+void CLeviathan_State::Start_Attack_Lightning_Start(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimationIndex(ATT_LIGHTNING_ST);
+	m_iLightningPattern = rand() % 10;
+	m_dLightningTime = 0.0;
+}
+
+void CLeviathan_State::Start_Attack_Lightning_Loop(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimationIndex(ATT_LIGHTNING_LP);
+}
+
+void CLeviathan_State::Start_Attack_Lightning_End(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimationIndex(ATT_LIGHTNING_ED);
+}
+
 void CLeviathan_State::Start_Attack_Move(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(ATT_MOVE_1);
@@ -455,6 +561,63 @@ void CLeviathan_State::Start_Attack_TailWhip(_double dTimeDelta)
 void CLeviathan_State::Start_Attack_Water_Ball(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(ATT_WATER_BALL);
+
+	//L_FfinB_Spo
+	//R_FfinB_Spo
+	
+	_matrix	matSpwan = m_pModelCom->Get_BoneMatrix("L_Farm_b_Phy") * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix());
+
+	_vector	vPlayerPos;
+	memcpy(&vPlayerPos, &m_pLeviathan->m_pPlayer->Get_WorldMatrix()._41, sizeof(_float4));
+
+	_vector	vDir = vPlayerPos - matSpwan.r[3];	// 날개 뼈에서 플레이어 방향
+	
+	_matrix	matLeviathan;
+	_float3	vScale;
+
+	for (_int i = -2; i < 3; ++i)
+	{
+		if (i == 0)
+			continue;
+
+		matLeviathan = m_pTransformCom->Get_WorldMatrix();
+		vDir = vPlayerPos - matSpwan.r[3];
+
+		vDir = XMVectorSetY(vDir, XMVectorGetY(vDir) + (_float)i * 20.f);
+		matLeviathan.r[3] = matSpwan.r[3] + XMVector3Normalize(vDir) * 50.f;
+		//matLeviathan.r[3] = XMVectorSetY(matLeviathan.r[3], XMVectorGetY(matLeviathan.r[3]) + 10.f);
+
+		vScale = { XMVectorGetX(XMVector3Length(matLeviathan.r[0])), XMVectorGetX(XMVector3Length(matLeviathan.r[1])), XMVectorGetX(XMVector3Length(matLeviathan.r[2])) };
+		matLeviathan.r[2] = XMVector3Normalize(matLeviathan.r[3] - m_pTransformCom->Get_State(CTransform::STATE_TRANS)) * vScale.z;
+		matLeviathan.r[0] = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), matLeviathan.r[2])) * vScale.x;
+		matLeviathan.r[1] = XMVector3Normalize(XMVector3Cross(matLeviathan.r[2], matLeviathan.r[0])) * vScale.y;
+
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Cocoball", matLeviathan);
+	}
+
+	matSpwan = m_pModelCom->Get_BoneMatrix("R_Farm_b_Phy") * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix());
+
+	vDir = vPlayerPos - matSpwan.r[3];
+
+	for (_int i = -2; i < 3; ++i)
+	{
+		if (i == 0)
+			continue;
+
+		matLeviathan = m_pTransformCom->Get_WorldMatrix();
+		vDir = vPlayerPos - matSpwan.r[3];
+
+		vDir = XMVectorSetY(vDir, XMVectorGetY(vDir) + (_float)i * 20.f);
+		matLeviathan.r[3] = matSpwan.r[3] + XMVector3Normalize(vDir) * 50.f;
+		//matLeviathan.r[3] = XMVectorSetY(matLeviathan.r[3], XMVectorGetY(matLeviathan.r[3]) + 10.f);
+
+		vScale = { XMVectorGetX(XMVector3Length(matLeviathan.r[0])), XMVectorGetX(XMVector3Length(matLeviathan.r[1])), XMVectorGetX(XMVector3Length(matLeviathan.r[2])) };
+		matLeviathan.r[2] = XMVector3Normalize(matLeviathan.r[3] - m_pTransformCom->Get_State(CTransform::STATE_TRANS)) * vScale.z;
+		matLeviathan.r[0] = XMVector3Normalize(XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), matLeviathan.r[2])) * vScale.x;
+		matLeviathan.r[1] = XMVector3Normalize(XMVector3Cross(matLeviathan.r[2], matLeviathan.r[0])) * vScale.y;
+
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Cocoball", matLeviathan);
+	}
 }
 
 void CLeviathan_State::Start_Attack_Spin(_double dTimeDelta)
@@ -533,6 +696,27 @@ void CLeviathan_State::Start_Turn_Left_90(_double dTimeDelta)
 	m_pModelCom->Set_CurAnimationIndex(TURN_LEFT_90);
 }
 
+void CLeviathan_State::Start_Groggy_Down(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimationIndex(GROGGY_DOWN);
+	m_bGroggy = true;
+}
+
+void CLeviathan_State::Start_Groggy_Up(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimationIndex(GROGGY_UP);
+}
+
+void CLeviathan_State::Start_Damage_Down_Start(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimationIndex(DMG_DOWN_ST);
+}
+
+void CLeviathan_State::Start_Damage_Down_Loop(_double dTimeDelta)
+{
+	m_pModelCom->Set_CurAnimationIndex(DMG_DOWN_LP);
+}
+
 void CLeviathan_State::Tick_Appear(_double dTimeDelta)
 {
 	if (m_pLeviathan->m_bPlayerDetected == true)
@@ -559,17 +743,19 @@ void CLeviathan_State::Tick_Idle_End(_double dTimeDelta)
 
 void CLeviathan_State::Tick_Warp_1(_double dTimeDelta)
 {
-	if (m_pModelCom->Get_AnimationProgress() > 0.99f)
+	if (m_pModelCom->Get_AnimationProgress() > 0.95f)
 	{
 		srand(unsigned(time(NULL)));
 
 		Ready_Attack();
 
+		m_iCurrentPattern = (_uint)WATER_BALL;
+
 		_vector	vPos;
 		_matrix	matPlayerWorld = m_pLeviathan->m_pPlayer->Get_WorldMatrix();
 		POSITION	eNextPos = POS_END;
 
-		if (m_iCurrentPattern == (_uint)BITE || m_iCurrentPattern == (_uint)TAIL_WHIP || m_iCurrentPattern == (_uint)WATER_TORNADO || m_iCurrentPattern == (_uint)WING)
+		if (m_iCurrentPattern == (_uint)BITE || m_iCurrentPattern == (_uint)TAIL_WHIP /*|| m_iCurrentPattern == (_uint)WATER_TORNADO || m_iCurrentPattern == (_uint)WING*/)
 		{
 			eNextPos = POSITION(rand() % 2 + (_uint)POS_G);
 
@@ -581,7 +767,7 @@ void CLeviathan_State::Tick_Warp_1(_double dTimeDelta)
 					eNextPos = POS_G;
 			}
 		}
-		else if (m_iCurrentPattern == (_uint)MOVE || m_iCurrentPattern == (_uint)WATER_BALL || m_iCurrentPattern == (_uint)WATER_BEAM)
+		else if (/*m_iCurrentPattern == (_uint)MOVE || */m_iCurrentPattern == (_uint)WATER_BALL || m_iCurrentPattern == (_uint)LIGHTNING || m_iCurrentPattern == (_uint)WATER_BEAM)
 		{
 			eNextPos = POSITION(rand() % (_uint)POS_G);
 
@@ -670,6 +856,100 @@ void CLeviathan_State::Tick_Attack_Bite(_double dTimeDelta)
 {
 }
 
+void CLeviathan_State::Tick_Attack_Lightning_Start(_double dTimeDelta)
+{
+}
+
+void CLeviathan_State::Tick_Attack_Lightning_Loop(_double dTimeDelta)
+{
+	m_dLightningTime += dTimeDelta;
+
+	if (m_pModelCom->Get_AnimationFinish() == true)
+	{
+		m_iLightningCount++;
+		m_bLightning = false;
+	}
+
+	if (m_bLightning == false)
+	{
+		_matrix	matTemp = XMMatrixIdentity();
+		_vector	vPos = m_pLeviathan->m_pPlayer->Get_Position();
+		vPos = XMVectorSetY(vPos, 4.f);
+
+		_float4	vMin, vMax;
+		vMin = vMax = vPos;
+
+		if (m_iLightningPattern % 2 == 0)
+		{
+			for (_int i = -25; i < 25; ++i)
+			{
+				if (i == 0)
+					continue;
+				vMin = vMax = vPos;
+
+				vMin.x = vMin.x - 30.f;
+				vMin.z = vMin.z - 30.f;
+
+				vMax.x = vMax.x + 30.f;
+				vMax.z = vMax.z + 30.f;
+
+				matTemp.r[3] = CGameUtility::RandomPos(vMin, vMax);
+
+				CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_PreLightning", matTemp);
+			}
+
+			vPos = m_pLeviathan->Get_Position();
+			vPos = XMVectorSetY(vPos, 4.f);
+			vMin = vMax = vPos;
+
+			for (_int i = -25; i < 25; ++i)
+			{
+				if (i == 0)
+					continue;
+
+				vMin = vMax = vPos;
+
+				vMin.x = vMin.x - 30.f;
+				vMin.z = vMin.z - 30.f;
+
+				vMax.x = vMax.x + 30.f;
+				vMax.z = vMax.z + 30.f;
+
+				matTemp.r[3] = CGameUtility::RandomPos(vMin, vMax);
+
+				CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_PreLightning", matTemp);
+			}
+		}
+		else
+		{
+			if (m_dLightningTime > 0.2)
+			{
+				m_dLightningTime -= 0.2;
+				m_iLightningCount2++;
+
+				_vector	vPlayerLook = XMVector3Normalize(XMLoadFloat4x4(&m_pLeviathan->m_pPlayer->Get_WorldMatrix()).r[2]);
+				vPlayerLook = XMVectorSetY(vPlayerLook, 0.f);
+				matTemp.r[3] = vPos + vPlayerLook * 2.f;
+
+				CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_PreLightning", matTemp);
+
+				if (m_iLightningCount2 > 10)
+				{
+					m_iLightningCount = 3;
+					m_iLightningCount2 = 0;
+				}
+			}
+		}
+
+		if (m_iLightningPattern % 2 == 0)
+			m_bLightning = true;
+	}
+}
+
+void CLeviathan_State::Tick_Attack_Lightning_End(_double dTimeDelta)
+{
+}
+
 void CLeviathan_State::Tick_Attack_Move(_double dTimeDelta)
 {
 }
@@ -753,6 +1033,34 @@ void CLeviathan_State::Tick_Turn_Left_90(_double dTimeDelta)
 {
 }
 
+void CLeviathan_State::Tick_Groggy_Down(_double dTimeDelta)
+{
+	if (m_pModelCom->Get_AnimationProgress() > 0.4f && m_pModelCom->Get_AnimationProgress() < 0.7f)
+	{
+		m_dHPRecoverTime += dTimeDelta;
+
+		if (m_pLeviathan->Get_Status().iHP < m_pLeviathan->Get_Status().iMaxHP)
+			m_pLeviathan->Get_Status().iHP += 1;
+	}
+}
+
+void CLeviathan_State::Tick_Groggy_Up(_double dTimeDelta)
+{
+}
+
+void CLeviathan_State::Tick_Damage_Down_Start(_double dTimeDelta)
+{
+}
+
+void CLeviathan_State::Tick_Damage_Down_Loop(_double dTimeDelta)
+{
+	m_pLeviathan->m_bPlayerDetected = true;
+	m_pLeviathan->m_pPlayer->Set_BossBattle(false);
+	dynamic_cast<CSkyBox*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_SkyBox")->back())->Set_LightDecrease(false);
+	CGameInstance::GetInstance()->Set_LightState(2, false);
+	CGameInstance::GetInstance()->Set_LightState(3, false);
+}
+
 void CLeviathan_State::End_Appear(_double dTimeDelta)
 {
 }
@@ -778,6 +1086,21 @@ void CLeviathan_State::End_Warp_2(_double dTimeDelta)
 }
 
 void CLeviathan_State::End_Attack_Bite(_double dTimeDelta)
+{
+	m_iCurrentPattern = (_uint)PHASE_2_PATTERN_END;
+	m_pLeviathan->m_tStatus.dCurAttackCoolTime = 0.0;
+}
+
+void CLeviathan_State::End_Attack_Lightning_Start(_double dTimeDelta)
+{
+}
+
+void CLeviathan_State::End_Attack_Lightning_Loop(_double dTimeDelta)
+{
+	m_bLightning = false;
+}
+
+void CLeviathan_State::End_Attack_Lightning_End(_double dTimeDelta)
 {
 	m_iCurrentPattern = (_uint)PHASE_2_PATTERN_END;
 	m_pLeviathan->m_tStatus.dCurAttackCoolTime = 0.0;
@@ -893,6 +1216,23 @@ void CLeviathan_State::End_Turn_Left_90(_double dTimeDelta)
 	m_pTransformCom->RotationFromNow(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(-90.f));
 }
 
+void CLeviathan_State::End_Groggy_Down(_double dTimeDelta)
+{
+}
+
+void CLeviathan_State::End_Groggy_Up(_double dTimeDelta)
+{
+	m_ePhase = PHASE_2;
+}
+
+void CLeviathan_State::End_Damage_Down_Start(_double dTimeDelta)
+{
+}
+
+void CLeviathan_State::End_Damage_Down_Loop(_double dTimeDelta)
+{
+}
+
 _bool CLeviathan_State::Animation_Finish()
 {
 	if (m_pModelCom->Get_AnimationFinish() == true)
@@ -1004,10 +1344,18 @@ _bool CLeviathan_State::Ready_Attack_Bite()
 	return false;
 }
 
+_bool CLeviathan_State::Ready_Attack_Lightning()
+{
+	if (m_iCurrentPattern == (_uint)LIGHTNING)
+		return true;
+
+	return false;
+}
+
 _bool CLeviathan_State::Ready_Attack_Move()
 {
-	if (m_iCurrentPattern == (_uint)MOVE)
-		return true;
+	/*if (m_iCurrentPattern == (_uint)MOVE)
+		return true;*/
 
 	return false;
 }
@@ -1054,16 +1402,16 @@ _bool CLeviathan_State::Ready_Attack_Water_Beam()
 
 _bool CLeviathan_State::Ready_Attack_Water_Tornado()
 {
-	if (m_iCurrentPattern == (_uint)WATER_TORNADO)
-		return true;
+	/*if (m_iCurrentPattern == (_uint)WATER_TORNADO)
+		return true;*/
 
 	return false;
 }
 
 _bool CLeviathan_State::Ready_Attack_Wing()
 {
-	if (m_iCurrentPattern == (_uint)WING)
-		return true;
+	/*if (m_iCurrentPattern == (_uint)WING)
+		return true;*/
 
 	return false;
 }
@@ -1205,6 +1553,33 @@ _bool CLeviathan_State::Check_IdleFinishCount()
 {
 	if (m_iIdleFinishCount > 1)
 		return  true;
+
+	return false;
+}
+
+_bool CLeviathan_State::Check_LightningCount()
+{
+	if (m_iLightningCount > 2)
+	{
+		m_iLightningCount = 0;
+		return true;
+	}
+
+	return false;
+}
+
+_bool CLeviathan_State::Check_HP_Groggy()
+{
+	if ((_float)m_pLeviathan->Get_Status().iHP / (_float)m_pLeviathan->Get_Status().iMaxHP < 0.5f && m_bGroggy == false)
+		return true;
+
+	return false;
+}
+
+_bool CLeviathan_State::Check_HP_Die()
+{
+	if (m_pLeviathan->Get_Status().iHP <= 0)
+		return true;
 
 	return false;
 }

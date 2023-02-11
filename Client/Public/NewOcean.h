@@ -37,8 +37,8 @@ private:
 private:
 	_double					m_dTimeDelta = 0.0;
 	_float3					m_vWaterColor = { 0.27f, 0.74f, 1.f };
-	_float						m_fWaterSpeed = 150.f;
-	_float						m_fWaterLevel = 5.f;
+	_float						m_fWaterSpeed = 400.f;
+	_float						m_fWaterLevel = 0.f;
 	_float						m_fWaveLength = 0.1f;
 	_float						m_fWaveHeight = 0.4f;
 	_float						m_fWindForce = -20.f;

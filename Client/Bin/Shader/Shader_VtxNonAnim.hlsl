@@ -6,12 +6,16 @@ matrix			g_matReflectView;
 texture2D		g_DiffuseTexture;
 texture2D		g_NormalTexture;
 texture2D		g_MaskTexture;
+texture2D		g_HPTexture;
 
 float4			g_vClipPlane;
 
-float			g_fFadeAlpha;
+float			g_fFadeAlpha = 1.f;
 bool			g_bHairMask;
 vector			g_vHairColor;
+
+float			g_fHPRatio;
+float			g_fGlobalRatio;
 
 int				g_WidthFrame, g_HeightFrame;
 int				g_WidthCount, g_HeightCount;
@@ -247,6 +251,71 @@ PS_OUT PS_MAIN_SIGRID_GROUNDSLAM(PS_IN In)
 	return Out;
 }
 
+PS_OUT PS_MAIN_EFFECT_SPRITE(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float2		vTexUV;
+	vTexUV.x = (In.vTexUV.x + 1.f * g_WidthFrame) / g_WidthCount;
+	vTexUV.y = (In.vTexUV.y + g_HeightFrame) / g_HeightCount;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, vTexUV);
+	vector		vColor = vector(1.f, 0.5f, 0.2f, 1.f * g_fFadeAlpha);
+
+	vDiffuse = vDiffuse * vColor;
+	Out.vDiffuse = vDiffuse;
+
+	if (vDiffuse.a < 0.01f)
+		discard;
+
+	if (vDiffuse.r < 0.05f && vDiffuse.g < 0.05f && vDiffuse.b < 0.05f)
+		discard;
+	
+	Out.vDiffuse = vDiffuse;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f) * -1.f;
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
+
+	return Out;
+}
+
+PS_OUT PS_MAIN_LEVIATHAN_HP(PS_IN In)
+{
+	PS_OUT			Out = (PS_OUT)0;
+
+	float2		vUV = In.vTexUV;
+
+	vUV.x *= g_fGlobalRatio;
+
+	vector		vDiffuse = g_DiffuseTexture.Sample(LinearSampler, vUV);
+
+	float2		vHPUV = In.vTexUV;
+
+	//if (vHPUV.x > g_fHPRatio)
+	//	vHPUV.x += g_fHPRatio;
+
+	vector		vHP = g_HPTexture.Sample(LinearSampler, vHPUV);
+
+	if (g_fHPRatio > 0.32 && g_fHPRatio < 0.58)
+		vHP.rgb = float3(1.f, 0.6f, 0.1f);
+	else if(g_fHPRatio < 0.32)
+		vHP.rgb = float3(1.f, 0.f, 0.f);
+	
+	if (vDiffuse.a == 0.f && (1.f - vHPUV.x) < g_fHPRatio)
+	{
+		vDiffuse = vDiffuse * vHP;
+		vDiffuse.a = 1.f;
+	}
+
+	if (vDiffuse.r == 0.f && vDiffuse.g == 0.f && vDiffuse.b == 0.f)
+		discard;
+
+	Out.vDiffuse = vDiffuse;
+	Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+	Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 0.f);
+
+	return Out;
+}
+
 technique11 DefaultTechinque
 {
 	pass Default
@@ -365,5 +434,57 @@ technique11 DefaultTechinque
 		DomainShader = NULL;
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}	// 8
+
+	pass Reflect_Socket_Hat_FuzzyEars
+	{
+		SetRasterizerState(RS_Default);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_REFLECT_SOCKET();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_FUZZYEARS();
+	}	// 9
+
+	pass Effect_Sprite
+	{
+		SetRasterizerState(RS_NonCulling);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_One, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_SPRITE();
+	}	// 10
+
+	pass Reflect_Effect_Sprite
+	{
+		SetRasterizerState(RS_NonCulling);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_One, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN_REFLECT();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_EFFECT_SPRITE();
+	}	// 11
+
+	pass Leviathan_HP
+	{
+		SetRasterizerState(RS_CW);
+		SetDepthStencilState(DS_Default, 0);
+		SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		VertexShader = compile vs_5_0 VS_MAIN();
+		GeometryShader = NULL;
+		HullShader = NULL;
+		DomainShader = NULL;
+		PixelShader = compile ps_5_0 PS_MAIN_LEVIATHAN_HP();
+	}	// 12
 }
 

@@ -76,6 +76,6 @@ using namespace nlohmann;
 
 #endif // _DEBUG
 
-#define EPSILON		0.000001f
+#define EPSILON		0.00001f
 
 using namespace Engine;

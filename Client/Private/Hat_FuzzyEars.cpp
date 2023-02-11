@@ -126,7 +126,7 @@ HRESULT CHat_FuzzyEars::Render_Reflect()
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i, L"", 7);
+		m_pModelCom->Render(m_pShaderCom, i, L"", 9);
 	}
 
 	return S_OK;
@@ -211,6 +211,11 @@ HRESULT CHat_FuzzyEars::SetUp_ShaderResource_Reflect()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_matReflectView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_REFLECTVIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_Matrix(L"g_matSocket", &m_matSocket);
+	m_pHairMaskTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_MaskTexture");
+
+	m_pShaderCom->Set_RawValue(L"g_bHairMask", &m_bHairMask, sizeof(_bool));
+	m_pShaderCom->Set_RawValue(L"g_vHairColor", &m_vHairColor, sizeof(_float4));
 
 	Safe_Release(pGameInstance);
 

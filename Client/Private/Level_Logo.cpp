@@ -69,7 +69,7 @@ void CLevel_Logo::Late_Tick(_double dTimeDelta)
 	Safe_AddRef(pGameInstance);
 	
 	if (pGameInstance->Key_Down(DIK_RETURN))
-		FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TESTSTAGE, L"../Bin/Save Data/Level_Stage_Prototype_Components_230127.json", L"../Bin/Save Data/Level_Stage_Prototype_GameObjects_230112.json", L"../Bin/Save Data/Level_Stage_CloneObjects_230127.json")), );
+		FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TESTSTAGE, L"../Bin/Save Data/Level_Stage_Prototype_Components_230207.json", L"../Bin/Save Data/Level_Stage_Prototype_GameObjects_230207.json", L"../Bin/Save Data/Level_Stage_CloneObjects_230207.json")), );
 
 	Safe_Release(pGameInstance);
 }

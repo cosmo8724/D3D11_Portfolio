@@ -1,0 +1,274 @@
+{
+    "Objects": [
+        {
+            "Components": [
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Mystic_Island",
+                    "Level": 1
+                }
+            ],
+            "Prototype Object Tag": "Prototype_GameObject_Mystic_Island_2",
+            "Texture Component Count": 0
+        },
+        {
+            "Components": [
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Mystic_Island",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_1",
+                    "Level": 1
+                }
+            ],
+            "Prototype Object Tag": "Prototype_GameObject_Stone_Big_1_Logo",
+            "Texture Component Count": 0
+        },
+        {
+            "Components": [
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Mystic_Island",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_1",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_2",
+                    "Level": 1
+                }
+            ],
+            "Prototype Object Tag": "Prototype_GameObject_Stone_Big_2_Logo",
+            "Texture Component Count": 0
+        },
+        {
+            "Components": [
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Mystic_Island",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_1",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_2",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_3",
+                    "Level": 1
+                }
+            ],
+            "Prototype Object Tag": "Prototype_GameObject_Stone_Big_3_Logo",
+            "Texture Component Count": 0
+        },
+        {
+            "Components": [
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Mystic_Island",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_1",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_2",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_3",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Renderer",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Shader_NonAnim",
+                    "Level": 1
+                },
+                {
+                    "Component Tag": "Prototype_Component_Transform",
+                    "Level": 3
+                },
+                {
+                    "Component Tag": "Prototype_Component_Model_Stone_Big_5",
+                    "Level": 1
+                }
+            ],
+            "Prototype Object Tag": "Prototype_GameObject_Stone_Big_5_Logo",
+            "Texture Component Count": 0
+        }
+    ]
+}

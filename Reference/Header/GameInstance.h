@@ -106,6 +106,10 @@ public:		/* For Timer Manager */
 
 public:		/* For Light Manager */
 	const LIGHTDESC*	Get_LightDesc(_uint iIndex);
+	_float4&				Get_LightDiffuse(_uint iIndex);
+	void					Set_LightState(_uint iIndex, _bool bState);
+	void					Set_LightPosition(_uint iIndex, _float4 vPos);
+	void					Set_LightRange(_uint iIndex, _float fRange);
 	HRESULT				Add_Light(DEVICE pDevice, DEVICE_CONTEXT pContext, const LIGHTDESC& LightDesc);
 
 public:		/* For Frustum */

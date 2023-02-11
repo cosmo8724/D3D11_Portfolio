@@ -7,6 +7,9 @@
 #include "Ocean.h"
 #include "Enemy.h"
 #include "Shop_BackGround.h"
+#include "Trail_Sigrid_Foot.h"
+#include "Trail_Sigrid_Hand.h"
+#include "Trail_Sigrid_Net.h"
 
 CSigrid::CSigrid(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -127,8 +130,8 @@ HRESULT CSigrid::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	m_tStatus.iMaxHP = 100;
 	m_tStatus.iHP = m_tStatus.iMaxHP;
-	m_tStatus.iAttack = 3;
-	m_tStatus.iSpecialAttack = 5;
+	m_tStatus.iAttack = 7;
+	m_tStatus.iSpecialAttack = 10;
 	m_tStatus.dInitHitCoolTime = 2.0;
 	m_tStatus.dCurHitCoolTime = 0.0;
 
@@ -138,6 +141,10 @@ HRESULT CSigrid::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	m_vHairColor[3] = FLOAT4COLOR_RGBA(68.f, 27.f, 38.f, 255.f);
 
 	FAILED_CHECK_RETURN(SetUp_Parts_Hat(), E_FAIL);
+
+	m_pLeftHandTrail = dynamic_cast<CTrail_Sigrid_Hand*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Trail_Sigrid_Hand"));
+	m_pRightHandTrail = dynamic_cast<CTrail_Sigrid_Hand*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Trail_Sigrid_Hand"));
+	m_pNetTrail = dynamic_cast<CTrail_Sigrid_Net*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Trail_Sigrid_Net"));
 
 	return S_OK;
 }
@@ -178,8 +185,19 @@ void CSigrid::Tick(_double dTimeDelta)
 	_matrix	matNetRing = m_pModelCom->Get_BoneMatrix("NetRing DEF 1");
 	m_pNetSphereCol->Update(matNetRing * m_pModelCom->Get_PivotMatrix() * XMLoadFloat4x4(&m_pTransformCom->Get_WorldMatrix()));
 
+	CGameInstance::GetInstance()->Set_LightPosition(2, m_pTransformCom->Get_State(CTransform::STATE_TRANS));
+
 	for (auto& pGameObject : m_vecHats)
 		pGameObject->Tick(dTimeDelta);
+
+	_float4x4		matLeftHand = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Arm Middle 3") * m_pModelCom->Get_PivotMatrix() * m_pTransformCom->Get_WorldMatrixXMMatrix();
+	m_pLeftHandTrail->Set_WorldMatrix(matLeftHand);
+
+	_float4x4		matRightHand = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Arm Middle 3") * m_pModelCom->Get_PivotMatrix() * m_pTransformCom->Get_WorldMatrixXMMatrix();
+	m_pRightHandTrail->Set_WorldMatrix(matRightHand);
+
+	m_pNetTrail->Set_WorldMatrix(matNetRing * m_pModelCom->Get_PivotMatrix() * m_pTransformCom->Get_WorldMatrixXMMatrix());
+	m_pNetTrail->Set_Active(m_bAttack);
 }
 
 void CSigrid::Late_Tick(_double dTimeDelta)
@@ -192,11 +210,19 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 	{
 		m_bHairMask = true;
 
+		if (g_bShopOpen == false)
+			m_pNetTrail->Set_Color(m_vHairColor[m_iCurrentHair - 1]);
+
 		if (g_bShopOpen == true && dynamic_cast<CShop_BackGround*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI")->back())->Get_CurrentMenu() == 1 && m_iPreviewHair == 0)
 			m_bHairMask = false;
 	}
 	else
+	{
 		m_bHairMask = false;
+
+		if (g_bShopOpen == false)
+			m_pNetTrail->Set_Color(FLOAT4COLOR_RGBA(53, 238, 255, 255));
+	}
 
 	if (nullptr != m_pRendererCom && g_bReadySceneChange == false)
 	{
@@ -221,10 +247,14 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 		m_vecHats[m_iPreviewHat - 1]->Late_Tick(dTimeDelta);
 	}
 
-	if (CGameInstance::GetInstance()->Key_Down(DIK_G))
+	if (CGameInstance::GetInstance()->Key_Down(DIK_F8))
 	{
-		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_GroundSlam", m_pTransformCom->Get_WorldMatrix());
-		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_NewOcean", L"Prototype_GameObject_NewOcean");
+		_matrix	matTemp = XMMatrixIdentity();
+		memcpy(&matTemp.r[3], &m_pTransformCom->Get_State(CTransform::STATE_TRANS), sizeof(_float4));
+		matTemp.r[3] = XMVectorSetY(matTemp.r[3], XMVectorGetY(matTemp.r[3]) + 4.f);
+
+		//CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_PreLightning", matTemp);
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_UI_HPBar_Boss", matTemp);
 	}
 }
 
@@ -403,10 +433,15 @@ void CSigrid::Collision_Event(CEnemy * pEnemy)
 
 	if (m_bHit == true)
 	{
-		if (pEnemy->Is_SpecialAttack() == false)
-			m_tStatus.iHP -= pEnemy->Get_Status().iAttack;
+		if (pEnemy != nullptr)
+		{
+			if (pEnemy->Is_SpecialAttack() == false)
+				m_tStatus.iHP -= pEnemy->Get_Status().iAttack;
+			else
+				m_tStatus.iHP -= pEnemy->Get_Status().iSpecialAttack;
+		}
 		else
-			m_tStatus.iHP -= pEnemy->Get_Status().iSpecialAttack;
+			m_tStatus.iHP -= 5;
 	}
 
 	if (m_tStatus.iHP < 0)
@@ -444,7 +479,7 @@ HRESULT CSigrid::SetUp_Component()
 
 	FAILED_CHECK_RETURN(m_pModelCom->Check_MeshSize("NetRing_Mesh_LOD0", Xmin, Xmax, Ymin, Ymax, Zmin, Zmax), E_FAIL);
 	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
-	ColliderDesc.vSize = _float3((Xmax - Xmin) * 0.3f, (Ymax - Ymin) * 0.3f, (Zmax - Zmin) * 0.3f);
+	ColliderDesc.vSize = _float3((Xmax - Xmin) * 4.f, (Ymax - Ymin) * 4.f, (Zmax - Zmin) * 4.f);
 	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_NetSphere", (CComponent**)&m_pNetSphereCol, this, &ColliderDesc), E_FAIL);
 

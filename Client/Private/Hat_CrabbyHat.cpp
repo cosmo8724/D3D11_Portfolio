@@ -113,7 +113,7 @@ HRESULT CHat_CrabbyHat::Render_Reflect()
 	{
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
 
-		m_pModelCom->Render(m_pShaderCom, i, L"", 7);
+		m_pModelCom->Render(m_pShaderCom, i, L"", 8);
 	}
 
 	return S_OK;
@@ -192,6 +192,7 @@ HRESULT CHat_CrabbyHat::SetUp_ShaderResource_Reflect()
 	FAILED_CHECK_RETURN(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, L"g_matWorld"), E_FAIL);
 	m_pShaderCom->Set_Matrix(L"g_matReflectView", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_REFLECTVIEW));
 	m_pShaderCom->Set_Matrix(L"g_matProj", &pGameInstance->Get_TransformFloat4x4(CPipeLine::D3DTS_PROJ));
+	m_pShaderCom->Set_Matrix(L"g_matSocket", &m_matSocket);
 
 	Safe_Release(pGameInstance);
 

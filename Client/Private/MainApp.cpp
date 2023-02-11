@@ -101,7 +101,7 @@ HRESULT CMainApp::Start_Level(LEVEL eLevel)
 	if (LEVEL_LOADING == eLevel || nullptr == m_pGameInstance)
 		return E_FAIL;
 	
-	FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphicDev, m_pDeviceContext, eLevel, L"../Bin/Save Data/Level_Logo_Prototype_Components_230116.json", L"../Bin/Save Data/Level_Logo_Prototype_GameObjects_230116.json", L"../Bin/Save Data/Level_Logo_CloneObjects_230116.json")), E_FAIL);
+	FAILED_CHECK_RETURN(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pGraphicDev, m_pDeviceContext, eLevel, L"../Bin/Save Data/Level_Logo_Prototype_Components_230207.json", L"../Bin/Save Data/Level_Logo_Prototype_GameObjects_230207.json", L"../Bin/Save Data/Level_Logo_CloneObjects_230207.json")), E_FAIL);
 
 	return S_OK;
 }

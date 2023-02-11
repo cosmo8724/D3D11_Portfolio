@@ -24,6 +24,7 @@ public:
 	TRANSFORMDESC&	Get_TransformDesc() { return m_TransformDesc; }
 	const _float4x4&Get_WorldMatrix() const { return m_matWorld; }
 	const _matrix	Get_WorldMatrix_Inverse() { return XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_matWorld)); }
+	_matrix			Get_WorldMatrixXMMatrix() { return XMLoadFloat4x4(&m_matWorld); }
 	_vector			Get_State(STATE eState) const { return XMLoadFloat4x4(&m_matWorld).r[eState]; }
 	_float3			Get_Scale() const {
 		return _float3(XMVectorGetX(XMVector3Length(Get_State(STATE_RIGHT))),
@@ -51,6 +52,7 @@ public:
 
 public:
 	void				Go_Direction(_fvector vDirection, _double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
+	void				Go_DirectionWithY(_fvector vDirection, _double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
 	void				Go_Straight(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
 	void				Go_BackWard(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);
 	void				Go_Left(_double dTimeDelta, class CNavigation* pNavigationCom = nullptr);

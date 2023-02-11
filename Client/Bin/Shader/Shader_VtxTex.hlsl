@@ -5,6 +5,7 @@ matrix			g_matReflectView;
 texture2D		g_Texture;
 
 float4			g_vClipPlane;
+float4			g_vDiffuseColor;
 
 int				g_WidthFrame, g_HeightFrame;
 int				g_WidthCount, g_HeightCount;
@@ -71,6 +72,22 @@ PS_OUT	PS_MAIN(PS_IN In)
 
 	if (Out.vColor.a == 0.f)
 		discard;
+
+	//Out.vColor = (vector)0;
+
+	return Out;
+}
+
+PS_OUT	PS_MAIN_LIGHT(PS_IN In)
+{
+	PS_OUT	Out = (PS_OUT)0;
+
+	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexUV);
+
+	if (Out.vColor.a == 0.f)
+		discard;
+
+	Out.vColor = Out.vColor * g_vDiffuseColor;
 
 	//Out.vColor = (vector)0;
 
@@ -206,7 +223,7 @@ technique11 DefaultTechnique
 		GeometryShader = NULL;
 		HullShader = NULL;
 		DomainShader = NULL;
-		PixelShader = compile ps_5_0 PS_MAIN();
+		PixelShader = compile ps_5_0 PS_MAIN_LIGHT();
 	}	// 1
 
 	pass UI_MonsterDrink_Black

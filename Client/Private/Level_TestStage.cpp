@@ -18,7 +18,7 @@ HRESULT CLevel_TestStage::Initialize(const wstring & wstrCloneObjFilePath)
 {
 	FAILED_CHECK_RETURN(__super::Initialize(), E_FAIL);
 	
-	//FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
+	FAILED_CHECK_RETURN(Ready_Light(), E_FAIL);
 
 	if (wstrCloneObjFilePath == L"")
 	{
@@ -37,11 +37,11 @@ HRESULT CLevel_TestStage::Initialize(const wstring & wstrCloneObjFilePath)
 		FAILED_CHECK_RETURN(Ready_Layer_Enemies(L"Layer_Enemies"), E_FAIL);
 
 		FAILED_CHECK_RETURN(Ready_Layer_Objects(L"Layer_Objects"), E_FAIL);
+	
+		FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
 	}
 	else
 		FAILED_CHECK_RETURN(Load_CloneObjects(wstrCloneObjFilePath), E_FAIL);
-
-	FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
 
 	return S_OK;
 }
@@ -170,9 +170,33 @@ HRESULT CLevel_TestStage::Ready_Light()
 	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
 
 	LightDesc.eType = LIGHTDESC::LIGHT_DIRECTIONAL;
-	LightDesc.bIsLightOn = true;
+	LightDesc.bIsLightOn = false;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDiffuse = _float4{ 0.6f, 0.6f, 1.f, 1.f };
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.bIsLightOn = false;
+	LightDesc.vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.fRange = 10.f;
+	LightDesc.vDiffuse = _float4{ 1.f, 1.f, 1.f, 1.f };
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	FAILED_CHECK_RETURN(pGameInstance->Add_Light(m_pDevice, m_pContext, LightDesc), E_FAIL);
+
+	ZeroMemory(&LightDesc, sizeof(LIGHTDESC));
+
+	LightDesc.eType = LIGHTDESC::LIGHT_POINT;
+	LightDesc.bIsLightOn = false;
+	LightDesc.vPosition = _float4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.fRange = 30.f;
+	LightDesc.vDiffuse = _float4{ 1.f, 1.f, 1.f, 1.f };
 	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.3f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 

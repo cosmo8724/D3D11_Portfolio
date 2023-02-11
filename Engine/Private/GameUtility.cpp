@@ -120,6 +120,42 @@ COMPONENTTYPE CGameUtility::CheckComponentTypeFromTag(const wstring & wstrCompon
 	return eType;
 }
 
+_int CGameUtility::RandomInt(_int iMin, _int iMax)
+{
+	if (iMin >= iMax)
+		return iMin;
+
+	_float		fRand = (rand() % 10000) * 0.0001f;
+
+	return ((_int)fRand * (iMax - iMin)) + iMin;
+}
+
+_float CGameUtility::RandomFloat(_float fMin, _float fMax)
+{
+	if (fMin >= fMax)
+		return fMin;
+
+	_float		fRand = (rand() % 10000) * 0.0001f;
+
+	return (fRand * (fMax - fMin)) + fMin;
+}
+
+_float4 CGameUtility::RandomPos(_float4 vMin, _float4 vMax)
+{
+	_float4	vReturn = { 0.f, 0.f, 0.f, 1.f };
+
+	vReturn.x = RandomFloat(vMin.x, vMax.x);
+	vReturn.y = RandomFloat(vMin.y, vMax.y);
+	vReturn.z = RandomFloat(vMin.z, vMax.z);
+
+	return vReturn;
+}
+
+_float CGameUtility::FloatLerp(_float fNum1, _float fNum2, _float fRatio)
+{
+	return fNum1 * (1.f - fRatio) + fNum2 * fRatio;
+}
+
 void CGameUtility::Saturate(int & InValue, int InMax, int InMin)
 {
 	if (InValue > InMax)

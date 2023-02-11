@@ -100,6 +100,10 @@ private:
 
 	vector<CGameObject*>	m_vecHats;
 
+	class CTrail_Sigrid_Hand*	m_pLeftHandTrail = nullptr;
+	class CTrail_Sigrid_Hand*	m_pRightHandTrail = nullptr;
+	class CTrail_Sigrid_Net*	m_pNetTrail = nullptr;
+
 private:	/* State */
 	_double					m_dTimeScale = 1.0;
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;

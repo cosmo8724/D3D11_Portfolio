@@ -36,8 +36,9 @@ namespace Engine
 
 	typedef struct tagVertexPoint
 	{
-		XMFLOAT3	vPosition;
-		XMFLOAT2	vPSize;
+		_float3		vPosition;
+		_float2		vPSize;
+
 	} VTXPOINT;
 
 	typedef struct tagVertexPositionTexture
@@ -45,6 +46,14 @@ namespace Engine
 		XMFLOAT3	vPosition;
 		XMFLOAT2	vTexUV;
 	} VTXTEX;
+
+	typedef struct tagVertexMatrix
+	{
+		_float4		vRight;
+		_float4		vUp;
+		_float4		vLook;
+		_float4		vPosition;
+	} VTXMATRIX;
 
 	typedef struct tagFaceIndices16
 	{
@@ -89,15 +98,15 @@ namespace Engine
 		_bool				bIsLightOn;
 
 		/* For Directional Light */
-		XMFLOAT4		vDirection;
+		_float4			vDirection;
 
 		/* For Point Light */
-		XMFLOAT4		vPosition;
+		_float4			vPosition;
 		_float				fRange;
 
-		XMFLOAT4		vDiffuse;
-		XMFLOAT4		vAmbient;
-		XMFLOAT4		vSpecular;
+		_float4			vDiffuse;
+		_float4			vAmbient;
+		_float4			vSpecular;
 	} LIGHTDESC;
 
 	typedef struct tagKeyFrame
@@ -121,7 +130,7 @@ namespace Engine
 
 	typedef struct ENGINE_DLL tagVertexPoint_Declaration
 	{
-		static const unsigned int				iNumElements = 2;
+		static const unsigned int				iNumElements = 6;
 		static D3D11_INPUT_ELEMENT_DESC	Elements[iNumElements];
 	} VTXPOINT_DECLARATION;
 

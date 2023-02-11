@@ -247,9 +247,6 @@
     <Filter Include="02. GameObject\02. For_MainStage\Effect">
       <UniqueIdentifier>{2b54d411-9546-40c0-a72e-1b82b793107f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\02. For_MainStage\Effect\Sigrid Dash">
-      <UniqueIdentifier>{c8c67dfa-84dc-4460-9c85-807f6dcb5c34}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02. GameObject\99. Parent\Effect">
       <UniqueIdentifier>{6da84c10-b3f2-4469-a798-4615622ff0e2}</UniqueIdentifier>
     </Filter>
@@ -352,8 +349,41 @@
     <Filter Include="02. GameObject\00. For_Public\Player\Hat\ToothyHood">
       <UniqueIdentifier>{93643c3e-a93a-490b-8f9f-5538df2bc4a9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02. GameObject\02. For_MainStage\Effect\GroundSlam">
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Sigrid">
+      <UniqueIdentifier>{599ce1db-6b2e-443a-8b09-3ab839905c45}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Sigrid\Sigrid Dash">
+      <UniqueIdentifier>{c8c67dfa-84dc-4460-9c85-807f6dcb5c34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Sigrid\GroundSlam">
       <UniqueIdentifier>{7d881e63-04a4-4c55-b83a-03db26348aff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Leviathan">
+      <UniqueIdentifier>{eca264dd-026f-49f8-b7d4-2931ddf42075}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Leviathan\PreLightning">
+      <UniqueIdentifier>{f74500b0-25bb-4f43-8f09-002028e3ac7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Leviathan\Lightning">
+      <UniqueIdentifier>{b816ff8c-9626-4394-b21e-0ad34ab474b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball">
+      <UniqueIdentifier>{113698a1-3df7-436d-975f-63f1f74df06a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\99. Parent\Effect\Trail">
+      <UniqueIdentifier>{e1e54c18-81be-4e5e-813e-fd045efb1cc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Health Bar\Sigrid">
+      <UniqueIdentifier>{1b34f1a6-9ef6-4456-a4f1-835cea6eeff7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Health Bar\Leviathan">
+      <UniqueIdentifier>{882ee06b-19a8-456e-bcb5-56b49075419d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Sigrid\Trail">
+      <UniqueIdentifier>{1690f26d-dce7-4cd0-8bf0-85995b57627a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball\Trail">
+      <UniqueIdentifier>{ac2f0d45-5690-4aeb-ac07-8496127f8c8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -552,9 +582,6 @@
     <ClInclude Include="..\Public\MonsterDrink.h">
       <Filter>02. GameObject\99. Parent\Monster Drink</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\HPBar.h">
-      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MonsterDrink_Icon.h">
       <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
     </ClInclude>
@@ -571,7 +598,7 @@
       <Filter>02. GameObject\99. Parent\Effect\VIBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_SigridDash.h">
-      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid Dash</Filter>
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Sigrid Dash</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Cursor.h">
       <Filter>02. GameObject\00. For_Public\UI\Cursor</Filter>
@@ -658,9 +685,41 @@
       <Filter>02. GameObject\00. For_Public\Player\Hat\ToothyHood</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect_GroundSlam.h">
-      <Filter>02. GameObject\02. For_MainStage\Effect\GroundSlam</Filter>
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\GroundSlam</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\NewOcean.h" />
+    <ClInclude Include="..\Public\NewOcean.h">
+      <Filter>02. GameObject\00. For_Public\Ocean</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_PreLightning.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\PreLightning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Lightning.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Lightning</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Trail.h">
+      <Filter>02. GameObject\99. Parent\Effect\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect_Cocoball.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HPBar.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar\Sigrid</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HPBar_Leviathan.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar\Leviathan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Trail_Sigrid_Foot.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Trail_Sigrid_Hand.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Trail_Sigrid_Net.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Trail_Cocoball.h">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball\Trail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -846,9 +905,6 @@
     <ClCompile Include="..\Private\MonsterDrink.cpp">
       <Filter>02. GameObject\99. Parent\Monster Drink</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\HPBar.cpp">
-      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MonsterDrink_Icon.cpp">
       <Filter>02. GameObject\02. For_MainStage\UI\MonsterDrink Icon</Filter>
     </ClCompile>
@@ -865,7 +921,7 @@
       <Filter>02. GameObject\99. Parent\Effect\VIBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_SigridDash.cpp">
-      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid Dash</Filter>
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Sigrid Dash</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Cursor.cpp">
       <Filter>02. GameObject\00. For_Public\UI\Cursor</Filter>
@@ -952,9 +1008,41 @@
       <Filter>02. GameObject\00. For_Public\Player\Hat\ToothyHood</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect_GroundSlam.cpp">
-      <Filter>02. GameObject\02. For_MainStage\Effect\GroundSlam</Filter>
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\GroundSlam</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\NewOcean.cpp" />
+    <ClCompile Include="..\Private\NewOcean.cpp">
+      <Filter>02. GameObject\00. For_Public\Ocean</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_PreLightning.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\PreLightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Lightning.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Lightning</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Trail.cpp">
+      <Filter>02. GameObject\99. Parent\Effect\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect_Cocoball.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HPBar.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar\Sigrid</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HPBar_Leviathan.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Health Bar\Leviathan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trail_Sigrid_Foot.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trail_Sigrid_Hand.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trail_Sigrid_Net.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Sigrid\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Trail_Cocoball.cpp">
+      <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball\Trail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -986,6 +1074,9 @@
       <Filter>96. Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\Shader\Shader_Ocean.hlsl">
+      <Filter>96. Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shader\Shader_Trail.hlsl">
       <Filter>96. Shader</Filter>
     </FxCompile>
   </ItemGroup>

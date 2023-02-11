@@ -7,6 +7,7 @@
 
 /* Skybox */
 #include "SkyBox.h"
+#include "NewOcean.h"
 
 /* Player */
 #include "Sigrid.h"
@@ -70,11 +71,18 @@
 #include "Shop_Icon_Cloth.h"
 #include "Shop_Icon_Hair.h"
 #include "Shop_Icon_Hat.h"
+#include "HPBar_Leviathan.h"
 
 /* Effect */
 #include "Effect_SigridDash.h"
 #include "Effect_GroundSlam.h"
-#include "NewOcean.h"
+#include "Effect_PreLightning.h"
+#include "Effect_Lightning.h"
+#include "Effect_Cocoball.h"
+#include "Trail_Sigrid_Foot.h"
+#include "Trail_Sigrid_Hand.h"
+#include "Trail_Sigrid_Net.h"
+#include "Trail_Cocoball.h"
 
 CLoader::CLoader(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: m_pDevice(pDevice)
@@ -184,7 +192,7 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 				CGameInstance::GetInstance()->Add_Prototype(LEVEL_LOGO, wstrComponentTag, CVIBuffer_Sphere::Create(m_pDevice, m_pContext));
 				continue;
 			}
-			else if (strComponentType == "VIBuffer_Terrain")
+			/*else if (strComponentType == "VIBuffer_Terrain")
 			{
 				m_wstrLoadingText = L"Loading Buffer...";
 				string		strFilePath = "";
@@ -194,6 +202,12 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 				wstrFilePath.assign(strFilePath.begin(), strFilePath.end());
 
 				CGameInstance::GetInstance()->Add_Prototype(LEVEL_LOGO, wstrComponentTag, CVIBuffer_Terrain::Create(m_pDevice, m_pContext, wstrFilePath));
+				continue;
+			}*/
+			else if (strComponentType == "VIBuffer_Point_Instancing")
+			{
+				m_wstrLoadingText = L"Loading Buffer...";
+				CGameInstance::GetInstance()->Add_Prototype(LEVEL_LOGO, wstrComponentTag, CVIBuffer_PointInstancing::Create(m_pDevice, m_pContext));
 				continue;
 			}
 			else if (strComponentType == "Shader")
@@ -219,6 +233,8 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 					CGameInstance::GetInstance()->Add_Prototype(LEVEL_LOGO, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXNORTEX, VTXNORTEX_DECLARATION::Elements, VTXNORTEX_DECLARATION::iNumElements));
 				else if (strDeclarationType == "Vtx_NormalTexture_Ocean")
 					CGameInstance::GetInstance()->Add_Prototype(LEVEL_LOGO, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXNORTEX, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
+				else if (strDeclarationType == "Vtx_NormalTexture_NewOcean")
+					CGameInstance::GetInstance()->Add_Prototype(LEVEL_LOGO, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXNORTEX, VTXPOINT_DECLARATION::Elements, VTXPOINT_DECLARATION::iNumElements));
 				else if (strDeclarationType == "Vtx_NonAnimModel")
 					CGameInstance::GetInstance()->Add_Prototype(LEVEL_LOGO, wstrComponentTag, CShader::Create(m_pDevice, m_pContext, wstrFilePath, CShader::DECLARATION_VTXMODEL, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements));
 				else if (strDeclarationType == "Vtx_AnimModel")
@@ -288,10 +304,10 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 	}
 
 	/* Testing */
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_NewOcean_Foam", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Caustic/watter_effect.png")), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_NewOcean_Height", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Caustic/waterbump.png")), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_NewOcean", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Ocean.hlsl", CShader::DECLARATION_VTXNORTEX, VTXPOINT_DECLARATION::Elements, VTXPOINT_DECLARATION::iNumElements)), E_FAIL);
-	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Point_Instancing", CVIBuffer_PointInstancing::Create(m_pDevice, m_pContext)), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_NewOcean_Foam", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Caustic/watter_effect.png")), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_NewOcean_Height", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Caustic/waterbump.png")), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_NewOcean", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Ocean.hlsl", CShader::DECLARATION_VTXNORTEX, VTXPOINT_DECLARATION::Elements, VTXPOINT_DECLARATION::iNumElements)), E_FAIL);
+	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Point_Instancing", CVIBuffer_PointInstancing::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	m_wstrLoadingText = L"Create Prototype Objects...";
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sigrid_CutScene", CSigrid_CutScn::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -300,8 +316,6 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Portal_Island", CPortal_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Mystic_Island", CMystic_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_River_Island", CRiver_Island::Create(m_pDevice, m_pContext)), E_FAIL);
-
-	/* Testing */
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NewOcean", CNewOcean::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	if (wstrProtoObjFilePath != L"")
@@ -532,7 +546,7 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 		jLevel.clear();
 
 		/* Testing */
-		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_HPBar", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Health Bar/HpBar.png")), E_FAIL);
+		/*FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_HPBar", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Health Bar/HpBar.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Frame", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_Frame.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Icon_Black", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_Black.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_MonsterDrink_Icon_Orange", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Monster Drink Icon/MonsterDrink_Orange.png")), E_FAIL);
@@ -576,7 +590,20 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hat_FuzzyEars", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sigrid/Hat/FuzzyEars/FuzzyEars.fbx", XMMatrixIdentity())), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hat_JellyCorne", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sigrid/Hat/JellyCorne/JellyCorne.fbx", XMMatrixIdentity())), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hat_ToothyHood", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Sigrid/Hat/ToothyHood/ToothyHood.fbx", XMMatrixIdentity())), E_FAIL);
-		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_Circle", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Ring.fbx", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_Circle", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Ring.fbx", XMMatrixIdentity())), E_FAIL);*/
+
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Effect_PreLighting", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Effect/PreLightning.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Effect_Lighting", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Effect/Lightning.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_Cross", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Cross.fbx", XMMatrixScaling(0.01f, 0.01f, 0.01f))), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_Lightning_1", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Lightning_1.fbx", XMMatrixScaling(0.01f, 0.01f, 0.01f))), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_Lightning_2", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Lightning_2.fbx", XMMatrixScaling(0.01f, 0.01f, 0.01f))), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Shader_Trail", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Trail.hlsl", CShader::DECLARATION_VTXPOINTINSTANCING, VTXPOINT_DECLARATION::Elements, VTXPOINT_DECLARATION::iNumElements)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_Cocoball", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Sphere.fbx", XMMatrixScaling(0.01f, 0.01f, 0.01f))), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Effect_Cocoball", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Effect/causticF.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Effect_HalfCylinder", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_NONANIM, "../Bin/Resource/Mesh/Effect/Half_Cylinder.fbx", XMMatrixScaling(0.01f, 0.01f, 0.01f))), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_HPBar_Boss", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Health Bar/HPBar_Boss.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_HPBar_Boss_Frame", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Health Bar/HPBar_Boss_Frame.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_VIBuffer_Trail", CVIBuffer_PointInstancing::Create(m_pDevice, m_pContext, 300)), E_FAIL);
 
 		m_wstrLoadingText = L"Loading Navigation Info...";
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_Default.json")), E_FAIL);
@@ -644,6 +671,13 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hat_JellyCorne", CHat_JellyCorne::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hat_ToothyHood", CHat_ToothyHood::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_GroundSlam", CEffect_GroundSlam::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_PreLightning", CEffect_PreLightning::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Lightning", CEffect_Lightning::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Cocoball", CEffect_Cocoball::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_HPBar_Boss", CHPBar_Leviathan::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Trail_Sigrid_Hand", CTrail_Sigrid_Hand::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Trail_Sigrid_Net", CTrail_Sigrid_Net::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Trail_Cocoball", CTrail_Cocoball::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	if (wstrProtoObjFilePath != L"")
 	{

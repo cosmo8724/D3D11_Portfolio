@@ -3790,6 +3790,9 @@ void CSigrid_State::Tick_Combat_Charge_Attack_Into_Run(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.2f)
 		Move(dTimeDelta * 0.5f, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_pModelCom->Get_AnimationProgress() < 0.5f)
+		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_GroundSlam", m_pTransformCom->Get_WorldMatrix());
 }
 
 void CSigrid_State::Tick_Combat_Charge_Attack_Into_Water_Idle(_double dTimeDelta)
