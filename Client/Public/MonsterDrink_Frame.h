@@ -42,6 +42,7 @@ private:
 	_double					m_dTimeDelta = 0.0;
 	wstring					m_wstrValue = L"";
 	_float4					m_vFontColor = { 1.f, 1.f, 1.f, 1.f };
+	_bool						m_bPlaySound = false;
 
 private:
 	HRESULT					SetUp_Component();

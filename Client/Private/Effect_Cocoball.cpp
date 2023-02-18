@@ -71,6 +71,7 @@ void CEffect_Cocoball::Tick(_double dTimeDelta)
 			m_fAlpha = 1.f;
 			m_bFire = true;
 			m_pTrail->Set_Active(true);
+			CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Att_Waterball_Cocoball.wav", g_fSFXVolume, false, false);
 		}
 	}
 	else

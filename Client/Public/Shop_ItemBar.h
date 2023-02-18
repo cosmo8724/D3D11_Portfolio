@@ -7,12 +7,15 @@ class CShop_ItemBar final : public CUI
 {
 public:
 	enum ITEMBAR_STATE { ITEMBAR_EQUIPED, ITEMBAR_NOTPURCHASED, ITEMBAR_PURCHASED, ITEMBAR_END };
+	enum MONEY_TYPE { BLACK, ORANGE, PINK, WHITE, MONEYTYPE_END };
 
 	typedef struct tagItemBarDesc : public CGameObject::GAMEOBJECTDESC
 	{
 		wstring		wstrUITag;
 		wstring		wstrItemName;
 		_uint			iSlot = 0;
+		_uint			iPrice = 0;
+		MONEY_TYPE eType = MONEYTYPE_END;
 	} ITEMBARDESC;
 
 private:
@@ -43,6 +46,9 @@ private:
 	wstring					m_wstrState = L"";
 	_uint						m_iMenu = 0;
 	_uint						m_iSlot = 0;
+	_uint						m_iPrice = 0;
+	MONEY_TYPE				m_eType = MONEYTYPE_END;
+	_float4					m_vFontColor = { 1.f, 1.f, 1.f, 1.f };
 
 private:
 	HRESULT					SetUp_Component();

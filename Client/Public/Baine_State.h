@@ -29,6 +29,8 @@ public:
 
 private:
 	HRESULT				SetUp_State_Idle();
+	HRESULT				SetUp_State_Surprised();
+	HRESULT				SetUp_State_Talk();
 
 private:
 	CGameInstance*		m_pGameInstance = nullptr;
@@ -40,22 +42,34 @@ private:
 	CTransform*			m_pTransformCom = nullptr;
 
 private:
+	_bool					m_bSurprised = false;
+
+private:
 	void					Start_Idle_Base_Loop(_double dTimeDelta);
 	void					Start_Idle_Happy_Loop(_double dTimeDelta);
 	void					Start_Idle_Still_Loop(_double dTimeDelta);
+	void					Start_Surprised(_double dTimeDelta);
+	void					Start_Talk(_double dTimeDelta);
 
 private:
 	void					Tick_Idle_Base_Loop(_double dTimeDelta);
 	void					Tick_Idle_Happy_Loop(_double dTimeDelta);
 	void					Tick_Idle_Still_Loop(_double dTimeDelta);
+	void					Tick_Surprised(_double dTimeDelta);
+	void					Tick_Talk(_double dTimeDelta);
 
 private:
 	void					End_Idle_Base_Loop(_double dTimeDelta);
 	void					End_Idle_Happy_Loop(_double dTimeDelta);
 	void					End_Idle_Still_Loop(_double dTimeDelta);
+	void					End_Surprised(_double dTimeDelta);
+	void					End_Talk(_double dTimeDelta);
 
 private:
 	_bool					Animation_Finish();
+	_bool					Surprised();
+	_bool					Talking();
+	_bool					ItemPurchased();
 
 public:
 	static CBaine_State*	Create(class CBaine* pBaine, CStateMachine* pStateMachineCom, CModel* pModelCom, CTransform* pTransformCom);

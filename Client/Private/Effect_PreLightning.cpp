@@ -67,6 +67,8 @@ void CEffect_PreLightning::Tick(_double dTimeDelta)
 
 				CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_Lightning", m_pTransformCom->Get_WorldMatrix());
 				dynamic_cast<CSkyBox*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_SkyBox")->back())->Set_Lightning();
+				CGameInstance::GetInstance()->Stop_Sound(16);
+				CGameInstance::GetInstance()->Play_Sound(L"Lightning.wav", 0.7f, false, true, 16);
 			}
 			else
 				m_iWidthFrame = 0;

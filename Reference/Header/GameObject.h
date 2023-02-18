@@ -28,6 +28,7 @@ public:
 	const _bool&				Is_SpecialAttack() const { return m_bSpecialAttack; }
 	void						Set_Dead() { m_bDead = true; }
 	void						Set_WorldMatrix(_float4x4 matWorld) { if (m_pTransformCom != nullptr)		m_pTransformCom->Set_WorldMatrix(matWorld); }
+	void						Set_AttackHit() { m_bAttackHit = true; }
 	class CComponent*		Find_Component(const wstring& wstrComponentTag);
 
 public:
@@ -63,6 +64,7 @@ protected:
 	_bool						m_bDead = false;
 	_bool						m_bAttack = false;
 	_bool						m_bSpecialAttack = false;
+	_bool						m_bAttackHit = false;
 	_bool						m_bHit = false;
 
 protected:

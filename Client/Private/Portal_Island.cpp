@@ -42,8 +42,8 @@ void CPortal_Island::Late_Tick(_double dTimeDelta)
 
 	if (nullptr != m_pRendererCom)
 	{
-		if (CGameInstance::GetInstance()->Get_CurLevelIndex() == LEVEL_TESTSTAGE)
-			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
+		//if (CGameInstance::GetInstance()->Get_CurLevelIndex() == LEVEL_TESTSTAGE)
+		//	m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
 
 		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 100.f))

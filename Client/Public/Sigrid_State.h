@@ -135,6 +135,7 @@ public:
 	HRESULT					Initialize(class CSigrid* pPlayer, CStateMachine* pStateMachineCom, CModel* pModel, CTransform* pTransform, class CStatic_Camera* pCamera);
 	void						Tick(_double& dTimeDelta);
 	void						Late_Tick(_double& dTimeDelta);
+	void						ImGui_RenderProperty();
 
 private:
 	HRESULT					SetUp_State_Ground_Idle();
@@ -176,6 +177,9 @@ private:
 	CTransform::DIRECTION		m_eLastDir = CTransform::DIR_END;
 
 	_double					m_dEffectCloneTimer = 0.0;
+
+	_float	m_fTestLeft = 0.022f;
+	_float m_fTestRight = 0.0045f;
 
 private:		/* State Start */
 	void	Start_Ground_Idle(_double dTimeDelta);
@@ -688,6 +692,57 @@ private:		/* State Changer*/
 	_bool	IsOnGround();
 	_bool	IsOnOcean();
 	_bool	IsOnAir();
+
+private:	/* SFX Sound */
+	void	Play_SFX_Attack_Charge_Start();
+	void	Play_SFX_Attack_Charge_Execute();
+	void	Play_SFX_Attack_Charge_Done();
+	void	Play_SFX_Attack_GroundSlam_Intro();
+	void	Play_SFX_Attack_GroundSlam_Hit();
+	void	Play_SFX_Attack_Combo_1_3();
+	void	Play_SFX_Attack_Combo_2_4();
+	void	Play_SFX_Damaged();
+	void	Play_SFX_Hit();
+	void	Play_SFX_Movement_Glide_Fly_Start();
+	void	Play_SFX_HookShot_AimIn();
+	void	Play_SFX_HookShot_Arrive();
+	void	Play_SFX_HookShot_In_Swish();
+	void	Play_SFX_HookShot_Out_Launch();
+	void	Play_SFX_Movement_ChargeJump_Finish();
+	void	Play_SFX_Movement_ChargeJump_ChargeUp();
+	void	Play_SFX_Movement_ChargeJump_Big();
+	void	Play_SFX_Movement_ChargeJump_Small();
+	void	Play_SFX_Movement_Dash();
+	void	Play_SFX_Movement_Ground_Footstep();
+	void	Play_SFX_Movement_Ground_Jump();
+	void	Play_SFX_Movement_Ground_Land();
+	void	Play_SFX_Movement_Double_Jump();
+	void	Play_SFX_Movement_SnapTurn();
+	void	Play_SFX_Movement_Water_Footstep();
+	void	Play_SFX_Movement_Water_Jump();
+	void	Play_SFX_Movement_Water_Land();
+	void	Play_SFX_Movement_Water_Land_Hard();
+	void	Play_SFX_Movement_Water_Surf_Boost_Start();
+	void	Play_SFX_Movement_Water_Surf_Fast_Start();
+	void	Play_SFX_Movement_Water_Surf_Slow_Start();
+
+private:	/* Voice Sound */
+	void	Play_Voice_Charge_Attack();
+	void	Play_Voice_Charge_Jump();
+	void	Play_Voice_Attack_Combo_1_3();
+	void	Play_Voice_Attack_Combo_2_4();
+	void	Play_Voice_Damaged();
+	void	Play_Voice_Dash_Air();
+	void	Play_Voice_Dash_Ground();
+	void	Play_Voice_Grapple_Arrive_Hand();
+	void	Play_Voice_Grapple_Launch();
+	void	Play_Voice_Attack_Ground_Slam_Intro();
+	void	Play_Voice_Attack_Ground_Slam();
+	void	Play_Voice_Double_Jump();
+	void	Play_Voice_Jump();
+	void	Play_Voice_Land_Hard();
+	void	Play_Voice_Land_Soft();
+	void	Play_Voice_Running();
 
 private:
 	void	Move(_double dTimeDelta, CTransform::DIRECTION eDir, MOVETYPE eType = MOVE_DYNAMIC);

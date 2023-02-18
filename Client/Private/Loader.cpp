@@ -19,6 +19,11 @@
 
 /* NPCs */
 #include "Baine.h"
+#include "Andy.h"
+#include "Cordelia_Klout.h"
+#include "Grandma.h"
+#include "Klemens_Klout.h"
+#include "Hollow_Knight.h"
 
 /* Islands */
 #include "MainIsland.h"
@@ -72,6 +77,15 @@
 #include "Shop_Icon_Hair.h"
 #include "Shop_Icon_Hat.h"
 #include "HPBar_Leviathan.h"
+#include "Talk_NPC_Background.h"
+#include "Talk_NPC_Corner.h"
+#include "Talk_NPC_NameBox.h"
+#include "Talk_Sigrid_Background.h"
+#include "Talk_NPC_Icon.h"
+#include "Talk_Button1.h"
+#include "Talk_Button2.h"
+#include "Talk_ButtonE.h"
+#include "Talk_Sigrid_Icon.h"
 
 /* Effect */
 #include "Effect_SigridDash.h"
@@ -308,6 +322,13 @@ HRESULT CLoader::Loading_ForLogo(const wstring & wstrProtoComFilePath, const wst
 	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_NewOcean_Height", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Caustic/waterbump.png")), E_FAIL);
 	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_NewOcean", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_Ocean.hlsl", CShader::DECLARATION_VTXNORTEX, VTXPOINT_DECLARATION::Elements, VTXPOINT_DECLARATION::iNumElements)), E_FAIL);
 	//FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Point_Instancing", CVIBuffer_PointInstancing::Create(m_pDevice, m_pContext)), E_FAIL);
+
+	/*FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Shader_Ocean", CShader::Create(m_pDevice, m_pContext, L"../Bin/Shader/Shader_VtxNorTex_Ocean.hlsl", CShader::DECLARATION_VTXNORTEX, VTXMODEL_DECLARATION::Elements, VTXMODEL_DECLARATION::iNumElements)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_VIBuffer_Terrain", CVIBuffer_Terrain::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Scene_Public/Caustics/HeightMap2.bmp")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Ocean", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Scene_Public/Caustics/Caustics_tex_color.png")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Ocean_Foam", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Scene_Public/Caustics/Foam_Red.png")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_LOGO, L"Prototype_Component_Texture_Ocean_Height", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/Scene_Public/Caustics/HeightMap2.bmp")), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Ocean", COcean::Create(m_pDevice, m_pContext)), E_FAIL);*/
 
 	m_wstrLoadingText = L"Create Prototype Objects...";
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sigrid_CutScene", CSigrid_CutScn::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -604,6 +625,18 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_HPBar_Boss", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Health Bar/HPBar_Boss.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_HPBar_Boss_Frame", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Health Bar/HPBar_Boss_Frame.png")), E_FAIL);
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_VIBuffer_Trail", CVIBuffer_PointInstancing::Create(m_pDevice, m_pContext, 300)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Sigrid_NetRing", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Mesh/Sigrid/SigridNet_BC.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_NPC_Andy", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/NPCs/Andy/Andy.model", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_NPC_Cordelia_Klout", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/NPCs/CordeliaKlout/CordeliaKlout.model", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_NPC_Grandma", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/NPCs/Grandma/Grandma.model", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_NPC_Klemens_Klout", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/NPCs/KlemensKlout/KlemensKlout.model", XMMatrixIdentity())), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Talk_NPC_BackGround", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Talk/UI_elements_Dialogbubble1.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Talk_NPC_Corner", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Talk/UI_elements_DialogBubbleCorners.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Talk_NPC_NameBox", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Talk/HUD_DialogNamebox.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Talk_Sigrid_BackGround", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Talk/ZTemp_DialogChoiseBackground.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Talk_NPC_Icon", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Talk/NPC_Talk_%d.png", 5)), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_UI_Talk_Sigrid_Icon", CTexture::Create(m_pDevice, m_pContext, L"../Bin/Resource/Texture/UI/Talk/UI_elements_Sigrid.png")), E_FAIL);
+		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Model_NPC_Hollow_Knight", CModel::Create(m_pDevice, m_pContext, CModel::MODEL_ANIM, "../Bin/Resource/Mesh/NPCs/Hollow Knight/Hollow_Knight.model", XMMatrixIdentity())), E_FAIL);
 
 		m_wstrLoadingText = L"Loading Navigation Info...";
 		FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(LEVEL_TESTSTAGE, L"Prototype_Component_Navigation_World", CNavigation::Create(m_pDevice, m_pContext, L"../Bin/Save Data/Navigation/Navigation_Default.json")), E_FAIL);
@@ -616,6 +649,10 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 	m_wstrLoadingText = L"Create Prototype Objects...";
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Sigrid", CSigrid::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NPC_Baine", CBaine::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NPC_Andy", CAndy::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NPC_Grandma", CGrandma::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NPC_Cordelia_Klout", CCordelia_Klout::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NPC_Klemens_Klout", CKlemens_Klout::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_MainIsland", CMainIsland::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Hellheim_Island", CHellheim_Island::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Fantasy_Island", CFantasy_Island::Create(m_pDevice, m_pContext)), E_FAIL);
@@ -678,6 +715,16 @@ HRESULT CLoader::Loading_ForGamePlay(const wstring & wstrProtoComFilePath, const
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Trail_Sigrid_Hand", CTrail_Sigrid_Hand::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Trail_Sigrid_Net", CTrail_Sigrid_Net::Create(m_pDevice, m_pContext)), E_FAIL);
 	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_Effect_Trail_Cocoball", CTrail_Cocoball::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_NPC_BackGround", CTalk_NPC_Background::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_NPC_Corner", CTalk_NPC_Corner::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_NPC_NameBox", CTalk_NPC_NameBox::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_NPC_Icon", CTalk_NPC_Icon::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_Sigrid_BackGround", CTalk_Sigrid_Background::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_Sigrid_Icon", CTalk_Sigrid_Icon::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_Button1", CTalk_Button1::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_Button2", CTalk_Button2::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_UI_Talk_ButtonE", CTalk_ButtonE::Create(m_pDevice, m_pContext)), E_FAIL);
+	FAILED_CHECK_RETURN(pGameInstance->Add_Prototype(L"Prototype_GameObject_NPC_Hollow_Knight", CHollow_Knight::Create(m_pDevice, m_pContext)), E_FAIL);
 
 	if (wstrProtoObjFilePath != L"")
 	{

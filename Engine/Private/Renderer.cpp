@@ -216,8 +216,8 @@ HRESULT CRenderer::Render_ShadowDepth(_bool bRenderOFF)
 
 	for (auto& pGameObject : m_RenderObjectList[RENDER_SHADOWDEPTH])
 	{
-		if (nullptr != pGameObject)
-			pGameObject->Render_ShadowDepth();
+		//if (nullptr != pGameObject)
+		//	pGameObject->Render_ShadowDepth();
 
 		Safe_Release(pGameObject);
 	}
@@ -391,8 +391,8 @@ HRESULT CRenderer::Render_DebugObject(_bool bRenderOFF)
 
 	for (auto& pComponent : m_DebugObjectList)
 	{
-		if (nullptr != pComponent)
-			pComponent->Render();
+		//if (nullptr != pComponent)
+		//	pComponent->Render();
 
 		Safe_Release(pComponent);
 	}

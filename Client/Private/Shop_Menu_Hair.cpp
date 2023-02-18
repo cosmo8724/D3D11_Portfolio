@@ -144,6 +144,8 @@ HRESULT CShop_Menu_Hair::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hair_1";
 	ItemBarDesc.wstrItemName = L"¿ø·¡ ¸Ó¸®Ä«¶ô »ö±ò";
 	ItemBarDesc.iSlot = 0;
+	ItemBarDesc.iPrice = 0;
+	ItemBarDesc.eType = CShop_ItemBar::ORANGE;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -154,6 +156,8 @@ HRESULT CShop_Menu_Hair::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hair_2";
 	ItemBarDesc.wstrItemName = L"°ñµç ·Ï ¿°»ö ¸Ó¸®";
 	ItemBarDesc.iSlot = 1;
+	ItemBarDesc.iPrice = 3;
+	ItemBarDesc.eType = CShop_ItemBar::ORANGE;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -164,6 +168,8 @@ HRESULT CShop_Menu_Hair::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hair_3";
 	ItemBarDesc.wstrItemName = L"ÇÏ¾á Á¶°¡ºñ ¿°»ö ¸Ó¸®";
 	ItemBarDesc.iSlot = 2;
+	ItemBarDesc.iPrice = 4;
+	ItemBarDesc.eType = CShop_ItemBar::ORANGE;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -174,6 +180,8 @@ HRESULT CShop_Menu_Hair::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hair_4";
 	ItemBarDesc.wstrItemName = L"ÆÇÅ¸½ºÆ½ ÄÚ¶ö ¿°»ö ¸Ó¸®";
 	ItemBarDesc.iSlot = 3;
+	ItemBarDesc.iPrice = 5;
+	ItemBarDesc.eType = CShop_ItemBar::ORANGE;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -184,6 +192,8 @@ HRESULT CShop_Menu_Hair::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hair_5";
 	ItemBarDesc.wstrItemName = L"¿À´Ð½º ºí·¢ ¿°»ö ¸Ó¸®";
 	ItemBarDesc.iSlot = 4;
+	ItemBarDesc.iPrice = 10;
+	ItemBarDesc.eType = CShop_ItemBar::WHITE;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);

@@ -107,7 +107,10 @@ void CShop_Button2::Tick(_double dTimeDelta)
 	}
 
 	if (CGameInstance::GetInstance()->Key_Up(DIK_2))
+	{
 		m_bReadyToDead = true;
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_ShopClose.wav", g_fSFXVolume, false, false);
+	}
 		
 	if (m_bReadyToDead == true && m_fHoverScale == 1.f)
 	{

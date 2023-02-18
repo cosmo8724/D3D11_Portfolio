@@ -172,8 +172,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Bin\Shader\Shader_Define.h" />
+    <ClInclude Include="..\Public\Andy.h" />
+    <ClInclude Include="..\Public\Andy_State.h" />
     <ClInclude Include="..\Public\Baine.h" />
     <ClInclude Include="..\Public\Baine_State.h" />
+    <ClInclude Include="..\Public\Hollow_Knight.h" />
+    <ClInclude Include="..\Public\Klemens_Klout.h" />
+    <ClInclude Include="..\Public\Cordelia_Klout.h" />
+    <ClInclude Include="..\Public\Cordelia_Klout_State.h" />
     <ClInclude Include="..\Public\Critter_Small.h" />
     <ClInclude Include="..\Public\Critter_Small_State.h" />
     <ClInclude Include="..\Public\Cursor.h" />
@@ -188,6 +194,8 @@
     <ClInclude Include="..\Public\Effect_VIBuffer.h" />
     <ClInclude Include="..\Public\Enemy.h" />
     <ClInclude Include="..\Public\Fantasy_Island.h" />
+    <ClInclude Include="..\Public\Grandma.h" />
+    <ClInclude Include="..\Public\Grandma_State.h" />
     <ClInclude Include="..\Public\Grapple_Hang.h" />
     <ClInclude Include="..\Public\Grapple_Launcher.h" />
     <ClInclude Include="..\Public\Hat_CrabbyHat.h" />
@@ -196,6 +204,7 @@
     <ClInclude Include="..\Public\Hellheim_Island.h" />
     <ClInclude Include="..\Public\HPBar.h" />
     <ClInclude Include="..\Public\HPBar_Leviathan.h" />
+    <ClInclude Include="..\Public\Klemens_Klout_State.h" />
     <ClInclude Include="..\Public\Leviathan.h" />
     <ClInclude Include="..\Public\Leviathan_State.h" />
     <ClInclude Include="..\Public\MainIsland.h" />
@@ -251,6 +260,16 @@
     <ClInclude Include="..\Public\Sigrid_State.h" />
     <ClInclude Include="..\Public\SkyBox.h" />
     <ClInclude Include="..\Public\Stylized_Island.h" />
+    <ClInclude Include="..\Public\Talk_Button1.h" />
+    <ClInclude Include="..\Public\Talk_Button2.h" />
+    <ClInclude Include="..\Public\Talk_ButtonE.h" />
+    <ClInclude Include="..\Public\Talk_NPC_Background.h" />
+    <ClInclude Include="..\Public\Talk_NPC_Corner.h" />
+    <ClInclude Include="..\Public\Talk_NPC_Icon.h" />
+    <ClInclude Include="..\Public\Talk_NPC_NameBox.h" />
+    <ClInclude Include="..\Public\Talk_Sigrid_Background.h" />
+    <ClInclude Include="..\Public\Talk_Sigrid_Icon.h" />
+    <ClInclude Include="..\Public\Talk_SpeechBubble.h" />
     <ClInclude Include="..\Public\Temple_Island.h" />
     <ClInclude Include="..\Public\Tool_AnimationManager.h" />
     <ClInclude Include="..\Public\Tool_ModelSave.h" />
@@ -299,8 +318,14 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\Private\Andy.cpp" />
+    <ClCompile Include="..\Private\Andy_State.cpp" />
     <ClCompile Include="..\Private\Baine.cpp" />
     <ClCompile Include="..\Private\Baine_State.cpp" />
+    <ClCompile Include="..\Private\Hollow_Knight.cpp" />
+    <ClCompile Include="..\Private\Klemens_Klout.cpp" />
+    <ClCompile Include="..\Private\Cordelia_Klout.cpp" />
+    <ClCompile Include="..\Private\Cordelia_Klout_State.cpp" />
     <ClCompile Include="..\Private\Critter_Small.cpp" />
     <ClCompile Include="..\Private\Critter_Small_State.cpp" />
     <ClCompile Include="..\Private\Cursor.cpp" />
@@ -315,6 +340,8 @@
     <ClCompile Include="..\Private\Effect_VIBuffer.cpp" />
     <ClCompile Include="..\Private\Enemy.cpp" />
     <ClCompile Include="..\Private\Fantasy_Island.cpp" />
+    <ClCompile Include="..\Private\Grandma.cpp" />
+    <ClCompile Include="..\Private\Grandma_State.cpp" />
     <ClCompile Include="..\Private\Grapple_Hang.cpp" />
     <ClCompile Include="..\Private\Grapple_Launcher.cpp" />
     <ClCompile Include="..\Private\Hat_CrabbyHat.cpp" />
@@ -323,6 +350,7 @@
     <ClCompile Include="..\Private\Hellheim_Island.cpp" />
     <ClCompile Include="..\Private\HPBar.cpp" />
     <ClCompile Include="..\Private\HPBar_Leviathan.cpp" />
+    <ClCompile Include="..\Private\Klemens_Klout_State.cpp" />
     <ClCompile Include="..\Private\Leviathan.cpp" />
     <ClCompile Include="..\Private\Leviathan_State.cpp" />
     <ClCompile Include="..\Private\MainIsland.cpp" />
@@ -378,6 +406,16 @@
     <ClCompile Include="..\Private\Sigrid_State.cpp" />
     <ClCompile Include="..\Private\SkyBox.cpp" />
     <ClCompile Include="..\Private\Stylized_Island.cpp" />
+    <ClCompile Include="..\Private\Talk_Button1.cpp" />
+    <ClCompile Include="..\Private\Talk_Button2.cpp" />
+    <ClCompile Include="..\Private\Talk_ButtonE.cpp" />
+    <ClCompile Include="..\Private\Talk_NPC_Background.cpp" />
+    <ClCompile Include="..\Private\Talk_NPC_Corner.cpp" />
+    <ClCompile Include="..\Private\Talk_NPC_Icon.cpp" />
+    <ClCompile Include="..\Private\Talk_NPC_NameBox.cpp" />
+    <ClCompile Include="..\Private\Talk_Sigrid_Background.cpp" />
+    <ClCompile Include="..\Private\Talk_Sigrid_Icon.cpp" />
+    <ClCompile Include="..\Private\Talk_SpeechBubble.cpp" />
     <ClCompile Include="..\Private\Temple_Island.cpp" />
     <ClCompile Include="..\Private\Tool_AnimationManager.cpp" />
     <ClCompile Include="..\Private\Tool_ModelSave.cpp" />

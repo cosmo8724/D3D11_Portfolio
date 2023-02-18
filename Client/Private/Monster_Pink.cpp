@@ -74,6 +74,7 @@ void CMonster_Pink::Late_Tick(_double dTimeDelta)
 		m_pPlayer->Get_Status().iMonsterDrink_Pink++;
 		m_bDead = true;
 		m_pUIFrame->Set_ValueChange();
+		CGameInstance::GetInstance()->Play_Sound(L"Item_PickUp.mp3", 1.f, false, true);
 	}
 
 	if (m_bDead == true)

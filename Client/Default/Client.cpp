@@ -24,6 +24,11 @@ unsigned int g_iWinSizeY = 720;
 CCursor*	g_pCursor = nullptr;
 _bool		g_bReadySceneChange = false;
 _bool		g_bShopOpen = false;
+_bool		g_bEnd = false;
+_float		g_fSFXVolume = 0.5f;
+_float		g_fVoiceVolume = 0.75f;
+_float		g_fBossVolume = 0.75f;
+_float		g_fEnvironmentVolume = 0.2f;
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
@@ -70,6 +75,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	FAILED_CHECK_RETURN(pGameInstance->Ready_Timer(L"Timer_Default"), FALSE);
 	FAILED_CHECK_RETURN(pGameInstance->Ready_Timer(L"Timer_165"), FALSE);
+	srand(unsigned(time(NULL)));
 
 	_double			dTimerAcc = 0.0;
 	_double			dMaxFrame = 165.0;
@@ -92,7 +98,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		else
 		{
 			pGameInstance->Update_Timer(L"Timer_Default");
-			srand(unsigned(time(NULL)));
 
 			dTimerAcc += pGameInstance->Get_TimeDelta(L"Timer_Default");	
 

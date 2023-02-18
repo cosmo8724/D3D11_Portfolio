@@ -94,6 +94,12 @@ void CMonsterDrink_Frame::Tick(_double dTimeDelta)
 			_long(((g_iWinSizeX * 0.5f) + m_fX) + m_fSizeY * 0.5f), _long(((g_iWinSizeY * 0.5f) - m_fY) + m_fSizeX * 0.5f) };
  	} 	if (CGameUtility::Rect_Picking(g_hWnd, m_Rect) || m_bValueChange == true || g_bShopOpen == true)
  	{ 
+		if (m_bPlaySound == false && CGameUtility::Rect_Picking(g_hWnd, m_Rect))
+		{
+			CGameInstance::GetInstance()->Play_Sound(L"Monster_Drink.mp3", g_fSFXVolume, false, true);
+			m_bPlaySound = true;
+		}
+
 		m_dTimeDelta += dTimeDelta;
 
 		if (m_dTimeDelta > 5.0)
@@ -131,6 +137,8 @@ void CMonsterDrink_Frame::Tick(_double dTimeDelta)
  	}
  	else
  	{ 
+		m_bPlaySound = false;
+
 		if (m_bInitPos == false)
 		{
 			if (m_iCurMoveCnt > 0)
@@ -166,6 +174,9 @@ void CMonsterDrink_Frame::Tick(_double dTimeDelta)
 void CMonsterDrink_Frame::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
+
+	if (g_bEnd == true)
+		return;
 
 	if (m_eColor == MONSTERDRINK_BLACK)
 		m_wstrValue = to_wstring(m_pPlayer->Get_Status().iMonsterDrink_Black);

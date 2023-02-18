@@ -49,7 +49,6 @@ void CEffect_Lightning::Tick(_double dTimeDelta)
 		m_pTransformCom->RotationFromNow(XMVectorSet(1.f, 0.f, 0.f, 0.f), XMConvertToRadians(270.f));
 		m_pTransformCom->Set_Scale(_float3(50.f, 100.f, 50.f));
 
-		srand(unsigned(time(NULL)));
 		_float		fAngle = _float(rand() % 360 + 1);
 		m_pTransformCom->RotationFromNow(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(fAngle));
 

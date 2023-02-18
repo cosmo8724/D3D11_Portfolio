@@ -6,6 +6,7 @@
 #include "Shop_Menu_Hat.h"
 #include "Shop_ItemSelect.h"
 #include "Static_Camera.h"
+#include "GameUtility.h"
 
 CShop_BackGround::CShop_BackGround(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -72,10 +73,35 @@ void CShop_BackGround::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX, m_fY, 0.f, 1.f));
 	}
 
+	_float		fRand = CGameUtility::RandomFloat(0.f, 4.f);
+
 	if (CGameInstance::GetInstance()->Key_Down(DIK_E))
+	{
 		m_iCurrentMenu++;
+
+		if (fRand >= 0.f && fRand < 1.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-001.wav", g_fSFXVolume, false, true);
+		else if (fRand >= 1.f && fRand <= 2.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-002.wav", g_fSFXVolume, false, true);
+		else if (fRand >= 2.f && fRand <= 3.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-003.wav", g_fSFXVolume, false, true);
+		else if (fRand >= 3.f && fRand <= 4.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-004.wav", g_fSFXVolume, false, true);
+
+	}
 	else if (CGameInstance::GetInstance()->Key_Down(DIK_Q))
+	{
 		m_iCurrentMenu--;
+
+		if (fRand >= 0.f && fRand < 1.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-001.wav", g_fSFXVolume, false, true);
+		else if (fRand >= 1.f && fRand <= 2.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-002.wav", g_fSFXVolume, false, true);
+		else if (fRand >= 2.f && fRand <= 3.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-003.wav", g_fSFXVolume, false, true);
+		else if (fRand >= 3.f && fRand <= 4.f)
+			CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_SwitchTab-004.wav", g_fSFXVolume, false, true);
+	}
 
 	if (m_iCurrentMenu > 2)
 		m_iCurrentMenu = 0;
@@ -102,9 +128,15 @@ void CShop_BackGround::Tick(_double dTimeDelta)
 	}
 
 	if (CGameInstance::GetInstance()->Key_Down(DIK_W))
+	{
 		m_iCurrentSlot--;
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_DialogChoice.wav", g_fSFXVolume, false, true);
+	}
 	else if (CGameInstance::GetInstance()->Key_Down(DIK_S))
+	{
 		m_iCurrentSlot++;
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_DialogChoice.wav", g_fSFXVolume, false, true);
+	}
 
 	if (m_iCurrentSlot > 4)
 		m_iCurrentSlot = 0;

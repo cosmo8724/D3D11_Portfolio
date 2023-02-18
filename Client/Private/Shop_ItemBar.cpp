@@ -42,6 +42,17 @@ HRESULT CShop_ItemBar::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 		m_wstrUITag = ItemBarDesc.wstrUITag;
 		m_wstrItemName = ItemBarDesc.wstrItemName;
 		m_iSlot = ItemBarDesc.iSlot;
+		m_iPrice = ItemBarDesc.iPrice;
+		m_eType = ItemBarDesc.eType;
+
+		if (m_eType == BLACK)
+			m_vFontColor = { 0.4f, 0.96f, 0.04f, 1.f };
+		else if (m_eType == ORANGE)
+			m_vFontColor = { 0.3f, 1.f, 0.91f, 1.f };
+		else if (m_eType == PINK)
+			m_vFontColor = FLOAT4COLOR_RGBA(209.f, 30.f, 113.f, 255.f);
+		else if (m_eType == WHITE)
+			m_vFontColor = { 1.f, 1.f, 1.f, 1.f };
 	}
 
 	FAILED_CHECK_RETURN(__super::Initialize(wstrPrototypeTag, &ItemBarDesc), E_FAIL);
@@ -227,7 +238,7 @@ void CShop_ItemBar::Late_Tick(_double dTimeDelta)
 	if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED)
 		m_wstrState = L"장착함";
 	else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
-		m_wstrState = L"1";
+		m_wstrState = to_wstring(m_iPrice);
 	else if (m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
 		m_wstrState = L"보유 중";
 
@@ -250,8 +261,26 @@ void CShop_ItemBar::Late_Tick(_double dTimeDelta)
 			}
 			else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
 			{
-				m_eState = CShop_ItemBar::ITEMBAR_PURCHASED;
-				m_pPlayer->Set_ItemState(m_iMenu, m_iSlot, (_uint)ITEMBAR_PURCHASED);
+				_uint	iMoney = 0;
+
+				if (m_eType == BLACK)
+					iMoney = m_pPlayer->Get_Status().iMonsterDrink_Black;
+				else if (m_eType == ORANGE)
+					iMoney = m_pPlayer->Get_Status().iMonsterDrink_Orange;
+				else if (m_eType == PINK)
+					iMoney = m_pPlayer->Get_Status().iMonsterDrink_Pink;
+				else if (m_eType == WHITE)
+					iMoney = m_pPlayer->Get_Status().iMonsterDrink_White;
+
+				if (iMoney >= m_iPrice)
+				{
+					m_eState = CShop_ItemBar::ITEMBAR_PURCHASED;
+					m_pPlayer->Set_ItemState(m_iMenu, m_iSlot, (_uint)ITEMBAR_PURCHASED);
+					m_pPlayer->Set_ItemPurchased(true);
+					CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_BaineShop_PurchaseSuccessful.wav", 1.f, false, true);
+				}
+				else
+					CGameInstance::GetInstance()->Play_Sound(L"SFX_UI_MainMenu_SelectionChosen.wav", 1.f, false, true);
 			}
 		}
 	}
@@ -282,7 +311,7 @@ HRESULT CShop_ItemBar::Render()
 		if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED)
 			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f + (27.f * m_fHoverScale), -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
 		else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
-			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1690.f + (33.f * m_fHoverScale), -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1690.f + (33.f * m_fHoverScale), -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f), m_vFontColor);
 		else if (m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
 			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f + (27.f * m_fHoverScale), -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
 	}
@@ -291,7 +320,7 @@ HRESULT CShop_ItemBar::Render()
 		if (m_eState == CShop_ItemBar::ITEMBAR_EQUIPED)
 			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
 		else if (m_eState == CShop_ItemBar::ITEMBAR_NOTPURCHASED)
-			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1700.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
+			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1700.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f), m_vFontColor);
 		else if (m_eState == CShop_ItemBar::ITEMBAR_PURCHASED)
 			CGameInstance::GetInstance()->Render_Font(L"Font_DoongSil", m_wstrState, _float2(vPos.x + 1610.f, -vPos.y + 705.f), 0.f, _float2(m_fAspectRatioX * 1.8f, m_fAspectRatioY * 1.8f));
 	}

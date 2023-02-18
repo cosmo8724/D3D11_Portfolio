@@ -121,7 +121,6 @@ void CEffect_Trail::Late_Tick(_double dTimeDelta)
 
 		_vector	vPrePos = vPoint1;
 
-
 		_float		fWeight = 0.f, fRadian = 0.f;
 		_vector	vSplinePos, vRight, vUp, vLook, vDir;
 		for (_uint i = 0; i < iSegmentCnt; ++i)

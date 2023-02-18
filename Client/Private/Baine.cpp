@@ -2,6 +2,8 @@
 #include "Baine.h"
 #include "GameInstance.h"
 #include "Baine_State.h"
+#include "Talk_NPC_Background.h"
+#include "GameUtility.h"
 
 CBaine::CBaine(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CNPC(pDevice, pContext)
@@ -46,6 +48,12 @@ HRESULT CBaine::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 
 	m_pModelCom->Set_CurAnimationIndex(CBaine_State::IDLE_BASE_LOOP);
 
+	m_vecSentence.push_back(L" ");
+	m_vecSentence.push_back(L"오... 처음보는 얼굴이군.");
+	m_vecSentence.push_back(L"나는 베인. 바다에 떠다니는 잡화들을 가공하여 판매하고 있지!");
+	m_vecSentence.push_back(L"마음에 드는 물건이 있을 수도 있으니 한 번 둘러보게.");
+	m_vecSentence.push_back(L"아! 바다에서는 마실 것이 귀하니, 돈 대신 마실 것으로 받겠네.");
+
 	return S_OK;
 }
 
@@ -54,17 +62,19 @@ void CBaine::Tick(_double dTimeDelta)
 	__super::Tick(dTimeDelta);
 
 	m_pBaine_State->Tick(dTimeDelta);
-	//m_pStateMachineCom->Tick(dTimeDelta);
+	m_pStateMachineCom->Tick(dTimeDelta);
 
 	m_pModelCom->Play_Animation(dTimeDelta);
-
+	
 	if (m_bPlayerDetected == true)
 	{
-		if (CGameInstance::GetInstance()->Key_Down(DIK_E) && g_bShopOpen == false && g_bReadySceneChange == false)
+		if (CGameInstance::GetInstance()->Key_Down(DIK_E) && g_bShopOpen == false && g_bReadySceneChange == false && m_bNowTalking == false)
 		{
-			g_bReadySceneChange = true;
-			CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_SceneChange_1");
-			CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_UI_Shop_BackGround");
+			m_bNowTalking = true;
+			CTalk_NPC_Background*	pUI = dynamic_cast<CTalk_NPC_Background*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_UI_Talk_NPC_BackGround"));
+			pUI->Set_Owner(this);
+			pUI->Set_Name(L"베인 아저씨");
+			pUI->Set_Sentence(&m_vecSentence);
 		}
 	}
 
@@ -111,6 +121,22 @@ void CBaine::Collision_Event(CSigrid * pPlayer)
 {
 	if (pPlayer == nullptr)
 		return;
+}
+
+void CBaine::Play_Voice()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"Baine_Emotes_Happy_010_EN.wav", g_fVoiceVolume, false, true, 17);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"Baine_Emotes_Happy_020_EN.wav", g_fVoiceVolume, false, true, 17);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"Baine_Emotes_Happy_030_EN.wav", g_fVoiceVolume, false, true, 17);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"Baine_Emotes_Happy_040_EN.wav", g_fVoiceVolume, false, true, 17);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"Baine_Emotes_Happy_050_EN.wav", g_fVoiceVolume, false, true, 17);
 }
 
 HRESULT CBaine::SetUp_Component()

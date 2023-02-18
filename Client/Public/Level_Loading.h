@@ -21,6 +21,9 @@ private:
 	LEVEL				m_eNextLevel = LEVEL_END;
 	wstring			m_wstrCloneObjFilePath = L"";
 
+private:
+	HRESULT			Ready_Layer_UI(const wstring& wstrLayerTag);
+
 public:
 	static CLevel_Loading*		Create(DEVICE pDevice, DEVICE_CONTEXT pContext, LEVEL eNextLevel, const wstring& wstrProtoComFilePath = L"", const wstring& wstrProtoObjFilePath = L"", const wstring& wstrCloneObjFilePath = L"");
 	virtual void					Free() override;

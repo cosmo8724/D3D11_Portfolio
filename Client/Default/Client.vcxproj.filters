@@ -385,6 +385,66 @@
     <Filter Include="02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball\Trail">
       <UniqueIdentifier>{ac2f0d45-5690-4aeb-ac07-8496127f8c8d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Andy">
+      <UniqueIdentifier>{f24b8983-0125-4597-a109-c9b363abb8c9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Cordelia Klout">
+      <UniqueIdentifier>{68c6fcef-d023-4d49-8288-16eaacc248c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Grandma">
+      <UniqueIdentifier>{6c79822e-8fd1-46db-8cad-7060cd3fc578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Klemens Klout">
+      <UniqueIdentifier>{658e633c-7dd3-4641-bfc5-376e1d3b6933}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Andy\Andy State">
+      <UniqueIdentifier>{467f5a3f-bf2c-43b4-b0ed-9793e1b63748}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Cordelia Klout\Cordelia State">
+      <UniqueIdentifier>{7f6fcf88-936b-4567-926f-188a0f19b396}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Grandma\Grandma State">
+      <UniqueIdentifier>{54e65b66-4b9d-47fb-bd9f-f541ad0e3594}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Klemens Klout\Klemens State">
+      <UniqueIdentifier>{6b91d9fc-5796-46ac-9578-4082fefe5374}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk">
+      <UniqueIdentifier>{a1178cf4-d8cd-4127-9247-8445dd4ccce7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\NPC Background">
+      <UniqueIdentifier>{daa209d7-61ef-45dc-9eae-411d8952bb60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\Sigrid Background">
+      <UniqueIdentifier>{1f38d0d6-f97f-4e26-811d-d2b3fb9b2fe5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\Button 1">
+      <UniqueIdentifier>{9a9c5bfa-0670-4bfd-bf46-4c31a55f1f01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\Button 2">
+      <UniqueIdentifier>{be7786fd-4947-472a-b67f-c7157b3ba7b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\Button E">
+      <UniqueIdentifier>{4af56205-ec9c-4a79-bac3-767c20d333d7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\NPC Corner">
+      <UniqueIdentifier>{b03c3743-603b-4610-b81d-018126b46bd0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\Speech Bubble">
+      <UniqueIdentifier>{ce1adc57-7467-4380-b610-bec4281644e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\NPC NameBox">
+      <UniqueIdentifier>{2165734c-93fc-4ea1-b17b-18a739f46a6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\NPC_Icon">
+      <UniqueIdentifier>{fce56b5c-f0b7-4739-a9f9-f8164d048649}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\UI\Talk\Sigrid_Icon">
+      <UniqueIdentifier>{4f41f698-21d4-40d2-b220-424dcca6408c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02. GameObject\02. For_MainStage\NPCs\Hollow Knight">
+      <UniqueIdentifier>{a66a4e33-a6d9-4c23-9c7e-61f0d737b93b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">
@@ -720,6 +780,63 @@
     <ClInclude Include="..\Public\Trail_Cocoball.h">
       <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball\Trail</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Andy.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Andy</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cordelia_Klout.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Cordelia Klout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grandma.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Grandma</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Andy_State.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Andy\Andy State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Cordelia_Klout_State.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Cordelia Klout\Cordelia State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Grandma_State.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Grandma\Grandma State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Klemens_Klout_State.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Klemens Klout\Klemens State</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Klemens_Klout.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Klemens Klout</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_NPC_Background.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC Background</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_Sigrid_Background.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Sigrid Background</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_NPC_Corner.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC Corner</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_SpeechBubble.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Speech Bubble</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_NPC_NameBox.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC NameBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_ButtonE.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Button E</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_Button2.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Button 2</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_Button1.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Button 1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_NPC_Icon.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC_Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Talk_Sigrid_Icon.h">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Sigrid_Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Hollow_Knight.h">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Hollow Knight</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -1042,6 +1159,63 @@
     </ClCompile>
     <ClCompile Include="..\Private\Trail_Cocoball.cpp">
       <Filter>02. GameObject\02. For_MainStage\Effect\Leviathan\Cocoball\Trail</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Andy.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Andy</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cordelia_Klout.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Cordelia Klout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grandma.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Grandma</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Andy_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Andy\Andy State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Cordelia_Klout_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Cordelia Klout\Cordelia State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Grandma_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Grandma\Grandma State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Klemens_Klout_State.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Klemens Klout\Klemens State</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Klemens_Klout.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Klemens Klout</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_NPC_Background.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC Background</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_Sigrid_Background.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Sigrid Background</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_NPC_Corner.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC Corner</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_SpeechBubble.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Speech Bubble</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_NPC_NameBox.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC NameBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_ButtonE.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Button E</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_Button2.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Button 2</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_Button1.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Button 1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_NPC_Icon.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\NPC_Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Talk_Sigrid_Icon.cpp">
+      <Filter>02. GameObject\02. For_MainStage\UI\Talk\Sigrid_Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Hollow_Knight.cpp">
+      <Filter>02. GameObject\02. For_MainStage\NPCs\Hollow Knight</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

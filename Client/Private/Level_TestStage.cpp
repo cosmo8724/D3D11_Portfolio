@@ -43,6 +43,10 @@ HRESULT CLevel_TestStage::Initialize(const wstring & wstrCloneObjFilePath)
 	else
 		FAILED_CHECK_RETURN(Load_CloneObjects(wstrCloneObjFilePath), E_FAIL);
 
+	//FAILED_CHECK_RETURN(Ready_Layer_Ocean(L"Layer_Ocean"), E_FAIL);
+
+	CGameInstance::GetInstance()->Play_Sound(L"CutScn_Pt04_NeedlePrickPeaks_RufusFlashback02_Music.wav", 0.8f, false, false, 15);
+
 	return S_OK;
 }
 
@@ -275,6 +279,8 @@ HRESULT CLevel_TestStage::Ready_Layer_NPCs(const wstring & wstrLayerTag)
 	Safe_AddRef(pGameInstance);
 
 	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_NPC_Baine"), E_FAIL);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_TESTSTAGE, wstrLayerTag, L"Prototype_GameObject_NPC_Andy"), E_FAIL);
 
 	Safe_Release(pGameInstance);
 

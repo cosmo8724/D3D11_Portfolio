@@ -27,6 +27,9 @@ private:
 	virtual ~CLeviathan() = default;
 
 public:
+	const _bool&				Get_Die() const { return m_bDie; }
+
+public:
 	virtual HRESULT			Initialize_Prototype() override;
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
@@ -44,6 +47,9 @@ private:
 	CNavigation*				m_pNavigationCom = nullptr;
 	CStateMachine*			m_pStateMachineCom = nullptr;
 	class CLeviathan_State*	m_pLeviathan_State = nullptr;
+
+private:
+	_bool						m_bDie = false;
 
 private:
 	HRESULT					SetUp_Component();

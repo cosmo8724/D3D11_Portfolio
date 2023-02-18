@@ -11,6 +11,10 @@ private:
 	virtual ~CScene_Change() = default;
 
 public:
+	const _bool&				Get_Finished() const { return m_bFinish; }
+	void						Set_Color(_float4 vColor) { m_vColor = vColor; }
+
+public:
 	virtual HRESULT			Initialize_Prototype(_uint iSpriteIndex, _bool bReversePlay);
 	virtual HRESULT			Initialize(const wstring& wstrPrototypeTag, void* pArg) override;
 	virtual void				Tick(_double dTimeDelta) override;
@@ -19,6 +23,8 @@ public:
 	virtual void				ImGui_RenderProperty() override;
 
 private:
+	CScene_Change*			m_pNextChanger = nullptr;
+
 	_double					m_dTimeDelta = 0.0;
 	_double					m_dSpeed = 0.02;
 	_uint						m_iSpriteIndex = 0;
@@ -26,10 +32,13 @@ private:
 	_bool						m_bColorReverse = false;
 	_bool						m_bFinish = false;
 
-	_uint						m_iWidthFrame = 0;
-	_uint						m_iHeightFrame = 0;
-	_uint						m_iWidthCount = 0;
-	_uint						m_iHeightCount = 0;
+	_int						m_iWidthFrame = 0;
+	_int						m_iHeightFrame = 0;
+	_int						m_iWidthCount = 0;
+	_int						m_iHeightCount = 0;
+	_float4					m_vColor = { 0.3f, 0.3f, 1.f, 1.f };
+
+	_double					m_dEndTime = 0.0;
 
 private:
 	HRESULT					SetUp_Component();

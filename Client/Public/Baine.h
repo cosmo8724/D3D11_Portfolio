@@ -27,6 +27,7 @@ public:
 	virtual void				Late_Tick(_double dTimeDelta) override;
 	virtual HRESULT			Render() override;
 	virtual void				Collision_Event(class CSigrid* pPlayer) override;
+	virtual void				Play_Voice() override;
 
 private:
 	CRenderer*				m_pRendererCom = nullptr;
@@ -36,6 +37,9 @@ private:
 	CCollider*					m_pSphereCol = nullptr;
 	CStateMachine*			m_pStateMachineCom = nullptr;
 	class CBaine_State*		m_pBaine_State = nullptr;
+
+private:
+	_bool						m_bItemPurchased = false;
 
 private:
 	HRESULT					SetUp_Component();

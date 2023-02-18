@@ -40,6 +40,8 @@ void CLogo::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
 	
+	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(640.000000f, 445.800018f, 0.f, 1.f));
+
 	if (g_bNeedResizeSwapChain)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - m_fSizeX * 0.5f + (_float)g_iWinSizeX * 0.25f, -m_fY + m_fSizeY * 0.5f + (_float)g_iWinSizeY * 0.3f, 0.f, 1.f));
 }

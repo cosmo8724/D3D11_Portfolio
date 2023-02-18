@@ -50,7 +50,8 @@ void CFantasy_Island::Late_Tick(_double dTimeDelta)
 	{
 		if (CGameInstance::GetInstance()->Key_Down(DIK_E))
 		{
-			dynamic_cast<CTransform*>(pSigrid->Get_Component(L"Com_Transform"))->Set_State(CTransform::STATE_TRANS, XMVectorSet(160.f, 761.2f, 522.669f, 1.f));
+			//dynamic_cast<CTransform*>(pSigrid->Get_Component(L"Com_Transform"))->Set_State(CTransform::STATE_TRANS, XMVectorSet(160.f, 761.2f, 522.669f, 1.f));
+			CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_SceneChange_3");
 		}
 	}
 

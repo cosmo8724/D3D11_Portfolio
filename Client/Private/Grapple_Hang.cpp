@@ -100,8 +100,8 @@ void CGrapple_Hang::Late_Tick(_double dTimeDelta)
 		if (true == CGameInstance::GetInstance()->IsInFrustum_World(m_pTransformCom->Get_State(CTransform::STATE_TRANS), 2.f))
 			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
-		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
-		m_pRendererCom->Add_DebugRenderGroup(m_pGrapplePointCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pGrapplePointCol);
 	}
 }
 

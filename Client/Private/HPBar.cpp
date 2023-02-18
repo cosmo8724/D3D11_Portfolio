@@ -56,6 +56,9 @@ void CHPBar::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
+	if (g_bEnd == true)
+		return;
+
 	m_wstrHP = to_wstring(m_pPlayer->Get_Status().iHP);
 
 	if (nullptr != m_pRendererCom && g_bReadySceneChange == false && g_bShopOpen == false)

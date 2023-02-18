@@ -68,7 +68,7 @@ void CLeviathan::Tick(_double dTimeDelta)
 
 	m_pLeviathan_State->Tick(dTimeDelta);
 	m_pStateMachineCom->Tick(dTimeDelta);
-	//m_pModelCom->Play_Animation(dTimeDelta);
+	//m_pModelCom->Play_Animation(dTimeDelta;)
 	if (m_bPlayerDetected)
 		m_pModelCom->Play_Animation(dTimeDelta);
 	else
@@ -184,7 +184,7 @@ void CLeviathan::Late_Tick(_double dTimeDelta)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
-		m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pRangeCol);
 
 		//for (_uint i = 0; i < (_uint)HITBOX_END; ++i)
 		//	m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol[i]);
@@ -245,6 +245,8 @@ void CLeviathan::Collision_Event(CSigrid * pPlayer)
 
 	if (m_bHit == true)
 	{
+		pPlayer->Set_AttackHit();
+
 		if (m_pPlayer->Is_SpecialAttack() == false)
 			m_tStatus.iHP -= pPlayer->Get_Status().iAttack;
 		else

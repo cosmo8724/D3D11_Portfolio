@@ -124,7 +124,7 @@ HRESULT CLeviathan_State::SetUp_State_Idle()
 		//.Init_Changer(L"ATT_MOVE", this, &CLeviathan_State::Ready_Attack_Move)
 		.Init_Changer(L"ATT_TAIL_WHIP", this, &CLeviathan_State::Ready_Attack_TailWhip)
 		.Init_Changer(L"ATT_WATER_BALL", this, &CLeviathan_State::Ready_Attack_Water_Ball)
-		.Init_Changer(L"ATT_WATER_BEAM_ST", this, &CLeviathan_State::Ready_Attack_Water_Beam)
+		//.Init_Changer(L"ATT_WATER_BEAM_ST", this, &CLeviathan_State::Ready_Attack_Water_Beam)
 		//.Init_Changer(L"ATT_WATER_TORNADO", this, &CLeviathan_State::Ready_Attack_Water_Tornado)
 		//.Init_Changer(L"ATT_WING", this, &CLeviathan_State::Ready_Attack_Wing)
 		.Init_Changer(L"WARP_1", this, &CLeviathan_State::Check_IdleFinishCount)
@@ -436,10 +436,10 @@ void CLeviathan_State::Start_Warp_1(_double dTimeDelta)
 
 void CLeviathan_State::Start_Warp_2(_double dTimeDelta)
 {
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Warp02.wav", g_fBossVolume, false, true, 11);
+
 	if (m_iCurrentPattern == (_uint)PHASE_2_PATTERN_END)
 	{
-		srand(unsigned(time(NULL)));
-
 		_vector	vPos;
 		_matrix	matPlayerWorld = m_pLeviathan->m_pPlayer->Get_WorldMatrix();
 		POSITION	eNextPos = POSITION(rand() % (_int)POS_PLAYER);
@@ -551,6 +551,8 @@ void CLeviathan_State::Start_Attack_Move_2(_double dTimeDelta)
 void CLeviathan_State::Start_Attack_Splash(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(ATT_SPLASH);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Att_Splash.wav", g_fBossVolume, false, false, 12);
 }
 
 void CLeviathan_State::Start_Attack_TailWhip(_double dTimeDelta)
@@ -623,6 +625,8 @@ void CLeviathan_State::Start_Attack_Water_Ball(_double dTimeDelta)
 void CLeviathan_State::Start_Attack_Spin(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(ATT_SPIN);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Att_Spin.wav", g_fBossVolume, false, false, 12);
 }
 
 void CLeviathan_State::Start_Attack_Water_Beam_Start(_double dTimeDelta)
@@ -679,27 +683,37 @@ void CLeviathan_State::Start_Fly_Move_2(_double dTimeDelta)
 void CLeviathan_State::Start_Turn_Right_180(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(TURN_RIGHT_180);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Turn.wav", g_fBossVolume, false, false, 13);
 }
 
 void CLeviathan_State::Start_Turn_Right_90(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(TURN_RIGHT_90);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Turn.wav", g_fBossVolume, false, false, 13);
 }
 
 void CLeviathan_State::Start_Turn_Left_180(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(TURN_LEFT_180);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Turn.wav", g_fBossVolume, false, false, 13);
 }
 
 void CLeviathan_State::Start_Turn_Left_90(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(TURN_LEFT_90);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Turn.wav", g_fBossVolume, false, false, 13);
 }
 
 void CLeviathan_State::Start_Groggy_Down(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(GROGGY_DOWN);
 	m_bGroggy = true;
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Groggy_Down.wav", g_fBossVolume, false, false, 13);
 }
 
 void CLeviathan_State::Start_Groggy_Up(_double dTimeDelta)
@@ -710,6 +724,8 @@ void CLeviathan_State::Start_Groggy_Up(_double dTimeDelta)
 void CLeviathan_State::Start_Damage_Down_Start(_double dTimeDelta)
 {
 	m_pModelCom->Set_CurAnimationIndex(DMG_DOWN_ST);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Die.wav", g_fBossVolume, false, false, 13);
 }
 
 void CLeviathan_State::Start_Damage_Down_Loop(_double dTimeDelta)
@@ -724,6 +740,18 @@ void CLeviathan_State::Tick_Appear(_double dTimeDelta)
 		_matrix	matPlayerWorld = m_pLeviathan->m_pPlayer->Get_WorldMatrix();
 
 		m_pTransformCom->LookAt_NoUpDown(matPlayerWorld.r[3]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.05f)
+			CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Warp02.wav", g_fBossVolume, false, false, 10);
+
+		if (m_pModelCom->Get_AnimationProgress() > 0.42f && m_pModelCom->Get_AnimationProgress() < 0.45f)
+			CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Appear.wav", g_fBossVolume, false, false, 12);
+
+		if (m_pModelCom->Get_AnimationProgress() > 0.6f && m_pModelCom->Get_AnimationProgress() < 0.62f)
+		{
+			CGameInstance::GetInstance()->Stop_Sound(15);
+			CGameInstance::GetInstance()->Play_Sound(L"Boss_Battle.mp3", 0.5f, true, false, 15);
+		}
 	}
 }
 
@@ -743,13 +771,12 @@ void CLeviathan_State::Tick_Idle_End(_double dTimeDelta)
 
 void CLeviathan_State::Tick_Warp_1(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.6f && m_pModelCom->Get_AnimationProgress() < 0.62f)
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Warp01.wav", g_fBossVolume, false, false, 10);
+
 	if (m_pModelCom->Get_AnimationProgress() > 0.95f)
 	{
-		srand(unsigned(time(NULL)));
-
 		Ready_Attack();
-
-		m_iCurrentPattern = (_uint)WATER_BALL;
 
 		_vector	vPos;
 		_matrix	matPlayerWorld = m_pLeviathan->m_pPlayer->Get_WorldMatrix();
@@ -767,7 +794,7 @@ void CLeviathan_State::Tick_Warp_1(_double dTimeDelta)
 					eNextPos = POS_G;
 			}
 		}
-		else if (/*m_iCurrentPattern == (_uint)MOVE || */m_iCurrentPattern == (_uint)WATER_BALL || m_iCurrentPattern == (_uint)LIGHTNING || m_iCurrentPattern == (_uint)WATER_BEAM)
+		else if (/*m_iCurrentPattern == (_uint)MOVE || */m_iCurrentPattern == (_uint)WATER_BALL || m_iCurrentPattern == (_uint)LIGHTNING/* || m_iCurrentPattern == (_uint)WATER_BEAM*/)
 		{
 			eNextPos = POSITION(rand() % (_uint)POS_G);
 
@@ -854,6 +881,8 @@ void CLeviathan_State::Tick_Warp_2(_double dTimeDelta)
 
 void CLeviathan_State::Tick_Attack_Bite(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_pModelCom->Get_AnimationProgress() < 0.33f)
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Att_Bite.wav", g_fBossVolume, false, false, 12);
 }
 
 void CLeviathan_State::Tick_Attack_Lightning_Start(_double dTimeDelta)
@@ -862,6 +891,8 @@ void CLeviathan_State::Tick_Attack_Lightning_Start(_double dTimeDelta)
 
 void CLeviathan_State::Tick_Attack_Lightning_Loop(_double dTimeDelta)
 {
+	CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Att_Energy_Charge.wav", g_fBossVolume * 0.7f, false, false, 12);
+
 	m_dLightningTime += dTimeDelta;
 
 	if (m_pModelCom->Get_AnimationFinish() == true)
@@ -964,14 +995,23 @@ void CLeviathan_State::Tick_Attack_Move_2(_double dTimeDelta)
 
 void CLeviathan_State::Tick_Attack_Splash(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.8f && m_pModelCom->Get_AnimationProgress() < 0.84f)
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Warp02.wav", g_fBossVolume, false, false, 11);
 }
 
 void CLeviathan_State::Tick_Attack_TailWhip(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_pModelCom->Get_AnimationProgress() < 0.34f)
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Att_TailWhip.wav", g_fBossVolume, false, false, 12);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.6f && m_pModelCom->Get_AnimationProgress() < 0.62f)
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Warp01.wav", g_fBossVolume, false, false, 10);
 }
 
 void CLeviathan_State::Tick_Attack_Water_Ball(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_pModelCom->Get_AnimationProgress() < 0.34f)
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Att_WaterBall_Wing.wav", g_fBossVolume, false, false, 12);
 }
 
 void CLeviathan_State::Tick_Attack_Spin(_double dTimeDelta)
@@ -1035,8 +1075,14 @@ void CLeviathan_State::Tick_Turn_Left_90(_double dTimeDelta)
 
 void CLeviathan_State::Tick_Groggy_Down(_double dTimeDelta)
 {
-	if (m_pModelCom->Get_AnimationProgress() > 0.4f && m_pModelCom->Get_AnimationProgress() < 0.7f)
+}
+
+void CLeviathan_State::Tick_Groggy_Up(_double dTimeDelta)
+{
+	if (m_pModelCom->Get_AnimationProgress() > 0.45f && m_pModelCom->Get_AnimationProgress() < 0.48f)
 	{
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Groggy_Up.wav", g_fBossVolume, false, false, 13);
+
 		m_dHPRecoverTime += dTimeDelta;
 
 		if (m_pLeviathan->Get_Status().iHP < m_pLeviathan->Get_Status().iMaxHP)
@@ -1044,21 +1090,22 @@ void CLeviathan_State::Tick_Groggy_Down(_double dTimeDelta)
 	}
 }
 
-void CLeviathan_State::Tick_Groggy_Up(_double dTimeDelta)
-{
-}
-
 void CLeviathan_State::Tick_Damage_Down_Start(_double dTimeDelta)
 {
+	if (m_pModelCom->Get_AnimationProgress() > 0.7f && m_pModelCom->Get_AnimationProgress() < 0.73f)
+		CGameInstance::GetInstance()->Play_Sound(L"SE_SU0004_Leviathan_Die_Down.wav", g_fBossVolume, false, false, 13);
 }
 
 void CLeviathan_State::Tick_Damage_Down_Loop(_double dTimeDelta)
 {
+	m_pLeviathan->m_bDie = true;
 	m_pLeviathan->m_bPlayerDetected = true;
 	m_pLeviathan->m_pPlayer->Set_BossBattle(false);
 	dynamic_cast<CSkyBox*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_SkyBox")->back())->Set_LightDecrease(false);
 	CGameInstance::GetInstance()->Set_LightState(2, false);
 	CGameInstance::GetInstance()->Set_LightState(3, false);
+	CGameInstance::GetInstance()->Stop_Sound(15);
+	CGameInstance::GetInstance()->Play_Sound(L"CutScn_Pt04_NeedlePrickPeaks_RufusFlashback02_Music.wav", 0.8f, false, false, 15);
 }
 
 void CLeviathan_State::End_Appear(_double dTimeDelta)
@@ -1104,6 +1151,8 @@ void CLeviathan_State::End_Attack_Lightning_End(_double dTimeDelta)
 {
 	m_iCurrentPattern = (_uint)PHASE_2_PATTERN_END;
 	m_pLeviathan->m_tStatus.dCurAttackCoolTime = 0.0;
+
+	CGameInstance::GetInstance()->Stop_Sound(12);
 }
 
 void CLeviathan_State::End_Attack_Move(_double dTimeDelta)
@@ -1248,8 +1297,6 @@ _bool CLeviathan_State::Ready_Attack()
 
 	if (m_pLeviathan->m_bPlayerDetected == true && m_pLeviathan->m_bReadyAttack == true)
 	{
-		srand(unsigned(time(NULL)));
-
 		if (m_ePhase == PHASE_1)
 		{
 			m_iCurrentPattern = rand() % (_uint)PHASE_1_PATTERN_END;
@@ -1394,8 +1441,8 @@ _bool CLeviathan_State::Ready_Attack_Spin()
 
 _bool CLeviathan_State::Ready_Attack_Water_Beam()
 {
-	if (m_iCurrentPattern == (_uint)WATER_BEAM)
-		return true;
+	/*if (m_iCurrentPattern == (_uint)WATER_BEAM)
+		return true;*/
 
 	return false;
 }

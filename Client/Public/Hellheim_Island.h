@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CRenderer;
 class CShader;
 class CModel;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -31,6 +32,7 @@ private:
 	CRenderer*				m_pRendererCom = nullptr;
 	CShader*					m_pShaderCom = nullptr;
 	CModel*					m_pModelCom = nullptr;
+	CCollider*					m_pEndingRangeCom = nullptr;
 
 private:
 	HRESULT					SetUp_Component();

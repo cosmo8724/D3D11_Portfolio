@@ -42,14 +42,14 @@ HRESULT CLevel_Logo::Initialize(const wstring & wstrCloneObjFilePath)
 	CGameInstance::GetInstance()->Clear_ImGuiObject();
 	//CGameInstance::GetInstance()->Add_ImGuiTabObject(CTool_Property::Create());
 	//CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTestTool::Create());
-	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Settings::Create());
+	/*CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Settings::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Debugger::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_LevelViewer::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_PrototypeMgr::Create(m_pDevice, m_pContext));
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_MapEditor::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_AnimationManager::Create());
 	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_ModelSave::Create(m_pDevice, m_pContext));
-	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Navigation::Create(m_pDevice, m_pContext));
+	CGameInstance::GetInstance()->Add_ImGuiWindowObject(CTool_Navigation::Create(m_pDevice, m_pContext));*/
 
 	return S_OK;
 }
@@ -69,7 +69,7 @@ void CLevel_Logo::Late_Tick(_double dTimeDelta)
 	Safe_AddRef(pGameInstance);
 	
 	if (pGameInstance->Key_Down(DIK_RETURN))
-		FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TESTSTAGE, L"../Bin/Save Data/Level_Stage_Prototype_Components_230207.json", L"../Bin/Save Data/Level_Stage_Prototype_GameObjects_230207.json", L"../Bin/Save Data/Level_Stage_CloneObjects_230207.json")), );
+		FAILED_CHECK_RETURN(pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TESTSTAGE, L"../Bin/Save Data/Level_Stage_Prototype_Components_230207.json", L"../Bin/Save Data/Level_Stage_Prototype_GameObjects_230207.json", L"../Bin/Save Data/Level_Stage_CloneObjects_230214.json")), );
 
 	Safe_Release(pGameInstance);
 }

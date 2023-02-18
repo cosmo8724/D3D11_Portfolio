@@ -66,6 +66,9 @@ void CMonsterDrink_Icon::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
+	if (g_bEnd == true)
+		return;
+
 	if (nullptr != m_pRendererCom)
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
 }

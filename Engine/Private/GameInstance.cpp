@@ -72,7 +72,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iNumLevels, const GRAPHIC_DESC & 
 	FAILED_CHECK_RETURN(m_pComponentMgr->Reserve_Manager(iNumLevels + 1), E_FAIL);
 
 	/* Initialize FMOD */
-	FAILED_CHECK_RETURN(m_pSoundMgr->Reserve_Manager("../Bin/Resource/Sound/"), E_FAIL);
+	FAILED_CHECK_RETURN(m_pSoundMgr->Reserve_Manager("../Bin/Resource/Sound/", 18), E_FAIL);
 
 	/* Create Prototype Transform Component */
 	FAILED_CHECK_RETURN(m_pComponentMgr->Add_Prototype(m_iStaticLevelIndex, m_wstrPrototypeTransformTag, CTransform::Create(*ppDeviceOut, *ppContextOut)), E_FAIL);

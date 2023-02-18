@@ -218,28 +218,28 @@ PS_OUT	PS_MAIN_BLEND(PS_IN In)
 
 	Out.vColor = vDiffuse * vShade + vSpecular;
 
-	vector		vDepthInfo = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
-	float		fViewZ = vDepthInfo.y * 3000.f;
+	// vector		vDepthInfo = g_DepthTexture.Sample(LinearSampler, In.vTexUV);
+	// float		fViewZ = vDepthInfo.y * 3000.f;
 
-	vector		vPos;
-	vPos.x = (In.vTexUV.x * 2.f - 1.f);
-	vPos.y = (In.vTexUV.y * -2.f + 1.f);
-	vPos.z = vDepthInfo.x;
-	vPos.w = 1.f;
+	// vector		vPos;
+	// vPos.x = (In.vTexUV.x * 2.f - 1.f);
+	// vPos.y = (In.vTexUV.y * -2.f + 1.f);
+	// vPos.z = vDepthInfo.x;
+	// vPos.w = 1.f;
 
-	vPos *= fViewZ;
+	// vPos *= fViewZ;
 	
-	vPos = mul(vPos, g_matProjInv);
-	vPos = mul(vPos, g_matViewInv);
-	vPos = mul(vPos, g_matLightView);
+	// vPos = mul(vPos, g_matProjInv);
+	// vPos = mul(vPos, g_matViewInv);
+	// vPos = mul(vPos, g_matLightView);
 
-	vector		vUVPos = mul(vPos, g_matLightProj);
-	float2		vLightUV = float2((vUVPos.x / vUVPos.w) * 0.5f + 0.5f, (vUVPos.y / vUVPos.w) * -0.5f + 0.5f);
+	// vector		vUVPos = mul(vPos, g_matLightProj);
+	// float2		vLightUV = float2((vUVPos.x / vUVPos.w) * 0.5f + 0.5f, (vUVPos.y / vUVPos.w) * -0.5f + 0.5f);
 
-	vector		vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearSampler, vLightUV);
+	// vector		vShadowDepthInfo = g_ShadowDepthTexture.Sample(LinearSampler, vLightUV);
 
-	if (vPos.z - 0.1f > vShadowDepthInfo.x * 1000.f)
-		Out.vColor = Out.vColor * vector(0.3f, 0.3f, 0.3f, 1.f);
+	// if (vPos.z - 0.1f > vShadowDepthInfo.x * 1000.f)
+	// 	Out.vColor = Out.vColor * vector(0.3f, 0.3f, 0.3f, 1.f);
 
 	if (0.f == Out.vColor.a)
 		discard;

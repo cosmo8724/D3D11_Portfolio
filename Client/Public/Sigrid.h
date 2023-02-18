@@ -28,10 +28,13 @@ private:
 	virtual ~CSigrid() = default;
 
 public:
+	const _bool&				Get_ItemPurchased() const { return m_bItemPurchased; }
 	ITEMSTATE				Get_ItemState(_uint iMenuIndex, _uint iSlot) { return m_eItemState[iMenuIndex][iSlot]; }
 	_uint						Get_EquipSlot(_uint iMenuIndex);
 	_float4					Get_CurrentHairColor();
+	const _bool&				Get_IsBossBattle() const { return m_bBossBattle; }
 	void						EquipItem(_uint iMenuIndex, _uint iSlot);
+	void						Set_ItemPurchased(_bool bState) { m_bItemPurchased = bState; }
 	void						Set_ItemState(_uint iMenuIndex, _uint iSlot, _uint eState) { m_eItemState[iMenuIndex][iSlot] = (ITEMSTATE)eState; }
 	void						Set_CurrentOutfit(_uint iIndex) { m_iCurrentOutfit = iIndex; }
 	void						Set_PreviewOutfit(_uint iIndex) { m_iPreviewOutfit = iIndex; }
@@ -88,6 +91,7 @@ private:
 	CModel*					m_pModelCom = nullptr;
 	CTexture*					m_pOutfitTextureCom[4] = { nullptr };
 	CTexture*					m_pHairMaskTextureCom = nullptr;
+	CTexture*					m_pNetRingTextureCom = nullptr;
 	
 	CCollider*					m_pOBBCol = nullptr;
 	CCollider*					m_pNetSphereCol = nullptr;
@@ -108,6 +112,7 @@ private:	/* State */
 	_double					m_dTimeScale = 1.0;
 	CModel::LERPTYPE		m_eLerpType = CModel::LERP_BEGIN;
 
+	_bool						m_bItemPurchased = false;
 	_uint						m_iCurrentOutfit = 0;
 	_uint						m_iPreviewOutfit = 0;
 	_uint						m_iCurrentHair = 0;

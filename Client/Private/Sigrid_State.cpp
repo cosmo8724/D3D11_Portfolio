@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Sigrid.h"
 #include "Static_Camera.h"
+#include "GameUtility.h"
 
 /*
 FSM 추후 수정 해야할 것
@@ -140,6 +141,12 @@ void CSigrid_State::Tick(_double & dTimeDelta)
 void CSigrid_State::Late_Tick(_double & dTimeDelta)
 {
 	m_eLastDir = m_eDir;
+}
+
+void CSigrid_State::ImGui_RenderProperty()
+{
+	ImGui::InputFloat("Left", &m_fTestLeft, 0.0001f, 0.001f, "%.4f");
+	ImGui::InputFloat("Right", &m_fTestRight, 0.0001f, 0.001f, "%.4f");
 }
 
 HRESULT CSigrid_State::SetUp_State_Ground_Idle()
@@ -1888,7 +1895,12 @@ void CSigrid_State::Start_Dash_Into_Idle(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == DASH_INTO_RUN)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Movement_Dash();
+		Play_Voice_Dash_Ground();
+	}
+
 	m_pPlayer->m_bDash = true;
 	m_pModelCom->Set_CurAnimationIndex(DASH_INTO_IDLE);
 	m_pModelCom->Reset_Animation();
@@ -1909,6 +1921,11 @@ void CSigrid_State::Start_Ground_Run(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == GROUND_RUN_LEFT ||
 		m_pModelCom->Get_LastAnimationIndex() == GROUND_RUN_RIGHT)
 		m_pModelCom->Set_LerpTime(0.3f);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
 }
 
 void CSigrid_State::Start_Ground_Run_Left(_double dTimeDelta)
@@ -1930,7 +1947,12 @@ void CSigrid_State::Start_Dash_Into_Run(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == DASH_INTO_IDLE)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Movement_Dash();
+		Play_Voice_Dash_Ground();
+	}
+
 	m_pPlayer->m_bDash = true;
 	m_pModelCom->Set_CurAnimationIndex(DASH_INTO_RUN);
 	m_pModelCom->Reset_Animation();
@@ -2069,6 +2091,12 @@ void CSigrid_State::Start_Surf(_double dTimeDelta)
 
 	if (m_pModelCom->Get_LastAnimationIndex() != SURF_LEFT && m_pModelCom->Get_LastAnimationIndex() != SURF_RIGHT)
 		m_pPlayer->m_dSurfTime = 0.0;
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
+
+	Play_SFX_Movement_Water_Surf_Slow_Start();
 }
 
 void CSigrid_State::Start_Surf_Left(_double dTimeDelta)
@@ -2076,6 +2104,10 @@ void CSigrid_State::Start_Surf_Left(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 
 	m_pModelCom->Set_CurAnimationIndex(SURF_LEFT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
 }
 
 void CSigrid_State::Start_Surf_Right(_double dTimeDelta)
@@ -2083,6 +2115,10 @@ void CSigrid_State::Start_Surf_Right(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 
 	m_pModelCom->Set_CurAnimationIndex(SURF_RIGHT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
 }
 
 void CSigrid_State::Start_Surf_Fast_Intro(_double dTimeDelta)
@@ -2110,6 +2146,12 @@ void CSigrid_State::Start_Surf_Fast(_double dTimeDelta)
 	m_pPlayer->m_bBoost = false;
 
 	m_pModelCom->Set_CurAnimationIndex(SURF_FAST);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
+
+	Play_SFX_Movement_Water_Surf_Fast_Start();
 }
 
 void CSigrid_State::Start_Surf_Fast_Left(_double dTimeDelta)
@@ -2117,6 +2159,10 @@ void CSigrid_State::Start_Surf_Fast_Left(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 
 	m_pModelCom->Set_CurAnimationIndex(SURF_FAST_LEFT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
 }
 
 void CSigrid_State::Start_Surf_Fast_Right(_double dTimeDelta)
@@ -2124,6 +2170,10 @@ void CSigrid_State::Start_Surf_Fast_Right(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 
 	m_pModelCom->Set_CurAnimationIndex(SURF_FAST_RIGHT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
 }
 
 void CSigrid_State::Start_Surf_Boost(_double dTimeDelta)
@@ -2137,6 +2187,12 @@ void CSigrid_State::Start_Surf_Boost(_double dTimeDelta)
 	m_pPlayer->m_bDash = false;
 	m_pPlayer->m_bBoost = true;
 	m_pModelCom->Set_CurAnimationIndex(SURF_BOOST);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_FAST|| m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
+
+	Play_SFX_Movement_Water_Surf_Boost_Start();
 }
 
 void CSigrid_State::Start_Surf_Boost_Left(_double dTimeDelta)
@@ -2144,6 +2200,10 @@ void CSigrid_State::Start_Surf_Boost_Left(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pPlayer->m_bBoost = true;
 	m_pModelCom->Set_CurAnimationIndex(SURF_BOOST_LEFT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
 }
 
 void CSigrid_State::Start_Surf_Boost_Right(_double dTimeDelta)
@@ -2151,6 +2211,10 @@ void CSigrid_State::Start_Surf_Boost_Right(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pPlayer->m_bBoost = true;
 	m_pModelCom->Set_CurAnimationIndex(SURF_BOOST_RIGHT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
 }
 
 void CSigrid_State::Start_Jump(_double dTimeDelta)
@@ -2159,6 +2223,13 @@ void CSigrid_State::Start_Jump(_double dTimeDelta)
 	m_pModelCom->Set_CurAnimationIndex(JUMP);
 	m_pModelCom->Reset_Animation();
 	m_pPlayer->m_fCurJumpSpeed = m_pPlayer->m_fInitJumpSpeed;
+
+	if (m_pPlayer->m_bOnOcean == false)
+		Play_SFX_Movement_Ground_Jump();
+	else
+		Play_SFX_Movement_Water_Jump();
+
+	Play_Voice_Jump();
 }
 
 void CSigrid_State::Start_Jump_Double(_double dTimeDelta)
@@ -2167,6 +2238,10 @@ void CSigrid_State::Start_Jump_Double(_double dTimeDelta)
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_DOUBLE);
 	m_pPlayer->m_fCurJumpSpeed = m_pPlayer->m_fInitJumpSpeed;
+
+	Play_SFX_Movement_Double_Jump();
+
+	Play_Voice_Double_Jump();
 }
 
 void CSigrid_State::Start_Jump_Charging(_double dTimeDelta)
@@ -2177,6 +2252,8 @@ void CSigrid_State::Start_Jump_Charging(_double dTimeDelta)
 	m_pPlayer->m_bDoubleJump = false;
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_CHARGING);
+
+	Play_SFX_Movement_ChargeJump_ChargeUp();
 }
 
 void CSigrid_State::Start_Jump_Charging_Left(_double dTimeDelta)
@@ -2187,6 +2264,9 @@ void CSigrid_State::Start_Jump_Charging_Left(_double dTimeDelta)
 	m_pPlayer->m_bDoubleJump = false;
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_CHARGING_LEFT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() != JUMP_CHARGING && m_pModelCom->Get_LastAnimationIndex() != JUMP_CHARGING_RIGHT)
+		Play_SFX_Movement_ChargeJump_ChargeUp();
 }
 
 void CSigrid_State::Start_Jump_Charging_Right(_double dTimeDelta)
@@ -2197,6 +2277,9 @@ void CSigrid_State::Start_Jump_Charging_Right(_double dTimeDelta)
 	m_pPlayer->m_bDoubleJump = false;
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_CHARGING_RIGHT);
+
+	if (m_pModelCom->Get_LastAnimationIndex() != JUMP_CHARGING && m_pModelCom->Get_LastAnimationIndex() != JUMP_CHARGING_LEFT)
+		Play_SFX_Movement_ChargeJump_ChargeUp();
 }
 
 void CSigrid_State::Start_Jump_Charged1_60(_double dTimeDelta)
@@ -2207,6 +2290,12 @@ void CSigrid_State::Start_Jump_Charged1_60(_double dTimeDelta)
 	m_pPlayer->m_bDoubleJump = false;
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_CHARGED1_60);
+
+	CGameInstance::GetInstance()->Stop_Sound(0);
+	CGameInstance::GetInstance()->Stop_Sound(6);
+
+	Play_SFX_Movement_ChargeJump_Small();
+	Play_Voice_Charge_Jump();
 }
 
 void CSigrid_State::Start_Jump_Charged1_90(_double dTimeDelta)
@@ -2217,6 +2306,12 @@ void CSigrid_State::Start_Jump_Charged1_90(_double dTimeDelta)
 	m_pPlayer->m_bDoubleJump = false;
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_CHARGED1_90);
+
+	CGameInstance::GetInstance()->Stop_Sound(0);
+	CGameInstance::GetInstance()->Stop_Sound(6);
+
+	Play_SFX_Movement_ChargeJump_Small();
+	Play_Voice_Charge_Jump();
 }
 
 void CSigrid_State::Start_Jump_Charged2_60(_double dTimeDelta)
@@ -2227,6 +2322,12 @@ void CSigrid_State::Start_Jump_Charged2_60(_double dTimeDelta)
 	m_pPlayer->m_bDoubleJump = false;
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_CHARGED2_60);
+
+	CGameInstance::GetInstance()->Stop_Sound(0);
+	CGameInstance::GetInstance()->Stop_Sound(6);
+
+	Play_SFX_Movement_ChargeJump_Big();
+	Play_Voice_Charge_Jump();
 }
 
 void CSigrid_State::Start_Jump_Charged2_90(_double dTimeDelta)
@@ -2237,6 +2338,12 @@ void CSigrid_State::Start_Jump_Charged2_90(_double dTimeDelta)
 	m_pPlayer->m_bDoubleJump = false;
 	m_pPlayer->m_bDash = false;
 	m_pModelCom->Set_CurAnimationIndex(JUMP_CHARGED2_90);
+
+	CGameInstance::GetInstance()->Stop_Sound(0);
+	CGameInstance::GetInstance()->Stop_Sound(6);
+
+	Play_SFX_Movement_ChargeJump_Big();
+	Play_Voice_Charge_Jump();
 }
 
 void CSigrid_State::Start_Dash_Into_Air(_double dTimeDelta)
@@ -2244,10 +2351,19 @@ void CSigrid_State::Start_Dash_Into_Air(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == DASH_INTO_IDLE || m_pModelCom->Get_LastAnimationIndex() == DASH_INTO_RUN)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Movement_Dash();
+		Play_Voice_Dash_Air();
+	}
+
 	m_pPlayer->m_bDash = true;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(DASH_INTO_AIR);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
 }
 
 void CSigrid_State::Start_Dash_Into_Water_Idle(_double dTimeDelta)
@@ -2256,6 +2372,9 @@ void CSigrid_State::Start_Dash_Into_Water_Idle(_double dTimeDelta)
 	m_pPlayer->m_bOnOcean = true;
 	m_pPlayer->m_bDash = true;
 	m_pModelCom->Set_CurAnimationIndex(DASH_INTO_WATER_IDLE);
+	
+	Play_SFX_Movement_Dash();
+	Play_Voice_Dash_Ground();
 }
 
 void CSigrid_State::Start_Dash_Into_Surf(_double dTimeDelta)
@@ -2264,6 +2383,12 @@ void CSigrid_State::Start_Dash_Into_Surf(_double dTimeDelta)
 	m_pPlayer->m_bOnOcean = true;
 	m_pPlayer->m_bDash = true;
 	m_pModelCom->Set_CurAnimationIndex(DASH_INTO_SURF);
+	
+	if (m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING || m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING_LEFT || m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(6);
+
+	Play_SFX_Movement_Dash();
+	Play_Voice_Dash_Ground();
 }
 
 void CSigrid_State::Start_Dash_Into_Surf_Fast(_double dTimeDelta)
@@ -2272,6 +2397,9 @@ void CSigrid_State::Start_Dash_Into_Surf_Fast(_double dTimeDelta)
 	m_pPlayer->m_bOnOcean = true;
 	m_pPlayer->m_bDash = true;
 	m_pModelCom->Set_CurAnimationIndex(DASH_INTO_SURF_FAST);
+	
+	Play_SFX_Movement_Dash();
+	Play_Voice_Dash_Ground();
 }
 
 void CSigrid_State::Start_Snap_Turn_Ground_Idle(_double dTimeDelta)
@@ -2320,6 +2448,10 @@ void CSigrid_State::Start_Air(_double dTimeDelta)
 	else
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(AIR);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
 }
 
 void CSigrid_State::Start_Air_Ascend_60(_double dTimeDelta)
@@ -2418,7 +2550,12 @@ void CSigrid_State::Start_Air_Gliding(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT_TURN || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
 		m_pModelCom->Set_LerpTime(0.01f);
 	else
+	{
 		m_pModelCom->Set_LerpTime(0.2f);
+
+		if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT && m_pModelCom->Get_LastAnimationIndex() != AIR_GLIDING_RIGHT)
+			Play_SFX_Movement_Glide_Fly_Start();
+	}
 
 	m_pModelCom->Set_CurAnimationIndex(AIR_GLIDING);
 }
@@ -2430,6 +2567,8 @@ void CSigrid_State::Start_Air_Gliding_Left(_double dTimeDelta)
 	m_pPlayer->m_fGravity /= 20.f;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(AIR_GLIDING_LEFT);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Loop.wav", g_fSFXVolume, false, false, 2);
 }
 
 void CSigrid_State::Start_Air_Gliding_Right(_double dTimeDelta)
@@ -2439,6 +2578,8 @@ void CSigrid_State::Start_Air_Gliding_Right(_double dTimeDelta)
 	m_pPlayer->m_fGravity /= 20.f;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(AIR_GLIDING_RIGHT);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Loop.wav", g_fSFXVolume, false, false, 2);
 }
 
 void CSigrid_State::Start_Air_Gliding_Left_Turn(_double dTimeDelta)
@@ -2449,6 +2590,8 @@ void CSigrid_State::Start_Air_Gliding_Left_Turn(_double dTimeDelta)
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_LerpTime(0.1f);
 	m_pModelCom->Set_CurAnimationIndex(AIR_GLIDING_LEFT_TURN);
+
+	Play_SFX_Movement_Glide_Fly_Start();
 }
 
 void CSigrid_State::Start_Air_Gliding_Right_Turn(_double dTimeDelta)
@@ -2459,6 +2602,8 @@ void CSigrid_State::Start_Air_Gliding_Right_Turn(_double dTimeDelta)
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_LerpTime(0.1f);
 	m_pModelCom->Set_CurAnimationIndex(AIR_GLIDING_RIGHT_TURN);
+
+	Play_SFX_Movement_Glide_Fly_Start();
 }
 
 void CSigrid_State::Start_Landing_Ground_Into_Idle(_double dTimeDelta)
@@ -2466,6 +2611,17 @@ void CSigrid_State::Start_Landing_Ground_Into_Idle(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_LerpTime(0.05f);
 	m_pModelCom->Set_CurAnimationIndex(LANDING_GROUND_INTO_IDLE);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT_TURN || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
+
+	Play_SFX_Movement_Ground_Land();
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_Voice_Land_Hard();
+	else
+		Play_Voice_Land_Soft();
 }
 
 void CSigrid_State::Start_Landing_Ground_Into_Run(_double dTimeDelta)
@@ -2473,6 +2629,17 @@ void CSigrid_State::Start_Landing_Ground_Into_Run(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_LerpTime(0.05f);
 	m_pModelCom->Set_CurAnimationIndex(LANDING_GROUND_INTO_RUN);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT_TURN || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
+
+	Play_SFX_Movement_Ground_Land();
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_Voice_Land_Hard();
+	else
+		Play_Voice_Land_Soft();
 }
 
 void CSigrid_State::Start_Landing_Slope(_double dTimeDelta)
@@ -2480,6 +2647,20 @@ void CSigrid_State::Start_Landing_Slope(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_LerpTime(0.05f);
 	m_pModelCom->Set_CurAnimationIndex(LANDING_SLOPE);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT_TURN || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_SFX_Movement_Water_Land_Hard();
+	else
+		Play_SFX_Movement_Water_Land();
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_Voice_Land_Hard();
+	else
+		Play_Voice_Land_Soft();
 }
 
 void CSigrid_State::Start_Landing_Surf_Fast(_double dTimeDelta)
@@ -2487,6 +2668,20 @@ void CSigrid_State::Start_Landing_Surf_Fast(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_LerpTime(0.05f);
 	m_pModelCom->Set_CurAnimationIndex(LANDING_SURF_FAST);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT_TURN || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_SFX_Movement_Water_Land_Hard();
+	else
+		Play_SFX_Movement_Water_Land();
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_Voice_Land_Hard();
+	else
+		Play_Voice_Land_Soft();
 }
 
 void CSigrid_State::Start_Landing_Surf(_double dTimeDelta)
@@ -2494,6 +2689,20 @@ void CSigrid_State::Start_Landing_Surf(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_LerpTime(0.05f);
 	m_pModelCom->Set_CurAnimationIndex(LANDING_SURF);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT_TURN || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_SFX_Movement_Water_Land_Hard();
+	else
+		Play_SFX_Movement_Water_Land();
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_Voice_Land_Hard();
+	else
+		Play_Voice_Land_Soft();
 }
 
 void CSigrid_State::Start_Landing_Water(_double dTimeDelta)
@@ -2501,6 +2710,20 @@ void CSigrid_State::Start_Landing_Water(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_LerpTime(0.05f);
 	m_pModelCom->Set_CurAnimationIndex(LANDING_WATER);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT_TURN || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_SFX_Movement_Water_Land_Hard();
+	else
+		Play_SFX_Movement_Water_Land();
+
+	if (m_pPlayer->m_fCurJumpSpeed < -0.5f)
+		Play_Voice_Land_Hard();
+	else
+		Play_Voice_Land_Soft();
 }
 
 void CSigrid_State::Start_Combat_Combo1_Into_Idle(_double dTimeDelta)
@@ -2511,7 +2734,12 @@ void CSigrid_State::Start_Combat_Combo1_Into_Idle(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO1_INTO_RUN)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_1_3();
+		Play_Voice_Attack_Combo_1_3();
+	}
+
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO1_INTO_IDLE);
 }
 
@@ -2523,7 +2751,12 @@ void CSigrid_State::Start_Combat_Combo1_Into_Run(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO1_INTO_IDLE)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_1_3();
+		Play_Voice_Attack_Combo_1_3();
+	}
+
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO1_INTO_RUN);
 }
 
@@ -2534,6 +2767,17 @@ void CSigrid_State::Start_Combat_Combo1_Into_Surf(_double dTimeDelta)
 
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO1_INTO_SURF);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING || m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING_LEFT || m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(6);
+
+	Play_SFX_Attack_Combo_1_3();
+	Play_Voice_Attack_Combo_1_3();
 }
 
 void CSigrid_State::Start_Combat_Combo1_Air(_double dTimeDelta)
@@ -2544,6 +2788,13 @@ void CSigrid_State::Start_Combat_Combo1_Air(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO1_AIR);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_LastAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
+
+	Play_SFX_Attack_Combo_1_3();
+	Play_Voice_Attack_Combo_1_3();
 }
 
 void CSigrid_State::Start_Combat_Combo2_Into_Idle(_double dTimeDelta)
@@ -2554,7 +2805,12 @@ void CSigrid_State::Start_Combat_Combo2_Into_Idle(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO2_INTO_RUN)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_2_4();
+		Play_Voice_Attack_Combo_2_4();
+	}
+
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO2_INTO_IDLE);
 }
 
@@ -2566,7 +2822,12 @@ void CSigrid_State::Start_Combat_Combo2_Into_Run(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO2_INTO_IDLE)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_2_4();
+		Play_Voice_Attack_Combo_2_4();
+	}
+
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO2_INTO_RUN);
 }
 
@@ -2577,6 +2838,8 @@ void CSigrid_State::Start_Combat_Combo2_Into_Surf(_double dTimeDelta)
 
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO2_INTO_SURF);
+	Play_SFX_Attack_Combo_2_4();
+	Play_Voice_Attack_Combo_2_4();
 }
 
 void CSigrid_State::Start_Combat_Combo2_Air(_double dTimeDelta)
@@ -2587,6 +2850,8 @@ void CSigrid_State::Start_Combat_Combo2_Air(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO2_AIR);
+	Play_SFX_Attack_Combo_2_4();
+	Play_Voice_Attack_Combo_2_4();
 }
 
 void CSigrid_State::Start_Combat_Combo3_Into_Idle(_double dTimeDelta)
@@ -2597,7 +2862,11 @@ void CSigrid_State::Start_Combat_Combo3_Into_Idle(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO3_INTO_RUN)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_1_3();
+		Play_Voice_Attack_Combo_1_3();
+	}
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO3_INTO_IDLE);
 }
 
@@ -2609,7 +2878,11 @@ void CSigrid_State::Start_Combat_Combo3_Into_Run(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO3_INTO_IDLE)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_1_3();
+		Play_Voice_Attack_Combo_1_3();
+	}
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO3_INTO_RUN);
 }
 
@@ -2620,6 +2893,8 @@ void CSigrid_State::Start_Combat_Combo3_Into_Surf(_double dTimeDelta)
 
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO3_INTO_SURF);
+	Play_SFX_Attack_Combo_1_3();
+	Play_Voice_Attack_Combo_1_3();
 }
 
 void CSigrid_State::Start_Combat_Combo3_Air(_double dTimeDelta)
@@ -2630,6 +2905,8 @@ void CSigrid_State::Start_Combat_Combo3_Air(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO3_AIR);
+	Play_SFX_Attack_Combo_1_3();
+	Play_Voice_Attack_Combo_1_3();
 }
 
 void CSigrid_State::Start_Combat_Combo4_Into_Idle(_double dTimeDelta)
@@ -2640,7 +2917,11 @@ void CSigrid_State::Start_Combat_Combo4_Into_Idle(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO4_INTO_RUN)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_2_4();
+		Play_Voice_Attack_Combo_2_4();
+	}
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO4_INTO_IDLE);
 }
 
@@ -2652,7 +2933,11 @@ void CSigrid_State::Start_Combat_Combo4_Into_Run(_double dTimeDelta)
 	if (m_pModelCom->Get_LastAnimationIndex() == COMBAT_COMBO4_INTO_IDLE)
 		m_pPlayer->m_eLerpType = CModel::LERP_CONTINUE;
 	else
+	{
 		m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
+		Play_SFX_Attack_Combo_2_4();
+		Play_Voice_Attack_Combo_2_4();
+	}
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO4_INTO_RUN);
 }
 
@@ -2663,6 +2948,8 @@ void CSigrid_State::Start_Combat_Combo4_Into_Surf(_double dTimeDelta)
 
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO4_INTO_SURF);
+	Play_SFX_Attack_Combo_2_4();
+	Play_Voice_Attack_Combo_2_4();
 }
 
 void CSigrid_State::Start_Combat_Combo4_Air(_double dTimeDelta)
@@ -2673,6 +2960,8 @@ void CSigrid_State::Start_Combat_Combo4_Air(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_COMBO4_AIR);
+	Play_SFX_Attack_Combo_2_4();
+	Play_Voice_Attack_Combo_2_4();
 }
 
 void CSigrid_State::Start_Combat_Charge_Attack_Into_Idle(_double dTimeDelta)
@@ -2759,6 +3048,9 @@ void CSigrid_State::Start_Combat_Ground_Slam_Intro(_double dTimeDelta)
 	m_pPlayer->m_fCurJumpSpeed = 0.f;
 	m_pPlayer->m_fGravity *= 10.f;
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_GROUND_SLAM_INTRO);
+
+	Play_SFX_Attack_GroundSlam_Intro();
+	Play_Voice_Attack_Ground_Slam_Intro();
 }
 
 void CSigrid_State::Start_Combat_Ground_Slam_Fall(_double dTimeDelta)
@@ -2778,6 +3070,9 @@ void CSigrid_State::Start_Combat_Ground_Slam_Hit(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_LerpTime(0.05f);
 	m_pModelCom->Set_CurAnimationIndex(COMBAT_GROUND_SLAM_HIT);
+
+	Play_SFX_Attack_GroundSlam_Hit();
+	Play_Voice_Attack_Ground_Slam();
 }
 
 void CSigrid_State::Start_Damage_Death_Air_Fall_Ground(_double dTimeDelta)
@@ -2804,6 +3099,17 @@ void CSigrid_State::Start_Damage_Hit_Idle(_double dTimeDelta)
 {
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(DAMAGE_HIT_IDLE);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == SURF || m_pModelCom->Get_LastAnimationIndex() == SURF_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_FAST || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_FAST_RIGHT ||
+		m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_LastAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
+
+	if (m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING || m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING_LEFT || m_pModelCom->Get_LastAnimationIndex() == JUMP_CHARGING_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(6);
+
+	Play_SFX_Damaged();
+	Play_Voice_Damaged();
 }
 
 void CSigrid_State::Start_Grapple_Ground_Fire_Fast(_double dTimeDelta)
@@ -2812,6 +3118,9 @@ void CSigrid_State::Start_Grapple_Ground_Fire_Fast(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_FIRE_FAST);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Ground_Fire_Fast_45(_double dTimeDelta)
@@ -2820,6 +3129,9 @@ void CSigrid_State::Start_Grapple_Ground_Fire_Fast_45(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_FIRE_FAST_45);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Ground_Fire_Fast_90(_double dTimeDelta)
@@ -2828,6 +3140,9 @@ void CSigrid_State::Start_Grapple_Ground_Fire_Fast_90(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_FIRE_FAST_90);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Ground_Fire_Fast_Negative_45(_double dTimeDelta)
@@ -2836,6 +3151,9 @@ void CSigrid_State::Start_Grapple_Ground_Fire_Fast_Negative_45(_double dTimeDelt
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_FIRE_FAST_NEGATIVE_45);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Ground_Fire_Fast_Negative_90(_double dTimeDelta)
@@ -2844,6 +3162,9 @@ void CSigrid_State::Start_Grapple_Ground_Fire_Fast_Negative_90(_double dTimeDelt
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_GROUND_FIRE_FAST_NEGATIVE_90);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Ground_Fire_Slow(_double dTimeDelta)
@@ -2892,6 +3213,9 @@ void CSigrid_State::Start_Grapple_Air_Fire_Fast(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_FIRE_FAST);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Air_Fire_Fast_45(_double dTimeDelta)
@@ -2900,6 +3224,9 @@ void CSigrid_State::Start_Grapple_Air_Fire_Fast_45(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_FIRE_FAST_45);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Air_Fire_Fast_90(_double dTimeDelta)
@@ -2908,6 +3235,9 @@ void CSigrid_State::Start_Grapple_Air_Fire_Fast_90(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_FIRE_FAST_90);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Air_Fire_Fast_Negative_45(_double dTimeDelta)
@@ -2916,6 +3246,9 @@ void CSigrid_State::Start_Grapple_Air_Fire_Fast_Negative_45(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_FIRE_FAST_NEGATIVE_45);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Air_Fire_Fast_Negative_90(_double dTimeDelta)
@@ -2924,6 +3257,9 @@ void CSigrid_State::Start_Grapple_Air_Fire_Fast_Negative_90(_double dTimeDelta)
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_AIR_FIRE_FAST_NEGATIVE_90);
 	m_pTransformCom->LookAt_NoUpDown(m_pPlayer->m_vSnapGrapplePos);
+
+	Play_SFX_HookShot_AimIn();
+	Play_SFX_HookShot_In_Swish();
 }
 
 void CSigrid_State::Start_Grapple_Air_Fire_Slow(_double dTimeDelta)
@@ -3031,6 +3367,8 @@ void CSigrid_State::Start_Grapple_Hang_Intro(_double dTimeDelta)
 	m_pPlayer->m_bGrappleLauncher = false;
 	m_pPlayer->m_eLerpType = CModel::LERP_BEGIN;
 	m_pModelCom->Set_CurAnimationIndex(GRAPPLE_HANG_INTRO);
+
+	Play_Voice_Grapple_Arrive_Hand();
 }
 
 void CSigrid_State::Start_Grapple_Hang(_double dTimeDelta)
@@ -3067,6 +3405,9 @@ void CSigrid_State::Start_Grapple_Launch_Ready(_double dTimeDelta)
 {
 	m_pPlayer->m_bSnapGrappleFast = false;
 	m_pPlayer->m_bSnapGrappleSlow = false;
+
+	Play_SFX_HookShot_Out_Launch();
+	Play_Voice_Grapple_Launch();
 }
 
 void CSigrid_State::Start_Grapple_Launch(_double dTimeDelta)
@@ -3207,16 +3548,43 @@ void CSigrid_State::Tick_Dash_Into_Idle(_double dTimeDelta)
 void CSigrid_State::Tick_Ground_Run(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.1f)
+	{
+		_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+		_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+		if (XMVectorGetY(matLeftFoot.r[3]) - 0.0195f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.002f < 0.f)
+			Play_SFX_Movement_Ground_Footstep();
+	}
 }
 
 void CSigrid_State::Tick_Ground_Run_Left(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.1f)
+	{
+		_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+		_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+		if (XMVectorGetY(matLeftFoot.r[3]) - 0.f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.f < 0.f)
+			Play_SFX_Movement_Ground_Footstep();
+	}
 }
 
 void CSigrid_State::Tick_Ground_Run_Right(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.1f)
+	{
+		_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+		_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+		if (XMVectorGetY(matLeftFoot.r[3]) - 0.f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.f < 0.f)
+			Play_SFX_Movement_Ground_Footstep();
+	}
 }
 
 void CSigrid_State::Tick_Dash_Into_Run(_double dTimeDelta)
@@ -3241,19 +3609,52 @@ void CSigrid_State::Tick_Dash_Into_Run(_double dTimeDelta)
 void CSigrid_State::Tick_Ground_Boost(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.05f)
+	{
+		_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+		_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+		if (XMVectorGetY(matLeftFoot.r[3]) - 0.f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.f < 0.f)
+			Play_SFX_Movement_Ground_Footstep();
+	}
+
+	Play_Voice_Running();
 }
 
 void CSigrid_State::Tick_Ground_Boost_Left(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.05f)
+	{
+		_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+		_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+		if (XMVectorGetY(matLeftFoot.r[3]) - 0.002f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.f < 0.f)
+			Play_SFX_Movement_Ground_Footstep();
+	}
+
+	Play_Voice_Running();
 }
 
 void CSigrid_State::Tick_Ground_Boost_Right(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.05f)
+	{
+		_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+		_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+		if (XMVectorGetY(matLeftFoot.r[3]) - 0.f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.f < 0.f)
+			Play_SFX_Movement_Ground_Footstep();
+	}
+
+	Play_Voice_Running();
 }
 
-void CSigrid_State::Tick_Ground_Boost_Stop(_double dTimeDelta)
+void CSigrid_State::Tick_Ground_Boost_Stop(_double dTimeDelta) 
 {
 	Move(dTimeDelta, m_eDir);
 }
@@ -3265,16 +3666,34 @@ void CSigrid_State::Tick_Water_Idle(_double dTimeDelta)
 void CSigrid_State::Tick_Water_Run(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+	_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+	if (XMVectorGetY(matLeftFoot.r[3]) - 0.02f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.002f < 0.f)
+		Play_SFX_Movement_Water_Footstep();
 }
 
 void CSigrid_State::Tick_Water_Run_Left(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+	_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+	if (XMVectorGetY(matLeftFoot.r[3]) - 0.02f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.002f < 0.f)
+		Play_SFX_Movement_Water_Footstep();
 }
 
 void CSigrid_State::Tick_Water_Run_Right(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	_matrix	matLeftFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF L Leg Toe");
+	_matrix	matRightFoot = m_pModelCom->Get_BoneMatrix("Sigrid DEF R Leg Toe");
+
+	if (XMVectorGetY(matLeftFoot.r[3]) - 0.02f < 0.f || XMVectorGetY(matRightFoot.r[3]) - 0.01f < 0.f)
+		Play_SFX_Movement_Water_Footstep();
 }
 
 void CSigrid_State::Tick_Water_Braking(_double dTimeDelta)
@@ -3302,16 +3721,22 @@ void CSigrid_State::Tick_Surf_Intro(_double dTimeDelta)
 void CSigrid_State::Tick_Surf(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_BaseLoop.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Left(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_BaseLoop.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Right(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_BaseLoop.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Fast_Intro(_double dTimeDelta)
@@ -3322,31 +3747,43 @@ void CSigrid_State::Tick_Surf_Fast_Intro(_double dTimeDelta)
 void CSigrid_State::Tick_Surf_Fast(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_Lean.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Fast_Left(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_Lean.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Fast_Right(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_Lean.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Boost(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanLoop.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Boost_Left(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanLoop.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Surf_Boost_Right(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanLoop.wav", g_fSFXVolume, false, false, 0);
 }
 
 void CSigrid_State::Tick_Snap_Turn_Ground_Idle(_double dTimeDelta)
@@ -3401,16 +3838,22 @@ void CSigrid_State::Tick_Jump_Double(_double dTimeDelta)
 void CSigrid_State::Tick_Jump_Charging(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Loop.wav", g_fSFXVolume, false, false, 6);
 }
 
 void CSigrid_State::Tick_Jump_Charging_Left(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Loop.wav", g_fSFXVolume, false, false, 6);
 }
 
 void CSigrid_State::Tick_Jump_Charging_Right(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Loop.wav", g_fSFXVolume, false, false, 6);
 }
 
 void CSigrid_State::Tick_Jump_Charged1_60(_double dTimeDelta)
@@ -3574,6 +4017,8 @@ void CSigrid_State::Tick_Air_Gliding(_double dTimeDelta)
 
 	if (m_eDir != CTransform::DIR_END)
 		Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Loop.wav", g_fSFXVolume, false, false, 2);
 }
 
 void CSigrid_State::Tick_Air_Gliding_Left(_double dTimeDelta)
@@ -3582,6 +4027,8 @@ void CSigrid_State::Tick_Air_Gliding_Left(_double dTimeDelta)
 	
 	if (m_eDir != CTransform::DIR_END)
 		Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Loop.wav", g_fSFXVolume, false, false, 2);
 }
 
 void CSigrid_State::Tick_Air_Gliding_Right(_double dTimeDelta)
@@ -3590,6 +4037,8 @@ void CSigrid_State::Tick_Air_Gliding_Right(_double dTimeDelta)
 	
 	if (m_eDir != CTransform::DIR_END)
 		Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Loop.wav", g_fSFXVolume, false, false, 2);
 }
 
 void CSigrid_State::Tick_Air_Gliding_Left_Turn(_double dTimeDelta)
@@ -3598,6 +4047,8 @@ void CSigrid_State::Tick_Air_Gliding_Left_Turn(_double dTimeDelta)
 	
 	if (m_eDir != CTransform::DIR_END)
 		Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Loop.wav", g_fSFXVolume, false, false, 2);
 }
 
 void CSigrid_State::Tick_Air_Gliding_Right_Turn(_double dTimeDelta)
@@ -3606,6 +4057,8 @@ void CSigrid_State::Tick_Air_Gliding_Right_Turn(_double dTimeDelta)
 	
 	if (m_eDir != CTransform::DIR_END)
 		Move(dTimeDelta, m_eDir);
+
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Loop.wav", g_fSFXVolume, false, false, 2);
 }
 
 void CSigrid_State::Tick_Landing_Ground_Into_Idle(_double dTimeDelta)
@@ -3652,6 +4105,12 @@ void CSigrid_State::Tick_Combat_Combo1_Into_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo1_Into_Run(_double dTimeDelta)
@@ -3661,12 +4120,24 @@ void CSigrid_State::Tick_Combat_Combo1_Into_Run(_double dTimeDelta)
 
 	if (m_pModelCom->Get_AnimationProgress() > 0.5f)
 		Move(dTimeDelta, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo1_Into_Surf(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo1_Air(_double dTimeDelta)
@@ -3679,12 +4150,24 @@ void CSigrid_State::Tick_Combat_Combo1_Air(_double dTimeDelta)
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 		Move(dTimeDelta, m_eDir);
 	}
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo2_Into_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo2_Into_Run(_double dTimeDelta)
@@ -3694,12 +4177,24 @@ void CSigrid_State::Tick_Combat_Combo2_Into_Run(_double dTimeDelta)
 
 	if (m_pModelCom->Get_AnimationProgress() > 0.5f)
 		Move(dTimeDelta, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo2_Into_Surf(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo2_Air(_double dTimeDelta)
@@ -3712,12 +4207,24 @@ void CSigrid_State::Tick_Combat_Combo2_Air(_double dTimeDelta)
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 		Move(dTimeDelta, m_eDir);
 	}
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo3_Into_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo3_Into_Run(_double dTimeDelta)
@@ -3727,12 +4234,24 @@ void CSigrid_State::Tick_Combat_Combo3_Into_Run(_double dTimeDelta)
 
 	if (m_pModelCom->Get_AnimationProgress() > 0.5f)
 		Move(dTimeDelta, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo3_Into_Surf(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo3_Air(_double dTimeDelta)
@@ -3745,12 +4264,24 @@ void CSigrid_State::Tick_Combat_Combo3_Air(_double dTimeDelta)
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 		Move(dTimeDelta, m_eDir);
 	}
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo4_Into_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo4_Into_Run(_double dTimeDelta)
@@ -3760,12 +4291,24 @@ void CSigrid_State::Tick_Combat_Combo4_Into_Run(_double dTimeDelta)
 
 	if (m_pModelCom->Get_AnimationProgress() > 0.5f)
 		Move(dTimeDelta, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo4_Into_Surf(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() < 0.05f)
 		Move(0.0, m_eDir);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Combo4_Air(_double dTimeDelta)
@@ -3778,12 +4321,33 @@ void CSigrid_State::Tick_Combat_Combo4_Air(_double dTimeDelta)
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
 		Move(dTimeDelta, m_eDir);
 	}
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Charge_Attack_Into_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.2f)
 		Move(dTimeDelta * 0.5f, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.10f && m_pModelCom->Get_AnimationProgress() < 0.15f)
+		Play_Voice_Charge_Attack();
+	if (m_pModelCom->Get_AnimationProgress() > 0.15f && m_pModelCom->Get_AnimationProgress() < 0.2f)
+		Play_SFX_Attack_Charge_Start();
+	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.25f)
+		Play_SFX_Attack_Charge_Execute();
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_pModelCom->Get_AnimationProgress() < 0.55f)
+		Play_SFX_Attack_Charge_Done();
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Charge_Attack_Into_Run(_double dTimeDelta)
@@ -3793,27 +4357,102 @@ void CSigrid_State::Tick_Combat_Charge_Attack_Into_Run(_double dTimeDelta)
 
 	if (m_pModelCom->Get_AnimationProgress() > 0.3f && m_pModelCom->Get_AnimationProgress() < 0.5f)
 		CGameInstance::GetInstance()->Clone_GameObject(LEVEL_TESTSTAGE, L"Layer_Effect", L"Prototype_GameObject_Effect_GroundSlam", m_pTransformCom->Get_WorldMatrix());
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.10f && m_pModelCom->Get_AnimationProgress() < 0.15f)
+		Play_Voice_Charge_Attack();
+	if (m_pModelCom->Get_AnimationProgress() > 0.15f && m_pModelCom->Get_AnimationProgress() < 0.2f)
+		Play_SFX_Attack_Charge_Start();
+	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.25f)
+		Play_SFX_Attack_Charge_Execute();
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_pModelCom->Get_AnimationProgress() < 0.55f)
+		Play_SFX_Attack_Charge_Done();
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Charge_Attack_Into_Water_Idle(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.2f)
 		Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.10f && m_pModelCom->Get_AnimationProgress() < 0.15f)
+		Play_Voice_Charge_Attack();
+	if (m_pModelCom->Get_AnimationProgress() > 0.15f && m_pModelCom->Get_AnimationProgress() < 0.2f)
+		Play_SFX_Attack_Charge_Start();
+	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.25f)
+		Play_SFX_Attack_Charge_Execute();
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_pModelCom->Get_AnimationProgress() < 0.55f)
+		Play_SFX_Attack_Charge_Done();
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Charge_Attack_Into_Water_Run(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.10f && m_pModelCom->Get_AnimationProgress() < 0.15f)
+		Play_Voice_Charge_Attack();
+	if (m_pModelCom->Get_AnimationProgress() > 0.15f && m_pModelCom->Get_AnimationProgress() < 0.2f)
+		Play_SFX_Attack_Charge_Start();
+	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.25f)
+		Play_SFX_Attack_Charge_Execute();
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_pModelCom->Get_AnimationProgress() < 0.55f)
+		Play_SFX_Attack_Charge_Done();
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Charge_Attack_Into_Surf(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.10f && m_pModelCom->Get_AnimationProgress() < 0.15f)
+		Play_Voice_Charge_Attack();
+	if (m_pModelCom->Get_AnimationProgress() > 0.15f && m_pModelCom->Get_AnimationProgress() < 0.2f)
+		Play_SFX_Attack_Charge_Start();
+	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.25f)
+		Play_SFX_Attack_Charge_Execute();
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_pModelCom->Get_AnimationProgress() < 0.55f)
+		Play_SFX_Attack_Charge_Done();
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Charge_Attack_Into_Surf_Fast(_double dTimeDelta)
 {
 	Move(dTimeDelta, m_eDir);
+
+	if (m_pModelCom->Get_AnimationProgress() > 0.10f && m_pModelCom->Get_AnimationProgress() < 0.15f)
+		Play_Voice_Charge_Attack();
+	if (m_pModelCom->Get_AnimationProgress() > 0.15f && m_pModelCom->Get_AnimationProgress() < 0.2f)
+		Play_SFX_Attack_Charge_Start();
+	if (m_pModelCom->Get_AnimationProgress() > 0.2f && m_pModelCom->Get_AnimationProgress() < 0.25f)
+		Play_SFX_Attack_Charge_Execute();
+	if (m_pModelCom->Get_AnimationProgress() > 0.5f && m_pModelCom->Get_AnimationProgress() < 0.55f)
+		Play_SFX_Attack_Charge_Done();
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Ground_Slam_Intro(_double dTimeDelta)
@@ -3823,15 +4462,32 @@ void CSigrid_State::Tick_Combat_Ground_Slam_Intro(_double dTimeDelta)
 
 	if (m_pModelCom->Get_AnimationProgress() > 0.96f)
 		m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Ground_Slam_Fall(_double dTimeDelta)
 {
 	m_pTransformCom->Jump(dTimeDelta, m_pPlayer->m_fGravity, m_pPlayer->m_fCurJumpSpeed);
+
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Combat_Ground_Slam_Hit(_double dTimeDelta)
 {
+	if (m_pPlayer->m_bAttackHit == true)
+	{
+		Play_SFX_Hit();
+		m_pPlayer->m_bAttackHit = false;
+	}
 }
 
 void CSigrid_State::Tick_Damage_Death_Air_Fall_Ground(_double dTimeDelta)
@@ -3864,7 +4520,10 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_45(_double dTimeDelta)
@@ -3873,7 +4532,10 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_45(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_90(_double dTimeDelta)
@@ -3882,7 +4544,10 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_90(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_45(_double dTimeDelta)
@@ -3891,7 +4556,10 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_45(_double dTimeDelta
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_90(_double dTimeDelta)
@@ -3900,57 +4568,115 @@ void CSigrid_State::Tick_Grapple_Ground_Fire_Fast_Negative_90(_double dTimeDelta
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_Negative_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Fire_Slow_Negative_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast(_double dTimeDelta)
@@ -3959,7 +4685,10 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_45(_double dTimeDelta)
@@ -3968,7 +4697,10 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_45(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_90(_double dTimeDelta)
@@ -3977,7 +4709,10 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_90(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_45(_double dTimeDelta)
@@ -3986,7 +4721,10 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_45(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_90(_double dTimeDelta)
@@ -3995,57 +4733,115 @@ void CSigrid_State::Tick_Grapple_Air_Fire_Fast_Negative_90(_double dTimeDelta)
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+		
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_Negative_45(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Air_Fire_Slow_Negative_90(_double dTimeDelta)
 {
 	if (m_pModelCom->Get_AnimationProgress() > 0.4f)
+	{
 		m_pTransformCom->Chase(m_pPlayer->m_vSnapGrapplePos, dTimeDelta, 0.f, m_pPlayer->m_pNavigationCom[m_pPlayer->m_eCurNavigation]);
+
+		if (m_pModelCom->Get_AnimationProgress() < 0.43f)
+		{
+			Play_SFX_HookShot_AimIn();
+			Play_SFX_HookShot_In_Swish();
+		}
+	}
 
 	_float		fDist = XMVectorGetX(XMVector3Length(m_pPlayer->m_vSnapGrapplePos - m_pTransformCom->Get_State(CTransform::STATE_TRANS)));
 	if (fDist < 0.1f)
+	{
 		m_pPlayer->m_bReadyLaunch = true;
+		Play_SFX_HookShot_Arrive();
+	}
 }
 
 void CSigrid_State::Tick_Grapple_Ground_Aim(_double dTimeDelta)
@@ -4157,14 +4953,17 @@ void CSigrid_State::End_Dash_Into_Run(_double dTimeDelta)
 
 void CSigrid_State::End_Ground_Boost(_double dTimeDelta)
 {
+	CGameInstance::GetInstance()->Stop_Sound(9);
 }
 
 void CSigrid_State::End_Ground_Boost_Left(_double dTimeDelta)
 {
+	CGameInstance::GetInstance()->Stop_Sound(9);
 }
 
 void CSigrid_State::End_Ground_Boost_Right(_double dTimeDelta)
 {
+	CGameInstance::GetInstance()->Stop_Sound(9);
 }
 
 void CSigrid_State::End_Ground_Boost_Stop(_double dTimeDelta)
@@ -4596,6 +5395,14 @@ void CSigrid_State::End_Grapple_Ground_Fire(_double dTimeDelta)
 {
 	m_pPlayer->m_bSnapGrappleSlow = false;
 	m_pPlayer->m_bSnapGrappleFast = false;
+
+	if (m_pModelCom->Get_CurAnimationIndex() == SURF || m_pModelCom->Get_CurAnimationIndex() == SURF_LEFT || m_pModelCom->Get_CurAnimationIndex() == SURF_RIGHT ||
+		m_pModelCom->Get_CurAnimationIndex() == SURF_FAST || m_pModelCom->Get_CurAnimationIndex() == SURF_FAST_LEFT || m_pModelCom->Get_CurAnimationIndex() == SURF_FAST_RIGHT ||
+		m_pModelCom->Get_CurAnimationIndex() == SURF_BOOST|| m_pModelCom->Get_CurAnimationIndex() == SURF_BOOST_LEFT || m_pModelCom->Get_CurAnimationIndex() == SURF_BOOST_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(0);
+
+	if (m_pModelCom->Get_CurAnimationIndex() == JUMP_CHARGING || m_pModelCom->Get_CurAnimationIndex() == JUMP_CHARGING_LEFT || m_pModelCom->Get_CurAnimationIndex() == JUMP_CHARGING_RIGHT)
+		CGameInstance::GetInstance()->Stop_Sound(6);
 }
 
 void CSigrid_State::End_Grapple_Ground_Fire_Fast(_double dTimeDelta)
@@ -4712,6 +5519,10 @@ void CSigrid_State::End_Grapple_Air_Fire(_double dTimeDelta)
 {
 	m_pPlayer->m_bSnapGrappleSlow = false;
 	m_pPlayer->m_bSnapGrappleFast = false;
+
+	if (m_pModelCom->Get_CurAnimationIndex() == AIR_GLIDING || m_pModelCom->Get_CurAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_CurAnimationIndex() == AIR_GLIDING_RIGHT ||
+		m_pModelCom->Get_CurAnimationIndex() == AIR_GLIDING_LEFT || m_pModelCom->Get_CurAnimationIndex() == AIR_GLIDING_RIGHT_TURN)
+		CGameInstance::GetInstance()->Stop_Sound(2);
 }
 
 void CSigrid_State::End_Grapple_Air_Fire_Fast(_double dTimeDelta)
@@ -6296,6 +7107,1013 @@ _bool CSigrid_State::IsOnAir()
 	}
 
 	return false;
+}
+
+void CSigrid_State::Play_SFX_Attack_Charge_Start()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Start-001.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Start-002.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Start-003.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Start-004.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Start-005.wav", g_fSFXVolume, false, false, 1);
+}
+
+void CSigrid_State::Play_SFX_Attack_Charge_Execute()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Execute-001.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Execute-002.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Execute-003.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Execute-004.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Execute-005.wav", g_fSFXVolume, false, false, 2);
+}
+
+void CSigrid_State::Play_SFX_Attack_Charge_Done()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Done-001.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Done-002.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Done-003.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Done-004.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Charge_Done-005.wav", g_fSFXVolume, false, false, 3);
+}
+
+void CSigrid_State::Play_SFX_Attack_GroundSlam_Intro()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Intro-001.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Intro-002.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Intro-003.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Intro-004.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Intro-005.wav", g_fSFXVolume, false, false, 1);
+}
+
+void CSigrid_State::Play_SFX_Attack_GroundSlam_Hit()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Hit-001.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Hit-002.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Hit-003.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Hit-004.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_GroundSlam_Hit-005.wav", g_fSFXVolume, false, false, 2);
+}
+
+void CSigrid_State::Play_SFX_Attack_Combo_1_3()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_First-001.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_First-002.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_First-003.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_First-004.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_First-005.wav", g_fSFXVolume, false, true, 4);
+}
+
+void CSigrid_State::Play_SFX_Attack_Combo_2_4()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_Second-001.wav", g_fSFXVolume, false, true, 5);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_Second-002.wav", g_fSFXVolume, false, true, 5);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_Second-003.wav", g_fSFXVolume, false, true, 5);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_Second-004.wav", g_fSFXVolume, false, true, 5);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Attack_Swing_Second-005.wav", g_fSFXVolume, false, true, 5);
+}
+
+void CSigrid_State::Play_SFX_Damaged()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_Generic-001.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_Generic-002.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_Generic-003.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_Generic-004.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_Generic-005.wav", g_fSFXVolume, false, false, 3);
+}
+
+void CSigrid_State::Play_SFX_Hit()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_WallHit-001.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_WallHit-002.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_WallHit-003.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_WallHit-004.wav", g_fSFXVolume, false, true, 4);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Damage_WallHit-005.wav", g_fSFXVolume, false, true, 4);
+}
+
+void CSigrid_State::Play_SFX_Movement_Glide_Fly_Start()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Start-001.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Start-002.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Start-003.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Start-004.wav", g_fSFXVolume, false, false, 1);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Glide_Fly_Start-005.wav", g_fSFXVolume, false, false, 1);
+}
+
+void CSigrid_State::Play_SFX_HookShot_AimIn()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_AimIn-001.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_AimIn-002.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_AimIn-003.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_AimIn-004.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_AimIn-005.wav", g_fSFXVolume, false, false, 3);
+}
+
+void CSigrid_State::Play_SFX_HookShot_Arrive()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Arrive-001.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Arrive-002.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Arrive-003.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Arrive-004.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Arrive-005.wav", g_fSFXVolume, false, false, 4);
+}
+
+void CSigrid_State::Play_SFX_HookShot_In_Swish()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_In_Swish-001.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_In_Swish-002.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_In_Swish-003.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_In_Swish-004.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_In_Swish-005.wav", g_fSFXVolume, false, false, 5);
+}
+
+void CSigrid_State::Play_SFX_HookShot_Out_Launch()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Out_Launch-001.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Out_Launch-002.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Out_Launch-003.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Out_Launch-004.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_HookShot_Out_Launch-005.wav", g_fSFXVolume, false, false, 6);
+}
+
+void CSigrid_State::Play_SFX_Movement_ChargeJump_Finish()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Finished-001.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Finished-002.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Finished-003.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Finished-004.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Finished-005.wav", g_fSFXVolume, false, false, 2);
+}
+
+void CSigrid_State::Play_SFX_Movement_ChargeJump_ChargeUp()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_ChargeUp-001.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_ChargeUp-002.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_ChargeUp-003.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_ChargeUp-004.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_ChargeUp-005.wav", g_fSFXVolume, false, false, 3);
+}
+
+void CSigrid_State::Play_SFX_Movement_ChargeJump_Big()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Big-001.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Big-002.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Big-003.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Big-004.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Big-005.wav", g_fSFXVolume, false, false, 4);
+}
+
+void CSigrid_State::Play_SFX_Movement_ChargeJump_Small()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Small-001.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Small-002.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Small-003.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Small-004.wav", g_fSFXVolume, false, false, 5);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_ChargeJump_Water_Jump_Small-005.wav", g_fSFXVolume, false, false, 5);
+}
+
+void CSigrid_State::Play_SFX_Movement_Dash()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Dodge_Ground-001.wav", g_fSFXVolume, false, true);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Dodge_Ground-002.wav", g_fSFXVolume, false, true);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Dodge_Ground-003.wav", g_fSFXVolume, false, true);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Dodge_Ground-004.wav", g_fSFXVolume, false, true);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Dodge_Ground-005.wav", g_fSFXVolume, false, true);
+}
+
+void CSigrid_State::Play_SFX_Movement_Ground_Footstep()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 10.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-001.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-002.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-003.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-004.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-005.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-006.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-007.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-008.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-009.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 9.f && fRand <= 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Footstep-010.wav", g_fSFXVolume, false, true, 1);
+}
+
+void CSigrid_State::Play_SFX_Movement_Ground_Jump()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Jump-001.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Jump-002.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Jump-003.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Jump-004.wav", g_fSFXVolume, false, false, 2);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Jump-005.wav", g_fSFXVolume, false, false, 2);
+}
+
+void CSigrid_State::Play_SFX_Movement_Ground_Land()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Land-001.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Land-002.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Land-003.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Land-004.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Grass_Land-005.wav", g_fSFXVolume, false, false, 3);
+}
+
+void CSigrid_State::Play_SFX_Movement_Double_Jump()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Jump_DoubleJump-001.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Jump_DoubleJump-002.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Jump_DoubleJump-003.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Jump_DoubleJump-004.wav", g_fSFXVolume, false, false, 4);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Jump_DoubleJump-005.wav", g_fSFXVolume, false, false, 4);
+}
+
+void CSigrid_State::Play_SFX_Movement_SnapTurn()
+{
+}
+
+void CSigrid_State::Play_SFX_Movement_Water_Footstep()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-001.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-002.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-003.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-004.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-005.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-006.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-007.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-008.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-009.wav", g_fSFXVolume, false, true, 1);
+	else if (fRand >= 9.f && fRand <= 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Footstep-010.wav", g_fSFXVolume, false, true, 1);
+}
+
+void CSigrid_State::Play_SFX_Movement_Water_Jump()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Jump-001.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Jump-002.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Jump-003.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Jump-004.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Jump-005.wav", g_fSFXVolume, false, false, 6);
+}
+
+void CSigrid_State::Play_SFX_Movement_Water_Land()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land-001.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land-002.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land-003.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land-004.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land-005.wav", g_fSFXVolume, false, false, 3);
+}
+
+void CSigrid_State::Play_SFX_Movement_Water_Land_Hard()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land_Hard-001.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land_Hard-002.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land_Hard-003.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land_Hard-004.wav", g_fSFXVolume, false, false, 3);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Land_Hard-005.wav", g_fSFXVolume, false, false, 3);
+}
+
+void CSigrid_State::Play_SFX_Movement_Water_Surf_Boost_Start()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartFast-001.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartFast-002.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartFast-003.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartFast-004.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartFast-005.wav", g_fSFXVolume, false, false, 6);
+}
+
+void CSigrid_State::Play_SFX_Movement_Water_Surf_Fast_Start()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartSlow-001.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartSlow-002.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartSlow-003.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartSlow-004.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_StartSlow-005.wav", g_fSFXVolume, false, false, 6);
+}
+
+void CSigrid_State::Play_SFX_Movement_Water_Surf_Slow_Start()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 5.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanStart-001.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanStart-002.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanStart-003.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanStart-004.wav", g_fSFXVolume, false, false, 6);
+	else if (fRand >= 4.f && fRand <= 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_Player_Movement_Water_Surf_SuperLeanStart-005.wav", g_fSFXVolume, false, false, 6);
+}
+
+void CSigrid_State::Play_Voice_Charge_Attack()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 15.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_01.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_02.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_03.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_04.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_05.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_06.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_07.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_08.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_09.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_10.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_11.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_12.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 12.f && fRand < 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_13.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 13.f && fRand < 14.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_14.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 14.f && fRand <= 15.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeAttack_15.wav", g_fVoiceVolume, false, false, 9);
+}
+
+void CSigrid_State::Play_Voice_Charge_Jump()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 13.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_01.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_02.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_03.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_04.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_05.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_06.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_07.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_08.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_09.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_10.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_11.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_12.wav", g_fVoiceVolume, false, true, 9);
+	else if (fRand >= 12.f && fRand <= 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_ChargeJump_Execute_13.wav", g_fVoiceVolume, false, true, 9);
+}
+
+void CSigrid_State::Play_Voice_Attack_Combo_1_3()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 18.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_01.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_02.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_03.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_04.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_05.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_06.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_07.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_08.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_09.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_10.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_11.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_12.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 12.f && fRand < 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_13.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 13.f && fRand < 14.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_14.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 14.f && fRand < 15.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_15.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 15.f && fRand < 16.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_16.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 16.f && fRand < 17.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_17.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 17.f && fRand <= 18.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_1_18.wav", g_fVoiceVolume, false, true, 7);
+}
+
+void CSigrid_State::Play_Voice_Attack_Combo_2_4()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 18.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_01.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_02.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_03.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_04.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_05.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_06.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_07.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_08.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_09.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_10.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_11.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_12.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 12.f && fRand < 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_13.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 13.f && fRand < 14.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_14.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 14.f && fRand < 15.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_15.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 15.f && fRand < 16.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_16.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 16.f && fRand < 17.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_17.wav", g_fVoiceVolume, false, true, 8);
+	else if (fRand >= 17.f && fRand <= 18.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Combo_2_18.wav", g_fVoiceVolume, false, true, 8);
+}
+
+void CSigrid_State::Play_Voice_Damaged()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 15.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_01.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_02.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_03.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_04.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_05.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_06.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_07.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_08.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_09.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_10.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_11.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_12.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 12.f && fRand < 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_13.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 13.f && fRand < 14.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_14.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 14.f && fRand <= 15.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Damage_Major_15.wav", g_fVoiceVolume, false, false, 9);
+}
+
+void CSigrid_State::Play_Voice_Dash_Air()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 16.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_01.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_02.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_03.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_04.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_05.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_06.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_07.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_08.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_09.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_10.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_11.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_12.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 12.f && fRand < 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_13.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 13.f && fRand < 14.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_14.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 14.f && fRand < 15.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_15.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 15.f && fRand <= 16.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_Air_16.wav", g_fVoiceVolume, false, false, 7);
+}
+
+void CSigrid_State::Play_Voice_Dash_Ground()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 12.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_01.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_02.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_03.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_04.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_05.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_06.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_07.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_08.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_09.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_10.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_11.wav", g_fVoiceVolume, false, true, 7);
+	else if (fRand >= 11.f && fRand <= 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Dash_New_12.wav", g_fVoiceVolume, false, true, 7);
+}
+
+void CSigrid_State::Play_Voice_Grapple_Arrive_Hand()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 13.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_01.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_02.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_03.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_04.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_05.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_06.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_07.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_08.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_09.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_10.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_11.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_12.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 12.f && fRand <= 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Arrive_Hang_13.wav", g_fVoiceVolume, false, false, 9);
+}
+
+void CSigrid_State::Play_Voice_Grapple_Launch()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 10.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_01.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_02.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_03.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_04.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_05.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_06.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_07.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_08.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_09.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 9.f && fRand <= 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Grapple_Launch_10.wav", g_fVoiceVolume, false, false, 9);
+}
+
+void CSigrid_State::Play_Voice_Attack_Ground_Slam_Intro()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 14.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_01.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_02.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_03.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_04.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_05.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_06.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_07.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_08.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_09.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_10.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_11.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_12.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 12.f && fRand < 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_13.wav", g_fVoiceVolume, false, false, 9);
+	else if (fRand >= 13.f && fRand <= 14.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Start_14.wav", g_fVoiceVolume, false, false, 9);
+}
+
+void CSigrid_State::Play_Voice_Attack_Ground_Slam()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 14.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_01.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_02.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_03.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_04.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_05.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_06.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_07.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_08.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_09.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_10.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_11.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_12.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 12.f && fRand < 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_13.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 13.f && fRand <= 14.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_GroundSlam_Slam_14.wav", g_fVoiceVolume, false, false, 8);
+}
+
+void CSigrid_State::Play_Voice_Double_Jump()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 13.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_01.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_02.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_03.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_04.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_05.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_06.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_07.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_08.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_09.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_10.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_11.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_12.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 12.f && fRand <= 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Double_13.wav", g_fVoiceVolume, false, false, 7);
+}
+
+void CSigrid_State::Play_Voice_Jump()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 13.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_01.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_02.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_03.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_04.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_05.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_06.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_07.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_08.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_09.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 9.f && fRand < 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_10.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 10.f && fRand < 11.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_11.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 11.f && fRand < 12.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_12.wav", g_fVoiceVolume, false, false, 8);
+	else if (fRand >= 12.f && fRand <= 13.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Jump_Single_13.wav", g_fVoiceVolume, false, false, 8);
+}
+
+void CSigrid_State::Play_Voice_Land_Hard()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 10.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_01.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_02.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_03.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_04.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_05.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_06.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_07.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_08.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_09.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 9.f && fRand <= 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Hard_10.wav", g_fVoiceVolume, false, false, 7);
+}
+
+void CSigrid_State::Play_Voice_Land_Soft()
+{
+	_float		fRand = CGameUtility::RandomFloat(0.f, 10.f);
+
+	if (fRand >= 0.f && fRand < 1.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_01.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 1.f && fRand < 2.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_02.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 2.f && fRand < 3.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_03.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 3.f && fRand < 4.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_04.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 4.f && fRand < 5.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_05.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 5.f && fRand < 6.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_06.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 6.f && fRand < 7.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_07.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 7.f && fRand < 8.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_08.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 8.f && fRand < 9.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_09.wav", g_fVoiceVolume, false, false, 7);
+	else if (fRand >= 9.f && fRand <= 10.f)
+		CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Land_Soft_10.wav", g_fVoiceVolume, false, false, 7);
+}
+
+void CSigrid_State::Play_Voice_Running()
+{
+	CGameInstance::GetInstance()->Play_Sound(L"SFX_ActionVO_Sigrid_Running_Loop_04.wav", g_fVoiceVolume, false, false, 9);
 }
 
 void CSigrid_State::Move(_double dTimeDelta, CTransform::DIRECTION eDir, MOVETYPE eType)

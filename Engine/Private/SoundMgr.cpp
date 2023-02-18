@@ -100,7 +100,9 @@ void CSoundMgr::Play_Sound(const wstring & wstrSoundKey, _float fVolume, _bool b
 		{
 			for (_uint i = m_iNumManualChannels; i < MAX_CHANNEL_COUNT; ++i)
 			{
-				if (FMOD_Channel_IsPlaying(m_Channels[i].first, &bIsPlaying))
+				FMOD_Channel_IsPlaying(m_Channels[i].first, &bIsPlaying);
+
+				if (bIsPlaying == FALSE)
 				{
 					iPlayIndex = i;
 					break;
@@ -108,7 +110,12 @@ void CSoundMgr::Play_Sound(const wstring & wstrSoundKey, _float fVolume, _bool b
 			}
 		}
 		else
-			iPlayIndex = iManualChannelIndex;
+		{
+			FMOD_Channel_IsPlaying(m_Channels[iManualChannelIndex].first, &bIsPlaying);
+
+			if (bIsPlaying == FALSE)
+				iPlayIndex = iManualChannelIndex;
+		}
 
 		if (iPlayIndex >= MAX_CHANNEL_COUNT || iPlayIndex < 0)
 			return;
@@ -131,7 +138,7 @@ void CSoundMgr::Play_Sound(const wstring & wstrSoundKey, _float fVolume, _bool b
 		
 		pUseSound->Set_Volume(pUseChannel, fVolume);
 
-		m_Channels[iPlayIndex] = { pUseChannel, pUseSound };
+		m_Channels[iChannelIndex] = { pUseChannel, pUseSound };
 	}
 	else
 	{

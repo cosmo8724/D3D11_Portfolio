@@ -2,6 +2,8 @@
 #include "..\Public\Scene_Change.h"
 #include "GameInstance.h"
 #include "Static_Camera.h"
+#include "Sigrid.h"
+#include "GameUtility.h"
 
 CScene_Change::CScene_Change(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CUI(pDevice, pContext)
@@ -11,6 +13,7 @@ CScene_Change::CScene_Change(DEVICE pDevice, DEVICE_CONTEXT pContext)
 CScene_Change::CScene_Change(const CScene_Change & rhs)
 	: CUI(rhs)
 	, m_iSpriteIndex(rhs.m_iSpriteIndex)
+	, m_dSpeed(rhs.m_dSpeed)
 	, m_bReversePlay(rhs.m_bReversePlay)
 	, m_iWidthFrame(rhs.m_iWidthFrame)
 	, m_iHeightFrame(rhs.m_iHeightFrame)
@@ -29,6 +32,7 @@ HRESULT CScene_Change::Initialize_Prototype(_uint iSpriteIndex, _bool bReversePl
 		m_wstrUITag = L"UI_Scene_Change_0";
 		m_iWidthCount = 4;
 		m_iHeightCount = 8;
+		m_dSpeed = 0.03;
 	}
 	else if (m_iSpriteIndex == 1)
 	{
@@ -47,6 +51,7 @@ HRESULT CScene_Change::Initialize_Prototype(_uint iSpriteIndex, _bool bReversePl
 		m_wstrUITag = L"UI_Scene_Change_3";
 		m_iWidthCount = 3;
 		m_iHeightCount = 8;
+		m_dSpeed = 0.04;
 	}
 
 	return S_OK;
@@ -69,7 +74,8 @@ HRESULT CScene_Change::Initialize(const wstring & wstrPrototypeTag, void * pArg)
 	m_pTransformCom->Set_Scale(_float3(m_fSizeX, m_fSizeY, 1.f));
 	m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
 
-	dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back())->Set_MouseFix(false);
+	if (CGameInstance::GetInstance()->Get_CurLevelIndex() == LEVEL_TESTSTAGE)
+		dynamic_cast<CStatic_Camera*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Camera")->back())->Set_MouseFix(false);
 
 	return S_OK;
 }
@@ -87,6 +93,12 @@ void CScene_Change::Tick(_double dTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_TRANS, XMVectorSet(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.f, 1.f));
 	}
 
+	if (m_pNextChanger != nullptr)
+	{
+		if (m_pNextChanger->Get_Finished() == true)
+			m_bDead = true;
+	}
+
 	if (m_bDead == true)
 		return;
 
@@ -95,29 +107,78 @@ void CScene_Change::Tick(_double dTimeDelta)
 	if (m_bFinish == false && m_dTimeDelta > m_dSpeed)
 	{
 		m_dTimeDelta -= m_dSpeed;
-		m_iWidthFrame++;
 
-		if (m_iWidthFrame >= m_iWidthCount)
+		if (m_bReversePlay == false)
 		{
-			m_iHeightFrame++;
+			m_iWidthFrame++;
 
-			if (m_iHeightFrame >= m_iHeightCount)
+			if (m_iWidthFrame >= m_iWidthCount)
+			{
+				m_iHeightFrame++;
+
+				if (m_iHeightFrame >= m_iHeightCount)
+				{
+					m_iHeightFrame--;
+
+					if (m_iSpriteIndex == 0)
+					{
+						m_bFinish = true;
+						m_pNextChanger = dynamic_cast<CScene_Change*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_LOADING, L"Layer_UI", L"Prototype_GameObject_SceneChange_0"));
+						m_pNextChanger->Set_Color(FLOAT4COLOR_RGBA(CGameUtility::RandomFloat(40.f, 255.f), CGameUtility::RandomFloat(40.f, 255.f), CGameUtility::RandomFloat(40.f, 255.f), 255.f));
+					}
+					else if (m_iSpriteIndex == 3)
+					{
+						CSigrid*	pSigrid = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back());
+						dynamic_cast<CTransform*>(pSigrid->Get_Component(L"Com_Transform"))->Set_State(CTransform::STATE_TRANS, XMVectorSet(160.f, 761.2f, 522.669f, 1.f));
+
+						m_bReversePlay = true;
+						m_iWidthFrame--;
+						m_bFinish = false;
+					}
+					else if (m_iSpriteIndex == 2)
+					{
+						m_bFinish = true;
+						g_bEnd = true;
+					}
+					else
+					{
+						m_bFinish = true;
+
+						if (m_bColorReverse == false)
+							g_bShopOpen = true;
+						else
+						{
+							g_bReadySceneChange = false;
+							m_bDead = true;
+						}
+					}
+				}
+				else
+					m_iWidthFrame = 0;
+			}
+		}
+		else
+		{
+			m_iWidthFrame--;
+
+			if (m_iWidthFrame < 0)
 			{
 				m_iHeightFrame--;
-				m_bFinish = true;
 
-				if (m_bColorReverse == false)
-					g_bShopOpen = true;
-				else
+				if (m_iHeightFrame < 0)
 				{
-					g_bReadySceneChange = false;
+					m_iHeightFrame++;
+					m_bFinish = true;
 					m_bDead = true;
 				}
+				else
+					m_iWidthFrame = m_iWidthCount - 1;
 			}
-			else
-				m_iWidthFrame = 0;
 		}
 	}
+
+	if (m_iSpriteIndex == 2 && m_bFinish == true)
+		m_dEndTime += dTimeDelta;
 }
 
 void CScene_Change::Late_Tick(_double dTimeDelta)
@@ -125,7 +186,12 @@ void CScene_Change::Late_Tick(_double dTimeDelta)
 	__super::Late_Tick(dTimeDelta);
 
 	if (nullptr != m_pRendererCom)
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this, true);
+	{
+		if (m_iSpriteIndex != 0)
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this, true);
+		else
+			m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_UI, this);
+	}
 }
 
 HRESULT CScene_Change::Render()
@@ -171,6 +237,7 @@ HRESULT CScene_Change::SetUp_ShaderResources()
 	m_pShaderCom->Set_RawValue(L"g_HeightFrame", &m_iHeightFrame, sizeof(_uint));
 	m_pShaderCom->Set_RawValue(L"g_WidthCount", &m_iWidthCount, sizeof(_uint));
 	m_pShaderCom->Set_RawValue(L"g_HeightCount", &m_iHeightCount, sizeof(_uint));
+	m_pShaderCom->Set_RawValue(L"g_vColor", &m_vColor, sizeof(_float4));
 
 	return S_OK;
 }

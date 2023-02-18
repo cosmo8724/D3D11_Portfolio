@@ -20,6 +20,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel, const wstring & wstrProtoCo
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel, wstrProtoComFilePath, wstrProtoObjFilePath);
 	NULL_CHECK_RETURN(m_pLoader, E_FAIL);
 
+	FAILED_CHECK_RETURN(Ready_Layer_UI(L"Layer_UI"), E_FAIL);
+
 	return S_OK;
 }
 
@@ -67,6 +69,18 @@ HRESULT CLevel_Loading::Render()
 	FAILED_CHECK_RETURN(__super::Render(), E_FAIL);
 
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText().c_str());
+
+	return S_OK;
+}
+
+HRESULT CLevel_Loading::Ready_Layer_UI(const wstring & wstrLayerTag)
+{
+	CGameInstance*		pGameInstance = CGameInstance::GetInstance();
+	Safe_AddRef(pGameInstance);
+
+	FAILED_CHECK_RETURN(pGameInstance->Clone_GameObject(LEVEL_LOADING, wstrLayerTag, L"Prototype_GameObject_SceneChange_0"), E_FAIL);
+
+	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

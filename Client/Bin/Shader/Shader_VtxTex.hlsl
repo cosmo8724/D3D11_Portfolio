@@ -7,6 +7,8 @@ texture2D		g_Texture;
 float4			g_vClipPlane;
 float4			g_vDiffuseColor;
 
+float4			g_vColor = float4(0.3f, 0.3f, 1.f, 1.f);
+
 int				g_WidthFrame, g_HeightFrame;
 int				g_WidthCount, g_HeightCount;
 
@@ -162,7 +164,7 @@ PS_OUT	PS_MAIN_SPRITE(PS_IN In)
 	vTexUV.x = (In.vTexUV.x + 1.f * g_WidthFrame) / g_WidthCount;
 	vTexUV.y = (In.vTexUV.y + g_HeightFrame) / g_HeightCount;;
 
-	vector		vColor = vector(0.3f, 0.3f, 1.f, 1.f);
+	vector		vColor = g_vColor;
 	Out.vColor = g_Texture.Sample(LinearSampler, vTexUV);
 
 	Out.vColor = Out.vColor * vColor;
@@ -184,7 +186,7 @@ PS_OUT	PS_MAIN_SPRITE_REVERSE(PS_IN In)
 	vTexUV.x = (In.vTexUV.x + 1.f * g_WidthFrame) / g_WidthCount;
 	vTexUV.y = (In.vTexUV.y + g_HeightFrame) / g_HeightCount;;
 
-	vector		vColor = vector(0.3f, 0.3f, 1.f, 1.f);
+	vector		vColor = g_vColor;
 	Out.vColor = g_Texture.Sample(LinearSampler, vTexUV);
 
 	if(Out.vColor.r > 0.3f || Out.vColor.g > 0.3f || Out.vColor.b > 0.3f)

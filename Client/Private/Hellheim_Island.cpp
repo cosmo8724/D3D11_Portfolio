@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "..\Public\Hellheim_Island.h"
 #include "GameInstance.h"
+#include "Sigrid.h"
+#include "Scene_Change.h"
 
 CHellheim_Island::CHellheim_Island(DEVICE pDevice, DEVICE_CONTEXT pContext)
 	: CGameObject(pDevice, pContext)
@@ -35,15 +37,24 @@ HRESULT CHellheim_Island::Initialize(const wstring & wstrPrototypeTag, void * pA
 void CHellheim_Island::Tick(_double dTimeDelta)
 {
 	__super::Tick(dTimeDelta);
+
+	m_pEndingRangeCom->Update(XMMatrixTranslation(869.740f, 802.179f, 537.196f));
 }
 
 void CHellheim_Island::Late_Tick(_double dTimeDelta)
 {
 	__super::Late_Tick(dTimeDelta);
 
-	_float4		vPos = m_pTransformCom->Get_State(CTransform::STATE_TRANS);
-	vPos.x -= 400.f;
-	vPos.z -= 600.f;
+	CSigrid*	pSigrid = dynamic_cast<CSigrid*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_Player")->back());
+
+	if (m_pEndingRangeCom->Collision(dynamic_cast<CCollider*>(pSigrid->Get_Component(L"Com_OBB"))))
+	{
+		if (CGameInstance::GetInstance()->Key_Down(DIK_E))
+		{
+			CScene_Change* pUI = dynamic_cast<CScene_Change*>(CGameInstance::GetInstance()->Clone_GameObjectReturnPtr(LEVEL_TESTSTAGE, L"Layer_UI", L"Prototype_GameObject_SceneChange_2"));
+			pUI->Set_Color(FLOAT4COLOR_RGBA(255.f, 255.f, 255.f, 255.f));
+		}
+	}
 
 	if (nullptr != m_pRendererCom /*&&
 		true == CGameInstance::GetInstance()->IsInFrustum_World(vPos, 200.f)*/)
@@ -117,6 +128,13 @@ HRESULT CHellheim_Island::SetUp_Component()
 
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Model_Hellheim_Island", L"Com_Model", (CComponent**)&m_pModelCom, this), E_FAIL);
 
+	CCollider::COLLIDERDESC	ColliderDesc;
+	ZeroMemory(&ColliderDesc, sizeof(CCollider::COLLIDERDESC));
+	ColliderDesc.vSize = _float3(5.f, 5.f, 5.f);
+	ColliderDesc.vPosition = _float3(0.f, 0.f, 0.f);
+	ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Collider_Sphere", L"Com_Sphere", (CComponent**)&m_pEndingRangeCom, this, &ColliderDesc), E_FAIL);
+
 	return S_OK;
 }
 
@@ -181,6 +199,7 @@ void CHellheim_Island::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pEndingRangeCom);
 	Safe_Release(m_pRendererCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

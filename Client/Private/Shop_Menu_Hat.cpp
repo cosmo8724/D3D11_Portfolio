@@ -144,6 +144,8 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_1";
 	ItemBarDesc.wstrItemName = L"모자 없음";
 	ItemBarDesc.iSlot = 0;
+	ItemBarDesc.iPrice = 0;
+	ItemBarDesc.eType = CShop_ItemBar::PINK;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -154,6 +156,8 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_2";
 	ItemBarDesc.wstrItemName = L"게 모자";
 	ItemBarDesc.iSlot = 1;
+	ItemBarDesc.iPrice = 3;
+	ItemBarDesc.eType = CShop_ItemBar::PINK;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -164,6 +168,8 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_3";
 	ItemBarDesc.wstrItemName = L"보송보송 귀";
 	ItemBarDesc.iSlot = 2;
+	ItemBarDesc.iPrice = 4;
+	ItemBarDesc.eType = CShop_ItemBar::PINK;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -174,6 +180,8 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_4";
 	ItemBarDesc.wstrItemName = L"젤리콘";
 	ItemBarDesc.iSlot = 3;
+	ItemBarDesc.iPrice = 5;
+	ItemBarDesc.eType = CShop_ItemBar::PINK;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);
@@ -184,6 +192,8 @@ HRESULT CShop_Menu_Hat::SetUp_Parts()
 	ItemBarDesc.wstrUITag = L"UI_ItemBar_Hat_5";
 	ItemBarDesc.wstrItemName = L"이빨 난 후드";
 	ItemBarDesc.iSlot = 4;
+	ItemBarDesc.iPrice = 10;
+	ItemBarDesc.eType = CShop_ItemBar::WHITE;
 
 	pUI = dynamic_cast<CUI*>(CGameInstance::GetInstance()->Clone_GameObject(L"Prototype_GameObject_UI_Shop_ItemBar", &ItemBarDesc));
 	NULL_CHECK_RETURN(pUI, E_FAIL);

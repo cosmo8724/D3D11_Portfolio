@@ -210,7 +210,7 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 	{
 		m_bHairMask = true;
 
-		if (g_bShopOpen == false)
+		if (g_bShopOpen == false && g_bReadySceneChange == false && m_iCurrentHair != 0)
 			m_pNetTrail->Set_Color(m_vHairColor[m_iCurrentHair - 1]);
 
 		if (g_bShopOpen == true && dynamic_cast<CShop_BackGround*>(CGameInstance::GetInstance()->Get_CloneObjectList(LEVEL_TESTSTAGE, L"Layer_UI")->back())->Get_CurrentMenu() == 1 && m_iPreviewHair == 0)
@@ -220,19 +220,19 @@ void CSigrid::Late_Tick(_double dTimeDelta)
 	{
 		m_bHairMask = false;
 
-		if (g_bShopOpen == false)
+		if (g_bShopOpen == false && g_bReadySceneChange == false)
 			m_pNetTrail->Set_Color(FLOAT4COLOR_RGBA(53, 238, 255, 255));
 	}
 
 	if (nullptr != m_pRendererCom && g_bReadySceneChange == false)
 	{
-		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
+		//m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_SHADOWDEPTH, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_REFLECT, this);
 		m_pRendererCom->Add_RenderGroup(CRenderer::RENDER_NONALPHABLEND, this);
 
-		m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol);
-		m_pRendererCom->Add_DebugRenderGroup(m_pOBBCol);
-		m_pRendererCom->Add_DebugRenderGroup(m_pNetSphereCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pSphereCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pOBBCol);
+		//m_pRendererCom->Add_DebugRenderGroup(m_pNetSphereCol);
 		//m_pRendererCom->Add_DebugRenderGroup(m_pNavigationCom);
 	}
 
@@ -267,7 +267,11 @@ HRESULT CSigrid::Render()
 
 	for (_uint i = 0; i < iNumMeshes; ++i)
 	{
-		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+		if (i == 4)
+			m_pNetRingTextureCom->Bind_ShaderResource(m_pShaderCom, L"g_DiffuseTexture");
+		else
+			m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_DIFFUSE, L"g_DiffuseTexture");
+
 		m_pModelCom->Bind_Material(m_pShaderCom, i, aiTextureType_NORMALS, L"g_NormalTexture");
 
 		if (m_iCurrentOutfit != 0)
@@ -404,6 +408,8 @@ void CSigrid::ImGui_RenderProperty()
 	_int	iCurNavigation = (_int)m_eCurNavigation;
 	CGameUtility::Saturate(iCurNavigation, (_int)NAVI_END, 0);
 	m_eCurNavigation = (NAVIGATIONTYPE)iCurNavigation;
+
+	m_pSigridState->ImGui_RenderProperty();
 }
 
 _bool CSigrid::Collision_Range(CCollider * pTargetCollider)
@@ -461,7 +467,8 @@ HRESULT CSigrid::SetUp_Component()
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Camouflage", L"Com_Outfit_Camouflage", (CComponent**)&m_pOutfitTextureCom[2], this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_Outfit_Hearts", L"Com_Outfit_Hearts", (CComponent**)&m_pOutfitTextureCom[3], this), E_FAIL);
 	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Skin_HairMask", L"Com_HairMask", (CComponent**)&m_pHairMaskTextureCom, this), E_FAIL);
-
+	FAILED_CHECK_RETURN(__super::Add_Component(LEVEL_TESTSTAGE, L"Prototype_Component_Texture_Sigrid_NetRing", L"Com_NetRing", (CComponent**)&m_pNetRingTextureCom, this), E_FAIL);
+	
 	_float Xmin = (_float)SHRT_MAX, Xmax = (_float)SHRT_MIN, Ymin = (_float)SHRT_MAX, Ymax = (_float)SHRT_MIN, Zmin = (_float)SHRT_MAX, Zmax = (_float)SHRT_MIN;
 	FAILED_CHECK_RETURN(m_pModelCom->Check_MeshSize("Sigrid_Mesh_LOD0", Xmin, Xmax, Ymin, Ymax, Zmin, Zmax), E_FAIL);
 
@@ -740,6 +747,7 @@ void CSigrid::Free()
 	for (_uint i = 0; i < 4; ++i)
 		Safe_Release(m_pOutfitTextureCom[i]);
 
+	Safe_Release(m_pNetRingTextureCom);
 	Safe_Release(m_pHairMaskTextureCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
